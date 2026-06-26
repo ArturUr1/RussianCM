@@ -159,13 +159,13 @@
   showLanguageName: true
   languageIcon:
     sprite: /Textures/_RMC14/Interface/flags.rsi
-    state: unknown
+    state: RU # RuMC edit
   canUseRadio: true
   needsSpeech: true
   expectedVocabularySize: 130
   obfuscationMethod:
     !type:SyllableObfuscation
-    replacement: ["да", "нет", "что", "как", "где", "кто", "все", "это", "был", "она", "строк", "вреж", "прок", "трел", "бреск", "крош", "грез", "дров", "стрев", "врон", "прос", "здрек", "взлок", "вруж"]
+    replacement: ["да", "нет", "что", "как", "где", "кто", "все", "это", "был", "она", "самовар", "медведь", "водка", "балалайка", "борщ", "крош", "грез", "дров", "стрев", "он", "прос", "здрек", "взлок", "вруж"] # RuMC edit
     minSyllables: 1
     maxSyllables: 4
   speechOverride:

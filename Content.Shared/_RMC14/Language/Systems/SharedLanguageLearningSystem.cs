@@ -13,7 +13,7 @@ public abstract class SharedLanguageLearningSystem : EntitySystem
     [Dependency] protected readonly IPrototypeManager _prototypeManager = default!;
     [Dependency] protected readonly IRobustRandom _random = default!;
 
-    protected static readonly Regex WordRegex = new(@"\b[a-zA-Z']+\b", RegexOptions.Compiled);
+    protected static readonly Regex WordRegex = new(@"\b[\p{L}']+\b", RegexOptions.Compiled); // RuMC edit
 
     public string ProcessMessageForListener(EntityUid listener, string message, ProtoId<LanguagePrototype> language)
     {
