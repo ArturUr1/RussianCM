@@ -19,7 +19,6 @@ namespace Content.Shared.Tools.Systems;
 
 public abstract partial class SharedToolSystem : EntitySystem
 {
-    [Dependency] private   IMapManager _mapManager = default!;
     [Dependency] private   IPrototypeManager _protoMan = default!;
     [Dependency] protected ISharedAdminLogManager AdminLogger = default!;
     [Dependency] private   ITileDefinitionManager _tileDefManager = default!;
@@ -28,6 +27,7 @@ public abstract partial class SharedToolSystem : EntitySystem
     [Dependency] protected SharedInteractionSystem InteractionSystem = default!;
     [Dependency] protected ItemToggleSystem ItemToggle = default!;
     [Dependency] private   SharedMapSystem _maps = default!;
+    [Dependency] private   IMapManager _mapManager = default!; // RuMC edit
     [Dependency] private   SharedPopupSystem _popup = default!;
     [Dependency] protected SharedSolutionContainerSystem SolutionContainerSystem = default!;
     [Dependency] private   SharedTransformSystem _transformSystem = default!;

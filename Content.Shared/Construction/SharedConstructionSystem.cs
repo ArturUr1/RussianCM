@@ -8,8 +8,8 @@ namespace Content.Shared.Construction
 {
     public abstract partial class SharedConstructionSystem : EntitySystem
     {
-        [Dependency] private IMapManager _mapManager = default!;
         [Dependency] private SharedMapSystem _map = default!;
+        [Dependency] private IMapManager _mapManager = default!; // RuMC edit
         [Dependency] protected IPrototypeManager PrototypeManager = default!;
         [Dependency] protected SharedTransformSystem TransformSystem = default!;
 
@@ -21,7 +21,7 @@ namespace Content.Shared.Construction
             if (!canBuildInImpassable)
                 return null;
 
-            if (!_mapManager.TryFindGridAt(coords, out var gridUid, out var grid))
+            if (!_mapManager.TryFindGridAt(coords, out var gridUid, out var grid)) // RuMC edit
                 return null;
 
             var ignored = _map.GetAnchoredEntities((gridUid, grid), coords).ToHashSet();

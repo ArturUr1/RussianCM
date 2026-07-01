@@ -5338,7 +5338,7 @@
   changes:
   - message: Added android suit for UPP platoon joe.
     type: Add
-  id: 349
+  id: 378
   time: '2026-06-27T01:30:22.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1462
 - author: KeiKiyomi
@@ -5346,14 +5346,14 @@
   - message: Changed M240T Custom Fuel tanks size to 450 from 250, and the bgel sized
       from 250 to 500
     type: Tweak
-  id: 350
+  id: 379
   time: '2026-06-27T01:50:08.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1445
 - author: maertayn
   changes:
   - message: Refactored languages a bit
     type: Code
-  id: 351
+  id: 380
   time: '2026-06-27T02:17:09.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1465
 - author: stranthbackup
@@ -5361,35 +5361,35 @@
   - message: Moved weapons prototypes into subcategories from _AU14/AU14 folders to
       the modern _CMU14 directory
     type: Code
-  id: 352
+  id: 381
   time: '2026-06-27T02:23:54.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1464
 - author: stranthbackup
   changes:
   - message: Fixed UPP APC eating your tools for use later.
     type: Fix
-  id: 353
+  id: 382
   time: '2026-06-27T02:27:29.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1467
 - author: Arcticular1
   changes:
   - message: Pyro armor is now immune to pounces, and is now light armor!
     type: Tweak
-  id: 354
+  id: 383
   time: '2026-06-27T03:50:43.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1461
 - author: Arcticular1
   changes:
   - message: Clf now get 1 point per 15$
     type: Tweak
-  id: 355
+  id: 384
   time: '2026-06-27T03:52:11.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1459
 - author: stranthbackup
   changes:
   - message: Ammo boxes of varying round sizes
     type: Add
-  id: 356
+  id: 385
   time: '2026-06-27T07:04:30.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1466
 - author: ver0098
@@ -5408,7 +5408,7 @@
     type: Add
   - message: CLF now has deployable ladders
     type: Add
-  id: 357
+  id: 386
   time: '2026-06-27T08:14:49.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1460
 - author: OmerF-afk
@@ -5417,14 +5417,14 @@
     type: Add
   - message: Removed black goo from roleplay drugs. They can be made now.
     type: Add
-  id: 358
+  id: 387
   time: '2026-06-27T11:03:39.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1470
 - author: stranthbackup
   changes:
   - message: Type 19 ammo box is now craftable
     type: Fix
-  id: 359
+  id: 388
   time: '2026-06-28T00:54:14.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1473
 - author: sunzu432
@@ -5452,7 +5452,7 @@
   - message: 'Hope''s Retreat: After seven rounds of appropriations, three cost overruns
       and $30 million, the Fort Beauregard prep rooms are now properly labelled.'
     type: Fix
-  id: 360
+  id: 389
   time: '2026-06-28T00:54:20.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1472
 - author: maertayn
@@ -5469,8 +5469,196 @@
   - message: Scout specialist webbing now has a 6.5% move speed multipler & CLF gets
       1 instead of 2
     type: Tweak
-  id: 361
+  id: 390
   time: '2026-06-28T05:13:55.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1475
+- author: HubaBub
+  changes:
+  - message: "\u0414\u043E\u0431\u0430\u0432\u043B\u0435\u043D\u044B \u0434\u0432\u0430\
+      \ \u043F\u0443\u043B\u0435\u043C\u0451\u0442\u0430 \u0434\u043B\u044F UPP, \u043F\
+      \u0443\u043B\u0435\u043C\u0451\u0442\u043D\u0430\u044F \u0440\u0430\u0437\u0433\
+      \u0440\u0443\u0437\u043A\u0430 \u0438 \u0441\u043F\u0440\u0430\u0439\u0442 \u043F\
+      \u043E\u0434\u043D\u044F\u0442\u043E\u0433\u043E \u0437\u0430\u0431\u0440\u0430\
+      \u043B\u0430 \u0442\u044F\u0436\u0435\u043B\u043E\u0433\u043E \u0448\u043B\u0435\
+      \u043C\u0430 UPP."
+    type: Add
+  id: 391
+  time: '2026-06-28T15:12:12.0000000+00:00'
+  url: https://github.com/flex5hybrid/RussianCM/pull/245
+- author: veseliiyar
+  changes:
+  - message: "\u0440\u0430\u0431\u043E\u0442\u0430 \u043F\u043E \u043F\u0435\u0440\
+      \u0435\u0432\u043E\u0434\u0443 \u0438\u0437 \u0431\u0430\u0433 \u0440\u0435\u043F\
+      \u043E\u0440\u0442\u043E\u0432"
+    type: Fix
+  id: 392
+  time: '2026-06-28T15:13:01.0000000+00:00'
+  url: https://github.com/flex5hybrid/RussianCM/pull/278
+- author: stranthbackup
+  changes:
+  - message: Sling clasps are now stronger and not dependent on your armour to hold
+      your gun in place.
+    type: Tweak
+  id: 362
+  time: '2026-06-28T13:10:00.0000000+00:00'
+  url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1476
+- author: deepdarkdepths
+  changes:
+  - message: Fixed a bug where guns affected by queen scream could permanently retain
+      their increased scatter if they were no longer being held when the effect expired.
+    type: Fix
+  id: 363
+  time: '2026-06-28T13:33:10.0000000+00:00'
+  url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1478
+- author: deepdarkdepths
+  changes:
+  - message: Reaper's values for its flesh resin gain, Rapture ability, Bloom ability,
+      Gas ability, and Mantle have been increased to better its viability.
+    type: Tweak
+  - message: Warlock's damage has been increased for all of its abilities, with a
+      slight buff to its shield bullet cap.
+    type: Tweak
+  id: 364
+  time: '2026-06-28T13:34:33.0000000+00:00'
+  url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1468
+- author: maertayn
+  changes:
+  - message: If you fail the threat roll you are sent back to the lobby so you can
+      Join-In-Progress (JIP)
+    type: Add
+  - message: Lowered the Threat Spawn time to 15-30 minutes (from 20-40)
+    type: Tweak
+  - message: Threat Leader playtime requirement is gone (again (again)) - go get 3
+      hours of Threat Member it will be back
+    type: Tweak
+  - message: Ape ghost role not working for the third-party spawns
+    type: Fix
+  - message: Firewalk grants slowdown immunity when walking on fire tiles
+    type: Add
+  id: 365
+  time: '2026-06-28T16:52:06.0000000+00:00'
+  url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1479
+- author: OverusedMeme
+  changes:
+  - message: Fixed the storage issue of Type 48-M General Utility Pouch not clipping
+      onto suit storage and not accepting medium sized items.
+    type: Fix
+  id: 366
+  time: '2026-06-29T04:13:19.0000000+00:00'
+  url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1486
+- author: JaSeNeSaJ
+  changes:
+  - message: 'Sheperds'': Vines (first pass)'
+    type: Add
+  - message: 'Sheperds'': Mob grow area'
+    type: Add
+  - message: 'Sheperds'': Tobacco & Cannabis growing supplies to Mob'
+    type: Add
+  - message: 'Sheperds'': More department consoles to colony admin office'
+    type: Add
+  - message: 'Sheperds'': Moved CLF/threat base from above LZ1'
+    type: Tweak
+  - message: 'Sheperds'':  TVs in Tavern/Casino basement now unanchorable & moveable'
+    type: Tweak
+  - message: 'Sheperds'': Experiment crate contents to Lab Freezer (non-abom)'
+    type: Add
+  - message: Nicotine chemical to tobacco leaves (non-dry)
+    type: Add
+  - message: 'Sheperds'': Beakers & Reagent Grinders to Mob & Hydro'
+    type: Add
+  id: 367
+  time: '2026-06-29T04:52:12.0000000+00:00'
+  url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1484
+- author: sunzu432
+  changes:
+  - message: 'Hope''s Retreat: Additional 2nd Z-Level areas on Hope''s Retreat (specifically
+      the Octanis Complex), intended to allow more dynamic movement through the map.'
+    type: Add
+  - message: 'Hope''s Retreat: Following the arrival of a mysteriously stealth dropship,
+      a Rec-Vend has been deployed to the Fort Beauregard medical break room.'
+    type: Add
+  - message: 'Hope''s Retreat: More areas to allow further specificity on the second
+      floor of the Octanis Complex as well as the central tunnel.'
+    type: Add
+  - message: 'Hope''s Retreat: Salvage job loop!'
+    type: Add
+  - message: 'Hope''s Retreat: Restoration of certain civilian vendors (synth and
+      logi).'
+    type: Add
+  - message: 'Hope''s Retreat: The majority of Octanis Complex (including the Smuggler''s
+      Tunnel) areas that were T4 roofs should have their areas adjusted properly to
+      T2.'
+    type: Fix
+  - message: 'Hope''s Retreat: Fax machines should now properly be connected to one
+      another, allowing you to send a litany of passive-aggressive messages across
+      space.'
+    type: Fix
+  id: 368
+  time: '2026-06-29T06:07:24.0000000+00:00'
+  url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1482
+- author: OverusedMeme
+  changes:
+  - message: The M240-T Flame-thrower is now un-meltable again.
+    type: Add
+  id: 369
+  time: '2026-06-29T06:16:32.0000000+00:00'
+  url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1485
+- author: deepdarkdepths
+  changes:
+  - message: Warlock's health and armor has been increased to help with its survivability.
+    type: Tweak
+  id: 370
+  time: '2026-06-29T06:57:12.0000000+00:00'
+  url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1483
+- author: TheHellFireo
+  changes:
+  - message: Fixed threat member playtime compatibility for evolved xenos.
+    type: Fix
+  - message: Fixed parasite larva claims being stolen by the normal larva queue.
+    type: Fix
+  - message: Fixed xeno corrosive acid targeting while keeping range/obstruction checks.
+    type: Fix
+  - message: Fixed Bulwark reflect visual duration matching the actual reflect phase.
+    type: Fix
+  - message: Fixed treadnailers crushing abomination tendons and carried mobs incorrectly.
+    type: Fix
+  - message: Fixed Hope's Retreat vehicle lift railings not syncing with the lift.
+    type: Fix
+  - message: Fixed UPP APC hardpoints eating tool interactions.
+    type: Fix
+  - message: Fixed deployable placement previews being offset.
+    type: Fix
+  - message: Fixed UPP phone directory category text.
+    type: Fix
+  - message: Made Xippy speak Xeno.
+    type: Fix
+  - message: Restored English handling for hivebroken/corrupted xenos.
+    type: Fix
+  - message: Made scenario plan failures announce publicly.
+    type: Fix
+  id: 371
+  time: '2026-06-29T16:47:19.0000000+00:00'
+  url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1491
+- author: TheHellFireo
+  changes:
+  - message: Updated RobustToolbox to v278.0.0.
+    type: Tweak
+  - message: Reduced allocations in common stuff including IFF, xeno HUD overlays,
+      status effects, and prediction-adjacent systems.
+    type: Tweak
+  - message: Updated the CMU xeno port integration test for the v278 upgrade.
+    type: Fix
+  - message: Avoid generated regex IL that Robust sandbox verification rejects.
+    type: Fix
+  - message: Preserve RMC attachable modifier defaults across v278 prototype serialization.
+    type: Fix
+  - message: Prevent disposed entity context menu controls from crashing the client.
+    type: Fix
+  - message: Fixed game audio sometimes staying muted after deafness, unconsciousness,
+      death, or returning from being unfocused.
+    type: Fix
+  id: 372
+  time: '2026-06-29T23:01:17.0000000+00:00'
+  url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1496
 Name: CMU
 Order: -1
