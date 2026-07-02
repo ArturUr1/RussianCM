@@ -35,11 +35,9 @@
       - RMCShellShotgun
       - RMCMagazineRevolver
       - Donut
-      - RMCGrenadeFlashBang
       - Radio
       components:
       - Handcuff
-      - Flash
       - FlashOnTrigger
       - Stunbaton
       - ForensicScanner
@@ -49,7 +47,6 @@
   - type: FixedItemSizeStorage
   - type: StorageFill
     contents:
-    - id: CMFlash
     - id: AU14TeleBaton
     - id: RMCHandcuffs
     - id: RMCHandcuffs

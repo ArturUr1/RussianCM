@@ -20,9 +20,6 @@
   components:
   - type: Sprite
     sprite: _AU14/Objects/Misc/Books/cclaw.rsi
-  - type: GuideHelp
-    guides:
-    - AU14CCLaw
 
 # SOP
 - type: entity

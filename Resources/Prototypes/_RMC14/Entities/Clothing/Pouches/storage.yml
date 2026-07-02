@@ -631,7 +631,6 @@
       components:
       - Blowtorch
       - Defibrillator
-      - Flash
       - RMCMegaphone
       - Whistle
       tags:
