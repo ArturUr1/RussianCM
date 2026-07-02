@@ -5472,34 +5472,12 @@
   id: 390
   time: '2026-06-28T05:13:55.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1475
-- author: HubaBub
-  changes:
-  - message: "\u0414\u043E\u0431\u0430\u0432\u043B\u0435\u043D\u044B \u0434\u0432\u0430\
-      \ \u043F\u0443\u043B\u0435\u043C\u0451\u0442\u0430 \u0434\u043B\u044F UPP, \u043F\
-      \u0443\u043B\u0435\u043C\u0451\u0442\u043D\u0430\u044F \u0440\u0430\u0437\u0433\
-      \u0440\u0443\u0437\u043A\u0430 \u0438 \u0441\u043F\u0440\u0430\u0439\u0442 \u043F\
-      \u043E\u0434\u043D\u044F\u0442\u043E\u0433\u043E \u0437\u0430\u0431\u0440\u0430\
-      \u043B\u0430 \u0442\u044F\u0436\u0435\u043B\u043E\u0433\u043E \u0448\u043B\u0435\
-      \u043C\u0430 UPP."
-    type: Add
-  id: 391
-  time: '2026-06-28T15:12:12.0000000+00:00'
-  url: https://github.com/flex5hybrid/RussianCM/pull/245
-- author: veseliiyar
-  changes:
-  - message: "\u0440\u0430\u0431\u043E\u0442\u0430 \u043F\u043E \u043F\u0435\u0440\
-      \u0435\u0432\u043E\u0434\u0443 \u0438\u0437 \u0431\u0430\u0433 \u0440\u0435\u043F\
-      \u043E\u0440\u0442\u043E\u0432"
-    type: Fix
-  id: 392
-  time: '2026-06-28T15:13:01.0000000+00:00'
-  url: https://github.com/flex5hybrid/RussianCM/pull/278
 - author: stranthbackup
   changes:
   - message: Sling clasps are now stronger and not dependent on your armour to hold
       your gun in place.
     type: Tweak
-  id: 362
+  id: 391
   time: '2026-06-28T13:10:00.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1476
 - author: deepdarkdepths
@@ -5507,7 +5485,7 @@
   - message: Fixed a bug where guns affected by queen scream could permanently retain
       their increased scatter if they were no longer being held when the effect expired.
     type: Fix
-  id: 363
+  id: 392
   time: '2026-06-28T13:33:10.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1478
 - author: deepdarkdepths
@@ -5518,9 +5496,31 @@
   - message: Warlock's damage has been increased for all of its abilities, with a
       slight buff to its shield bullet cap.
     type: Tweak
-  id: 364
+  id: 393
   time: '2026-06-28T13:34:33.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1468
+- author: HubaBub
+  changes:
+  - message: "\u0414\u043E\u0431\u0430\u0432\u043B\u0435\u043D\u044B \u0434\u0432\u0430\
+      \ \u043F\u0443\u043B\u0435\u043C\u0451\u0442\u0430 \u0434\u043B\u044F UPP, \u043F\
+      \u0443\u043B\u0435\u043C\u0451\u0442\u043D\u0430\u044F \u0440\u0430\u0437\u0433\
+      \u0440\u0443\u0437\u043A\u0430 \u0438 \u0441\u043F\u0440\u0430\u0439\u0442 \u043F\
+      \u043E\u0434\u043D\u044F\u0442\u043E\u0433\u043E \u0437\u0430\u0431\u0440\u0430\
+      \u043B\u0430 \u0442\u044F\u0436\u0435\u043B\u043E\u0433\u043E \u0448\u043B\u0435\
+      \u043C\u0430 UPP."
+    type: Add
+  id: 394
+  time: '2026-06-28T15:12:12.0000000+00:00'
+  url: https://github.com/flex5hybrid/RussianCM/pull/245
+- author: veseliiyar
+  changes:
+  - message: "\u0440\u0430\u0431\u043E\u0442\u0430 \u043F\u043E \u043F\u0435\u0440\
+      \u0435\u0432\u043E\u0434\u0443 \u0438\u0437 \u0431\u0430\u0433 \u0440\u0435\u043F\
+      \u043E\u0440\u0442\u043E\u0432"
+    type: Fix
+  id: 395
+  time: '2026-06-28T15:13:01.0000000+00:00'
+  url: https://github.com/flex5hybrid/RussianCM/pull/278
 - author: maertayn
   changes:
   - message: If you fail the threat roll you are sent back to the lobby so you can
@@ -5535,7 +5535,7 @@
     type: Fix
   - message: Firewalk grants slowdown immunity when walking on fire tiles
     type: Add
-  id: 365
+  id: 396
   time: '2026-06-28T16:52:06.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1479
 - author: OverusedMeme
@@ -5543,7 +5543,7 @@
   - message: Fixed the storage issue of Type 48-M General Utility Pouch not clipping
       onto suit storage and not accepting medium sized items.
     type: Fix
-  id: 366
+  id: 397
   time: '2026-06-29T04:13:19.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1486
 - author: JaSeNeSaJ
@@ -5566,7 +5566,7 @@
     type: Add
   - message: 'Sheperds'': Beakers & Reagent Grinders to Mob & Hydro'
     type: Add
-  id: 367
+  id: 398
   time: '2026-06-29T04:52:12.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1484
 - author: sunzu432
@@ -5593,21 +5593,21 @@
       another, allowing you to send a litany of passive-aggressive messages across
       space.'
     type: Fix
-  id: 368
+  id: 399
   time: '2026-06-29T06:07:24.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1482
 - author: OverusedMeme
   changes:
   - message: The M240-T Flame-thrower is now un-meltable again.
     type: Add
-  id: 369
+  id: 400
   time: '2026-06-29T06:16:32.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1485
 - author: deepdarkdepths
   changes:
   - message: Warlock's health and armor has been increased to help with its survivability.
     type: Tweak
-  id: 370
+  id: 401
   time: '2026-06-29T06:57:12.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1483
 - author: TheHellFireo
@@ -5636,7 +5636,7 @@
     type: Fix
   - message: Made scenario plan failures announce publicly.
     type: Fix
-  id: 371
+  id: 402
   time: '2026-06-29T16:47:19.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1491
 - author: TheHellFireo
@@ -5657,202 +5657,22 @@
   - message: Fixed game audio sometimes staying muted after deafness, unconsciousness,
       death, or returning from being unfocused.
     type: Fix
-  id: 372
+  id: 403
   time: '2026-06-29T23:01:17.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1496
-- author: ErinBaking
+- author: RomiGur
   changes:
-  - message: New Lobby Art
-    type: Add
-  id: 373
-  time: '2026-06-30T21:34:14.0000000+00:00'
-  url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1494
-- author: deepdarkdepths
-  changes:
-  - message: Updated Ravager sprites.
-    type: Tweak
-  id: 374
-  time: '2026-06-30T21:35:43.0000000+00:00'
-  url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1499
-- author: KeiKiyomi
-  changes:
-  - message: Added Blind Drops being allowed only for USCM, UPP, and RCM
-    type: Add
-  - message: Added AI Core and Synthetic Areas Guidelines
-    type: Add
-  - message: Added AI Area Trespass (AAT) to Major Crimes (15 minutes)
-    type: Add
-  - message: Clarified Rank Structure due to indents not working!
-    type: Tweak
-  - message: Clarified Who can and cant crew tanks and APCs in vehicle SOP
-    type: Tweak
-  - message: WICH Convention Articles 1, 4, 12, 16, 18, 21, 27, and 30 have been modified
-    type: Tweak
-  id: 375
-  time: '2026-06-30T21:38:52.0000000+00:00'
-  url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1400
-- author: TheHellFireo
-  changes:
-  - message: Added the Drone Operator combat role. Operators spawn with android parts,
-      assemble the android with tools, activate it with a synth key, then link/control
-      it through their tablet within range.
-    type: Add
-  - message: 'Added drone androids: fragile barebones synthetic bodies with cosmetic
-      wear, gun use, belt/backpack utility'
-    type: Add
-  - message: 'Added drone control flow: transfer effects, subtle blue/red lights and
-      particles, dormant visuals, follow/stop-follow actions, range warnings, and
-      hard leash session handling.'
-    type: Add
-  - message: Added installable Combat and Care android modules. Combat grants strong
-      CQB/shooting skills, while Care grants doctor-level medical skills.
-    type: Add
-  - message: Drone operators use the Combat Technician skill set.
-    type: Tweak
-  - message: Xenos and abominations see androids as normal humans rather than synths.
-    type: Tweak
-  - message: Backported vehicle fixes, vehicle key sprite updates, and GOVFOR/OPFOR
-      vehicle crewmen capped at two.
-    type: Add
-  - message: Ported the announcement router system and polished related announcement
-      UI/type handling.
-    type: Add
-  - message: Improved ghost follow chat controls and blocked healer salve use while
-      resting
+  - message: "\u042F\u0437\u044B\u043A\u0438 \u0440\u0430\u0431\u043E\u0442\u0430\u044E\
+      \u0442 \u043A\u043E\u0440\u0440\u0435\u043A\u0442\u043D\u043E \u0441 \u0440\u0443\
+      \u0441\u0441\u043A\u0438\u043C \u044F\u0437\u044B\u043A\u043E\u043C."
     type: Fix
-  id: 376
-  time: '2026-07-01T01:52:12.0000000+00:00'
-  url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1503
-- author: OverusedMeme
-  changes:
-  - message: Various Supplies to all Medical/Engineering pouches in loadouts. (Check
-      PR Media For Contents).
-    type: Add
-  - message: The Life Saver bag one can choose in loadouts now has starting medical
-      supplies.
-    type: Add
-  - message: Colony engineering's toolbelts in loadouts now have an E-tool and Modified
-      Blowtorch
-    type: Add
-  - message: The M276 medical storage rig is no longer a choice to choose for Colony
-      Medical Staff in Loadouts.
-    type: Remove
-  - message: The electronics Pouch can now fit door electronics.
-    type: Tweak
-  id: 377
-  time: '2026-07-01T07:01:33.0000000+00:00'
-  url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1502
-- author: OmerF-afk
-  changes:
-  - message: Added CMO as a kit for the future.
-    type: Add
-  - message: Added more clothing and ID options to the IO kit. While fixing the issues
-      it had.
-    type: Add
-  - message: New Loadout options to synthetics. Mostly glasses.
-    type: Add
-  - message: Adds Surgical 4 Pamphlet. That's used in the CMO's kit.
-    type: Add
-  - message: new sprites for IO clothes stuff and cases now have a open sprite!
-    type: Add
-  id: 378
-  time: '2026-07-01T07:41:15.0000000+00:00'
-  url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1495
-- author: JaSeNeSaJ
-  changes:
-  - message: Hydroponics crop price differences
-    type: Add
-  - message: Tags for various crops
-    type: Add
-  - message: Sugarcane provides RMCSugar
+  - message: "\u0418\u0441\u043F\u0440\u0430\u0432\u043B\u0435\u043D\u043E \u043E\u0442\
+      \u043E\u0431\u0440\u0430\u0436\u0435\u043D\u0438\u0435 \u0444\u043B\u0430\u0433\
+      \u0430 \u0420\u0424 \u0434\u043B\u044F \u0440\u0443\u0441\u0441\u043A\u043E\u0433\
+      \u043E \u044F\u0437\u044B\u043A\u0430."
     type: Fix
-  id: 379
-  time: '2026-07-01T09:01:20.0000000+00:00'
-  url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1504
-- author: TheHellFireo
-  changes:
-  - message: Added CMU round outcome tracking for Distress Signal, Insurgency, and
-      Colony Fall.
-    type: Add
-  - message: Added a public round stats panel with win rates, recent form, streaks,
-      durations, major/minor splits, and threat/planet/platoon/player-count breakdowns.
-    type: Add
-  - message: Added the command to check the stats panel "cmuroundstats"
-    type: Add
-  id: 380
-  time: '2026-07-01T09:35:40.0000000+00:00'
-  url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1506
-- author: maertayn
-  changes:
-  - message: Restructured the Prototypes folder
-    type: Code
-  id: 381
-  time: '2026-07-01T11:02:02.0000000+00:00'
-  url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1505
-- author: TheHellFireo
-  changes:
-  - message: Fixed command roles and appointed squad leaders not receiving issue order
-      actions.
-    type: Fix
-  - message: Cleaned build warnings
-    type: Code
-  id: 382
-  time: '2026-07-01T12:57:35.0000000+00:00'
-  url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1507
-- author: OverusedMeme
-  changes:
-  - message: EROs now start with a HealthMate Hud
-    type: Add
-  - message: Filled Variant for Colony First Responder Pouches now have a Stasis bag
-      in them
-    type: Tweak
-  - message: the second Naloxone injector is gone for said First Responder Pouche.
-    type: Remove
-  id: 383
-  time: '2026-07-02T07:00:50.0000000+00:00'
-  url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1511
-- author: OverusedMeme
-  changes:
-  - message: Additional starting gear to LEO officers/Leaders (Security Satchel/IFAK/Large
-      Pouch With Binos, Radio, Cuffs/Faction Dependent Service Pistol/Faction Dependent
-      Jacket/Pistol Holster)
-    type: Add
-  - message: LEO's will now find a clipboard and a universal recorder in their security
-      belts.
-    type: Tweak
-  - message: Colony Security now have their missing headset.
-    type: Fix
-  id: 384
-  time: '2026-07-02T07:01:34.0000000+00:00'
-  url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1510
-- author: Vencallium
-  changes:
-  - message: 5 larvas -> 3 larvas round start
-    type: Tweak
-  - message: Acid mine ability cooldown going from 5.5 seconds -> 8 seconds
-    type: Tweak
-  - message: Acid mine ability range going from 13 tiles -> 9 tiles
-    type: Tweak
-  id: 385
-  time: '2026-07-02T09:34:07.0000000+00:00'
-  url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1498
-- author: MarshesAndMeadows
-  changes:
-  - message: Added new charge for charger, controlled by cursor position and culminating
-      in a devastating lunge.
-    type: Add
-  - message: Added Jockeying system for charger, it can have up to 4 passengers at
-      a time.
-    type: Add
-  - message: Added functionality to Fling, it can now also fling the target towards
-      you if used on help intent.
-    type: Add
-  - message: Removed Tumble from charger.
-    type: Remove
-  - message: Removed the old Charge from charger
-    type: Remove
-  id: 386
-  time: '2026-07-02T09:34:18.0000000+00:00'
-  url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1203
+  id: 404
+  time: '2026-07-01T12:34:37.0000000+00:00'
+  url: https://github.com/flex5hybrid/RussianCM/pull/294
 Name: CMU
 Order: -1
