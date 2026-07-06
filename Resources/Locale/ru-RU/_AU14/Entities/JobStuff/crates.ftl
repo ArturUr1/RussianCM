@@ -3,3 +3,6 @@ ent-AU14CrateCivilianClothingRandom = ящик излишков гражданс
 
 ent-AU14CrateWorkTools = ящик с рабочими инструментами
     .desc = Содержит несколько пожарных топоров и кирок для тяжёлых работ.
+
+ent-CMUCrateLivestockWeYu = ящик с подопытным
+    .desc = Ящик, содержащий подопытное животное.
