@@ -1,0 +1,9 @@
+- type: entity
+  parent: CMHeadCap
+  id: RuMCHeadKomisarCap
+  components:
+  - type: Sprite
+    sprite: _RuMC14/Clothing/UPP/cap/kommisar.rsi
+  - type: Clothing
+    sprite: _RuMC14/Clothing/UPP/cap/kommisar.rsi
+  - type: Appearance
