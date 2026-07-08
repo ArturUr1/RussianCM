@@ -1,5 +1,5 @@
-ent-RMCBeltGrenadeHEFA = разгрузка M276 HEFA Mk. XVII
-    .desc = Разгрузка M276 HEFA Mk. XVII представляет собой усовершенствованную версию разгрузки для гранатомета M276 с увеличенной емкостью для хранения.
+ent-RMCBeltGrenadeHEFA = разгрузка M276 МК17
+    .desc = Разгрузка M276 МК17 представляет собой усовершенствованную версию разгрузки для гранатомёта M276 с увеличенной емкостью для хранения.
     .suffix = Заполнена
 
 ent-RMCBeltGrenadeLargeFilled = { ent-RMCBeltGrenadeLarge }
@@ -139,3 +139,23 @@ ent-CMBeltMarineHunting = {ent-CMBeltMarine}
 ent-CMBeltMarineAR10 = {ent-CMBeltMarine}
     .desc = {ent-CMBeltMarine.desc}
     .suffix = Заполнен, Ar10
+
+ent-RMCBeltMedicalDefibAnalyzerFilled = { ent-CMBeltMedical }
+    .desc = { ent-CMBeltMedical.desc }
+    .suffix = Заполнен, Лучше
+
+ent-CMBeltSecurityMarshalFilled = {ent-CMBeltSecurityMarshal}
+    .desc = {ent-CMBeltSecurityMarshal.desc}
+    .suffix = Заполнен
+
+ent-CMBeltSecurityMPFilled = {ent-CMBeltSecurityMP}
+    .desc = {ent-CMBeltSecurityMP.desc}
+    .suffix = Заполнен
+
+ent-CMBeltSecuritySPPFilled = {ent-CMBeltSecuritySPP}
+    .desc = {ent-CMBeltSecuritySPP.desc}
+    .suffix = Заполнен
+
+ent-RMCBeltSecurityWeYaFilled = {ent-RMCBeltSecurityWeYa}
+    .desc = {ent-RMCBeltSecurityWeYa.desc}
+    .suffix = Заполнен
