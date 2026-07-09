@@ -37,5 +37,11 @@ cmu-zlevel-ladder-collapse = Лестница без опоры складыва
 cmu-zlevel-ladder-retract-no-hand = Вам нужна свободная рука, чтобы убрать лестницу.
 cmu-zlevel-ladder-retract-finish = Вы убираете лестницу.
 
+ent-CMUActionZLevelUp = Подняться
+    .desc = Подняться на один Z-уровень вверх.
+
+ent-CMUActionZLevelDown = Спуститься
+    .desc = Спуститься на один Z-уровень вниз.
+
 ent-CMUActionToggleLookUp = Посмотреть вверх
     .desc = Вы поднимаете голову и смотрите в небо.
