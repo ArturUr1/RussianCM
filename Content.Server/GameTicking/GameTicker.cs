@@ -149,6 +149,14 @@ namespace Content.Server.GameTicking
                 _chatManager.DispatchServerMessage(args.SenderSession, "Respawn is disabled in this gamemode");
                 return;
             }
+
+            if (_auobjectivesystem.IsWinActive)
+            {
+
+                _chatManager.DispatchServerMessage(args.SenderSession, "Respawn is disabled in this gamemode");
+                return;
+
+            }
             // Send the requesting player to the lobby
             PlayerJoinLobby(args.SenderSession);
         }
