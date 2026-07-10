@@ -47,27 +47,15 @@
     addToShip: true
     jobs:
       AU14JobOPFORPlatCo: 1
-      AU14JobOPFORPlatoonCorpsman: 9
-      AU14JobOPFORDCC: 2
-      AU14JobOPFORVehicleCrewman: 2
-      AU14JobOPFORPlatOp: 5
-      AU14JobOPFORDSPilot: 2
-      AU14JobOPFORRadioTelephoneOperator: 4
-      AU14JobOPFORSquadSergeant: 3
-      AU14JobOPFORSquadAutomaticRifleman: 3
-      AU14JobOPFORWeaponsSpecialist: 3 # RuMC edit
-      AU14JobOPFORSquadCombatTech: 6
-      AU14JobOPFORSquadRifleman: 75
-      AU14JobOPFORAuxSupportSynth: 2
       AU14JobOPFORAdjutant: 1
       AU14JobOPFORadvisor: 1
-      AU14JobOPFORPlatOp: 4
+      AU14JobOPFORPlatOp: 5
       AU14JobOPFOROfficerIntel: 1
       AU14JobOPFORSquadSergeant: 3
       AU14JobOPFORRadioTelephoneOperator: 4
       AU14JobOPFORSquadRifleman: 75
 #     CMUJobOPFORDroneOperator: 1
-#     AU14JobOPFORWeaponsSpecialist: 3 # TODO
+      AU14JobOPFORWeaponsSpecialist: 3 # RuMC edit
       AU14JobOPFORSquadAutomaticRifleman: 3
       AU14JobOPFORSquadCombatTech: 6
       AU14JobOPFOROfficerLogistics: 1
