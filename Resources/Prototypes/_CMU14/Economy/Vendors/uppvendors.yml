@@ -1033,6 +1033,9 @@
       choices: { CMHat: 1 }
       entries:
       - id: CMHeadCapSPPPeaked
+    - name: Hat 2
+      choices: { CMHat: 1 }
+      entries:
       - id: RuMCHeadKomisarCap
     - name: Helmet
       choices: { AU14Helmet: 1 }
