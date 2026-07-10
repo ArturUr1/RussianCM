@@ -2,15 +2,15 @@ ent-RMCBeltGrenadeHEFA = разгрузка M276 МК17
     .desc = Разгрузка M276 МК17 представляет собой усовершенствованную версию разгрузки для гранатомёта M276 с увеличенной емкостью для хранения.
     .suffix = Заполнена
 
-ent-RMCBeltGrenadeLargeFilled = { ent-RMCBeltGrenadeLarge }
-    .desc = { ent-RMCBeltGrenadeLarge.desc }
+ent-RMCBeltGrenadeLargeFilled = {ent-RMCBeltGrenadeLarge}
+    .desc = {ent-RMCBeltGrenadeLarge.desc }
     .suffix = Заполнена
 
-ent-RMCBeltSPPBrownHalfFill = { ent-RMCBeltSPPBrown }
-    .desc = { ent-RMCBeltSPPBrown.desc }
+ent-RMCBeltSPPBrownHalfFill = {ent-RMCBeltSPPBrown}
+    .desc = {ent-RMCBeltSPPBrown.desc}
     .suffix = Част. заполнен, AK4047
-ent-AU14BeltMarineArmyUPPTDFilled = { ent-RMCBeltSPPBrown }
-    .desc = { ent-RMCBeltSPPBrown.desc }
+ent-AU14BeltMarineArmyUPPTDFilled = {ent-RMCBeltSPPBrown}
+    .desc = {ent-RMCBeltSPPBrown.desc}
     .suffix = Заполнен, AK4047
 
 ent-RMCM82FHolsterFilled = {ent-RMCM82FHolster}
@@ -46,8 +46,8 @@ ent-RMCBeltHolsterSMGFilledSMGM63B2 = {ent-RMCBeltHolsterSMG}
     .desc = {ent-RMCBeltHolsterSMG.desc}
     .suffix = Заполнена, M63B2
 
-ent-RMCBeltUtiliyGeneralFilledRoyal = { ent-RMCBeltUtilityGeneral }
-    .desc = { ent-RMCBeltUtilityGeneral.desc }
+ent-RMCBeltUtiliyGeneralFilledRoyal = {ent-RMCBeltUtilityGeneral}
+    .desc = {ent-RMCBeltUtilityGeneral.desc}
     .suffix = Заполнен, Кор. штурмовик
 
 ent-RMCBeltHolsterRevolverVonBandolier = {ent-RMCBeltHolsterRevolver}
