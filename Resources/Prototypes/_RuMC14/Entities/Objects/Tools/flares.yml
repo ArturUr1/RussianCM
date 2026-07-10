@@ -1,5 +1,5 @@
 - type: entity
-  parent: BaseItem
+  parent: CMFlare
   id: RuMCFlareWhite
   name: RSP-1 signal flare
   description: A standard-issue UPP signal flare. Pull the cord, and it burns with a bright white light. Used for illumination and marking positions.
@@ -75,7 +75,7 @@
     prototype: RuMCAirFlareWhite
 
 - type: entity
-  parent: RuMCFlareWhite
+  parent: RMCFlareCAS
   id: RuMCFlareRedCAS
   name: RSP-17 signal flare
   description: A UPP signal flare with a bright red flame. Used to indicate targets or request support. Visible from long distances.
@@ -224,7 +224,7 @@
   parent: BaseItem
   id: RuMCPackFlareBase
   name: RSP flare pack
-  description: A packet of eight RSP signal flares. Standard issue for UPP personnel.
+  description: A packet of eight RSP signal flares. Standard for UPP.
   components:
   - type: Item
     size: Normal
@@ -265,6 +265,8 @@
 - type: entity
   parent: RuMCPackFlareBase
   id: RuMCPackFlareWhite
+  name: RSP white flare pack
+  description: A packet of eight RSP signal flares. Standard for UPP.
   suffix: White, Filled
   components:
   - type: CMItemSlots
@@ -273,6 +275,8 @@
 - type: entity
   parent: RuMCPackFlareBase
   id: RuMCPackFlareRed
+  name: GRACH flare pack
+  description: A pack of eight GRACH flares. The flyer resembles an RSP in shape, but is made of metal parts. Standard for UPP.
   suffix: Red, Filled
   components:
   - type: Sprite

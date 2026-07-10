@@ -1,6 +1,7 @@
+#CAS
 - type: entity
   parent: RMCBoxMagazineSupplySmallBase
-  id: RuMCBoxFlare
+  id: RuMCBoxFlareCAS
   name: ----------
   description: -------------
   components:
@@ -17,13 +18,58 @@
     - state: supply_box_small_flare
       color: "#606e78"
     - state: supply_box_small_flare_colour
-      color: "#F5E6C8"
+      color: "#FFA7A7"
     - state: supply_lid_small_closed
       map: [ "lid" ]
       color: "#4a545c"
     - state: supply_lid_small_closed_marking # "size"_lid - Base Colour
       map: [ "lid_marking" ]
       color: "#4a545c"
+    - state: star_supply #star
+      sprite: _RuMC14/Objects/Weapons/Guns/Ammunition/Boxes/UPP_Boxes.rsi
+      color: "#c62828"
+  - type: CMItemSlots
+    count: 8
+    slot:
+      whitelist:
+        tags:
+        - RuMCPackFlareRed
+
+- type: entity
+  parent: RuMCBoxFlareCAS
+  id: RuMCBoxFlareCASFilled
+  suffix: Filled
+  components:
+  - type: CMItemSlots
+    startingItem: RuMCPackFlareRed
+
+#Standart
+- type: entity
+  parent: RMCBoxMagazineSupplySmallBase
+  id: RuMCBoxFlare
+  name: ----------
+  description: -------------
+  components:
+  - type: Construction
+    graph: RMCBoxMagazine
+    node: RMCBoxMagazinePowerCellsHigh
+  - type: Sprite
+    layers:
+    - state: supply_box_small
+      color: "#6d7b56"
+    - state: supply_ammo_full
+      map: [ "enum.CMItemSlotsLayers.Fill" ]
+      color: "#b2bdc4"
+    - state: supply_box_small_flare
+      color: "#606e78"
+    - state: supply_box_small_flare_colour
+      color: "#F5E6C8"
+    - state: supply_lid_small_closed
+      map: [ "lid" ]
+      color: "#6d7b56"
+    - state: supply_lid_small_closed_marking # "size"_lid - Base Colour
+      map: [ "lid_marking" ]
+      color: "#6d7b56"
     - state: star_supply #star
       sprite: _RuMC14/Objects/Weapons/Guns/Ammunition/Boxes/UPP_Boxes.rsi
       color: "#c62828"
@@ -41,4 +87,3 @@
   components:
   - type: CMItemSlots
     startingItem: RuMCPackFlareWhite
-#star_supply
