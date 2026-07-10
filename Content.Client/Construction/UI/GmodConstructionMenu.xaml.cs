@@ -141,11 +141,17 @@ public sealed partial class GmodConstructionMenu : DefaultWindow, IConstructionM
     private SavedBuildInfo? _currentSavedBuild;
     private readonly SavedBuildListSystem _savedBuildList;
 
-    // Admin-only recipe management (detail panel "Change Recipe" / "Remove Item"). The target entity id drives
-    // Change Recipe (opens the editor for it); the construction id drives Remove Item (hides that recipe).
+    // Host-only utilities (e.g. opening the saved-builds folder in the host OS file explorer).
     private bool _isAdmin;
+    // Construction-menu editing (detail panel "Change Recipe" / "Remove Item"): a Host admin OR a player
+    // holding the JModEditor whitelist. The target entity id drives Change Recipe (opens the editor for it);
+    // the construction id drives Remove Item (hides that recipe). The server re-validates every request.
+    private bool _canEditMenu;
     private string? _currentTargetEntityId;
     private string? _currentRecipeId;
+
+    /// <summary>Whitelist-only role that unlocks menu editing for a non-admin. Must match the server's EditorWhitelistJob.</summary>
+    private const string EditorWhitelistJob = "JModEditor";
 
     // Two-click guard for the saved-build delete button (first click arms, second confirms).
     private bool _saveBuildDeleteArmed;
@@ -393,7 +399,10 @@ public sealed partial class GmodConstructionMenu : DefaultWindow, IConstructionM
         // player flow (vanilla construction ghosts + materials) - useful when admins are playing normally.
         // Non-admins can only ever build via ghosts, so the toggle is forced on and disabled for them.
         var adminMgr = IoCManager.Resolve<Administration.Managers.IClientAdminManager>();
-        _isAdmin = adminMgr.IsAdmin();
+        // Host flag only — general admin is no longer enough for the construction-menu editing tools.
+        _isAdmin = adminMgr.HasFlag(Shared.Administration.AdminFlags.Host);
+        _canEditMenu = _isAdmin
+            || IoCManager.Resolve<Players.PlayTimeTracking.JobRequirementsManager>().IsWhitelisted(EditorWhitelistJob);
 
         // Build-mode dropdown: Player is always available; Admin needs the Spawn flag; Mapper needs Mapping.
         // You can never select a mode you aren't authorized for (and the server re-validates regardless).
@@ -1043,8 +1052,8 @@ public sealed partial class GmodConstructionMenu : DefaultWindow, IConstructionM
         // saved-build management buttons stay hidden; the ghost erase/clear row is relevant here.
         _currentTargetEntityId = targetPrototype?.ID;
         _currentRecipeId = prototype.ID;
-        RecipeChangeButton.Visible = _isAdmin && _currentTargetEntityId != null;
-        RecipeRemoveButton.Visible = _isAdmin;
+        RecipeChangeButton.Visible = _canEditMenu && _currentTargetEntityId != null;
+        RecipeRemoveButton.Visible = _canEditMenu;
         SavedBuildDeleteButton.Visible = false;
         SavedBuildFolderButton.Visible = false;
         SavedBuildRenameButton.Visible = false;
