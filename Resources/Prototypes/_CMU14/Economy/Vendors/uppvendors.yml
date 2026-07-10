@@ -756,7 +756,10 @@
       takeAll: CMUAREssentialEquipment
       entries:
       - id: AU14ArmorSmartGunDesertCombatHarnessUPP
-
+    - name: Headgear
+      choices: { CMHelmet: 1 }
+      entries:
+      - id: RuMCUPPNavalInfantryHeavyHelmet
     - name: Firearm System
       choices: { CMUPlatoonMG: 1 }
       entries:
@@ -798,6 +801,7 @@
       choices: { CMHelmet: 1 }
       entries:
       - id: RuMCUPPNavalInfantryHeavyHelmet
+      - id: RuMCUPPNavalInfantryHeavyHelmet2
     - name: Equipment
       takeAll: CMStandard
       entries:
@@ -1285,6 +1289,8 @@
       entries:
       - id: RuMCUPPNavalInfantryHeavyHelmet
         amount: 4
+      - id: RuMCUPPNavalInfantryHeavyHelmet2
+        amount: 2
     - name: RTO Packs
       entries:
       - id: AU14BackpackRTOPackJungle
