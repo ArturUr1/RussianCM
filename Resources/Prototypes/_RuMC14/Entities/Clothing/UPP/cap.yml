@@ -1,6 +1,8 @@
 - type: entity
   parent: CMHeadCap
   id: RuMCHeadKomisarCap
+  name: komissar cap
+  description: Komissar. Chekist. Policeman. Your worst nightmare. Choose your own name.
   components:
   - type: Sprite
     sprite: _RuMC14/Clothing/UPP/cap/kommisar.rsi

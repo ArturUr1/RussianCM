@@ -269,6 +269,10 @@
   description: A packet of eight RSP signal flares. Standard for UPP.
   suffix: White, Filled
   components:
+  - type: Tag
+    tags:
+    - RuMCFlarePack
+    - RuMCPackFlareWhite
   - type: CMItemSlots
     startingItem: RuMCFlareWhite
 
@@ -279,6 +283,10 @@
   description: A pack of eight GRACH flares. The flyer resembles an RSP in shape, but is made of metal parts. Standard for UPP.
   suffix: Red, Filled
   components:
+  - type: Tag
+    tags:
+    - RuMCFlarePack
+    - RuMCPackFlareRed
   - type: Sprite
     sprite: _RuMC14/Objects/Misc/flares.rsi
     layers:
@@ -294,6 +302,10 @@
   id: RuMCPackFlareGreen
   suffix: Green, Filled
   components:
+  - type: Tag
+    tags:
+    - RuMCFlarePack
+    - RuMCPackFlareGreen
   - type: CMItemSlots
     startingItem: RuMCFlareGreen
 
@@ -364,3 +376,12 @@
 
 - type: Tag
   id: RuMCFlarePack
+
+- type: Tag
+  id: RuMCPackFlareWhite
+
+- type: Tag
+  id: RuMCPackFlareRed
+
+- type: Tag
+  id: RuMCPackFlareGreen

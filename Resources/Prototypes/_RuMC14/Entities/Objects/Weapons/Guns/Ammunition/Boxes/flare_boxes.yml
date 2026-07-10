@@ -33,7 +33,7 @@
     slot:
       whitelist:
         tags:
-        - RuMCFlarePack
+        - RuMCPackFlareRed
 
 - type: entity
   parent: RuMCBoxFlareCAS
@@ -78,7 +78,7 @@
     slot:
       whitelist:
         tags:
-        - RuMCFlarePack
+        - RuMCPackFlareWhite
 
 - type: entity
   parent: RuMCBoxFlare
