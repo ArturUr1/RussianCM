@@ -228,10 +228,10 @@
     cooldownPopup: You need to wait before taking another flare!
     count: 16
     slot:
-      name: RuMCFlareRed
+      name: RuMCFlareWhite
       whitelist:
         tags:
-        - RuMCFlareRed
+        - RuMCFlareWhite
 
 - type: entity
   parent: RuMCUPPPouchFlare
@@ -245,10 +245,10 @@
     cooldownPopup: You need to wait before taking another flare!
     count: 16
     slot:
-      name: RMCFlareL96
+      name: RuMCFlareRedCAS
       whitelist:
         tags:
-        - RMCFlareL96
+        - RuMCFlareRedCAS
 
 - type: entity
   parent: AU14PouchPistolAlt
