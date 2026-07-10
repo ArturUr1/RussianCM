@@ -1,6 +1,6 @@
 #CAS
 - type: entity
-  parent: RMCBoxMagazineSupplySmallBase
+  parent: RuMCBoxFlare
   id: RuMCBoxFlareCAS
   name: signal flyer box "GRACH"
   description: Transport capping box for storage and transportation of signal flyers. Contains 8 sealed packs, each containing 8 cylinders with pyrotechnic composition. The markings on the lid allow for quick identification of the type of flyers without opening the box. Used for supplying assault groups and forward checkpoints. Please note that the box should be stored in a dry place, away from open flames. If moisture enters the box, the contents should be disposed of as the flyers may malfunction.
@@ -33,7 +33,7 @@
     slot:
       whitelist:
         tags:
-        - RuMCPackFlareRed
+        - RuMCFlarePack
 
 - type: entity
   parent: RuMCBoxFlareCAS
@@ -78,7 +78,7 @@
     slot:
       whitelist:
         tags:
-        - RuMCPackFlareWhite
+        - RuMCFlarePack
 
 - type: entity
   parent: RuMCBoxFlare
