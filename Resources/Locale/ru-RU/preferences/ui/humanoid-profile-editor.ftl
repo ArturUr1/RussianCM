@@ -45,6 +45,7 @@ humanoid-profile-editor-threats-label = Угрозы
 humanoid-profile-editor-insurgency-tab = Восстание
 humanoid-profile-editor-colony-fall-tab = Падение колонии
 humanoid-profile-editor-distress-signal-tab = Сигнал бедствия
+humanoid-profile-editor-jailbreak-tab = Jailbreak
 
 humanoid-profile-editor-allegiance-label = Принадлежность:
 humanoid-profile-editor-allegiance-none = Нет
@@ -72,6 +73,8 @@ humanoid-profile-editor-department-jobs-label = Должности отдела 
 humanoid-profile-editor-antags-tab = Антагонисты
 humanoid-profile-editor-antag-preference-yes-button = Да
 humanoid-profile-editor-antag-preference-no-button = Нет
+humanoid-profile-editor-jailbreak-prisoners-label = Заключённые
+humanoid-profile-editor-jailbreak-staff-label = Персонал тюрьмы
 
 humanoid-profile-editor-job-priority-high-button = Высокий
 humanoid-profile-editor-job-priority-medium-button = Средний
