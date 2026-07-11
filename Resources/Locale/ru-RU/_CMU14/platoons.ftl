@@ -1,6 +1,6 @@
 lore-primer-platoon-label = Взвод: {$info}
 
-lore-primer-platoon-lacn = Латиноамериканский колониальный Флот.
+lore-primer-platoon-lacn = Латиноамериканский колониальный флот
 lore-primer-platoon-uscm = Колониальная морская пехота США
 lore-primer-platoon-upp = Пехота СПН
 lore-primer-platoon-weyu = ЧВК Вейланд-Ютани

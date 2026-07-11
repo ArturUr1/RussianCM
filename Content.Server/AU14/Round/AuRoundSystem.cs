@@ -19,6 +19,7 @@ using Content.Shared.Preferences;
 using Robust.Server.Player;
 using Robust.Server.GameObjects;
 using Robust.Shared.EntitySerialization.Systems;
+using Robust.Shared.Localization; // RuMC edit
 using Robust.Shared.Random;
 using Robust.Shared.Serialization.Manager;
 using Robust.Shared.Timing;
@@ -645,7 +646,12 @@ namespace Content.Server.AU14.Round
                 foreach (var platoonId in govforPlatoons)
                 {
                     var platoon = _prototypeManager.Index<PlatoonPrototype>(platoonId);
-                    optionsplatoons.Add((platoon.Name, platoon));
+                    // RuMC edit start
+                    var displayName = platoon.NameLocKey != null
+                        ? Loc.GetString(platoon.NameLocKey)
+                        : platoon.Name;
+                    optionsplatoons.Add((displayName, platoon));
+                    // RuMC edit end
                 }
 
                 var voteopt = new VoteOptions
