@@ -103,6 +103,12 @@ public sealed class ZCaveInSystem : EntitySystem
 
         // Attribution entries are keyed by map uid; drop them with the round so stale maps don't accumulate.
         SubscribeLocalEvent<Content.Shared.GameTicking.RoundRestartCleanupEvent>(_ => _lastDigger.Clear());
+        SubscribeLocalEvent<MapRemovedEvent>(OnMapRemoved);
+    }
+
+    private void OnMapRemoved(MapRemovedEvent ev)
+    {
+        _lastDigger.Remove(ev.Uid);
     }
 
     /// <summary>Records the last player to deal damage on an underground level (the likely over-miner), for attribution.</summary>

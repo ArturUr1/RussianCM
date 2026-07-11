@@ -73,6 +73,12 @@ public sealed class ZLevelBuildingSystem : EntitySystem
 
         // Keyed by round-scoped map uids; drop with the round so stale entries never accumulate.
         SubscribeLocalEvent<Content.Shared.GameTicking.RoundRestartCleanupEvent>(_ => _reflectedBorderChunks.Clear());
+        SubscribeLocalEvent<MapRemovedEvent>(OnMapRemoved);
+    }
+
+    private void OnMapRemoved(MapRemovedEvent ev)
+    {
+        _reflectedBorderChunks.Remove(ev.Uid);
     }
 
     /// <summary>Whether the building overhaul is allowed to operate on the given map.</summary>

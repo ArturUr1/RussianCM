@@ -109,6 +109,7 @@ public sealed class ZLevelSupportSystem : EntitySystem
         SubscribeLocalEvent<StructuralSupportComponent, ComponentShutdown>(OnSupportShutdown);
         SubscribeLocalEvent<StructuralSupportComponent, AnchorStateChangedEvent>(OnSupportAnchorChanged);
         SubscribeLocalEvent<StructuralSupportComponent, DamageChangedEvent>(OnSupportDamaged);
+        SubscribeLocalEvent<MapRemovedEvent>(OnMapRemoved);
 
         // All of these are keyed by round-scoped uids; drop them with the round so stale entries never accumulate.
         SubscribeLocalEvent<Content.Shared.GameTicking.RoundRestartCleanupEvent>(_ =>
@@ -118,6 +119,42 @@ public sealed class ZLevelSupportSystem : EntitySystem
             _pendingUnsupported.Clear();
             _dirtyGrids.Clear();
         });
+    }
+
+    private void OnMapRemoved(MapRemovedEvent ev)
+    {
+        _lastSupportDamager.Remove(ev.Uid);
+        _nextCollapseAlert.Remove(ev.Uid);
+        _tremorMaps.Remove(ev.Uid);
+
+        _processing.Clear();
+        foreach (var grid in _dirtyGrids)
+        {
+            if (IsDeletedOrOnMap(grid, ev.Uid))
+                _processing.Add(grid);
+        }
+
+        foreach (var grid in _processing)
+            _dirtyGrids.Remove(grid);
+
+        _processing.Clear();
+        foreach (var uid in _pendingUnsupported.Keys)
+        {
+            if (IsDeletedOrOnMap(uid, ev.Uid))
+                _processing.Add(uid);
+        }
+
+        foreach (var uid in _processing)
+            _pendingUnsupported.Remove(uid);
+
+        _processing.Clear();
+
+        _toCollapse.RemoveAll(uid => IsDeletedOrOnMap(uid, ev.Uid));
+    }
+
+    private bool IsDeletedOrOnMap(EntityUid uid, EntityUid mapUid)
+    {
+        return Deleted(uid) || TryComp<TransformComponent>(uid, out var xform) && xform.MapUid == mapUid;
     }
 
     /// <summary>Records the last player to damage a support on a level, so a resulting collapse names the real culprit.</summary>

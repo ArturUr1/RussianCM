@@ -60,6 +60,17 @@ public sealed class ZLevelToggleSystem : EntitySystem
 
         SubscribeLocalEvent<PostGameMapLoad>(OnPostGameMapLoad);
         SubscribeLocalEvent<RoundRestartCleanupEvent>(_ => _loadedMaps.Clear());
+        SubscribeLocalEvent<MapRemovedEvent>(OnMapRemoved);
+    }
+
+    private void OnMapRemoved(MapRemovedEvent ev)
+    {
+        foreach (var (proto, maps) in _loadedMaps.ToArray())
+        {
+            maps.Remove(ev.Uid);
+            if (maps.Count == 0)
+                _loadedMaps.Remove(proto);
+        }
     }
 
     /// <summary>A game map finished loading: remember its map entity and apply a persisted denial, if any.</summary>
