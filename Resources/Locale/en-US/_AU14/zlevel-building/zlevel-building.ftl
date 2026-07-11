@@ -35,3 +35,13 @@ au14-construction-support-beam-metal = metal support beam
 au14-construction-support-beam-metal-desc = A steel support beam. Place it below an upper-level floor to hold it up - a solid, all-round span.
 au14-construction-support-beam-plasteel = plasteel support beam
 au14-construction-support-beam-plasteel-desc = A plasteel support beam. Place it below an upper-level floor to hold it up - expensive, but spans the widest platform.
+
+## Z-Level Toggles admin tool (construction menu > Tools)
+au-zlevel-toggles-title = Z-Level Toggles
+au-zlevel-toggles-search = Search maps...
+au-zlevel-toggles-hint = Yes = players can z-build on this map. Persists across rounds.
+au-zlevel-toggles-yes = Yes
+au-zlevel-toggles-no = No
+au-zlevel-toggles-map-loaded = {$map} (loaded)
+au-zlevel-toggle-enabled = Z-level building ALLOWED on {$map}.
+au-zlevel-toggle-disabled = Z-level building DENIED on {$map}.

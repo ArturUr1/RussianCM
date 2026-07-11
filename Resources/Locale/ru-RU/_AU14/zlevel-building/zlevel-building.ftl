@@ -35,3 +35,13 @@ au14-construction-support-beam-metal = металлическая опорная
 au14-construction-support-beam-metal-desc = Стальная опорная балка. Ставьте ее под полом верхнего уровня, чтобы удерживать его: надежный универсальный пролет.
 au14-construction-support-beam-plasteel = пласталевая опорная балка
 au14-construction-support-beam-plasteel-desc = Пласталевая опорная балка. Ставьте ее под полом верхнего уровня, чтобы удерживать его: дорого, зато перекрывает самую широкую платформу.
+
+## Z-Level Toggles admin tool (construction menu > Tools)
+au-zlevel-toggles-title = Переключатели Z-уровней
+au-zlevel-toggles-search = Поиск карт...
+au-zlevel-toggles-hint = Да = игроки могут строить по Z-уровням на этой карте. Сохраняется между раундами.
+au-zlevel-toggles-yes = Да
+au-zlevel-toggles-no = Нет
+au-zlevel-toggles-map-loaded = {$map} (загружена)
+au-zlevel-toggle-enabled = Строительство по Z-уровням РАЗРЕШЕНО на {$map}.
+au-zlevel-toggle-disabled = Строительство по Z-уровням ЗАПРЕЩЕНО на {$map}.

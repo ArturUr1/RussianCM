@@ -104,6 +104,7 @@ gmod-construction-menu-admin-tools = Инструменты администра
 gmod-construction-menu-items-editor = Редактор предметов строительства
 gmod-construction-menu-tiles-editor = Редактор тайлов
 gmod-construction-menu-lathe-editor = Редактор станков
+gmod-construction-menu-zlevel-toggles = Переключатели Z-уровней
 construction-menu-editor-not-admin = Вы не администратор - редактор не откроется.
 
 ## Utilities -> INSFOR
