@@ -31,5 +31,7 @@ AU14JobCLFCellLeader = Лидер ячейки КОФ
 AU14JobCLFSapper = Сапёр КОФ
 
 # Missing entries synced from en-US
+au14-job-name-clfguerilla-alt = Боец КОФ (сторонний)
 
-au14-job-name-clfguerilla-alt = CLF Fighter (сторонний)
+au14-ghost-role-insurgent-reinforcements-name = Подкрепление повстанцев
+au14-ghost-role-insurgent-reinforcements-description = Вас прислали из соседней повстанческой ячейки, чтобы помочь восстанию в этой колонии.

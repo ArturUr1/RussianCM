@@ -107,6 +107,10 @@ au14-job-prefix-govformo = СМО
 au14-job-name-govforpolicechief = Начальник военной полиции
 au14-job-description-govforpolicechief = Руководи военными полицейскими. Поддерживай дисциплину и порядок в подразделении.
 au14-job-prefix-govforpolicechief = НВП
+AU14JobVehicleCrewmanBaseAbstract = Член экипажа техники
+au14-job-name-vehiclecrewman = Член экипажа техники
+au14-job-description-vehiclecrewman = Управляй бронетехникой для поддержки своей фракции.
+au14-job-prefix-vehiclecrewman = ЧЭТ
 
 au14-job-prefix-AU14JobGOVFORPlatCoUPP = КМВЗ
 au14-job-prefix-AU14JobGOVFORPlatoonCorpsmanUPP = САН
