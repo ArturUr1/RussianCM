@@ -38,6 +38,9 @@
     bullet: 45
     bio: 15 
     explosionArmor: 45
+  - type: ClothingSpeedModifier # SLOWDOWN_ARMOR_HEAVY
+    walkModifier: 0.62
+    sprintModifier: 0.62
 
 - type: entity
   parent: [ RMCAllowSuitStorageClothingSmartgunner, AU14BaseArmor ]
