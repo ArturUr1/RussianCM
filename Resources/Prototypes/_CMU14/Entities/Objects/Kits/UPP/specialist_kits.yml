@@ -66,8 +66,6 @@
   - type: StorageFill
     contents:
       - id: RMCWeaponShotgunType23
-      - id: AU14UPPHeavyHelmet
-      - id: AU14UPPHeavyArmor
       - id: RMCAttachmentType23Stock
       - id: RMCBoxShotgunHeavyBuckshot
         amount: 8
