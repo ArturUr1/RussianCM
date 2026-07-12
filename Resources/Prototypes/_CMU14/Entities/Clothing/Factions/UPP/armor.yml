@@ -27,7 +27,7 @@
     
 - type: entity
   parent: AU14BaseArmor
-  id: AU14UPPArmorBulky
+  id: AU14UPPHeavyArmor
   name: 6B99-2 pattern UPP heavy assault armor
   description: An extreme sidegrade of 6B92 armor, with the intent to increase soldiers survivability as much, as possible. An ablative layers of composite armor weighting more than 100 pounds, supported by the servo-assisters in each limb, and powered by the baterries for 24 hours of estimated work. Due to the lack of powerful heat dispersion system, the suit becomes an oven to its owner, and each step takes more and more strenght even with servo-assisters. Yet still, it is the best answer to the question of life and death.
   components:
