@@ -150,6 +150,8 @@
         amount: 3
       - id: RuMCUPPPouchFuelTank
         amount: 2
+      - id: RuMCUPPPouchDrum
+        amount: 2
       - id: RuMCUPPPouchTools
         amount: 15
     - name: Mask
@@ -756,6 +758,7 @@
       takeAll: CMUAREssentialEquipment
       entries:
       - id: AU14ArmorSmartGunDesertCombatHarnessUPP
+      - id: RuMCUPPPouchDrum
     - name: Headgear
       choices: { CMHelmet: 1 }
       entries:
