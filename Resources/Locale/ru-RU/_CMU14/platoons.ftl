@@ -8,4 +8,4 @@ lore-primer-platoon-cmbciu = Подразделение кризисного в�
 lore-primer-platoon-hazops = РХБЗ США
 lore-primer-platoon-prodigy-sf = Силы безопасности Продиджи
 lore-primer-platoon-vaipo = ЧВК ВАИ
-lore-primer-platoon-rmc = Коммандос КМП
+lore-primer-platoon-rmc = Коммандос ИТМ
