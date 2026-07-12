@@ -1,0 +1,171 @@
+<controls:FormationMenuWindow
+    xmlns="https://spacestation14.io"
+    xmlns:controls="clr-namespace:Content.Client._AU14.Formations"
+    Title="{Loc 'formation-window-title'}"
+    MinSize="320 510"
+    Access="Public">
+    <BoxContainer Orientation="Vertical" Margin="6" HorizontalExpand="True">
+
+        <!-- Status line -->
+        <Label Name="StatusLabel" Access="Public"
+               Text="{Loc 'formation-status-none'}"
+               HorizontalAlignment="Center"
+               Margin="0 0 0 6" />
+
+        <!-- Step 1 -->
+        <BoxContainer Orientation="Horizontal" Margin="0 0 0 2">
+            <TextureRect Name="IconStep1" Access="Public"
+                         MinSize="16 16" Stretch="KeepAspectCentered" Margin="0 0 4 0" />
+            <Label Text="{Loc 'formation-step-mark'}" FontColorOverride="#CCCCCC" />
+        </BoxContainer>
+        <Button Name="PlaceFollowerDotButton" Access="Public"
+                Text="{Loc 'formation-place-marker'}"
+                HorizontalExpand="True"
+                Margin="0 0 0 2"
+                ToolTip="{Loc 'formation-place-marker-tooltip'}"
+                StyleClasses="OpenBoth" />
+        <Button Name="UndoLastButton" Access="Public"
+                Text="{Loc 'formation-undo-last'}"
+                HorizontalExpand="True"
+                Margin="0 0 0 2"
+                StyleClasses="OpenBoth" />
+
+        <!-- Pending markers list -->
+        <Label Text="{Loc 'formation-staged-markers'}" FontColorOverride="#CCCCCC" Margin="0 4 0 2" />
+        <ScrollContainer HorizontalExpand="True" VerticalExpand="True" MinSize="0 70">
+            <BoxContainer Name="PendingDotsList" Access="Public"
+                          Orientation="Vertical"
+                          HorizontalExpand="True" />
+        </ScrollContainer>
+
+        <!-- Dot lifetime toggle -->
+        <Button Name="DotLifetimeToggleButton" Access="Public"
+                Text="{Loc 'formation-dot-lifetime-standard'}"
+                HorizontalExpand="True"
+                Margin="0 6 0 2"
+                ToolTip="{Loc 'formation-dot-lifetime-tooltip'}"
+                StyleClasses="OpenBoth" />
+
+        <!-- Extended lifetime warning - only visible when extended mode is on -->
+        <BoxContainer Name="LifetimeWarningBox" Access="Public"
+                      Orientation="Vertical" Margin="0 0 0 4">
+            <Label FontColorOverride="#FF2222"
+                   Text="{Loc 'formation-extended-warning-title'}"
+                   HorizontalAlignment="Center" />
+            <Label FontColorOverride="#FF4444"
+                   Text="{Loc 'formation-extended-warning-duration'}"
+                   HorizontalAlignment="Center" />
+            <Label FontColorOverride="#FF4444"
+                   Text="{Loc 'formation-extended-warning-rare'}"
+                   HorizontalAlignment="Center" />
+            <Label FontColorOverride="#FF6666"
+                   Text="{Loc 'formation-extended-warning-abuse'}"
+                   HorizontalAlignment="Center" />
+            <Label FontColorOverride="#FF8888"
+                   Text="{Loc 'formation-extended-warning-reset'}"
+                   HorizontalAlignment="Center" />
+        </BoxContainer>
+
+        <!-- Step 2 -->
+        <BoxContainer Orientation="Horizontal" Margin="0 0 0 2">
+            <TextureRect Name="IconStep2" Access="Public"
+                         MinSize="16 16" Stretch="KeepAspectCentered" Margin="0 0 4 0" />
+            <Label Text="{Loc 'formation-step-activate'}" FontColorOverride="#CCCCCC" />
+        </BoxContainer>
+        <BoxContainer Orientation="Horizontal" HorizontalExpand="True" Margin="0 0 0 2">
+            <Button Name="ConfirmButton" Access="Public"
+                    Text="{Loc 'formation-activate'}"
+                    HorizontalExpand="True"
+                    Margin="0 0 3 0"
+                    ToolTip="{Loc 'formation-activate-tooltip'}"
+                    StyleClasses="OpenBoth" />
+            <Button Name="CancelPlanningButton" Access="Public"
+                    Text="{Loc 'formation-clear-staged'}"
+                    HorizontalExpand="True"
+                    ToolTip="{Loc 'formation-clear-staged-tooltip'}"
+                    StyleClasses="OpenBoth" />
+        </BoxContainer>
+
+        <!-- Step 3 -->
+        <BoxContainer Orientation="Horizontal" Margin="0 6 0 2">
+            <TextureRect Name="IconStep3" Access="Public"
+                         MinSize="16 16" Stretch="KeepAspectCentered" Margin="0 0 4 0" />
+            <Label Text="{Loc 'formation-step-manage'}" FontColorOverride="#CCCCCC" />
+        </BoxContainer>
+        <Button Name="HaltMarchButton" Access="Public"
+                Text="{Loc 'formation-march'}"
+                HorizontalExpand="True"
+                Margin="0 0 0 2"
+                ToolTip="{Loc 'formation-halt-tooltip'}"
+                StyleClasses="OpenBoth" />
+
+        <!-- Follow mode -->
+        <BoxContainer Orientation="Horizontal" Margin="0 4 0 2">
+            <TextureRect Name="IconMode" Access="Public"
+                         MinSize="16 16" Stretch="KeepAspectCentered" Margin="0 0 4 0" />
+            <Label Text="{Loc 'formation-follow-mode'}" FontColorOverride="#CCCCCC" />
+        </BoxContainer>
+        <BoxContainer Orientation="Horizontal" HorizontalExpand="True" Margin="0 0 0 2">
+            <Button Name="ModeHoldButton" Access="Public"
+                    Text="{Loc 'formation-hold'}"
+                    HorizontalExpand="True"
+                    Margin="0 0 3 0"
+                    ToolTip="{Loc 'formation-hold-tooltip'}"
+                    StyleClasses="OpenBoth" />
+            <Button Name="ModeChaseButton" Access="Public"
+                    Text="{Loc 'formation-chase'}"
+                    HorizontalExpand="True"
+                    ToolTip="{Loc 'formation-chase-tooltip'}"
+                    StyleClasses="OpenBoth" />
+        </BoxContainer>
+
+        <!-- Collision toggle -->
+        <BoxContainer Orientation="Horizontal" Margin="0 4 0 2">
+            <TextureRect Name="IconCollision" Access="Public"
+                         MinSize="16 16" Stretch="KeepAspectCentered" Margin="0 0 4 0" />
+            <Label Text="{Loc 'formation-collision'}" FontColorOverride="#CCCCCC" />
+        </BoxContainer>
+        <Button Name="CollisionToggleButton" Access="Public"
+                Text="{Loc 'formation-collisions-off'}"
+                HorizontalExpand="True"
+                Margin="0 0 0 2"
+                ToolTip="{Loc 'formation-collisions-tooltip'}"
+                StyleClasses="OpenBoth" />
+
+        <!-- Disband row -->
+        <BoxContainer Orientation="Horizontal" HorizontalExpand="True" Margin="0 4 0 2">
+            <Button Name="ClearAllButton" Access="Public"
+                    Text="{Loc 'formation-remove-open-slots'}"
+                    HorizontalExpand="True"
+                    Margin="0 0 3 0"
+                    ToolTip="{Loc 'formation-remove-open-slots-tooltip'}"
+                    StyleClasses="OpenBoth" />
+            <Button Name="DisbandButton" Access="Public"
+                    Text="{Loc 'formation-disband'}"
+                    HorizontalExpand="True"
+                    ToolTip="{Loc 'formation-disband-tooltip'}"
+                    StyleClasses="OpenBoth" />
+        </BoxContainer>
+
+        <!-- Counts -->
+        <Label Name="ActiveDotsLabel" Access="Public"
+               Text="{Loc 'formation-counts-zero'}"
+               HorizontalAlignment="Center"
+               FontColorOverride="#AAAAAA"
+               Margin="0 4 0 0" />
+
+        <!-- Debug -->
+        <BoxContainer Orientation="Horizontal" Margin="0 8 0 2">
+            <TextureRect Name="IconDebug" Access="Public"
+                         MinSize="16 16" Stretch="KeepAspectCentered" Margin="0 0 4 0" />
+            <Label Text="{Loc 'formation-debug'}" FontColorOverride="#555555" />
+        </BoxContainer>
+        <Button Name="DebugToggleButton" Access="Public"
+                Text="{Loc 'formation-show-slots'}"
+                HorizontalExpand="True"
+                Margin="0 0 0 2"
+                ToolTip="{Loc 'formation-show-slots-tooltip'}"
+                StyleClasses="OpenBoth" />
+
+    </BoxContainer>
+</controls:FormationMenuWindow>

@@ -315,9 +315,6 @@
       - id: RMCArmorMercenary
         amount: 2
         points: 25
-      - id: AU14ScoutWebbing
-        amount: 1
-        points: 25
       - id: CMMaskCoif
         amount: 15
         points: 1
@@ -382,7 +379,13 @@
   - type: Physics
     bodyType: Dynamic
 
-
+- type: entity
+  parent: RMCComputerIntelCLF
+  id: CMUComputerIntelCLFClaimable
+  components:
+  - type: ClaimableIntelConsole
+    claimingTeam: govfor
+    requiredPreset: Insurgency
 
 - type: clfSpawnConfig
   id: CLFSpawnConfig
@@ -409,7 +412,7 @@
     areaBlockedCheck: false
     failIfNotSurface: false
     deploySetups:
-    - prototype: RMCComputerIntelCLF
+    - prototype: CMUComputerIntelCLFClaimable
       mode: ReactiveParental
       offset: -1.5, 2
     - prototype: ComputerObjectivesCLF

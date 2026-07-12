@@ -233,6 +233,7 @@ public sealed partial class CMDistressSignalRuleSystem : GameRuleSystem<CMDistre
         SubscribeLocalEvent<RoundEndMessageEvent>(OnRoundEndMessage);
         SubscribeLocalEvent<RoundRestartCleanupEvent>(OnRoundRestartCleanup);
         SubscribeLocalEvent<DropshipLandedOnPlanetEvent>(OnDropshipLandedOnPlanet);
+        SubscribeLocalEvent<DropshipHijackDeclinedEvent>(OnDropshipHijackDeclined);
         SubscribeLocalEvent<DropshipHijackStartEvent>(OnDropshipHijackStart);
         SubscribeLocalEvent<DropshipHijackLandedEvent>(OnDropshipHijackLanded);
 
@@ -848,6 +849,13 @@ public sealed partial class CMDistressSignalRuleSystem : GameRuleSystem<CMDistre
         }
     }
 
+    private void OnDropshipHijackDeclined(ref DropshipHijackDeclinedEvent ev)
+    {
+        ev.Handled = TryEndActiveDistressRound(
+            DistressSignalRuleResult.MinorXenoVictory,
+            "cmu-distress-signal-minorxenovictory-no-hijack");
+    }
+
     private void OnDropshipHijackStart(ref DropshipHijackStartEvent ev)
     {
         // For human hijacks, build a set of map IDs belonging to the hijacker's faction ship(s).
@@ -984,11 +992,12 @@ public sealed partial class CMDistressSignalRuleSystem : GameRuleSystem<CMDistre
             {
                 // Reset Hivecore Cooldown
                 var hiveComp = EnsureComp<HiveComponent>(rule.Hive);
-                //Add all the stranded xenos up
-                _hive.ChangeBurrowedLarva(larva); // TODO RMC14 should prob make sure it's only main hive
+                // Add all the stranded xenos up.
+                _hive.ChangeBurrowedLarva((rule.Hive, hiveComp), larva);
                 _hive.ResetHiveCoreCooldown((rule.Hive, hiveComp));
                 var surge = EnsureComp<HijackBurrowedSurgeComponent>(rule.Hive);
                 surge.PooledLarva = surgeAmount;
+                Dirty(rule.Hive, surge);
             }
         }
         else
@@ -1912,6 +1921,21 @@ public sealed partial class CMDistressSignalRuleSystem : GameRuleSystem<CMDistre
     }
 
     /// <summary>
+    /// Attempts to end the active distress signal rule through the normal distress result path.
+    /// </summary>
+    public bool TryEndActiveDistressRound(DistressSignalRuleResult result, LocId? customMessage = null)
+    {
+        var rules = QueryActiveRules();
+        while (rules.MoveNext(out _, out var distress, out _))
+        {
+            EndRound(distress, result, customMessage);
+            return distress.Result == result;
+        }
+
+        return false;
+    }
+
+    /// <summary>
     /// Sets the hive of all loaded xeno friendly entities (e.g. weeds).
     /// Only makes sense for distress signal with 1 hive, with multiple hives you would need to determine which weeds belong to which hive
     /// </summary>
@@ -2013,6 +2037,8 @@ public sealed partial class CMDistressSignalRuleSystem : GameRuleSystem<CMDistre
         if (!_queenBuildingBoostEnabled)
             return;
 
+        if (!HasComp<XenoEvolutionGranterComponent>(ent))
+            return;
 
         var query = QueryActiveRules();
         while (query.MoveNext(out var uid, out _, out var comp, out var gameRule))
@@ -2020,15 +2046,10 @@ public sealed partial class CMDistressSignalRuleSystem : GameRuleSystem<CMDistre
             if (!GameTicker.IsGameRuleAdded(uid, gameRule))
                 continue;
 
-
-
-            var withinBoostPeriod = comp.StartTime == null ||
-                                (Timing.CurTime - comp.StartTime < _queenBoostDuration);
-
+            var withinBoostPeriod = comp.StartTime == null || (Timing.CurTime - comp.StartTime < _queenBoostDuration);
             if (withinBoostPeriod)
-            {
                 GiveQueenBoost(ent.Owner);
-            }
+
             break;
         }
     }

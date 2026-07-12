@@ -11,6 +11,14 @@
       Male: RMCMaleHuman
       Unsexed: RMCMaleHuman #sorry fem-leaning enbies
       Female: RMCFemaleHuman
+  - type: EmoteOnDamage
+    emotes:
+    - Scream
+    emoteChance: 1
+    damageThreshold: 5
+    emoteCooldown: 6
+    withChat: true
+    hiddenFromChatWindow: true
   - type: FixedIdentity
     name: cm-chatsan-replacement-human
   - type: CMUHumanMedical
@@ -44,6 +52,9 @@
         type: SquadInfoBui
       enum.DialogUiKey.Key:
         type: DialogBui
+      enum.FormationMenuUiKey.Key:
+        type: FormationMenuBui
+        requireInputValidation: false
       enum.ViewIntelObjectivesUI.Key:
         type: ViewIntelObjectivesBui
       enum.BodyPartPickerUIKey.Key:
