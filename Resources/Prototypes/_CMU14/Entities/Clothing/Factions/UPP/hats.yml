@@ -33,7 +33,7 @@
 
 - type: entity
   parent: RMCArmorHelmetMercenary
-  id: RuCM14UPPHeavyHelmet
+  id: RuCMUPPHeavyHelmet
   name: 6B83 heavy helmet
   description: EVA-capable enclosed helmet of the UPP's Naval Infantry. Despite offering a higher armor rating, this helmet's cumbersome design kept it from retaining a larger role in the equipment of the Naval Infantry, and instead is largely reserved for heavy weapons operators and other specialist roles. Usually carried alongside with 6B99-2 heavy assault armor.
   components:
