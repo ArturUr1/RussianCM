@@ -1,9 +1,7 @@
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using Content.Server._AU14.SavedBuilds;
 using Content.Server.Construction.Components;
-using Content.Shared._AU14.Construction.Steps;
 using Content.Shared._RMC14.Construction;
 using Content.Shared._RMC14.Prototypes;
 using Content.Shared.ActionBlocker;
@@ -37,7 +35,6 @@ namespace Content.Server.Construction
         [Dependency] private SharedTransformSystem _transformSystem = default!;
         [Dependency] private EntityWhitelistSystem _whitelistSystem = default!;
         [Dependency] private RMCConstructionSystem _rmcConstruction = default!;
-        [Dependency] private PlayerBuiltSystem _playerBuilt = default!;
 
         // --- WARNING! LEGACY CODE AHEAD! ---
         // This entire file contains the legacy code for initial construction.
@@ -247,21 +244,6 @@ namespace Content.Server.Construction
                         break;
 
                     case ArbitraryInsertConstructionGraphStep arbitraryStep:
-                        // AU14: a custom "tool" step requires the entity present but does NOT consume it.
-                        if (arbitraryStep is EntityIdConstructionGraphStep { Consume: false } presenceStep)
-                        {
-                            foreach (var entity in new HashSet<EntityUid>(EnumerateNearby(user)))
-                            {
-                                if (!presenceStep.EntityValid(entity, EntityManager, Factory))
-                                    continue;
-
-                                handled = true;
-                                break;
-                            }
-
-                            break;
-                        }
-
                         foreach (var entity in new HashSet<EntityUid>(EnumerateNearby(user)))
                         {
                             if (!arbitraryStep.EntityValid(entity, EntityManager, Factory))
@@ -366,9 +348,6 @@ namespace Content.Server.Construction
             {
                 completed.PerformAction(newEntity, user, EntityManager);
             }
-
-            // Stamp the builder for accountability + the saved-builds whitelist.
-            _playerBuilt.MarkBuilt(newEntity, user);
 
             return newEntity;
         }

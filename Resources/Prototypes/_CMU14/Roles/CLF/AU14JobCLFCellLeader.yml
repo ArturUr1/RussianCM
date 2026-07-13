@@ -28,7 +28,6 @@
       RMCSkillPowerLoader: 1
       RMCSkillSurgery: 1
       RMCSkillVehicles: 1
-      RMCSkillSpecialistWeapons: 1
   - type: JobPrefix
     prefix: au14-job-prefix-clfcellleader
   - type: StartingMindRole
@@ -81,7 +80,7 @@
     eyes: RMCGlassesAviators
     pocket1: AU14StampCLFCell
   inhand:
-  - AU14HeavyCellKit
+  - AU14CLFCellKit
   - AU14CLFHeadset
 
 - type: entity
@@ -114,6 +113,3 @@
   - RecreationalRMC
   - CannedDrinksAU14
   - SmokablesRMC
-  - EyewearRMC
-  - MasksRMC
-  - HeadwearCLFAU14

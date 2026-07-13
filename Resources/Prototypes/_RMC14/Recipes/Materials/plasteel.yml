@@ -6,8 +6,7 @@
   doAfterTimeMin: 2
   materialCost: 8
   skill: RMCSkillConstruction
-  # AU14: any construction skill may build these.
-  requiredSkillLevel: 0
+  requiredSkillLevel: 2
 
 - type: rmcConstruction
   id: RMCPlasteelBarricadeBuild
@@ -17,8 +16,7 @@
   doAfterTimeMin: 2
   materialCost: 6
   skill: RMCSkillConstruction
-  # AU14: any construction skill may build these.
-  requiredSkillLevel: 0
+  requiredSkillLevel: 2
 
 - type: rmcConstruction
   id: RMCReinforcedWindowFrameBuild

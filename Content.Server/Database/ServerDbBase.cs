@@ -32,7 +32,7 @@ using Robust.Shared.Utility;
 
 namespace Content.Server.Database
 {
-    public abstract partial class ServerDbBase
+    public abstract class ServerDbBase
     {
         private readonly ISawmill _opsLog;
 

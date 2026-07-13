@@ -11,10 +11,9 @@
           AU14JobCLFPhysician: 1
           AU14JobCLFSurgeon: 1
       - bucket: CLFGuerilla
-        count: 4
+        count: 3
         bodies:
           AU14JobCLFGuerilla: 3
-          AU14JobCLFSapper: 1
     markerRequirements:
       - bucket: CLFSafehouse
         requiredBodyCount: 6

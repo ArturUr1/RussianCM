@@ -10,17 +10,15 @@ namespace Content.Shared._CMU14.Threats.Mobs.CLF;
 ///     Marks an entity as a CLF member. Used for showing CLF team identifiers
 ///     that only other CLF members can see (similar to how zombies identify each other).
 /// </summary>
-[RegisterComponent, NetworkedComponent, AutoGenerateComponentState]
+[RegisterComponent, NetworkedComponent]
 public sealed partial class CLFMemberComponent : Component
 {
-    [DataField, AutoNetworkedField]
+    [DataField]
     public ProtoId<NpcFactionPrototype> Faction = "CLF";
 
-    [DataField, AutoNetworkedField]
+    [DataField]
     public EntProtoId<IFFFactionComponent> IFF = "FactionCLF";
 
-    // Networked so a faction-driven icon swap (InsurgencyFactionApplySystem) actually reaches clients;
-    // without state sync the client kept rendering the default CLF icon.
-    [DataField, AutoNetworkedField]
-    public ProtoId<FactionIconPrototype> StatusIcon = "CLFFaction";
+    [DataField]
+    public ProtoId<FactionIconPrototype> StatusIcon { get; set; } = "CLFFaction";
 }

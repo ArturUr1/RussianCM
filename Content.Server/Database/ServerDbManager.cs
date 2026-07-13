@@ -34,7 +34,7 @@ namespace Content.Server.Database
         TierNotFound,
     }
 
-    public partial interface IServerDbManager
+    public interface IServerDbManager
     {
         void Init();
 
