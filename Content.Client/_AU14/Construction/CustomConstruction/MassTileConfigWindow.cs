@@ -19,13 +19,13 @@ namespace Content.Client._AU14.Construction.CustomConstruction;
 public sealed class MassTileConfigWindow : DefaultWindow
 {
     // Friendly label -> material stack id (same set as the single Tiles Editor).
-    private static readonly (string Label, string Stack)[] Materials =
+    private static readonly (string LabelKey, string Stack)[] Materials =
     {
-        ("Metal", "CMSteel"),
-        ("Plasteel", "CMPlasteel"),
-        ("Glass", "CMGlass"),
-        ("Wood", "RMCWood"),
-        ("Plastic", "RMCPlastic"),
+        ("construction-editor-common-material-metal", "CMSteel"),
+        ("construction-editor-common-material-plasteel", "CMPlasteel"),
+        ("construction-editor-common-material-glass", "CMGlass"),
+        ("construction-editor-common-material-wood", "RMCWood"),
+        ("construction-editor-common-material-plastic", "RMCPlastic"),
     };
 
     public event Action<SubmitMassTileEditorEvent>? OnSubmit;
@@ -53,11 +53,11 @@ public sealed class MassTileConfigWindow : DefaultWindow
             _spawnlist.Editable = a.Id == 1;
         };
 
-        _category = new LineEdit { HorizontalExpand = true, Text = "Flooring" };
+        _category = new LineEdit { HorizontalExpand = true, Text = Loc.GetString("construction-tile-editor-default-category") };
 
         _material = new OptionButton { HorizontalExpand = true };
         for (var i = 0; i < Materials.Length; i++)
-            _material.AddItem(Materials[i].Label, i);
+            _material.AddItem(Loc.GetString(Materials[i].LabelKey), i);
         _material.SelectId(0);
         _material.OnItemSelected += a => _material.SelectId(a.Id);
 
@@ -111,7 +111,7 @@ public sealed class MassTileConfigWindow : DefaultWindow
         {
             Material = Materials[Math.Clamp(_material.SelectedId, 0, Materials.Length - 1)].Stack,
             Amount = amount,
-            Category = string.IsNullOrWhiteSpace(_category.Text) ? "Flooring" : _category.Text.Trim(),
+            Category = string.IsNullOrWhiteSpace(_category.Text) ? Loc.GetString("construction-tile-editor-default-category") : _category.Text.Trim(),
             Spawnlist = string.IsNullOrWhiteSpace(_spawnlist.Text) ? "AU14" : _spawnlist.Text.Trim(),
             ZLevelPage = zLevelPage,
         });

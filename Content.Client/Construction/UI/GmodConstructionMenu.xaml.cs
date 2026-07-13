@@ -766,7 +766,7 @@ public sealed partial class GmodConstructionMenu : DefaultWindow, IConstructionM
 
         var anyShown = false;
         foreach (var group in builds
-                     .GroupBy(b => string.IsNullOrEmpty(b.Source) ? "Unknown" : b.Source)
+                     .GroupBy(b => string.IsNullOrEmpty(b.Source) ? Loc.GetString("saved-build-unknown-source") : b.Source)
                      .OrderBy(g => g.Key, StringComparer.InvariantCultureIgnoreCase))
         {
             GroupedRecipesContainer.AddChild(new Label
@@ -837,7 +837,7 @@ public sealed partial class GmodConstructionMenu : DefaultWindow, IConstructionM
         TargetDesc.SetMessage(Loc.GetString("saved-build-detail-desc",
             ("author", info.Author),
             ("count", info.EntityCount),
-            ("source", string.IsNullOrEmpty(info.Source) ? "Unknown" : info.Source)));
+            ("source", string.IsNullOrEmpty(info.Source) ? Loc.GetString("saved-build-unknown-source") : info.Source)));
         RecipeStepList.Clear();
         FavoriteButton.Visible = true;
         FavoriteButton.Text = Loc.GetString("saved-build-place-original-button");

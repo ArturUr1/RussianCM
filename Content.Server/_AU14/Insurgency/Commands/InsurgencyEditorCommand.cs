@@ -23,22 +23,22 @@ namespace Content.Server._AU14.Insurgency.Commands;
 public sealed class InsurgencyEditorCommand : IConsoleCommand
 {
     public string Command => "insforeditor";
-    public string Description => "Opens the INSFOR Default-faction editor.";
-    public string Help => "Usage: insforeditor";
+    public string Description => Loc.GetString("cmd-insforeditor-desc");
+    public string Help => Loc.GetString("cmd-insforeditor-help");
 
     public void Execute(IConsoleShell shell, string argStr, string[] args)
     {
         var player = shell.Player;
         if (player == null)
         {
-            shell.WriteError("This command can only be run by a player.");
+            shell.WriteError(Loc.GetString("cmd-insforeditor-player-only"));
             return;
         }
 
         var adminCheck = IoCManager.Resolve<IAdminManager>();
         if (!InsurgencyAuthorization.IsAuthorized(adminCheck, player))
         {
-            shell.WriteError("You are not whitelisted for the INSFOR editor.");
+            shell.WriteError(Loc.GetString("cmd-insforeditor-not-whitelisted"));
             return;
         }
 

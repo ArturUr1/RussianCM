@@ -7,6 +7,26 @@ insfor-faction-applied-popup = Your cell has been organized under { $title }.
 cmd-insforapplytest-desc = Applies a minimal test INSFOR faction so the apply pipeline can be checked in-game.
 cmd-insforapplytest-help = Usage: insforapplytest [title]
 cmd-insforapplytest-applied = Applied test INSFOR faction "{ $title }" to { $count } member(s).
+cmd-insforapplytest-default-title = Test Liberation Cell
+cmd-insforapplytest-default-description = A ragtag cell testing the INSFOR apply pipeline.
+cmd-insforapplytest-default-roleplay = Play it scrappy and improvised. You are locals, not soldiers.
+
+cmd-insforeditor-desc = Opens the INSFOR Default-faction editor.
+cmd-insforeditor-help = Usage: insforeditor
+cmd-insforeditor-player-only = This command can only be run by a player.
+cmd-insforeditor-not-whitelisted = You are not whitelisted for the INSFOR editor.
+
+cmd-insforfactiondbtest-desc = Saves, reads back, and deletes a test faction to verify the DB round-trip.
+cmd-insforfactiondbtest-help = Usage: insforfactiondbtest
+cmd-insforfactiondbtest-title = DB Round-Trip Test
+cmd-insforfactiondbtest-description = Written by insforfactiondbtest.
+cmd-insforfactiondbtest-roleplay = Delete me if I linger.
+cmd-insforfactiondbtest-saved = Saved test faction with id { $id }.
+cmd-insforfactiondbtest-read-error = ERROR: could not read the faction back.
+cmd-insforfactiondbtest-read = Read back: "{ $title }" (schema v{ $version }).
+cmd-insforfactiondbtest-deleted = Deleted the test faction. Round-trip OK.
+cmd-insforfactiondbtest-delete-error = ERROR: delete reported no row.
+cmd-insforfactiondbtest-failed = DB round-trip failed: { $message }
 
 # A Package loadout delivery.
 insfor-a-package-received = You have received a package. Use it in hand when you are ready.
@@ -52,3 +72,21 @@ insfor-picker-flag-title = Select a flag
 
 # Marker job used only as an INSFOR editor whitelist key.
 au14-job-name-insfor-editor = INSFOR Editor Access
+
+# Built-in vanilla CLF faction.
+insfor-builtin-clf-title = Colonial Liberation Front
+insfor-builtin-clf-description = The standard CLF cell. No special doctrine, no custom arsenal.
+insfor-builtin-clf-roleplay = Play as a classic CLF insurgent cell.
+insfor-builtin-clf-vendor-requisitions = CLF Requisitions Rack
+insfor-builtin-clf-vendor-medical = CLF medical cache
+insfor-builtin-clf-vendor-tools = CLF tool cache
+insfor-builtin-clf-vendor-recruitment = CLF recruitment cache
+insfor-builtin-clf-vendor-clothing = CLF civilian clothing rack
+insfor-builtin-clf-section-first-aid = First Aid
+insfor-builtin-clf-section-field-tools = Field Tools
+insfor-builtin-clf-section-recruitment = Recruitment
+insfor-builtin-clf-section-footwear = Footwear
+insfor-builtin-clf-section-jumpsuits = Jumpsuits
+insfor-builtin-clf-section-jackets = Jackets and Coats
+insfor-builtin-clf-section-headwear = Headwear and Eyewear
+insfor-builtin-clf-section-bags = Bags and Gloves

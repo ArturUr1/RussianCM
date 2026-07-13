@@ -691,7 +691,7 @@ public sealed partial class SavedBuildSystem : EntitySystem
             return Name(grid);
         if (xform.MapUid is { } map && !string.IsNullOrWhiteSpace(Name(map)))
             return Name(map);
-        return "Unknown";
+        return Loc.GetString("saved-build-unknown-source");
     }
 
     private static string Sanitize(string value)

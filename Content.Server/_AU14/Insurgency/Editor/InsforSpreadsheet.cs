@@ -122,17 +122,17 @@ public static class InsforSpreadsheet
         AddHelpSheet(wb);
         AddFactionSheet(wb, existing, iconRange, flagRange, boolRange, c);
 
-        AddListSheet(wb, "OpposedGovfor", new[] { "Platoon" }, new[] { 45.0 },
+        AddListSheet(wb, Loc.GetString("insfor-sheet-opposed-govfor"), new[] { Loc.GetString("insfor-sheet-header-platoon") }, new[] { 45.0 },
             new Dictionary<int, IXLRange?> { { 1, platRange } },
             existing?.Metadata.OpposedGovforFactions.Select(g => new[] { Show(c.PlatoonDisp, g) }));
 
-        AddListSheet(wb, "JobIcons", new[] { "Role", "Icon" }, new[] { 45.0, 40.0 },
+        AddListSheet(wb, Loc.GetString("insfor-sheet-job-icons"), new[] { Loc.GetString("insfor-sheet-header-role"), Loc.GetString("insfor-sheet-header-icon") }, new[] { 45.0, 40.0 },
             new Dictionary<int, IXLRange?> { { 1, jobRange }, { 2, iconRange } },
             existing?.Metadata.JobStatusIcons.Select(j => new[]
                 { Show(c.JobDisp, j.Role), Show(c.IconDisp, j.Icon?.Id) }));
 
-        AddListSheet(wb, "PointsSubmissions",
-            new[] { "Entity", "PointsPerItemMode", "AmountPerPoint", "PointsPerItem" },
+        AddListSheet(wb, Loc.GetString("insfor-sheet-points-submissions"),
+            new[] { Loc.GetString("insfor-sheet-header-entity"), Loc.GetString("insfor-sheet-header-points-per-item-mode"), Loc.GetString("insfor-sheet-header-amount-per-point"), Loc.GetString("insfor-sheet-header-points-per-item") },
             new[] { 45.0, 18.0, 16.0, 16.0 },
             new Dictionary<int, IXLRange?> { { 1, entRange }, { 2, boolRange } },
             existing?.Economy.PointsSubmissions.Select(s => new[]
@@ -141,12 +141,12 @@ public static class InsforSpreadsheet
                 s.AmountPerPoint.ToString(), s.PointsPerItem.ToString(),
             }));
 
-        AddListSheet(wb, "Placeables", new[] { "Entity" }, new[] { 45.0 },
+        AddListSheet(wb, Loc.GetString("insfor-sheet-placeables"), new[] { Loc.GetString("insfor-sheet-header-entity") }, new[] { 45.0 },
             new Dictionary<int, IXLRange?> { { 1, entRange } },
             existing?.CellKit.PlaceableEntities.Select(p => new[] { Show(c.EntityDisp, p.Id) }));
 
-        AddListSheet(wb, "Vendors",
-            new[] { "Name", "BaseModel", "Wrenchable", "Invulnerable", "UsesIntelPoints", "UseBaseModelSections" },
+        AddListSheet(wb, Loc.GetString("insfor-sheet-vendors"),
+            new[] { Loc.GetString("insfor-sheet-header-name"), Loc.GetString("insfor-sheet-header-base-model"), Loc.GetString("insfor-sheet-header-wrenchable"), Loc.GetString("insfor-sheet-header-invulnerable"), Loc.GetString("insfor-sheet-header-uses-intel-points"), Loc.GetString("insfor-sheet-header-use-base-sections") },
             new[] { 28.0, 45.0, 14.0, 14.0, 16.0, 22.0 },
             new Dictionary<int, IXLRange?> { { 2, vbRange }, { 3, boolRange }, { 4, boolRange }, { 5, boolRange }, { 6, boolRange } },
             existing?.CellKit.VendorDefinitions.Select(v => new[]
@@ -155,8 +155,8 @@ public static class InsforSpreadsheet
                 Bool(v.UsesIntelPoints), Bool(v.UseBaseModelSections),
             }));
 
-        AddListSheet(wb, "VendorSections",
-            new[] { "Vendor", "Section", "PerPlayerLimit", "GlobalLimit" },
+        AddListSheet(wb, Loc.GetString("insfor-sheet-vendor-sections"),
+            new[] { Loc.GetString("insfor-sheet-header-vendor"), Loc.GetString("insfor-sheet-header-section"), Loc.GetString("insfor-sheet-header-per-player-limit"), Loc.GetString("insfor-sheet-header-global-limit") },
             new[] { 28.0, 28.0, 16.0, 14.0 },
             new Dictionary<int, IXLRange?>(),
             existing?.CellKit.VendorDefinitions.SelectMany(v => v.Sections.Select(s => new[]
@@ -164,8 +164,8 @@ public static class InsforSpreadsheet
                 v.Name, s.Name, s.Choices?.Amount.ToString() ?? "", s.SharedJOLimit?.ToString() ?? "",
             })));
 
-        AddListSheet(wb, "VendorEntries",
-            new[] { "Vendor", "Section", "EntityId", "Points", "Amount", "Max" },
+        AddListSheet(wb, Loc.GetString("insfor-sheet-vendor-entries"),
+            new[] { Loc.GetString("insfor-sheet-header-vendor"), Loc.GetString("insfor-sheet-header-section"), Loc.GetString("insfor-sheet-header-entity-id"), Loc.GetString("insfor-sheet-header-points"), Loc.GetString("insfor-sheet-header-amount"), Loc.GetString("insfor-sheet-header-max") },
             new[] { 28.0, 28.0, 45.0, 12.0, 12.0, 12.0 },
             new Dictionary<int, IXLRange?> { { 3, entRange } },
             existing?.CellKit.VendorDefinitions.SelectMany(v => v.Sections.SelectMany(s => s.Entries.Select(e => new[]
@@ -174,7 +174,7 @@ public static class InsforSpreadsheet
                 e.Points?.ToString() ?? "", e.Amount?.ToString() ?? "", e.Max?.ToString() ?? "",
             }))));
 
-        AddListSheet(wb, "RoleLoadouts", new[] { "Role", "Content" }, new[] { 45.0, 45.0 },
+        AddListSheet(wb, Loc.GetString("insfor-sheet-role-loadouts"), new[] { Loc.GetString("insfor-sheet-header-role"), Loc.GetString("insfor-sheet-header-content") }, new[] { 45.0, 45.0 },
             new Dictionary<int, IXLRange?> { { 1, jobRange }, { 2, entRange } },
             existing?.RoleLoadouts.SelectMany(l => l.Contents.Select(content => new[]
                 { Show(c.JobDisp, l.Role), Show(c.EntityDisp, content.Id) })));
@@ -204,9 +204,9 @@ public static class InsforSpreadsheet
     private static void AddFactionSheet(XLWorkbook wb, FactionDefinition? f,
         IXLRange? iconRange, IXLRange? flagRange, IXLRange? boolRange, Catalog c)
     {
-        var ws = wb.AddWorksheet("Faction");
-        ws.Cell(1, 1).Value = "Field";
-        ws.Cell(1, 2).Value = "Value";
+        var ws = wb.AddWorksheet(Loc.GetString("insfor-sheet-faction"));
+        ws.Cell(1, 1).Value = Loc.GetString("insfor-sheet-header-field");
+        ws.Cell(1, 2).Value = Loc.GetString("insfor-sheet-header-value");
         StyleHeader(ws, 2);
         ws.Column(1).Width = 24;
         ws.Column(2).Width = 90;
@@ -214,14 +214,14 @@ public static class InsforSpreadsheet
         var m = f?.Metadata;
         var rows = new (string label, string value, IXLRange? dv)[]
         {
-            ("Title", m?.Title ?? "", null),
-            ("Description", m?.Description ?? "", null),
-            ("RoleplayText", m?.RoleplayText ?? "", null),
-            ("RecruitedMessage", m?.RecruitedMessage ?? "", null),
-            ("StatusIcon", Show(c.IconDisp, m?.StatusIcon?.Id), iconRange),
-            ("FlagEntity", Show(c.EntityDisp, m?.FlagEntity?.Id), flagRange),
-            ("DollarsToPointsRate", (f?.Economy.DollarsToPointsRate ?? 1f).ToString(CultureInfo.InvariantCulture), null),
-            ("IncludeDollars", Bool(f?.Economy.IncludeDollars ?? true), boolRange),
+            (Loc.GetString("insfor-sheet-field-title"), m?.Title ?? "", null),
+            (Loc.GetString("insfor-sheet-field-description"), m?.Description ?? "", null),
+            (Loc.GetString("insfor-sheet-field-roleplay-text"), m?.RoleplayText ?? "", null),
+            (Loc.GetString("insfor-sheet-field-recruited-message"), m?.RecruitedMessage ?? "", null),
+            (Loc.GetString("insfor-sheet-field-status-icon"), Show(c.IconDisp, m?.StatusIcon?.Id), iconRange),
+            (Loc.GetString("insfor-sheet-field-flag-entity"), Show(c.EntityDisp, m?.FlagEntity?.Id), flagRange),
+            (Loc.GetString("insfor-sheet-field-dollars-rate"), (f?.Economy.DollarsToPointsRate ?? 1f).ToString(CultureInfo.InvariantCulture), null),
+            (Loc.GetString("insfor-sheet-field-include-dollars"), Bool(f?.Economy.IncludeDollars ?? true), boolRange),
         };
         for (var i = 0; i < rows.Length; i++)
         {
@@ -272,16 +272,16 @@ public static class InsforSpreadsheet
 
     private static void AddHelpSheet(XLWorkbook wb)
     {
-        var ws = wb.AddWorksheet("Help");
+        var ws = wb.AddWorksheet(Loc.GetString("insfor-sheet-help"));
         ws.SheetView.FreezeRows(1);
         ws.Column(1).Width = 120;
-        ws.Cell(1, 1).Value = "INSFOR Faction - how to fill this in";
+        ws.Cell(1, 1).Value = Loc.GetString("insfor-sheet-help-title");
         ws.Cell(1, 1).Style.Font.Bold = true;
         ws.Cell(1, 1).Style.Font.FontSize = 15;
         ws.Cell(1, 1).Style.Font.FontColor = HeaderColor;
 
         var r = 3;
-        foreach (var (heading, text) in HelpContent)
+        foreach (var (heading, text) in GetHelpContent())
         {
             if (heading != null)
             {
@@ -338,29 +338,29 @@ public static class InsforSpreadsheet
             var def = new FactionDefinition();
             var meta = def.Metadata;
 
-            var faction = TryWs(wb, "Faction");
+            var faction = TryWs(wb, "insfor-sheet-faction", "Faction");
             if (faction != null)
             {
-                meta.Title = Field(faction, "Title");
-                meta.Description = Field(faction, "Description");
-                meta.RoleplayText = Field(faction, "RoleplayText");
-                meta.RecruitedMessage = Field(faction, "RecruitedMessage");
-                meta.StatusIcon = ToIcon(ExtractId(Field(faction, "StatusIcon")));
-                meta.FlagEntity = ToEnt(ExtractId(Field(faction, "FlagEntity")));
-                if (float.TryParse(Field(faction, "DollarsToPointsRate"), NumberStyles.Float,
+                meta.Title = Field(faction, "insfor-sheet-field-title", "Title");
+                meta.Description = Field(faction, "insfor-sheet-field-description", "Description");
+                meta.RoleplayText = Field(faction, "insfor-sheet-field-roleplay-text", "RoleplayText");
+                meta.RecruitedMessage = Field(faction, "insfor-sheet-field-recruited-message", "RecruitedMessage");
+                meta.StatusIcon = ToIcon(ExtractId(Field(faction, "insfor-sheet-field-status-icon", "StatusIcon")));
+                meta.FlagEntity = ToEnt(ExtractId(Field(faction, "insfor-sheet-field-flag-entity", "FlagEntity")));
+                if (float.TryParse(Field(faction, "insfor-sheet-field-dollars-rate", "DollarsToPointsRate"), NumberStyles.Float,
                         CultureInfo.InvariantCulture, out var rate))
                     def.Economy.DollarsToPointsRate = rate;
-                def.Economy.IncludeDollars = ParseBool(Field(faction, "IncludeDollars"), true);
+                def.Economy.IncludeDollars = ParseBool(Field(faction, "insfor-sheet-field-include-dollars", "IncludeDollars"), true);
             }
 
-            foreach (var row in DataRows(wb, "OpposedGovfor"))
+            foreach (var row in DataRows(wb, "insfor-sheet-opposed-govfor", "OpposedGovfor"))
             {
                 var id = ExtractId(Str(row, 1));
                 if (!string.IsNullOrWhiteSpace(id))
                     meta.OpposedGovforFactions.Add(id);
             }
 
-            foreach (var row in DataRows(wb, "JobIcons"))
+            foreach (var row in DataRows(wb, "insfor-sheet-job-icons", "JobIcons"))
             {
                 var role = ExtractId(Str(row, 1));
                 var icon = ExtractId(Str(row, 2));
@@ -368,7 +368,7 @@ public static class InsforSpreadsheet
                     meta.JobStatusIcons.Add(new FactionJobIcon { Role = role, Icon = ToIcon(icon) });
             }
 
-            foreach (var row in DataRows(wb, "PointsSubmissions"))
+            foreach (var row in DataRows(wb, "insfor-sheet-points-submissions", "PointsSubmissions"))
             {
                 var ent = ExtractId(Str(row, 1));
                 if (string.IsNullOrWhiteSpace(ent))
@@ -382,7 +382,7 @@ public static class InsforSpreadsheet
                 });
             }
 
-            foreach (var row in DataRows(wb, "Placeables"))
+            foreach (var row in DataRows(wb, "insfor-sheet-placeables", "Placeables"))
             {
                 var ent = ExtractId(Str(row, 1));
                 if (!string.IsNullOrWhiteSpace(ent))
@@ -402,7 +402,7 @@ public static class InsforSpreadsheet
         var vendors = new Dictionary<string, FactionVendorDefinition>(StringComparer.OrdinalIgnoreCase);
         var order = new List<string>();
 
-        foreach (var row in DataRows(wb, "Vendors"))
+        foreach (var row in DataRows(wb, "insfor-sheet-vendors", "Vendors"))
         {
             var vname = Str(row, 1);
             if (string.IsNullOrWhiteSpace(vname) || vendors.ContainsKey(vname))
@@ -421,7 +421,7 @@ public static class InsforSpreadsheet
 
         // Sections keyed by "vendor section" so entries can find their section.
         var sections = new Dictionary<string, CMVendorSection>(StringComparer.OrdinalIgnoreCase);
-        foreach (var row in DataRows(wb, "VendorSections"))
+        foreach (var row in DataRows(wb, "insfor-sheet-vendor-sections", "VendorSections"))
         {
             var vname = Str(row, 1);
             var sname = Str(row, 2);
@@ -441,7 +441,7 @@ public static class InsforSpreadsheet
             vendors[vname].Sections.Add(section);
         }
 
-        foreach (var row in DataRows(wb, "VendorEntries"))
+        foreach (var row in DataRows(wb, "insfor-sheet-vendor-entries", "VendorEntries"))
         {
             var vname = Str(row, 1);
             var sname = Str(row, 2);
@@ -468,7 +468,7 @@ public static class InsforSpreadsheet
         // One row per content item; group the contents by role.
         var byRole = new Dictionary<string, FactionRoleLoadout>(StringComparer.OrdinalIgnoreCase);
         var order = new List<string>();
-        foreach (var row in DataRows(wb, "RoleLoadouts"))
+        foreach (var row in DataRows(wb, "insfor-sheet-role-loadouts", "RoleLoadouts"))
         {
             var role = ExtractId(Str(row, 1));
             var content = ExtractId(Str(row, 2));
@@ -490,12 +490,16 @@ public static class InsforSpreadsheet
 
     // ---- read helpers ----
 
-    private static IXLWorksheet? TryWs(XLWorkbook wb, string name) =>
-        wb.Worksheets.TryGetWorksheet(name, out var ws) ? ws : null;
-
-    private static IEnumerable<IXLRow> DataRows(XLWorkbook wb, string sheet)
+    private static IXLWorksheet? TryWs(XLWorkbook wb, string nameKey, string fallbackName)
     {
-        var ws = TryWs(wb, sheet);
+        if (wb.Worksheets.TryGetWorksheet(Loc.GetString(nameKey), out var localized))
+            return localized;
+        return wb.Worksheets.TryGetWorksheet(fallbackName, out var fallback) ? fallback : null;
+    }
+
+    private static IEnumerable<IXLRow> DataRows(XLWorkbook wb, string sheetKey, string fallbackName)
+    {
+        var ws = TryWs(wb, sheetKey, fallbackName);
         if (ws == null)
             return Enumerable.Empty<IXLRow>();
         return ws.RowsUsed().Where(r => r.RowNumber() > 1);
@@ -503,11 +507,14 @@ public static class InsforSpreadsheet
 
     private static string Str(IXLRow row, int col) => row.Cell(col).GetString().Trim();
 
-    private static string Field(IXLWorksheet ws, string label)
+    private static string Field(IXLWorksheet ws, string labelKey, string fallbackLabel)
     {
+        var localizedLabel = Loc.GetString(labelKey);
         foreach (var row in ws.RowsUsed())
         {
-            if (string.Equals(row.Cell(1).GetString().Trim(), label, StringComparison.OrdinalIgnoreCase))
+            var label = row.Cell(1).GetString().Trim();
+            if (string.Equals(label, localizedLabel, StringComparison.OrdinalIgnoreCase) ||
+                string.Equals(label, fallbackLabel, StringComparison.OrdinalIgnoreCase))
                 return row.Cell(2).GetString().Trim();
         }
 
@@ -547,17 +554,17 @@ public static class InsforSpreadsheet
     // ---------------------------------------------------------------------
     // Help text mirrored from the in-game editor help window, so the sheet is self-explanatory.
     // ---------------------------------------------------------------------
-    private static readonly (string? heading, string text)[] HelpContent =
-    {
-        (null, "Fill in the sheets, then send this file back to the host to import. Every id field is a dropdown: click the cell and pick by name - never type a raw id. Add a new entry on the next empty row of a sheet. Leave a sheet empty if the faction does not use it."),
-        ("Faction sheet", "Title: the faction name. Description / RoleplayText: shown in the briefing and reveal popup. RecruitedMessage: briefing a freshly recruited member reads (blank = default CLF line). StatusIcon: the membership icon. FlagEntity: an optional in-world flag prop. DollarsToPointsRate: how intel dollars convert to vendor points. IncludeDollars: TRUE keeps cash working even with custom submittables below."),
-        ("OpposedGovfor", "The GOVFOR platoons (USMC, TWE RMC, UPP, ...) this faction may oppose. If the round's GOVFOR is listed, the faction is offered to the leader. One platoon per row."),
-        ("JobIcons", "Optional per-job status-icon overrides: members of that Role show that Icon instead of the faction icon. One row per job."),
-        ("PointsSubmissions", "What the analyzer accepts for points beyond plain cash. Entity is the item. PointsPerItemMode: FALSE = it takes AmountPerPoint of the item to make one point (cheap goods); TRUE = one item is worth PointsPerItem points (valuable goods). Leave empty to keep plain dollars only."),
-        ("Placeables", "Single entities the leader can free-place from the Heavy Cell Kit (lamps, props, machines). One per row."),
-        ("Vendors", "Each deployable vendor. Name: shown on the vendor. BaseModel: an existing vendor entity used only for its sprite; its arsenal is replaced by your sections. Wrenchable: can be moved after placing. Invulnerable: will not break on damage. UsesIntelPoints: paid from the cell's shared intel points. UseBaseModelSections: keep the base entity's own stock and ignore your sections (only for reusing a fully-made vendor like the CLF rack)."),
-        ("VendorSections", "Sections (categories) inside a vendor. Vendor must match a Name from the Vendors sheet. Section is the category name. PerPlayerLimit / GlobalLimit: optional caps on how many one player, or everyone together, may take from this category."),
-        ("VendorEntries", "Items inside a section. Vendor and Section must match rows above. EntityId is the item. Points: its cost (0 or blank = free). Amount: stock. Max: restock ceiling."),
-        ("RoleLoadouts", "Each role's 'A Package' contents, delivered after spawn. One row per item: pick the Role (job) and one Content entity. Repeat the same Role on several rows to give it several items."),
-    };
+    private static (string? heading, string text)[] GetHelpContent() =>
+    [
+        (null, Loc.GetString("insfor-sheet-help-intro")),
+        (Loc.GetString("insfor-sheet-faction"), Loc.GetString("insfor-sheet-help-faction")),
+        (Loc.GetString("insfor-sheet-opposed-govfor"), Loc.GetString("insfor-sheet-help-opposed-govfor")),
+        (Loc.GetString("insfor-sheet-job-icons"), Loc.GetString("insfor-sheet-help-job-icons")),
+        (Loc.GetString("insfor-sheet-points-submissions"), Loc.GetString("insfor-sheet-help-points-submissions")),
+        (Loc.GetString("insfor-sheet-placeables"), Loc.GetString("insfor-sheet-help-placeables")),
+        (Loc.GetString("insfor-sheet-vendors"), Loc.GetString("insfor-sheet-help-vendors")),
+        (Loc.GetString("insfor-sheet-vendor-sections"), Loc.GetString("insfor-sheet-help-vendor-sections")),
+        (Loc.GetString("insfor-sheet-vendor-entries"), Loc.GetString("insfor-sheet-help-vendor-entries")),
+        (Loc.GetString("insfor-sheet-role-loadouts"), Loc.GetString("insfor-sheet-help-role-loadouts")),
+    ];
 }

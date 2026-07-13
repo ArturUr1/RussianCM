@@ -98,7 +98,7 @@ public sealed partial class CustomConstructionMenuSystem
 
         PopupTo(session,
             failed > 0
-                ? Loc.GetString("construction-menu-mass-partial", ("added", added), ("failed", failed), ("reason", "invalid tiles"))
+                ? Loc.GetString("construction-menu-mass-partial", ("added", added), ("failed", failed), ("reason", Loc.GetString("construction-menu-mass-invalid-tiles")))
                 : Loc.GetString("construction-menu-mass-tiles-added", ("added", added), ("category", category)),
             failed > 0 && added == 0 ? PopupType.MediumCaution : PopupType.Medium);
     }
