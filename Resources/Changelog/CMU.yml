@@ -6276,7 +6276,7 @@
   - message: Corpsmen now get an advanced helmet visor that cannot be used by other
       squad roles.
     type: Fix
-  id: 419
+  id: 444
   time: '2026-07-10T05:48:42.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1567
 - author: ver0098
@@ -6293,7 +6293,7 @@
     type: Tweak
   - message: M240A2 and Flammenwerfer-3 has intergrated mag harness now.
     type: Tweak
-  id: 420
+  id: 445
   time: '2026-07-10T17:19:35.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1556
 - author: OverusedMeme
@@ -6303,7 +6303,7 @@
   - message: The unintended extra health analyzer, suture line, synth graft from filled
       colony life saver bags
     type: Remove
-  id: 421
+  id: 446
   time: '2026-07-10T20:01:29.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1570
 - author: TheHellFireo
@@ -6503,7 +6503,7 @@
   - message: Reduced unnecessary medical networking and UI refreshes while retaining
       detailed scanner and examination data.
     type: Code
-  id: 422
+  id: 447
   time: '2026-07-11T16:10:36.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1572
 - author: Crime481
@@ -6513,7 +6513,7 @@
   - message: Fixed GOVFOR Vehicle Crewman having it's tactical map icon exceeding
       the background borders.
     type: Fix
-  id: 423
+  id: 448
   time: '2026-07-11T16:56:38.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1571
 - author: TheHellFireo
@@ -6521,7 +6521,7 @@
   - message: Allows the queen to not hijack the dropship and end the round as a minor
       xeno victory.
     type: Add
-  id: 424
+  id: 449
   time: '2026-07-11T21:48:14.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1575
 - author: TheHellFireo
@@ -6531,21 +6531,21 @@
     type: Fix
   - message: Make SHARP darts inherit the operator's IFF so they pass through friendlies.
     type: Fix
-  id: 425
+  id: 450
   time: '2026-07-11T21:48:27.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1577
 - author: TheHellFireo
   changes:
   - message: Medical Hud resets after no injuries left
     type: Add
-  id: 426
+  id: 451
   time: '2026-07-11T21:48:29.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1576
 - author: TheHellFireo
   changes:
   - message: Govfor can seize the CLF's intel console to end the round and win.
     type: Add
-  id: 427
+  id: 452
   time: '2026-07-11T21:49:19.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1578
 - author: maertayn
@@ -6569,7 +6569,7 @@
     type: Tweak
   - message: Military Synths get access to the HM & MD vendors
     type: Tweak
-  id: 428
+  id: 453
   time: '2026-07-11T23:32:52.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1579
 - author: NileDeveloper
@@ -6583,7 +6583,7 @@
     type: Add
   - message: individual italic  AND boldening of words and sentences
     type: Add
-  id: 429
+  id: 454
   time: '2026-07-12T00:35:06.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1574
 - author: troytroy400
@@ -6599,7 +6599,7 @@
   - message: IO characters now only have to be 25 in-line with all other junior officers,
       not 30.
     type: Fix
-  id: 430
+  id: 455
   time: '2026-07-12T06:51:25.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1582
 - author: troytroy400
@@ -6617,7 +6617,7 @@
   - message: Different color options for the nightvision visor (can be set in the
       accessibility options menu)
     type: Add
-  id: 431
+  id: 456
   time: '2026-07-12T09:24:51.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1584
 Name: CMU
