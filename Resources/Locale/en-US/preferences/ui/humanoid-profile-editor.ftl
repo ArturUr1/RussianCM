@@ -40,7 +40,6 @@ humanoid-profile-editor-civilian-jobs-tab = Civilian Jobs
 humanoid-profile-editor-insurgency-tab = Insurgency
 humanoid-profile-editor-colony-fall-tab = Colony Fall
 humanoid-profile-editor-distress-signal-tab = Distress Signal
-humanoid-profile-editor-jailbreak-tab = Jailbreak
 humanoid-profile-editor-government-jobs-tab = Government Jobs
 humanoid-profile-editor-insurgency-jobs-tab = Insurgency Jobs
 humanoid-profile-editor-threat-roles-tab = Threat Jobs
@@ -68,8 +67,6 @@ humanoid-profile-editor-department-jobs-label = {$departmentName} jobs
 humanoid-profile-editor-antags-tab = Antags
 humanoid-profile-editor-antag-preference-yes-button = Yes
 humanoid-profile-editor-antag-preference-no-button = No
-humanoid-profile-editor-jailbreak-prisoners-label = Prisoners
-humanoid-profile-editor-jailbreak-staff-label = Prison Staff
 
 humanoid-profile-editor-job-priority-high-button = High
 humanoid-profile-editor-job-priority-medium-button = Medium

@@ -102,15 +102,11 @@
   id: Jailbreak
   alias:
   - jailbreak
-  name: au14-preset-jailbreak-title # RuMC edit
-  showInVote: true
-  description: au14-preset-jailbreak-description # RuMC edit
-  minPlayers: 0
-  supportedPlanets:
-  - AUPlanetTartarus
+  name: Jailbreak
+  showInVote: false
+  description: Jailbreak mode
   rules:
   - AuVoteRule
-  - ColonyAntags
 
 - type: gamePreset
   id: Prometheus

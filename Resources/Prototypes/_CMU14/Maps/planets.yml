@@ -618,23 +618,6 @@
     jobScalingIns: DefaultInsurgencyScale
 
 - type: entity
-  id: AUPlanetTartarus
-  name: Tartarus Prison
-  components:
-  - type: RMCPlanetMapPrototype
-    votename: "Tartarus Prison"
-    mapId: tartarusprison
-    lorePrimer: AU14PrimerPlanetTartarus
-    Allegiance: WeylandYutani
-    camouflage: Urban
-    announcement: "Tartarus Prison has gone into lockdown after a violent uprising. Survive the breach, restore order, or escape before the thing in the vents finds you."
-    daycycleenabled: false
-    faction: weya
-    threats:
-    - wendigoThreatJailbreak
-    - abominationsThreatJailbreak
-
-- type: entity
   id: AUPlanetSorokyne
   name: Sorokyne Strata
   components:
@@ -1128,7 +1111,3 @@
 - type: lorePrimer
   id: CMUPrimerHopesRetreat
   planetText: lore-primer-planet-hopes-retreat # RuMC edit
-
-- type: lorePrimer
-  id: AU14PrimerPlanetTartarus
-  planetText: lore-primer-planet-tartarus # RuMC edit

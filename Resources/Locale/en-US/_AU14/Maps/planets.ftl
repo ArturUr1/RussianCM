@@ -14,5 +14,4 @@ lore-primer-planet-trijent = Date 2179 - LV-670 Raijin Hydroelectric (formerly k
 lore-primer-planet-shivas-snowball = Date 2177 - Shivas' Snowball. United Americas mining and research colony.
 lore-primer-planet-kutjevo = Date 2181 - Kutjevo Biolab. Level three facility operated by the Weyland-Yutani Corporation.
 lore-primer-planet-fiorina = Date 2181 - Fiorina Prison. Privately owned and operated by the Weyland-Yutani corporation, Fiorina 161 is a maximum security prison for the most dangerous criminals in the system.
-lore-primer-planet-tartarus = Date 2181 - Tartarus Prison, a Weyland-Yutani detention complex under lockdown after a violent uprising and hostile biological breach.
 lore-primer-planet-hopes-retreat = Date: 2181. Tidally-locked planet JE-1758 Ascanius, locally referred to as Hope's Retreat by colonists. Nominally under an ICSC charter but host to various facilities of various allegiances, including the United Americas, Union of Progressive Peoples and Three-World Empire.

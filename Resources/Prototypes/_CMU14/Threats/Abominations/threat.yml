@@ -51,38 +51,6 @@
 # Govfor; threat loses when all abominations die (mimic disguises
 # counted via KillAllAbominationsRule).
 - type: threat
-  id: abominationsThreatJailbreak
-  lorePrimer: AU14PrimerThreatAbomination
-  roundstartspawns: abominationsPartyJailbreak
-  thirdpartyinterval: 9100
-  whitelistedgamemodes:
-  - Jailbreak
-  blacklistedgamemodes:
-  - DistressSignal
-  winconditions:
-  - KillAllHumanRule
-  - KillAllAbominationsRule
-  minplayers: 0
-
-- type: partySpawn
-  id: abominationsPartyJailbreak
-  leadersToSpawn:
-    AU14AbominationMimic: 1
-  gruntsToSpawn:
-    AU14AbominationMimic: 1
-    AU14AbominationSkitter: 1
-  entsToSpawn:
-    AU14AbominationFleshNest: 1
-  scaling:
-    AU14AbominationMimic:
-      scale: 0.05
-      whenToBeginScaling: 30
-    AU14AbominationSkitter:
-      scale: 0.04
-      whenToBeginScaling: 45
-  spawnTogether: true
-
-- type: threat
   id: abominationsThreatDistress
   lorePrimer: AU14PrimerThreatAbomination
   roundstartspawns: abominationsPartyDistress

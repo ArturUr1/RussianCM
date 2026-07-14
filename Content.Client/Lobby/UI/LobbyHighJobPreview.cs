@@ -48,8 +48,7 @@ internal static class LobbyHighJobPreview
     {
         ("Insurgency", "rmc-lobby-gamemode-label-insurgency"), // RuMC edit
         ("ColonyFall", "rmc-lobby-gamemode-label-colony-fall"),
-        ("DistressSignal", "rmc-lobby-gamemode-label-distress-signal"),
-        ("Jailbreak", "rmc-lobby-gamemode-label-jailbreak")
+        ("DistressSignal", "rmc-lobby-gamemode-label-distress-signal")
     };
 
     public static string GetDisplayJobName(JobPrototype job)

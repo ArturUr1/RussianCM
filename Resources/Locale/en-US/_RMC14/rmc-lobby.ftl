@@ -12,4 +12,3 @@ au-lobby-join-Colony = Join the Civilians
 rmc-lobby-gamemode-label-insurgency = INS
 rmc-lobby-gamemode-label-colony-fall = CF
 rmc-lobby-gamemode-label-distress-signal = DS
-rmc-lobby-gamemode-label-jailbreak = JB
