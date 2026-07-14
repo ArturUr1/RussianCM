@@ -25,6 +25,7 @@ using Content.Shared.Radio.Components;
 using Content.Server.Radio;
 using Content.Shared._RMC14.Radio;
 using Content.Shared.Administration;
+using Robust.Server.Player;
 
 namespace Content.Server.Corvax.TTS;
 
@@ -40,6 +41,7 @@ public sealed partial class TTSSystem : EntitySystem
     [Dependency] private readonly LanguageSystem _language = default!;
     [Dependency] private readonly LinkAccountManager _linkAccount = default!;
     [Dependency] private readonly IAdminManager _adminManager = default!;
+    [Dependency] private readonly IPlayerManager _playerManager = default!;
 
     private readonly List<string> _sampleText =
         new()
@@ -61,6 +63,7 @@ public sealed partial class TTSSystem : EntitySystem
     private const int MaxMessageChars = 100 * 2; // same as SingleBubbleCharLimit * 2
     private static readonly TimeSpan RadioGhostTtsDedupeTime = TimeSpan.FromSeconds(2);
     private bool _isEnabled = false;
+    private bool _referenceVoiceDonorOnly;
     private EntityQuery<TelecomExemptComponent> _exemptQuery;
     private readonly Dictionary<int, TimeSpan> _radioGhostTtsSentAt = new();
     private readonly object _radioGhostTtsLock = new();
@@ -76,6 +79,7 @@ public sealed partial class TTSSystem : EntitySystem
     public override void Initialize()
     {
         _cfg.OnValueChanged(CCCVars.TTSEnabled, v => _isEnabled = v, true);
+        _cfg.OnValueChanged(CCCVars.TTSReferenceVoiceDonorOnly, OnReferenceVoiceDonorOnlyChanged, true);
 
         SubscribeLocalEvent<TransformSpeechEvent>(OnTransformSpeech);
 
@@ -93,7 +97,14 @@ public sealed partial class TTSSystem : EntitySystem
         SubscribeNetworkEvent<DeleteReferenceVoiceRequest>(OnDeleteReferenceVoice);
 
         RegisterRateLimits();
+        _linkAccount.PatronUpdated += OnPatronUpdated;
         _ = EnsureReferenceVoiceCatalogLoaded();
+    }
+
+    public override void Shutdown()
+    {
+        _linkAccount.PatronUpdated -= OnPatronUpdated;
+        base.Shutdown();
     }
 
     private void OnRoundRestartCleanup(RoundRestartCleanupEvent ev)
@@ -131,7 +142,7 @@ public sealed partial class TTSSystem : EntitySystem
             return;
         }
 
-        if (_linkAccount.GetConnectedPatron(session)?.Tier == null)
+        if (!CanCreateReferenceVoice(session))
         {
             SendReferenceVoiceResult(session, ev.SpeakerName, AddReferenceVoiceResult.NotDonor);
             return;
@@ -208,6 +219,30 @@ public sealed partial class TTSSystem : EntitySystem
     {
         await EnsureReferenceVoiceCatalogLoaded();
         SendReferenceVoiceCatalog(args.SenderSession);
+        SendReferenceVoiceAccess(args.SenderSession);
+    }
+
+    private void OnPatronUpdated((NetUserId Id, Content.Shared._RMC14.LinkAccount.SharedRMCPatronFull Patron) update)
+    {
+        if (_playerManager.TryGetSessionById(update.Id, out var session))
+            SendReferenceVoiceAccess(session);
+    }
+
+    private void SendReferenceVoiceAccess(ICommonSession session)
+    {
+        RaiseNetworkEvent(new ReferenceVoiceAccessResponse(CanCreateReferenceVoice(session)), session);
+    }
+
+    private bool CanCreateReferenceVoice(ICommonSession session)
+    {
+        return !_referenceVoiceDonorOnly || _linkAccount.GetConnectedPatron(session)?.Tier != null;
+    }
+
+    private void OnReferenceVoiceDonorOnlyChanged(bool donorOnly)
+    {
+        _referenceVoiceDonorOnly = donorOnly;
+        foreach (var session in _playerManager.SessionsDict.Values)
+            SendReferenceVoiceAccess(session);
     }
 
     private async void OnDeleteReferenceVoice(DeleteReferenceVoiceRequest ev, EntitySessionEventArgs args)

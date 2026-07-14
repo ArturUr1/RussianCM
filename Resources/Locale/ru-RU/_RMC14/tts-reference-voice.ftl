@@ -1,5 +1,5 @@
 humanoid-profile-editor-reference-voice-title = Добавить голос по референсу
-humanoid-profile-editor-reference-voice-description = Хотите добавить свой голос? Запишите чистый фрагмент речи без музыки и шума, выберите WAV до 10 МБ и придумайте короткое имя. После создания голос появится у всех игроков.
+humanoid-profile-editor-reference-voice-description = Хотите добавить свой голос? Запишите чистый фрагмент речи, выберите WAV до 10 МБ и придумайте короткое имя.
 humanoid-profile-editor-reference-voice-consent = Загружайте только свой голос или запись, на использование которой у вас есть разрешение.
 humanoid-profile-editor-reference-voice-donor-access = Вам доступно создание голосов. Готовые голоса остаются общими для всех игроков.
 humanoid-profile-editor-reference-voice-donor-required = Создавать голоса могут игроки с любым активным донатом. Пользоваться готовыми голосами могут все.

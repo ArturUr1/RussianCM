@@ -53,8 +53,10 @@ public sealed class TTSSystem : EntitySystem
 
     public event Action<AddReferenceVoiceResponse>? ReferenceVoiceResultReceived;
     public event Action? ReferenceVoiceCatalogUpdated;
+    public event Action? ReferenceVoiceAccessUpdated;
     public event Action<DeleteReferenceVoiceResponse>? ReferenceVoiceDeleteResultReceived;
     public IReadOnlyList<string> ReferenceVoices { get; private set; } = Array.Empty<string>();
+    public bool CanCreateReferenceVoice { get; private set; }
 
     public override void Initialize()
     {
@@ -69,6 +71,7 @@ public sealed class TTSSystem : EntitySystem
         SubscribeNetworkEvent<PlayTTSEvent>(OnPlayTTS);
         SubscribeNetworkEvent<AddReferenceVoiceResponse>(OnReferenceVoiceResult);
         SubscribeNetworkEvent<ReferenceVoiceCatalogResponse>(OnReferenceVoiceCatalog);
+        SubscribeNetworkEvent<ReferenceVoiceAccessResponse>(OnReferenceVoiceAccess);
         SubscribeNetworkEvent<DeleteReferenceVoiceResponse>(OnReferenceVoiceDeleteResult);
     }
 
@@ -107,6 +110,12 @@ public sealed class TTSSystem : EntitySystem
     {
         ReferenceVoices = response.SpeakerNames;
         ReferenceVoiceCatalogUpdated?.Invoke();
+    }
+
+    private void OnReferenceVoiceAccess(ReferenceVoiceAccessResponse response)
+    {
+        CanCreateReferenceVoice = response.CanCreate;
+        ReferenceVoiceAccessUpdated?.Invoke();
     }
 
     private void OnReferenceVoiceDeleteResult(DeleteReferenceVoiceResponse response)

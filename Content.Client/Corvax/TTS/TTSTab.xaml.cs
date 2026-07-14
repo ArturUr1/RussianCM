@@ -3,7 +3,6 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Content.Client.Administration.Managers;
-using Content.Client._RMC14.LinkAccount;
 using Content.Client._RMC14.UserInterface;
 using Content.Shared.Corvax.TTS;
 using Content.Shared.Administration;
@@ -24,7 +23,6 @@ public sealed partial class TTSTab : Control
     [Dependency] private readonly IPrototypeManager _prototypeManager = default!;
     [Dependency] private readonly IFileDialogManager _fileDialogManager = default!;
     [Dependency] private readonly IEntityManager _entityManager = default!;
-    [Dependency] private readonly LinkAccountManager _linkAccount = default!;
     [Dependency] private readonly IClientAdminManager _adminManager = default!;
 
     public event Action<string>? OnVoiceSelected;
@@ -52,8 +50,8 @@ public sealed partial class TTSTab : Control
         var tts = _entityManager.System<TTSSystem>();
         tts.ReferenceVoiceResultReceived += OnReferenceVoiceResult;
         tts.ReferenceVoiceCatalogUpdated += OnReferenceVoiceCatalogUpdated;
+        tts.ReferenceVoiceAccessUpdated += OnReferenceVoiceAccessUpdated;
         tts.ReferenceVoiceDeleteResultReceived += OnReferenceVoiceDeleteResult;
-        _linkAccount.Updated += OnReferenceVoiceAccessUpdated;
         _adminManager.AdminStatusUpdated += OnReferenceVoiceAccessUpdated;
         tts.RequestReferenceVoiceCatalog();
         OnReferenceVoiceAccessUpdated();
@@ -67,8 +65,8 @@ public sealed partial class TTSTab : Control
             var tts = _entityManager.System<TTSSystem>();
             tts.ReferenceVoiceResultReceived -= OnReferenceVoiceResult;
             tts.ReferenceVoiceCatalogUpdated -= OnReferenceVoiceCatalogUpdated;
+            tts.ReferenceVoiceAccessUpdated -= OnReferenceVoiceAccessUpdated;
             tts.ReferenceVoiceDeleteResultReceived -= OnReferenceVoiceDeleteResult;
-            _linkAccount.Updated -= OnReferenceVoiceAccessUpdated;
             _adminManager.AdminStatusUpdated -= OnReferenceVoiceAccessUpdated;
         }
 
@@ -140,7 +138,7 @@ public sealed partial class TTSTab : Control
 
     private void UploadReferenceVoice()
     {
-        if (_linkAccount.Tier == null)
+        if (!_entityManager.System<TTSSystem>().CanCreateReferenceVoice)
         {
             SetReferenceStatus("humanoid-profile-editor-reference-voice-donor-required");
             return;
@@ -194,7 +192,7 @@ public sealed partial class TTSTab : Control
 
     private void UpdateReferenceUploadButton()
     {
-        var canCreate = _linkAccount.Tier != null;
+        var canCreate = _entityManager.System<TTSSystem>().CanCreateReferenceVoice;
         UploadReferenceButton.Disabled = !canCreate ||
                                          _referenceUploadPending ||
                                          _referenceAudio == null ||

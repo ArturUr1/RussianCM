@@ -40,6 +40,12 @@ public sealed class ReferenceVoiceCatalogResponse(string[] speakerNames) : Entit
 }
 
 [Serializable, NetSerializable]
+public sealed class ReferenceVoiceAccessResponse(bool canCreate) : EntityEventArgs
+{
+    public bool CanCreate { get; } = canCreate;
+}
+
+[Serializable, NetSerializable]
 public sealed class DeleteReferenceVoiceRequest(string speakerName) : EntityEventArgs
 {
     public string SpeakerName { get; } = speakerName;
