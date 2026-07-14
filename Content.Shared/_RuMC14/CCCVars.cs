@@ -45,6 +45,13 @@ public sealed class CCCVars : CVars
         CVarDef.Create("tts.api_timeout", 5, CVar.SERVERONLY | CVar.ARCHIVE);
 
     /// <summary>
+    /// Amount of seconds before a reference voice upload times out.
+    /// Voice creation is expected to take longer than regular synthesis.
+    /// </summary>
+    public static readonly CVarDef<int> TTSReferenceVoiceApiTimeout =
+        CVarDef.Create("tts.reference_voice_api_timeout", 60, CVar.SERVERONLY | CVar.ARCHIVE);
+
+    /// <summary>
     /// Default volume setting of TTS sound
     /// </summary>
     public static readonly CVarDef<float> TTSVolume =
