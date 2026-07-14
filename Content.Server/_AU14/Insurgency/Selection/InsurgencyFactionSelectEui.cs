@@ -67,24 +67,33 @@ public sealed class InsurgencyFactionSelectEui : BaseEui
 
         var options = new List<DefaultFactionOption>();
 
-        // The built-in vanilla CLF faction is always offered first and always opposes every GOVFOR.
-        var vanilla = InsurgencyBuiltinFactions.VanillaClf().Metadata;
-        options.Add(new DefaultFactionOption(
-            InsurgencyBuiltinFactions.VanillaClfId,
-            vanilla.Title,
-            vanilla.Description,
-            vanilla.RoleplayText,
-            vanilla.FlagEntity?.Id,
-            vanilla.StatusIcon?.Id,
-            true));
+        // The built-in vanilla CLF faction is always offered first and always opposes every GOVFOR - unless
+        // it has been edited and saved, in which case its persistent DB override row (below) stands in for
+        // it, so we skip the code copy to avoid listing the same faction twice.
+        var hasOverride = stored.Any(s => s.Definition.Metadata.BuiltinOverrideOf == InsurgencyBuiltinFactions.VanillaClfId);
+        if (!hasOverride)
+        {
+            var vanilla = InsurgencyBuiltinFactions.VanillaClf();
+            options.Add(new DefaultFactionOption(
+                InsurgencyBuiltinFactions.VanillaClfId,
+                vanilla.Metadata.Title,
+                vanilla.Metadata.Description,
+                vanilla.Metadata.RoleplayText,
+                vanilla.Metadata.FlagEntity?.Id,
+                vanilla.Metadata.StatusIcon?.Id,
+                CellKitEntities(vanilla),
+                true));
+        }
 
         options.AddRange(stored
             .Where(s => s.IsDefault)
             .Select(s =>
             {
                 var meta = s.Definition.Metadata;
+                // The built-in CLF override opposes every GOVFOR, like the code copy always did.
                 var opposes = govfor != null &&
-                              meta.OpposedGovforFactions.Any(g => string.Equals(g, govfor, StringComparison.OrdinalIgnoreCase));
+                              (meta.BuiltinOverrideOf == InsurgencyBuiltinFactions.VanillaClfId ||
+                               meta.OpposedGovforFactions.Any(g => string.Equals(g, govfor, StringComparison.OrdinalIgnoreCase)));
                 return new DefaultFactionOption(
                     s.Id,
                     meta.Title,
@@ -92,6 +101,7 @@ public sealed class InsurgencyFactionSelectEui : BaseEui
                     meta.RoleplayText,
                     meta.FlagEntity?.Id,
                     meta.StatusIcon?.Id,
+                    CellKitEntities(s.Definition),
                     opposes);
             }));
 
@@ -141,6 +151,38 @@ public sealed class InsurgencyFactionSelectEui : BaseEui
         var def = InsurgencyFactionValidator.SanitizeCustom(msg.Definition, _prototypes);
         _apply.ApplyFaction(def);
         Close();
+    }
+
+    // How many cell-kit sprites the popup previews. A generous cap so the grid never explodes on a
+    // faction with huge vendors, while still showing the bulk of what a normal cell deploys.
+    private const int MaxCellKitPreview = 80;
+
+    // Gathers what a faction's cell kit puts in play, for the sprite preview: the free-placed entities,
+    // each vendor's base model, then the items its vendors stock. Deduplicated, order preserved, capped.
+    private static List<string> CellKitEntities(Content.Shared._AU14.Insurgency.FactionDefinition def)
+    {
+        var seen = new HashSet<string>();
+        var result = new List<string>();
+
+        void Add(string? id)
+        {
+            if (result.Count >= MaxCellKitPreview || string.IsNullOrWhiteSpace(id) || !seen.Add(id))
+                return;
+            result.Add(id);
+        }
+
+        foreach (var placeable in def.CellKit.PlaceableEntities)
+            Add(placeable.Id);
+
+        foreach (var vendor in def.CellKit.VendorDefinitions)
+        {
+            Add(vendor.BaseModel.Id);
+            foreach (var section in vendor.Sections)
+            foreach (var entry in section.Entries)
+                Add(entry.Id.Id);
+        }
+
+        return result;
     }
 
     private bool CanUseCustom() => InsurgencyAuthorization.IsAuthorized(_admin, Player);
