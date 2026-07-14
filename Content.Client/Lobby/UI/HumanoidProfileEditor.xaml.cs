@@ -1646,17 +1646,23 @@ namespace Content.Client.Lobby.UI
             var id = job.ID;
             var name = job.LocalizedName;
 
+            if (id is "AU14JobGOVFORVehicleCommander")
+                return ("flight", Loc.GetString("humanoid-profile-editor-segment-flight"));
+
+            if (ContainsAny(id, name, "MilitaryDoctor"))
+                return ("support", Loc.GetString("humanoid-profile-editor-segment-support"));
+
             if (job.MarineAuthorityLevel > 0
                     || ContainsAny(id, name, "PlatCo", "Adjutant", "PlatOp", "Commander", "Command", "Advisor"))
                 return ("command", Loc.GetString("humanoid-profile-editor-segment-command"));
 
-            if (ContainsAny(id, name, "Pilot", "Dropship", "Crew Chief", "DCC"))
+            if (ContainsAny(id, name, "Pilot", "Dropship", "Crew Chief", "DCC", "VehicleCrewman"))
                 return ("flight", Loc.GetString("humanoid-profile-editor-segment-flight"));
 
             if (ContainsAny(id, name, "Officer", "Chief")) // after Crew Chief
                 return ("officer", Loc.GetString("humanoid-profile-editor-segment-officer"));
 
-            if (ContainsAny(id, name, "Doctor", "AuxTech", "Police", "VehicleCrewman", "Synth", "Working Joe", "Auxiliary"))
+            if (ContainsAny(id, name, "Doctor", "AuxTech", "Police", "Synth", "Working Joe", "Auxiliary", "DroneOperator", "Nurse", "EngineeringTech"))
                 return ("support", Loc.GetString("humanoid-profile-editor-segment-support"));
 
             if (ContainsAny(id, name, "Leader", "Sergeant", "RadioTelephone"))
