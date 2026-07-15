@@ -130,7 +130,3 @@ insfor-sapper-snare-cutting = Вы начинаете вырезать их из
 insfor-sapper-snare-cut-free = Петля разрезана, и вы падаете свободно.
 
 # Названия слотов модулей, отсутствующие в основной русской локали RMC.
-rmc-aslot-rail = Планка
-rmc-aslot-barrel = Ствол
-rmc-aslot-underbarrel = Подствольный
-rmc-aslot-stock = Приклад
