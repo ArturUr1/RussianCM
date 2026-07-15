@@ -2,10 +2,6 @@
 
 cmu-zlevel-faint-up-enabled = Вы бросаете взгляд наверх и смутно различаете верхний уровень.
 
-rmc-vending-stock-remaining = x{$count}
-rmc-vending-stock-infinite = x∞
-rmc-vending-stock-personal = (вам: {$count})
-
 construction-step-insert-entity = Вставьте {$name}.
 construction-step-use-entity = Используйте {$name}.
 
