@@ -6976,5 +6976,52 @@
   id: 455
   time: '2026-07-14T20:34:27.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1617
+- author: TheHellFireo
+  changes:
+  - message: Hands and feet can now be selected for fracture, internal bleeding, and
+      eschar surgeries.
+    type: Fix
+  - message: Weapons with two-point slings now use normal throwing physics.
+    type: Fix
+  - message: Fully repaired synthetics now return to an alive state after defibrillation
+      instead of remaining critical.
+    type: Fix
+  id: 456
+  time: '2026-07-15T00:04:52.0000000+00:00'
+  url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1619
+- author: murdocstarsim
+  changes:
+  - message: APOLLO has noted errors with new SOP's not appearing in the guidebook;
+      the issue has been fixed, and now deployments and vehicles should appear in
+      the guidebook under SOP.
+    type: Fix
+  id: 457
+  time: '2026-07-15T03:08:20.0000000+00:00'
+  url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1621
+- author: JaSeNeSaJ
+  changes:
+  - message: 'Sheperds'': Prevent water theft via shuttle'
+    type: Fix
+  id: 458
+  time: '2026-07-15T04:12:50.0000000+00:00'
+  url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1623
+- author: troytroy400
+  changes:
+  - message: Humans now gasp when they have asphyxiation damage.
+    type: Add
+  - message: Added all variants of the UPP van (armed, transport, logistics, MP and
+      medical) to the vehicle lift console.
+    type: Add
+  - message: Duplicate VTOL entries removed.
+    type: Fix
+  - message: Multiple vehicles have had their names updated to be in-line with the
+      lore.
+    type: Fix
+  - message: Welding fuel containers now explode with the proper explosion effects
+      and hurt a decent bit more.
+    type: Fix
+  id: 459
+  time: '2026-07-15T04:14:06.0000000+00:00'
+  url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1625
 Name: CMU
 Order: -1

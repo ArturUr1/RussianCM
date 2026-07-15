@@ -227,6 +227,7 @@ public sealed partial class GmodConstructionMenu : DefaultWindow, IConstructionM
         Modernize(LatheEditorButton);
         Modernize(ZLevelTogglesButton);
         Modernize(ZSyncListsButton); // AU14: z-level border reflection black/whitelist
+        Modernize(ToolPermissionsButton); // AU14: Host-only per-ckey editor tool grants
         Modernize(InsforEditorButton);
         Modernize(BuildButton, toggle: true);
         Modernize(FavoriteButton);
@@ -471,6 +472,12 @@ public sealed partial class GmodConstructionMenu : DefaultWindow, IConstructionM
             IoCManager.Resolve<IEntitySystemManager>()
                 .GetEntitySystem<_AU14.Construction.CustomConstruction.CustomConstructionEditorClientSystem>()
                 .OpenZSyncLists();
+
+        // AU14: Admin Tools -> Tool Permissions (Host-only per-ckey grants for the editor tools).
+        ToolPermissionsButton.OnPressed += _ =>
+            IoCManager.Resolve<IEntitySystemManager>()
+                .GetEntitySystem<_AU14.Administration.ToolPermissionClientSystem>()
+                .OpenManager();
 
         // INSFOR -> the faction editor. A server console command, so the server does all
         // authorization (host flag) and a server without the INSFOR feature simply reports an

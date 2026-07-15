@@ -644,6 +644,10 @@ namespace Content.Server.Database
         public string HairColor { get; set; } = null!;
         public string FacialHairName { get; set; } = null!;
         public string FacialHairColor { get; set; } = null!;
+        public string? RegulationHairName { get; set; }
+        public string? RegulationHairColor { get; set; }
+        public string? RegulationFacialHairName { get; set; }
+        public string? RegulationFacialHairColor { get; set; }
         public string EyeColor { get; set; } = null!;
         public string SkinColor { get; set; } = null!;
         public int SpawnPriority { get; set; } = 0;

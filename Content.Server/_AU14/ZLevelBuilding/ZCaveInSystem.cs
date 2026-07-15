@@ -1,11 +1,10 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // Copyright (c) 2026 wray-git
-// SPDX-License-Identifier: AGPL-3.0-only
 using System.Numerics;
 using Content.Server.Chat.Managers;
 using Content.Shared._AU14.ZLevelBuilding;
 using Content.Shared._CMU14.ZLevels.Core.Components;
-using Content.Shared._RMC14.CameraShake;
+using Content.Shared._RMC14.Dropship;
 using Content.Shared.Administration.Logs;
 using Content.Shared.Damage;
 using Content.Shared.Damage.Components;
@@ -35,8 +34,8 @@ namespace Content.Server._AU14.ZLevelBuilding;
 /// danger is digging a cavern too WIDE: the roof over a dug-out (open) tile is held up only by nearby solid rock
 /// and by built pillars (vertical <see cref="StructuralSupportComponent"/>). Any open tile farther than
 /// <see cref="ZBuildableMapComponent.MaxRoofSpan"/> from a support has an unstable roof - after an 8 second
-/// warning it caves in: the tile is buried in rock, anyone on it takes brute damage, and everyone on the level
-/// gets a sustained screenshake + rumble for as long as the collapse keeps going.
+/// warning it caves in: the tile is buried in rock, anyone on it takes brute damage, and nearby players get
+/// rumble and vignette feedback while the collapse keeps going.
 ///
 /// Counterplay: don't over-mine, or plant pillars in the middle of big caverns - exactly like real mines.
 /// </summary>
@@ -49,7 +48,6 @@ public sealed class ZCaveInSystem : EntitySystem
     [Dependency] private readonly DamageableSystem _damage = default!;
     [Dependency] private readonly SharedPopupSystem _popup = default!;
     [Dependency] private readonly SharedAudioSystem _audio = default!;
-    [Dependency] private readonly RMCCameraShakeSystem _shake = default!;
     [Dependency] private readonly ThrowingSystem _throwing = default!;
     [Dependency] private readonly IRobustRandom _random = default!;
     [Dependency] private readonly IGameTiming _timing = default!;
@@ -73,6 +71,7 @@ public sealed class ZCaveInSystem : EntitySystem
 
     /// <summary>Safety cap on how many tiles one cavern collapse may bury.</summary>
     private const int CollapseTileCap = 600;
+    private const float DropshipCollapseDetectionRadius = 1.25f;
 
     private static readonly Vector2i[] Cardinals =
     {
@@ -83,6 +82,7 @@ public sealed class ZCaveInSystem : EntitySystem
 
     private EntityQuery<MapGridComponent> _gridQuery;
     private EntityQuery<ZGeneratedStoneComponent> _stoneQuery;
+    private List<Entity<MapGridComponent>> _overlappingGrids = new();
 
     // Exact attribution: the last PLAYER to damage something on each underground level (the over-miner), with the
     // time. Used to name the real culprit in the cave-in log/alert instead of just "nearest player".
@@ -158,7 +158,7 @@ public sealed class ZCaveInSystem : EntitySystem
     {
         var now = _timing.CurTime;
 
-        // Advance any in-progress cavern collapses every tick so the shake + rumble stay sustained. This only does
+        // Advance any in-progress cavern collapses every tick so rumble/vignette feedback stays sustained. This only does
         // work for maps that are actually mid-collapse (CollapseQueue non-empty); the rest are skipped instantly.
         var collapseQuery = EntityQueryEnumerator<ZGeneratedStoneComponent>();
         while (collapseQuery.MoveNext(out var mapUid, out var stone))
@@ -354,7 +354,7 @@ public sealed class ZCaveInSystem : EntitySystem
             Spawn(settings.CollapseFog, _map.GridTileToLocal(grid.Owner, grid.Comp, region[i]));
     }
 
-    /// <summary>Buries the next batch of queued cavern tiles, damaging anyone caught, with sustained shake + rumble.</summary>
+    /// <summary>Buries the next batch of queued cavern tiles, damaging anyone caught, with sustained feedback.</summary>
     private void ProcessCollapse(Entity<ZGeneratedStoneComponent> stoneMap, TimeSpan now)
     {
         if (now < stoneMap.Comp.CollapseNextStep)
@@ -375,7 +375,7 @@ public sealed class ZCaveInSystem : EntitySystem
 
         queue.RemoveRange(0, count);
 
-        ShakeAndRumble(stoneMap, now, settings);
+        RumbleAndVignette(stoneMap, now, settings);
 
         stoneMap.Comp.CollapseNextStep = now + CollapseStepInterval;
 
@@ -445,6 +445,12 @@ public sealed class ZCaveInSystem : EntitySystem
 
         var worldPos = _transform.ToMapCoordinates(_map.GridTileToLocal(grid.Owner, grid.Comp, tile)).Position;
         var surfaceCoords = new MapCoordinates(worldPos, aboveMapComp.MapId);
+
+        // Dropships are their own grids. If one is parked over this cave-in, don't try to pull its tiles or
+        // entities down into the cavern; just trip the flight-safety lockout and leave the ship grid alone.
+        if (MarkDropshipsOverCollapse(surfaceCoords))
+            return;
+
         if (!_mapManager.TryFindGridAt(surfaceCoords, out var surfaceGridUid, out var surfaceGridComp))
             return;
 
@@ -501,8 +507,8 @@ public sealed class ZCaveInSystem : EntitySystem
         }
     }
 
-    // 🔧 TUNABLE: how far (in tiles) collapse screenshake and the vignette blink reach from the collapsing
-    // region. Players further away feel nothing.
+    // How far (in tiles) collapse rumble and vignette feedback reach from the collapsing region.
+    // Players further away feel nothing.
     private const int CollapseEffectRange = 33;
 
     /// <summary>Minimum Chebyshev tile distance from <paramref name="tile"/> to any tile in the region
@@ -663,18 +669,17 @@ public sealed class ZCaveInSystem : EntitySystem
     }
 
     /// <summary>
-    /// Shakes the camera of everyone on the collapsing level (re-applied each step so it stays continuous for the
-    /// duration of the collapse) and plays the rumble SFX on a throttle so it does not stack into noise.
+    /// Plays collapse feedback for nearby players. Rumble SFX is throttled so it does not stack into noise.
     /// </summary>
-    private void ShakeAndRumble(Entity<ZGeneratedStoneComponent> stoneMap, TimeSpan now, ZBuildableMapComponent settings)
+    private void RumbleAndVignette(Entity<ZGeneratedStoneComponent> stoneMap, TimeSpan now, ZBuildableMapComponent settings)
     {
         var playRumble = now >= stoneMap.Comp.CollapseNextRumble;
         if (playRumble)
             stoneMap.Comp.CollapseNextRumble = now + RumbleInterval;
 
-        // Effects are local: only players near the collapsing region feel anything (previously the whole
-        // map shook, which read as server-wide shaking). Engulfed players (their own tile is in the doomed
-        // region) additionally get the rapid black vignette, re-sent each rumble so it lasts the collapse.
+        // Effects are local: only players near the collapsing region get feedback. Engulfed players (their own
+        // tile is in the doomed region) additionally get the rapid black vignette, re-sent each rumble so it
+        // lasts the collapse.
         _gridQuery.TryComp(stoneMap.Comp.StoneGrid, out var stoneGridComp);
         var regionTiles = new HashSet<Vector2i>(stoneMap.Comp.LastCollapseRegion);
 
@@ -690,9 +695,6 @@ public sealed class ZCaveInSystem : EntitySystem
             var dist = DistanceToRegion(actorTile, regionTiles);
             if (dist > CollapseEffectRange)
                 continue;
-
-            // 8 shakes @ 0.1s = 0.8s, longer than the 0.15s step, so the shake never lapses mid-collapse.
-            _shake.ShakeCamera(uid, 8, 3);
 
             if (playRumble)
                 RaiseNetworkEvent(new ZCollapseVignetteEvent { Engulfed = dist <= 1 }, actor.PlayerSession);
@@ -715,8 +717,8 @@ public sealed class ZCaveInSystem : EntitySystem
     }
 
     /// <summary>
-    /// At the END of an underground cave-in, shakes and damages entities on the surface directly above the
-    /// collapsed region. This only fires once per cave-in event (not from the continuous stability scan), so
+    /// At the END of an underground cave-in, damages entities on the surface directly above the collapsed
+    /// region. This only fires once per cave-in event (not from the continuous stability scan), so
     /// ground-level maps whose underground has not yet been generated are never affected.
     ///
     /// The z-level BELOW the underground is implicitly stable: IsSolid treats ungenerated chunks as solid
@@ -749,6 +751,12 @@ public sealed class ZCaveInSystem : EntitySystem
             var worldPos = _transform.ToMapCoordinates(localCoords).Position;
             var surfaceCoords = new MapCoordinates(worldPos, aboveMapComp.MapId);
 
+            // If this surface point overlaps a landed dropship grid, only mark/disable the ship. Do not damage
+            // or spawn debris on the dropship grid; shuttle grids have their own tile layer and should not be
+            // treated as collapsible terrain.
+            if (MarkDropshipsOverCollapse(surfaceCoords))
+                continue;
+
             if (!_mapManager.TryFindGridAt(surfaceCoords, out var surfaceGridUid, out var surfaceGridComp))
                 continue;
 
@@ -765,7 +773,7 @@ public sealed class ZCaveInSystem : EntitySystem
                 Spawn(settings.RockDebris, _map.GridTileToLocal(surfaceGridUid, surfaceGridComp, surfaceTile));
         }
 
-        // Brief shake (+ grey vignette blink) for players on the surface NEAR the cave-in - not map-wide.
+        // Brief grey vignette blink for players on the surface NEAR the cave-in - not map-wide.
         // Region tiles map 1:1 to surface world positions, so distance is measured against the region's
         // world bounds.
         var (boundsMin, boundsMax) = RegionWorldBounds(stoneMap.Comp.StoneGrid, stoneGrid, region);
@@ -780,11 +788,50 @@ public sealed class ZCaveInSystem : EntitySystem
             if ((pos - clamped).Length() > CollapseEffectRange)
                 continue;
 
-            _shake.ShakeCamera(uid, 5, 2);
             RaiseNetworkEvent(new ZCollapseVignetteEvent(), actor.PlayerSession);
         }
 
         stoneMap.Comp.LastCollapseRegion.Clear();
+    }
+
+    /// <summary>
+    /// Marks any dropship grid overlapping a cave-in's surface position. This deliberately scans all grids
+    /// around the point instead of relying on TryFindGridAt, because landed dropships can overlap the planet
+    /// grid and TryFindGridAt may return the ground grid first.
+    /// </summary>
+    private bool MarkDropshipsOverCollapse(MapCoordinates impact)
+    {
+        _overlappingGrids.Clear();
+        var min = impact.Position - new Vector2(DropshipCollapseDetectionRadius);
+        var max = impact.Position + new Vector2(DropshipCollapseDetectionRadius);
+        _mapManager.FindGridsIntersecting(impact.MapId, new Box2(min, max), ref _overlappingGrids, approx: true, includeMap: false);
+
+        var marked = false;
+        foreach (var grid in _overlappingGrids)
+        {
+            if (!HasComp<DropshipComponent>(grid.Owner))
+                continue;
+
+            marked = true;
+            if (!HasComp<ZCollapseCompromisedComponent>(grid.Owner))
+            {
+                EnsureComp<ZCollapseCompromisedComponent>(grid.Owner);
+                Log.Info($"[zcavein] Dropship {ToPrettyString(grid.Owner)} structurally compromised by a cave-in below it; takeoff disabled.");
+
+                var computers = EntityQueryEnumerator<DropshipNavigationComputerComponent, TransformComponent>();
+                while (computers.MoveNext(out _, out _, out var xform))
+                {
+                    if (xform.GridUid == grid.Owner)
+                        Spawn("EffectSparks", xform.Coordinates);
+                }
+            }
+        }
+
+        if (marked)
+            Spawn("EffectSparks", impact);
+
+        _overlappingGrids.Clear();
+        return marked;
     }
 
     private ZBuildableMapComponent GetSettings(EntityUid stoneMap)

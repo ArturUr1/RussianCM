@@ -312,7 +312,11 @@ namespace Content.Server.Database
                     Color.FromHex(profile.FacialHairColor),
                     Color.FromHex(profile.EyeColor),
                     Color.FromHex(profile.SkinColor),
-                    markings
+                    markings,
+                    profile.RegulationHairName ?? HairStyles.DefaultHairStyle,
+                    profile.RegulationHairColor is { } regulationHairColor ? Color.FromHex(regulationHairColor) : Color.Black,
+                    profile.RegulationFacialHairName ?? HairStyles.DefaultFacialHairStyle,
+                    profile.RegulationFacialHairColor is { } regulationFacialHairColor ? Color.FromHex(regulationFacialHairColor) : Color.Black
                 ),
                 spawnPriority,
                 armorPreference,
@@ -533,6 +537,10 @@ namespace Content.Server.Database
             profile.HairColor = appearance.HairColor.ToHex();
             profile.FacialHairName = appearance.FacialHairStyleId;
             profile.FacialHairColor = appearance.FacialHairColor.ToHex();
+            profile.RegulationHairName = appearance.RegulationHairStyleId;
+            profile.RegulationHairColor = appearance.RegulationHairColor.ToHex();
+            profile.RegulationFacialHairName = appearance.RegulationFacialHairStyleId;
+            profile.RegulationFacialHairColor = appearance.RegulationFacialHairColor.ToHex();
             profile.EyeColor = appearance.EyeColor.ToHex();
             profile.SkinColor = appearance.SkinColor.ToHex();
             profile.SpawnPriority = (int) humanoid.SpawnPriority;
