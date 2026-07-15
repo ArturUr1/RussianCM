@@ -1,83 +1,83 @@
 <Document>
-  # MAJOR CRIMES
+  # ТЯЖКИЕ ПРЕСТУПЛЕНИЯ
 
-  ## Disorderly Conduct
-  Severely disrupting colony operations, emergency response, or essential services (blocking emergency response, interfering with evacuation, causing panic during emergency operations, disrupting medical triage).
-  - 10 min
+  ## Нарушение общественного порядка
+  Серьёзное нарушение работы колонии, реагирования на чрезвычайную ситуацию или жизненно важных служб: блокирование действий спасательных служб, препятствование эвакуации, создание паники во время чрезвычайной ситуации или срыв медицинской сортировки.
+  - 10 мин.
 
-  ## Assault
-  Threatening or using physical force with hostile intent.
-  - 10 min unarmed | 15 min with a deadly weapon
+  ## Нападение
+  Угроза физической силой или её применение с враждебным умыслом.
+  - 10 мин. без оружия | 15 мин. с применением смертоносного оружия
 
-  ## Manslaughter
-  Killing someone without malicious intent due to reckless or negligent conduct.
-  - 20 min + possible license revocation, job removal, or permanent confinement if the person remains a danger
+  ## Причинение смерти по неосторожности
+  Лишение человека жизни без злого умысла вследствие безрассудного или небрежного поведения.
+  - 20 мин. + возможное аннулирование лицензии, отстранение от должности или бессрочное заключение, если лицо продолжает представлять опасность
 
-  ## Illegal Confinement
-  Unlawfully restraining, kidnapping, or imprisoning another person. Does not apply to lawful quarantine, arrest, or protective custody.
-  - 20 min
+  ## Незаконное лишение свободы
+  Незаконное связывание, похищение или заключение другого человека. Не распространяется на законный карантин, задержание или защитное содержание под стражей.
+  - 20 мин.
 
-  ## Major Theft
-  Stealing colony funds, emergency supplies, weapons, vehicles, access cards, or restricted equipment.
-  - 15 min + return of property
+  ## Крупная кража
+  Хищение средств колонии, аварийных запасов, оружия, транспортных средств, карт доступа или снаряжения ограниченного доступа.
+  - 15 мин. + возврат имущества
 
-  ## Unauthorized Access to Corporate Property
-  Accessing company equipment, labs, records, or restricted areas without authorization.
-  - 7 min (minor access) | 15 min if restricted materials, vehicles, records, or systems are involved
+  ## Несанкционированный доступ к корпоративной собственности
+  Получение доступа к корпоративному оборудованию, лабораториям, документации или зонам ограниченного доступа без разрешения.
+  - 7 мин. за незначительное проникновение | 15 мин., если затронуты ограниченные материалы, транспортные средства, документы или системы
 
-  ## Misuse of Colony Infrastructure
-  Improperly operating, disabling, or modifying colony systems (atmosphere processors, reactor systems, airlocks, water processors, emergency shelters, fuel systems).
-  - 15 min | 20 min if public safety endangered | Permanent confinement if mass death or colony collapse risk
+  ## Ненадлежащее использование инфраструктуры колонии
+  Неправомерная эксплуатация, отключение или модификация систем колонии: атмосферных процессоров, реакторных систем, шлюзов, водоочистных установок, аварийных убежищ или топливных систем.
+  - 15 мин. | 20 мин., если создана угроза общественной безопасности | Бессрочное заключение, если создан риск массовой гибели людей или разрушения колонии
 
-  ## Sabotage
-  Damaging, disabling, or compromising colony infrastructure, utilities, or safety/security systems.
-  - 20 min | Permanent confinement if the act creates mass danger
+  ## Диверсия
+  Повреждение, отключение или нарушение работы инфраструктуры, коммунальных систем либо систем безопасности и защиты колонии.
+  - 20 мин. | Бессрочное заключение, если деяние создаёт массовую угрозу
 
-  ## Possession of Restricted Contraband
-  Possessing restricted drugs, military equipment, explosives, illegal weapons, classified material, or dangerous organisms.
-  - 15-20 min + confiscation
+  ## Владение контрабандой ограниченного оборота
+  Владение запрещёнными наркотиками, военным снаряжением, взрывчаткой, незаконным оружием, засекреченными материалами или опасными организмами.
+  - 15–20 мин. + конфискация
 
-  ## Unauthorized Distress Signal
-  Sending a distress call, emergency beacon, or evacuation signal without lawful authorization.
-  - 15 min | 20 min if it causes panic, military deployment, or operational disruption
+  ## Несанкционированная передача сигнала бедствия
+  Отправка сигнала бедствия, аварийного маяка или сигнала эвакуации без законного разрешения.
+  - 15 мин. | 20 мин., если это привело к панике, развёртыванию вооружённых сил или нарушению операции
 
-  ## Interference with Emergency Response
-  Obstructing marshals, medical staff, evacuation crews, or other lawful emergency responders.
-  - 15 min | 20 min if injury, death, contamination, or major delay results
+  ## Препятствование реагированию на чрезвычайную ситуацию
+  Воспрепятствование маршалам, медицинскому персоналу, эвакуационным группам или другим законным аварийно-спасательным службам.
+  - 15 мин. | 20 мин., если это привело к травме, смерти, заражению или значительной задержке
 
-  ## Biohazard Noncompliance
-  Refusing lawful quarantine, decontamination, medical screening, or isolation procedures.
-  - 20 min | Permanent confinement if the violation risks outbreak, mass infection, or colony‑wide contamination
+  ## Несоблюдение требований биологической безопасности
+  Отказ выполнять законные требования карантина, обеззараживания, медицинского обследования или изоляции.
+  - 20 мин. | Бессрочное заключение, если нарушение создаёт риск вспышки заболевания, массового заражения или загрязнения всей колонии
 
-  ## Possession of Restricted Biological Material
-  Possessing, hiding, transporting, or selling dangerous biological material without authorization (unknown eggs, parasitic organisms, pathogen samples, infected tissue, invasive lifeform remains, unknown organic material from restricted zones).
-  - 20 min + confiscation/destruction + mandatory quarantine | Permanent confinement if colony safety endangered
+  ## Владение ограниченными биологическими материалами
+  Владение, сокрытие, перевозка или продажа опасных биологических материалов без разрешения: неизвестных яиц, паразитических организмов, образцов патогенов, заражённых тканей, останков инвазивных форм жизни или неизвестных органических материалов из зон ограниченного доступа.
+  - 20 мин. + конфискация или уничтожение + обязательный карантин | Бессрочное заключение, если была создана угроза безопасности колонии
 
-  ## Harboring a Contaminated Person
-  Knowingly hiding or assisting a person under quarantine or suspected of carrying a dangerous pathogen.
-  - 20 min | Permanent confinement if outbreak risk is created
+  ## Укрывательство заражённого лица
+  Сознательное сокрытие лица, находящегося на карантине или подозреваемого в переносе опасного патогена, либо оказание ему помощи.
+  - 20 мин. | Бессрочное заключение, если создан риск вспышки заболевания
 
-  ## Corporate Espionage
-  Stealing, copying, or transmitting restricted corporate, scientific, or biological research data.
-  - 20 min | Permanent confinement if tied to hostile powers, terrorist groups, or hazardous biological research
+  ## Корпоративный шпионаж
+  Хищение, копирование или передача ограниченных корпоративных, научных или биологических исследовательских данных.
+  - 20 мин. | Бессрочное заключение, если деяние связано с враждебными государствами, террористическими группами или опасными биологическими исследованиями
 
-  ## Unauthorized Disclosure
-  Releasing restricted colony, scientific, military, or biological information without authorization.
-  - 10 min (minor) | 20 min if it causes panic or operational disruption | Permanent confinement if mass casualties or colony collapse risk
+  ## Несанкционированное разглашение
+  Распространение ограниченной колониальной, научной, военной или биологической информации без разрешения.
+  - 10 мин. за незначительное нарушение | 20 мин., если это привело к панике или нарушению операции | Бессрочное заключение, если создан риск массовых жертв или разрушения колонии
 
-  ## Corruption
-  Using public, law enforcement, or administrative authority for personal gain or unlawful punishment.
-  - 15 min + removal from position
+  ## Коррупция
+  Использование государственных, правоохранительных или административных полномочий ради личной выгоды либо незаконного наказания другого лица.
+  - 15 мин. + отстранение от должности
 
-  ## Abuse of Authority
-  Issuing unlawful arrests, searches, seizures, administrative orders, or emergency directives.
-  - 15 min + removal from position
+  ## Злоупотребление полномочиями
+  Проведение незаконных задержаний, обысков и изъятий либо издание незаконных административных или чрезвычайных распоряжений.
+  - 15 мин. + отстранение от должности
 
-  ## Harboring a Fugitive
-  Knowingly hiding or assisting a person wanted for a major or capital crime.
-  - 15 min
+  ## Укрывательство разыскиваемого лица
+  Сознательное сокрытие или оказание помощи лицу, разыскиваемому за тяжкое или особо тяжкое преступление.
+  - 15 мин.
 
-  ## Rioting
-  Participating in violent public unrest involving property damage, assault, theft, arson, or obstruction of emergency services.
-  - 20 min
+  ## Массовые беспорядки
+  Участие в насильственных общественных беспорядках, сопровождающихся повреждением имущества, нападениями, кражами, поджогами или препятствованием работе аварийно-спасательных служб.
+  - 20 мин.
 </Document>

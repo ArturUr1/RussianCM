@@ -1,15 +1,15 @@
 <Document>
-  # COLONIAL CIVIL STATUTES
-  Frontier Settlements / Corporate Colony Jurisdiction
+  # КОЛОНИАЛЬНОЕ ГРАЖДАНСКОЕ ЗАКОНОДАТЕЛЬСТВО
+  Пограничные поселения / юрисдикция корпоративных колоний
 
-  This code governs all civilians and non-military personnel within colonial territory.
+  Настоящий кодекс распространяется на всех гражданских лиц и невоенный персонал, находящихся на территории колонии.
 
-  ## Contents
-  - [textlink="General Provisions" link="AU14CCLawGeneral"]
-  - [textlink="Corporate & Frontier Jurisdiction" link="AU14CCLawCorporate"]
-  - [textlink="Civil Citations & Arrest Procedures" link="AU14CCLawProcedures"]
-  - [textlink="Military Presence" link="AU14CCLawMilitary"]
-  - [textlink="Criminal Code" link="AU14CCLawCriminalCode"]
-  - [textlink="Precautionary Confinement" link="AU14CCLawPrecautionary"]
-  - [textlink="Administrative Emergency Powers" link="AU14CCLawEmergency"]
+  ## Содержание
+  - [textlink="Общие положения" link="AU14CCLawGeneral"]
+  - [textlink="Корпоративная и пограничная юрисдикция" link="AU14CCLawCorporate"]
+  - [textlink="Гражданские взыскания и порядок задержания" link="AU14CCLawProcedures"]
+  - [textlink="Военное присутствие" link="AU14CCLawMilitary"]
+  - [textlink="Уголовный кодекс" link="AU14CCLawCriminalCode"]
+  - [textlink="Превентивное заключение" link="AU14CCLawPrecautionary"]
+  - [textlink="Чрезвычайные полномочия администрации" link="AU14CCLawEmergency"]
 </Document>
