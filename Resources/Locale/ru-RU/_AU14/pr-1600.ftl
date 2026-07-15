@@ -2,15 +2,10 @@
 
 cmu-zlevel-faint-up-enabled = Вы бросаете взгляд наверх и смутно различаете верхний уровень.
 
-rmc-vending-stock-remaining = x{$count}
-rmc-vending-stock-infinite = x∞
-rmc-vending-stock-personal = (вам: {$count})
-
 construction-step-insert-entity = Вставьте {$name}.
 construction-step-use-entity = Используйте {$name}.
 
 au14-analyzer-scan-verb = Сканировать
-au14-analyzer-scan-found = Анализатор обнаружил поблизости интересующие предметы: { $count }.
 au14-analyzer-scan-empty = Поблизости не обнаружено интересующих предметов.
 au14-analyzer-credited-items = Анализатор начислил CLF { $points } очк. за { $amount } ед. «{ $name }».
 au14-analyzer-credited-progress = Анализатор начислил CLF { $points } очк. (до следующего очка: { $banked }/{ $required })
@@ -19,11 +14,3 @@ au14-analyzer-credited-cash-progress = Анализатор начислил CLF
 au14-analyzer-credited-cash = Анализатор начислил CLF { $points } очк.
 au14-analyzer-banked-cash = Анализатор принял { $credits } кред. (до следующего очка: { $banked }/{ $required })
 clf-admin-make-recruit = Сделать рекрутом CLF
-
-construction-menu-title = Строительство
-construction-menu-place-ghost = Разместить призрак конструкции
-construction-menu-clear-all = Очистить всё
-construction-menu-eraser-mode = Режим ластика
-construction-menu-search = Поиск
-construction-presenter-step-wrapper = {$step-number}. {$text}
-rmc-construction-build-here = Построить здесь

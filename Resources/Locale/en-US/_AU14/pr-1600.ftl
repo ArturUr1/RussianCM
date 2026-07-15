@@ -1,5 +1,4 @@
 au14-analyzer-scan-verb = Scan
-au14-analyzer-scan-found = Analyzer detected { $count } item(s) of interest in the vicinity.
 au14-analyzer-scan-empty = No items of interest detected nearby.
 au14-analyzer-credited-items = Analyzer credited { $points } point(s) to CLF for { $amount } { $name }.
 au14-analyzer-credited-progress = Analyzer credited { $points } point(s) to CLF. ({ $banked }/{ $required } until next point)
