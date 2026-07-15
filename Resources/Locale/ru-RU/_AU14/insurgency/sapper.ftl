@@ -1,33 +1,33 @@
-# CLF Sapper role.
-au14-job-name-clfsapper = Сапер CLF
-au14-job-description-clfsapper = Партизан, обученный полевому делу и взрывчатке. Вы ставите ловушки, маскируете их и обращаете землю колонии против GOVFOR.
-au14-job-prefix-clfsapper = CIV
+# Роль сапёра КОФ.
+au14-job-name-clfsapper = Сапёр КОФ
+au14-job-description-clfsapper = Партизан, обученный подрывным работам. Расставляй ловушки, маскируй их и обращай саму землю колонии против сил правительства.
+au14-job-prefix-clfsapper = САП
 
-# Sapper trap deploy / disarm feedback.
-insfor-sapper-trap-deployed = Вы устанавливаете заряд, и он скрывается из виду.
+# Установка/обезвреживание ловушек
+insfor-sapper-trap-deployed = Вы закладываете заряд, и он скрывается из виду.
 insfor-sapper-trap-disarmed = Вы перерезаете растяжку и убираете заряд.
-insfor-sapper-trap-deploy-container = Здесь это установить нельзя.
-insfor-sapper-trap-deploy-occupied = На этом тайле уже есть ловушка.
-insfor-sapper-trap-unskilled = Вы возитесь с этим, но понятия не имеете, как это настраивать.
+insfor-sapper-trap-deploy-container = Здесь нельзя установить ловушку.
+insfor-sapper-trap-deploy-occupied = На этой клетке уже есть ловушка.
+insfor-sapper-trap-unskilled = Вы возитесь с устройством, но понятия не имеете, как его настроить.
 
-# Two-part tripwire.
-insfor-sapper-tripwire-attached = Вы крепите взрывчатку к заряду растяжки.
-insfor-sapper-tripwire-full = Здесь нет места для еще одной взрывчатки.
-insfor-sapper-tripwire-need-explosive = Перед установкой растяжки нужно прикрепить к ней взрывчатку.
-insfor-sapper-tripwire-place-other-end = Вы устанавливаете заряд. Теперь протяните провод туда, где должен быть его конец - до { $range } тайлов, по прямой и в зоне видимости - и используйте его там.
+# Растяжка
+insfor-sapper-tripwire-attached = Вы прикрепляете взрывчатку к растяжке.
+insfor-sapper-tripwire-full = Больше взрывчатки не прикрепить.
+insfor-sapper-tripwire-need-explosive = Сначала прикрепите взрывчатку к растяжке, прежде чем устанавливать её.
+insfor-sapper-tripwire-place-other-end = Вы устанавливаете заряд. Теперь протяните проволоку туда, где хотите её закончить — до {$range} клеток по прямой в пределах видимости — и используйте её там.
 insfor-sapper-tripwire-strung = Растяжка натянута и взведена.
-insfor-sapper-tripwire-charge-gone = Заряд, к которому ведет этот провод, исчез.
-insfor-sapper-tripwire-bad-spot = Здесь нельзя протянуть провод.
-insfor-sapper-tripwire-too-close = Вы стоите прямо на заряде.
-insfor-sapper-tripwire-not-straight = Провод должен идти от заряда по прямой.
-insfor-sapper-tripwire-too-far = Это слишком далеко от заряда.
-insfor-sapper-tripwire-no-los = Нет прямой линии до заряда.
+insfor-sapper-tripwire-charge-gone = Заряд, к которому ведёт эта проволока, исчез.
+insfor-sapper-tripwire-bad-spot = Здесь нельзя протянуть проволоку.
+insfor-sapper-tripwire-too-close = Вы стоите прямо над зарядом.
+insfor-sapper-tripwire-not-straight = Проволока должна идти по прямой от заряда.
+insfor-sapper-tripwire-too-far = Слишком далеко от заряда, чтобы дотянуться.
+insfor-sapper-tripwire-no-los = Нет прямой видимости до заряда.
 insfor-sapper-tripwire-eject-verb = Снять взрывчатку
 insfor-sapper-tripwire-ejected = Вы снимаете взрывчатку с заряда.
 
-# Audio (early-warning) trap.
+# Звуковая ловушка
 insfor-sapper-audio-name-title = Звуковая ловушка
-insfor-sapper-audio-name-prompt = Назовите эту ловушку
+insfor-sapper-audio-name-prompt = Назовите ловушку
 insfor-sapper-audio-default-name = Без названия
 insfor-sapper-audio-location-unknown = неизвестное место
 insfor-sapper-audio-radio-alert = Сработала звуковая ловушка {$name}. Место: {$location}.
@@ -88,49 +88,80 @@ insfor-sapper-ingredient-buckshot = патроны с картечью
 insfor-sapper-ingredient-ied = СВУ
 insfor-sapper-ingredient-handcuffs = любые наручники
 insfor-sapper-workbench-deployed = Вы раскладываете верстак и фиксируете его ножки.
-insfor-sapper-workbench-need-materials = На верстаке не хватает материалов или свободных ингредиентов (положите ингредиенты на верстак или рядом с ним).
+insfor-sapper-workbench-need-materials = На верстаке не хватает материалов или компонентов (положите предметы на верстак или рядом с ним).
 insfor-sapper-workbench-crafted = Вы собираете {$item}.
 
-# The "Switch" auto-sear chip.
-au14-switch-on = Вы щелкаете переключателем. Спусковая группа перестает обращать внимание.
-au14-switch-off = Вы возвращаете переключатель обратно.
-au14-switch-jammed = Механизм клинит - оружие заклинило!
-au14-switch-exploded = Оружие разрывает прямо у вас в руках!
-au14-switch-jammed-shoot = Оружие заклинило! Сначала передерните затвор.
-au14-switch-rack-verb = Передернуть затвор (устранить клин)
-au14-switch-rack-fail = Вы передергиваете затвор, но гильза остается намертво зажатой.
-au14-switch-rack-success = Покореженная гильза вылетает наружу. Оружие снова может стрелять.
+# Переключатель
+au14-switch-on = Вы щёлкаете переключателем. Ударно-спусковой механизм перестаёт разбираться.
+au14-switch-off = Вы возвращаете переключатель в исходное положение.
+au14-switch-jammed = Механизм заклинивает — оружие заклинило!
+au14-switch-exploded = Оружие разрывается у вас в руках!
+au14-switch-jammed-shoot = Оружие заклинило! Сначала передёрните затвор.
+au14-switch-rack-verb = Передёрнуть затвор (устранить задержку)
+au14-switch-rack-fail = Вы передёргиваете затвор, но гильза остаётся зажатой.
+au14-switch-rack-success = Смятая гильза вылетает. Оружие снова готово к стрельбе.
 
-# Workbench gunsmithing (force attach/detach).
-insfor-sapper-workbench-weapon-placed = Вы кладете оружие на верстак.
+# Оружейный верстак
+insfor-sapper-workbench-weapon-placed = Вы кладёте оружие на верстак.
 insfor-sapper-workbench-weapon-occupied = На верстаке уже лежит оружие.
 insfor-sapper-workbench-no-weapon = Сначала положите оружие на верстак.
 insfor-sapper-workbench-slots-full = Все слоты этого оружия уже заняты.
-insfor-sapper-workbench-attached = Вы силой устанавливаете модуль на место ({$slot}).
-insfor-sapper-workbench-wrong-slot = Этот модуль не подходит ни к одному слоту этого оружия.
-insfor-sapper-workbench-hold-attachment = Сначала возьмите модуль в руку.
-insfor-sapper-workbench-take-weapon = Забрать оружие
+insfor-sapper-workbench-attached = Вы принудительно устанавливаете насадку ({$slot}).
+insfor-sapper-workbench-wrong-slot = Эта насадка не подходит ни к одному слоту данного оружия.
+insfor-sapper-workbench-hold-attachment = Сначала возьмите насадку в руки.
+insfor-sapper-workbench-take-weapon = Взять оружие
 insfor-sapper-workbench-detach = Снять: {$name}
 
-# ATM hacking.
-insfor-sapper-atm-already-hacked = Эта машина уже выжата досуха.
-insfor-sapper-atm-hacked = Банкомат вздрагивает и выплевывает наличные: {$amount}.
-insfor-sapper-atm-malfunction = ОШИБКА: УСТРОЙСТВО НЕИСПРАВНО. ОБРАТИТЕСЬ К АДМИНИСТРАТОРУ.
-insfor-sapper-console-drained = Средства консоли утекают - наружу высыпается наличность: {$amount}.
-insfor-sapper-asrs-drained = Счет ASRS пустеет у вас в руках - наличными: {$amount}.
-insfor-sapper-asrs-empty = На этом терминале нет средств для откачки.
+# Взлом банкомата
+insfor-sapper-atm-already-hacked = Этот банкомат уже опустошён.
+insfor-sapper-atm-hacked = Банкомат содрогается и выплёвывает {$amount} наличными.
+insfor-sapper-atm-malfunction = ОШИБКА: УСТРОЙСТВО НЕИСПРАВНО. ОБРАТИТЕСЬ К АДМИНИСТРАТОРУ КОЛОНИИ.
+insfor-sapper-console-drained = Средства с консоли утекают — {$amount} наличными высыпается наружу.
+insfor-sapper-asrs-drained = Счёт ASRS опустошается у вас в руках — {$amount} наличными.
+insfor-sapper-asrs-empty = На этом терминале нет средств для изъятия.
 
-# Spy-camera network.
-device-frequency-prototype-name-surveillance-camera-clf = Шпионские камеры CLF
+# Сеть шпионских камер
+device-frequency-prototype-name-surveillance-camera-clf = Шпионские камеры КОФ
 
-# Snare trap.
-insfor-sapper-snare-caught = Петля резко затягивается вокруг вас, связывает руки и переворачивает мир!
-insfor-sapper-snare-struggled-free = Вы с усилием освобождаетесь от петли.
-insfor-sapper-snare-cutting = Вы начинаете вырезать их из петли.
-insfor-sapper-snare-cut-free = Петля разрезана, и вы падаете свободно.
+# Силок
+insfor-sapper-snare-caught = Силок резко затягивается вокруг вас, сковывая руки и переворачивая вас!
+insfor-sapper-snare-struggled-free = Вы вырываетесь из силка.
+insfor-sapper-snare-cutting = Вы начинаете разрезать силок.
+insfor-sapper-snare-cut-free = Силок разрезан, и вы падаете.
 
-# Названия слотов модулей, отсутствующие в основной русской локали RMC.
-rmc-aslot-rail = Планка
-rmc-aslot-barrel = Ствол
-rmc-aslot-underbarrel = Подствольный
-rmc-aslot-stock = Приклад
+# Предметы
+ent-AU14SapperTrapToolbox = набор ловушек сапёра
+    .desc = Потрёпанный ящик с самодельными зарядами и растяжками. Всё, что нужно сапёру КОФ, чтобы превратить колонию в зону поражения.
+    .suffix = КОФ, Сапёр
+
+ent-AU14SapperIED = закопанное СВУ
+    .desc = Самодельное взрывное устройство, зарытое под поверхностью и подключённое к скрытой педали давления. Заряда хватит, чтобы разнести всё, что окажется сверху.
+
+ent-AU14SapperShotgunTrap = ружейная ловушка
+    .desc = Обрезанный ствол, привязанный к колышку и подключённый к растяжке. Наступи перед ним — и он всадит заряд дроби в ноги.
+
+ent-AU14SapperTripwireTrap = растяжка
+    .desc = Пусковой блок, подключённый к почти невидимой растяжке, уходящей на несколько клеток вперёд к колышку. Прикрепи гранаты или взрывчатку к блоку, затем установи — всё, что пересечёт проволоку, не будучи союзным, сработает разом. Перережь проволоку кусачками, чтобы обезвредить.
+
+ent-AU14SapperTripwireEndPlacer = катушка растяжки
+    .desc = Свободный конец растяжки, тянущий проволоку обратно к установленному заряду. Используй там, где хочешь закончить линию.
+    .suffix = КОФ, Сапёр
+
+ent-AU14SapperTripwireSegment = растяжка
+    .desc = Почти невидимая проволока, натянутая между зарядом и колышком. Пересечь её — очень плохая идея.
+
+ent-AU14SapperTripwireEnd = колышек растяжки
+    .desc = Дальний колышек, к которому привязана растяжка.
+
+ent-AU14SapperSnareTrap = силок
+    .desc = Скрытый клубок проволоки и крючков. Наступи — и он затянется, связав руки и повалив с ног.
+
+ent-AU14SapperCraftingKit = материалы для самодельных ловушек
+    .desc = Связка металлолома, проволоки и трофейной взрывчатки. Используй в руке, чтобы изготовить ловушки КОФ прямо на месте.
+    .suffix = КОФ, Сапёр
+
+ent-AU14SapperTrapAreaPreview = зона покрытия ловушки
+    .desc = Область, в которой сработает устанавливаемая ловушка.
+
+ent-AU14SapperAudioTrap = звуковая ловушка
+    .desc = Свистковая сигнализация, подключённая к почти невидимой растяжке. Всё, что пересечёт проволоку, вызовет пронзительный свист и сообщение по радио ячейки. Перережь кусачками, чтобы заглушить.
