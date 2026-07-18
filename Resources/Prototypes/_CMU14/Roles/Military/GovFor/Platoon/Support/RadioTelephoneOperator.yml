@@ -23,6 +23,8 @@
   roundProfiles:
   - AU14RoundJobProfileMilitaryBase
   roundComponents:
+  - type: AU14CallsignRole
+    radioTag: FTL
   - type: Skills
     preset: AU14SkillPresetPlatoonRTO
   - type: JobPrefix
