@@ -7079,5 +7079,423 @@
   id: 486
   time: '2026-07-15T14:25:51.0000000+00:00'
   url: https://github.com/flex5hybrid/RussianCM/pull/323
+- author: troytroy400
+  changes:
+  - message: Added the 'Regulation Appearance' tab to the character customization
+      UI, which has regulation preset hair colors/styles. When playing as military
+      characters, your appearance will be inherited from this category to keep your
+      character in-line with UCMJ/SOP. HRP is here.
+    type: Add
+  id: 460
+  time: '2026-07-15T13:11:42.0000000+00:00'
+  url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1628
+- author: ver0098
+  changes:
+  - message: A M34A2 with W-Y PMC color scheme has been added to the vehicle lift.
+    type: Add
+  id: 461
+  time: '2026-07-15T16:05:51.0000000+00:00'
+  url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1612
+- author: MACMAN2003
+  changes:
+  - message: Weyland-Yutani were kind enough to deliver power to the people, and by
+      the people, I mean the employees of the Weymart in Barker's Lament.
+    type: Add
+  - message: The eggs in the sensor anomaly have been removed.
+    type: Remove
+  - message: The Weyland-Yutani facility's containment area has experienced corporate
+      downsizing.
+    type: Tweak
+  id: 462
+  time: '2026-07-16T01:43:26.0000000+00:00'
+  url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1622
+- author: troytroy400
+  changes:
+  - message: Added 40 new civilian hairstyle options.
+    type: Add
+  - message: Added a few missing hair styles to regulation appearance (elegant bun,
+      mullet, marine mohawk, low ponytail, ponytail 2, emo bun, emo).
+    type: Tweak
+  - message: The regulation appearance info header no longer lies to you.
+    type: Tweak
+  id: 463
+  time: '2026-07-16T03:23:08.0000000+00:00'
+  url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1630
+- author: troytroy400
+  changes:
+  - message: Added new trait Slow Runner. This trait reduces maximum sprint speed
+      by 15%.
+    type: Add
+  - message: Added new trait Asthmatic. Sprinting gradually strains your breathing,
+      after a while your character will to being to cough and you will get oxygen
+      damage and a movement slowdown. Wearing armor makes strain build 10% faster.
+      Strain decays when you stop sprinting. Treated instantly by Dexalin, Dexalin+,
+      or Albuterol. Spawns with a an inhaler filled with one dose of Albuterol.
+    type: Add
+  - message: Added new trait Anemic. This trait makes you bleed 20% faster than normal.
+    type: Add
+  - message: Added new trait Random Drug Allergy. You are allergic to one of four
+      medications (Inaprovaline, Oxycodone, Tramadol, or Paracetamol). Metabolizing
+      the medication your allergic to triggers an allergic reaction that will gradually
+      build up toxin and oxygen damage, then eventually seizures. Naloxone or epinephrine
+      instantly cures the reaction and purges the allergen from your bloodstream entirely.
+      Spawns with a dogtag naming the allergen and an epipen.
+    type: Add
+  - message: Added new trait Panic Prone. Panic builds gradually from being shot,
+      taking a serious wound, getting shot at, getting knocked down by an explosion,
+      or witnessing someone die nearby. If the panic builds too high, your character
+      will scream periodically and your weapon skill will be temporarily affected
+      until your character is no longer paniced.
+    type: Add
+  - message: Added new trait Nicotine Addiction. Go more than 15 minutes without smoking
+      and you'll start craving a smoke. After a period without nicotine you'll begin
+      shaking at random intervals until you get that fix.
+    type: Add
+  - message: The Epilepsy trait has been fixed. It now causes you to have a seizure
+      every 25-30 minutes and lasts anywhere from 30-70 seconds
+    type: Fix
+  - message: GOVFOR roles were selectively updated to only be able to take relevant
+      traits. Combat troops can no-longer have crippling disabilities.
+    type: Tweak
+  - message: All gasmasks can now be used as internals, this is particularly helpful
+      for doing field surgery in a pinch. Some various relevant suits and armors now
+      have built in gas tanks.
+    type: Tweak
+  id: 464
+  time: '2026-07-16T14:29:41.0000000+00:00'
+  url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1632
+- author: Sniperzero112
+  changes:
+  - message: Added Knuckledusters to the black variant of PMC gloves!
+    type: Add
+  - message: PMC Thirdparty/Survivor Leader & Engineer now get to punch people harder
+    type: Tweak
+  id: 465
+  time: '2026-07-16T21:21:32.0000000+00:00'
+  url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1634
+- author: deepdarkdepths
+  changes:
+  - message: Wendigo has some new sprites.
+    type: Add
+  id: 466
+  time: '2026-07-17T00:25:17.0000000+00:00'
+  url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1631
+- author: JaSeNeSaJ
+  changes:
+  - message: 'Sheperds'': 3rd party dropship destinations (N. Colony, S. Colony, Logistics
+      Roof)'
+    type: Fix
+  - message: 'Sheperds'': Soap around the map'
+    type: Add
+  - message: 'Sheperds'': Extended botany in Labs'
+    type: Tweak
+  - message: 'Sheperds'': Four seed types to Labs'
+    type: Add
+  - message: 'Sheperds'': Slightly more vines, slightly less trees (3rd party dropship
+      destinations)'
+    type: Tweak
+  - message: 'Sheperds'': Separated Hospital and We-Yu chem network'
+    type: Fix
+  id: 467
+  time: '2026-07-17T00:36:06.0000000+00:00'
+  url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1633
+- author: Kadeo64
+  changes:
+  - message: MMI Experiment has been removed from possible We-Yu experiment crates.
+    type: Remove
+  - message: Speed Demon Experiment has been merged with the Mindbreaker experiment
+      in We-Yu crates.
+    type: Tweak
+  id: 468
+  time: '2026-07-17T00:39:42.0000000+00:00'
+  url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1580
+- author: OmerF-afk
+  changes:
+  - message: Bunch of paperwork stuff.
+    type: Add
+  - message: Changed a bunch of paperwork stuff.
+    type: Tweak
+  - message: Telebaton and stunbaton are trying to get into the inventory when you
+      try to activate them.
+    type: Fix
+  - message: Universal Paperwork Tool for easily printing custom paper templates.
+    type: Add
+  - message: Simple mob missing their second arm and not being aggressive when hit.
+    type: Fix
+  id: 469
+  time: '2026-07-17T01:31:45.0000000+00:00'
+  url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1635
+- author: maertayn
+  changes:
+  - message: SGOs get the machete scabbard holder that fits on their harness
+    type: Tweak
+  - message: Changed the Goob fishing loot to match usable items (upstream plastic
+      -> phoron etc.)
+    type: Tweak
+  - message: Updated the CMB CIU corpsman vendors to match the other factions
+    type: Tweak
+  - message: Blood is no more slippery
+    type: Remove
+  - message: Spawning on markers that are inside shuttle walls
+    type: Fix
+  - message: Disabled the dropship automatic console lockout when it returns to Deep
+      Space - can be re-enabled by setting cvar 'thirdparty_dropship_reusable' to
+      false
+    type: Remove
+  id: 470
+  time: '2026-07-17T01:55:54.0000000+00:00'
+  url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1637
+- author: potatoed6
+  changes:
+  - message: now there is platoon language system, so platoons have their own languages
+    type: Add
+  - message: platoons now can take no english trait. However if their platoon speak
+      english, it will be forced on them.
+    type: Tweak
+  - message: more origins
+    type: Add
+  - message: sister language system. now some languages can understand some of the
+      words of sister languages. you also get a buff for learning sister languages
+    type: Add
+  - message: search and tab menus for language menu
+    type: Add
+  - message: synths now have all languages
+    type: Tweak
+  - message: language learning for humans was nerfed.
+    type: Tweak
+  - message: working joes learning languages
+    type: Fix
+  - message: Xippy cant speak to xenos (hopefully)
+    type: Fix
+  - message: origins now add languages
+    type: Add
+  - message: fixed no english trait not changing your current language.
+    type: Fix
+  - message: :B HI! now sends Hi message to bravo channel instead of emoting.
+    type: Fix
+  - message: trait for not learning any languages
+    type: Add
+  - message: universal recorder is integrated into language system
+    type: Fix
+  id: 471
+  time: '2026-07-17T03:48:03.0000000+00:00'
+  url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1490
+- author: troytroy400
+  changes:
+  - message: LOOC is back. The LHelp test was not worthwhile enough to stay.
+    type: Remove
+  id: 472
+  time: '2026-07-17T05:59:34.0000000+00:00'
+  url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1639
+- author: troytroy400
+  changes:
+  - message: LOOC is back. The LHelp test was not worthwhile enough to stay.
+    type: Remove
+  id: 473
+  time: '2026-07-17T05:59:34.0000000+00:00'
+  url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1639
+- author: troytroy400
+  changes:
+  - message: Added a hair tie system. If your character has hair long enough to be
+      tied back, you can right click your character and tie your hair back into multiple
+      styles. To untie your hair, you just right click and untie.
+    type: Add
+  id: 474
+  time: '2026-07-17T09:36:41.0000000+00:00'
+  url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1640
+- author: troytroy400
+  changes:
+  - message: Added a hair tie system. If your character has hair long enough to be
+      tied back, you can right click your character and tie your hair back into multiple
+      styles. To untie your hair, you just right click and untie.
+    type: Add
+  id: 475
+  time: '2026-07-17T09:36:41.0000000+00:00'
+  url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1640
+- author: toot521
+  changes:
+  - message: Added Altyn-R2M Helmet with parasite resistance, sprite by agentcinnamon
+    type: Add
+  - message: Added Altyn-R2M to UPP Pointman WeaponSpec kit
+    type: Add
+  id: 476
+  time: '2026-07-17T15:03:06.0000000+00:00'
+  url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1641
+- author: toot521
+  changes:
+  - message: Added Altyn-R2M Helmet with parasite resistance, sprite by agentcinnamon
+    type: Add
+  - message: Added Altyn-R2M to UPP Pointman WeaponSpec kit
+    type: Add
+  id: 477
+  time: '2026-07-17T15:03:06.0000000+00:00'
+  url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1641
+- author: TheHellFireo
+  changes:
+  - message: Fixed hands and feet missing from surgery and limb printer options, and
+      stopped extremities from regenerating when parent limbs are reattached.
+    type: Fix
+  id: 478
+  time: '2026-07-17T17:40:43.0000000+00:00'
+  url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1644
+- author: TheHellFireo
+  changes:
+  - message: Fixed hands and feet missing from surgery and limb printer options, and
+      stopped extremities from regenerating when parent limbs are reattached.
+    type: Fix
+  id: 479
+  time: '2026-07-17T17:40:43.0000000+00:00'
+  url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1644
+- author: maertayn
+  changes:
+  - message: Added Vehicle Crewman vendors/vmarkers/accesses
+    type: Map
+  - message: LO matches Logistics (Aux) Tech in Construction/Engineering skill
+    type: Tweak
+  - message: Shovel is now a good Govfor alternative to the Pickaxe tool in destroying
+      fragile rocks (4 hits vs. 3 hits)
+    type: Tweak
+  - message: Vehicle crewman getting opposite faction headsets & Ids for Govfor/Opfor
+    type: Fix
+  - message: K92 Maintenance Jack can now actually perform the service vehicles repair
+      step
+    type: Fix
+  - message: K92-S - a new bulky/strong maintenance jack variant for synths/WJ that
+      acts as an all-round combination repair tool
+    type: Add
+  id: 480
+  time: '2026-07-17T22:00:33.0000000+00:00'
+  url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1645
+- author: maertayn
+  changes:
+  - message: Added Vehicle Crewman vendors/vmarkers/accesses
+    type: Map
+  - message: LO matches Logistics (Aux) Tech in Construction/Engineering skill
+    type: Tweak
+  - message: Shovel is now a good Govfor alternative to the Pickaxe tool in destroying
+      fragile rocks (4 hits vs. 3 hits)
+    type: Tweak
+  - message: Vehicle crewman getting opposite faction headsets & Ids for Govfor/Opfor
+    type: Fix
+  - message: K92 Maintenance Jack can now actually perform the service vehicles repair
+      step
+    type: Fix
+  - message: K92-S - a new bulky/strong maintenance jack variant for synths/WJ that
+      acts as an all-round combination repair tool
+    type: Add
+  id: 481
+  time: '2026-07-17T22:00:33.0000000+00:00'
+  url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1645
+- author: Piticzu
+  changes:
+  - message: Added the Manticore Sentinel strain, a port of TGMC's Sentinel focused
+      on stacking Intoxicated with Toxic Spit and Toxic Slash, then consuming those
+      stacks with Drain Sting.
+    type: Add
+  id: 482
+  time: '2026-07-17T23:25:05.0000000+00:00'
+  url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1642
+- author: toot521
+  changes:
+  - message: Fixed crucial spelling error in the description of the Kramer Rifle
+    type: Fix
+  id: 483
+  time: '2026-07-18T01:16:55.0000000+00:00'
+  url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1649
+- author: TheHellFireo
+  changes:
+  - message: Corrected the Geneva Conventions civilian-rights article number.
+    type: Fix
+  - message: Egg-sac visuals now fall back to the nearest available sprite state instead
+      of showing an error sprite.
+    type: Fix
+  - message: Removed duplicate orbital-law stamps from Orbital Arbiter and Orbital
+      Lawyer loadouts.
+    type: Fix
+  - message: Drone operators can control drones across connected adjacent z-level
+      openings, and drone repair time is corrected.
+    type: Fix
+  - message: The body-zone targeting doll now restores its selected zone after the
+      HUD reloads.
+    type: Fix
+  - message: The corporate security loadout now uses the correct corporate PMC uniform.
+    type: Fix
+  - message: Cancelling a Bulwark reflective shield early now applies its minimum
+      cooldown.
+    type: Fix
+  - message: Burrower stomp can pass through barricades without passing through walls
+      or other protected structures.
+    type: Fix
+  - message: Malformed chat markup now falls back safely instead of crashing chat
+      rendering.
+    type: Fix
+  - message: Stranded xenos are correctly offered eligible burrowed larva through
+      the larva queue.
+    type: Fix
+  - message: Sustained gunfire no longer causes muzzle-flash lighting to flicker or
+      consume shadow-casting light capacity.
+    type: Fix
+  - message: Mortars can fire across connected z-levels when an open launch column
+      exists.
+    type: Fix
+  - message: Sharp projectile mines and sentry IFF now use the correct collision and
+      faction state.
+    type: Fix
+  - message: Cassette audio is owned by and follows the cassette player instead of
+      playing globally.
+    type: Fix
+  - message: Delayed post-round role selection now preserves and processes the selected
+      job.
+    type: Fix
+  - message: Lurker invisibility, leap, and crippling-strike cooldown behavior is
+      corrected.
+    type: Fix
+  - message: Charger lunges no longer destroy structures that are protected from charging.
+    type: Fix
+  - message: Auxiliary Support Synths, Logistics Technicians, Engineering Technicians,
+      Intel and Junior Officers, Nurses, Working Joes, Vehicle Commanders, and Vehicle
+      Crew now join their faction auxiliary squad.
+    type: Fix
+  - message: Working Joes use the correct colony and OPFOR tactical-map icons while
+      retaining their dedicated Working Joe headsets.
+    type: Fix
+  - message: The OPFOR Logistics Technician lobby preview now includes its auxiliary
+      headset.
+    type: Fix
+  - message: Tank computers now label warning-array modules as weapons sensor arrays.
+    type: Fix
+  - message: Colony medical personnel fall back to Civilian payroll when the Medical
+      payroll console is unavailable, preventing missed salaries in Colony Fall and
+      Insurgency.
+    type: Fix
+  id: 484
+  time: '2026-07-18T15:14:45.0000000+00:00'
+  url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1654
+- author: TheHellFireo
+  changes:
+  - message: Replaced the xeno larva queue with an automatic larva pool that asks
+      selected ghosts whether they want the available xeno.
+    type: Add
+  - message: Added persistent per-hive opt-in and opt-out controls to the larva pool
+      menu.
+    type: Add
+  - message: The larva pool menu now explains why a player is currently ineligible
+      and shows their estimated per-hive position.
+    type: Add
+  - message: Opted-out players are skipped by that hive's picker and no longer occupy
+      positions for opted-in players.
+    type: Fix
+  - message: Player-controlled facehuggers retain first claim on larva from hosts
+      they infected.
+    type: Fix
+  - message: Normal xeno deaths reset the pool timer at death, while parasite and
+      lesser-drone transfers preserve pool time and bypass the timer.
+    type: Fix
+  - message: Stranded xenos receive priority for their credited burrowed larva during
+      hijack.
+    type: Fix
+  id: 485
+  time: '2026-07-18T21:51:11.0000000+00:00'
+  url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1655
 Name: CMU
 Order: -1
