@@ -144,7 +144,7 @@ public sealed partial class ANPRCRadioWindow : DefaultWindow
             var label = AddSlotLabelEdit.Text.Trim().ToUpperInvariant();
             if (label.Length > ANPRCRadioComponent.MaxLabelLength)
                 label = label[..ANPRCRadioComponent.MaxLabelLength];
-            if (string.IsNullOrWhiteSpace(label)) label = "NET";
+            if (string.IsNullOrWhiteSpace(label)) label = "СЕТЬ";
             OnAddSlot?.Invoke(label);
             AddSlotPanel.Visible = false;
             AddSlotLabelEdit.Text = string.Empty;
@@ -228,31 +228,31 @@ public sealed partial class ANPRCRadioWindow : DefaultWindow
         var online = state.Enabled && deployed;
         var ready = online && hasAnyActive && state.ActiveSlot >= 0;
 
-        HeaderPowerLabel.Text = state.Enabled ? "PWR: ON" : "PWR: OFF";
+        HeaderPowerLabel.Text = state.Enabled ? "ПИТАНИЕ: ВКЛ" : "ПИТАНИЕ: ВЫКЛ";
         HeaderPowerLabel.FontColorOverride = state.Enabled ? TextGood : TextBad;
 
         if (state.Planted)
         {
-            HeaderLinkLabel.Text = "LINK: RETRANS";
+            HeaderLinkLabel.Text = "СВЯЗЬ: РЕТРАНСЛЯТОР";
             HeaderLinkLabel.FontColorOverride = state.Enabled ? TextGood : TextDim;
         }
         else if (!state.IsEquipped)
         {
-            HeaderLinkLabel.Text = "LINK: NOT WORN";
+            HeaderLinkLabel.Text = "СВЯЗЬ: НЕ НАДЕТА";
             HeaderLinkLabel.FontColorOverride = TextWarn;
         }
         else if (!state.Enabled)
         {
-            HeaderLinkLabel.Text = "LINK: STBY";
+            HeaderLinkLabel.Text = "СВЯЗЬ: ОЖИДАНИЕ";
             HeaderLinkLabel.FontColorOverride = TextDim;
         }
         else
         {
-            HeaderLinkLabel.Text = hasAnyActive ? "LINK: READY" : "LINK: NO NET";
+            HeaderLinkLabel.Text = hasAnyActive ? "СВЯЗЬ: ГОТОВА" : "СВЯЗЬ: НЕТ СЕТИ";
             HeaderLinkLabel.FontColorOverride = hasAnyActive ? TextGood : TextWarn;
         }
 
-        LcdModeLabel.Text = $"MODE: {ModeShort(state.Mode)}";
+        LcdModeLabel.Text = $"РЕЖИМ: {ModeShort(state.Mode)}";
         LcdModeLabel.FontColorOverride = online ? LcdDim : LcdOff;
         CryptoLabel.FontColorOverride = online ? LcdDim : LcdOff;
 
@@ -260,10 +260,10 @@ public sealed partial class ANPRCRadioWindow : DefaultWindow
         {
             var fStr = FormatFreq(activeDynFreq);
             FrequencyLabel.Text = fStr;
-            ChannelNameLabel.Text = "DIRECT FREQ";
-            ChannelIdLabel.Text = $"FREQ: {fStr}";
-            BandLabel.Text = $"BAND: {BandName(activeDynFreq)}";
-            WaveformLabel.Text = "WF: LOS";
+            ChannelNameLabel.Text = "ПРЯМАЯ ЧАСТОТА";
+            ChannelIdLabel.Text = $"ЧАСТОТА: {fStr}";
+            BandLabel.Text = $"ДИАПАЗОН: {BandName(activeDynFreq)}";
+            WaveformLabel.Text = "СИГНАЛ: ПРЯМОЙ";
 
             FrequencyLabel.FontColorOverride = ready ? LcdBright : LcdOff;
             ChannelNameLabel.FontColorOverride = ready ? LcdMid : LcdOff;
@@ -275,9 +275,9 @@ public sealed partial class ANPRCRadioWindow : DefaultWindow
         {
             FrequencyLabel.Text = FormatFreq(PlanFreq(activeProto));
             ChannelNameLabel.Text = activeProto.LocalizedName.ToUpperInvariant();
-            ChannelIdLabel.Text = $"CH: {activeProto.ID}";
-            BandLabel.Text = $"BAND: {BandName(PlanFreq(activeProto))}";
-            WaveformLabel.Text = $"WF: {(activeProto.LongRange ? "SAT" : "LOS")}";
+            ChannelIdLabel.Text = $"КАНАЛ: {activeProto.ID}";
+            BandLabel.Text = $"ДИАПАЗОН: {BandName(PlanFreq(activeProto))}";
+            WaveformLabel.Text = $"СИГНАЛ: {(activeProto.LongRange ? "СПУТНИК" : "ПРЯМОЙ")}";
 
             FrequencyLabel.FontColorOverride = ready ? LcdBright : LcdOff;
             ChannelNameLabel.FontColorOverride = ready ? LcdMid : LcdOff;
@@ -288,10 +288,10 @@ public sealed partial class ANPRCRadioWindow : DefaultWindow
         else
         {
             FrequencyLabel.Text = "-- . ---";
-            ChannelNameLabel.Text = state.ActiveSlot < 0 ? "NO SLOT ACTIVE" : "SLOT EMPTY";
-            ChannelIdLabel.Text = "CH: ---";
-            BandLabel.Text = "BAND: ---";
-            WaveformLabel.Text = "WF: ---";
+            ChannelNameLabel.Text = state.ActiveSlot < 0 ? "НЕТ АКТИВНОЙ ЯЧЕЙКИ" : "ЯЧЕЙКА ПУСТА";
+            ChannelIdLabel.Text = "КАНАЛ: ---";
+            BandLabel.Text = "ДИАПАЗОН: ---";
+            WaveformLabel.Text = "СИГНАЛ: ---";
 
             FrequencyLabel.FontColorOverride = LcdOff;
             ChannelNameLabel.FontColorOverride = LcdOff;
@@ -303,40 +303,40 @@ public sealed partial class ANPRCRadioWindow : DefaultWindow
         if (!online)
         {
             TxIndicator.FontColorOverride = LcdOff;
-            TxLabel.Text = "OFF";
+            TxLabel.Text = "ВЫКЛ";
             TxLabel.FontColorOverride = LcdOff;
         }
         else if (!hasAnyActive)
         {
             TxIndicator.FontColorOverride = LcdWarning;
-            TxLabel.Text = "NO NET";
+            TxLabel.Text = "НЕТ СЕТИ";
             TxLabel.FontColorOverride = LcdWarning;
         }
         else
         {
             TxIndicator.FontColorOverride = LcdBright;
-            TxLabel.Text = state.MonitorEnabled ? "MON" : "STBY";
+            TxLabel.Text = state.MonitorEnabled ? "МОНИТОР" : "ОЖИДАНИЕ";
             TxLabel.FontColorOverride = state.MonitorEnabled ? LcdBright : LcdDim;
         }
 
         if (!deployed)
         {
-            BitStatusLabel.Text = "BIT: NOT SEATED";
+            BitStatusLabel.Text = "ТЕСТ: НЕ НАДЕТА";
             BitStatusLabel.FontColorOverride = LcdWarning;
         }
         else if (!state.Enabled)
         {
-            BitStatusLabel.Text = "BIT: OFFLINE";
+            BitStatusLabel.Text = "ТЕСТ: НЕТ СВЯЗИ";
             BitStatusLabel.FontColorOverride = LcdOff;
         }
         else if (!hasAnyActive)
         {
-            BitStatusLabel.Text = "BIT: NO NET";
+            BitStatusLabel.Text = "ТЕСТ: НЕТ СЕТИ";
             BitStatusLabel.FontColorOverride = LcdWarning;
         }
         else
         {
-            BitStatusLabel.Text = "BIT: PASS";
+            BitStatusLabel.Text = "ТЕСТ: НОРМА";
             BitStatusLabel.FontColorOverride = LcdBright;
         }
 
@@ -344,32 +344,32 @@ public sealed partial class ANPRCRadioWindow : DefaultWindow
         SignalBarsLabel.FontColorOverride = ready ? LcdBright : LcdOff;
 
         var batteryFilled = state.HasBattery ? (int)Math.Round(state.BatteryFraction * 6) : 0;
-        BatteryBarsLabel.Text = state.HasBattery ? Bars(batteryFilled, 6) : "NO CELL";
+        BatteryBarsLabel.Text = state.HasBattery ? Bars(batteryFilled, 6) : "НЕТ БАТАРЕИ";
         BatteryBarsLabel.FontColorOverride = !state.HasBattery ? TextBad
                                             : state.BatteryFraction <= 0.2f ? LcdWarning
                                             : LcdDim;
 
-        AntennaLabel.Text = $"ANT: {state.AntennaLabel}";
+        AntennaLabel.Text = $"АНТ: {state.AntennaLabel}";
         AntennaLabel.FontColorOverride = online ? LcdDim : LcdOff;
 
         if (!deployed)
         {
-            FaultLabel.Text = "FAULT: NOT WORN";
+            FaultLabel.Text = "ОШИБКА: НЕ НАДЕТА";
             FaultLabel.FontColorOverride = TextWarn;
         }
         else if (!state.Enabled)
         {
-            FaultLabel.Text = "FAULT: OFF";
+            FaultLabel.Text = "ОШИБКА: ВЫКЛ";
             FaultLabel.FontColorOverride = TextDim;
         }
         else if (!hasAnyActive)
         {
-            FaultLabel.Text = "FAULT: NO NET";
+            FaultLabel.Text = "ОШИБКА: НЕТ СЕТИ";
             FaultLabel.FontColorOverride = TextWarn;
         }
         else
         {
-            FaultLabel.Text = "FAULT: NONE";
+            FaultLabel.Text = "ОШИБКА: НЕТ";
             FaultLabel.FontColorOverride = TextGood;
         }
 
@@ -381,12 +381,12 @@ public sealed partial class ANPRCRadioWindow : DefaultWindow
         }
         else if (!string.IsNullOrEmpty(state.WearerCallsign))
         {
-            CallsignDisplayLabel.Text = $"{state.WearerCallsign} (AUTO)";
+            CallsignDisplayLabel.Text = $"{state.WearerCallsign} (АВТО)";
             CallsignDisplayLabel.FontColorOverride = TextGood;
         }
         else
         {
-            CallsignDisplayLabel.Text = "UNKNOWN STATION";
+            CallsignDisplayLabel.Text = "НЕИЗВЕСТНАЯ СТАНЦИЯ";
             CallsignDisplayLabel.FontColorOverride = TextDim;
         }
 
@@ -399,11 +399,11 @@ public sealed partial class ANPRCRadioWindow : DefaultWindow
         PresetSummaryLabel.FontColorOverride = slotCount > 0 ? TextDim : TextWarn;
         AddSlotButton.Disabled = slotCount >= ANPRCRadioComponent.MaxSlots || !online;
 
-        ModeButton.Text = $"MODE {ModeShort(state.Mode)}";
-        MonitorButton.Text = state.MonitorEnabled ? "MON ON" : "MON OFF";
-        ScanButton.Text = state.ScanEnabled ? "SCAN ON" : "SCAN OFF";
-        SquelchButton.Text = $"SQL {state.SquelchLevel}";
-        TxPowerButton.Text = $"TX {state.TxPower.Short()}";
+        ModeButton.Text = $"РЕЖИМ {ModeShort(state.Mode)}";
+        MonitorButton.Text = state.MonitorEnabled ? "МОНИТОР ВКЛ" : "МОНИТОР ВЫКЛ";
+        ScanButton.Text = state.ScanEnabled ? "СКАН ВКЛ" : "СКАН ВЫКЛ";
+        SquelchButton.Text = $"ШУМ {state.SquelchLevel}";
+        TxPowerButton.Text = $"ПЕРЕДАЧА {state.TxPower.Short()}";
 
         ModeButton.Disabled = !online;
         MonitorButton.Disabled = !online;
@@ -413,16 +413,16 @@ public sealed partial class ANPRCRadioWindow : DefaultWindow
         MonitorButton.Pressed = state.MonitorEnabled && online;
         ScanButton.Pressed = state.ScanEnabled && online;
 
-        RoleValueLabel.Text = state.Planted ? "RETRANS STATION" : "RTO RELAY";
+        RoleValueLabel.Text = state.Planted ? "СТАНЦИЯ-РЕТРАНСЛЯТОР" : "РЕТРАНСЛЯТОР РТО";
 
-        RelayValueLabel.Text = online && hasAnyActive ? "ANCHOR" : "STBY";
+        RelayValueLabel.Text = online && hasAnyActive ? "ОПОРА" : "ОЖИДАНИЕ";
         RelayValueLabel.FontColorOverride = online && hasAnyActive ? TextGood : TextDim;
 
-        DiagnosticLineA.Text = online && hasAnyActive ? "ANCHOR: ACTIVE"
-                                          : online ? "ANCHOR: STBY"
-                                                                   : "ANCHOR: OFFLINE";
+        DiagnosticLineA.Text = online && hasAnyActive ? "ОПОРА: АКТИВНА"
+                                          : online ? "ОПОРА: ОЖИДАНИЕ"
+                                                                   : "ОПОРА: НЕТ СВЯЗИ";
         DiagnosticLineA.FontColorOverride = online && hasAnyActive ? TextGood : TextDim;
-        DiagnosticLineB.Text = online && hasAnyActive ? "BYPASS: ARMED" : "BYPASS: NO";
+        DiagnosticLineB.Text = online && hasAnyActive ? "ОБХОД: ГОТОВ" : "ОБХОД: НЕТ";
         DiagnosticLineB.FontColorOverride = online && hasAnyActive ? TextGood : TextDim;
 
         RoleValueLabel.FontColorOverride = online ? TextBright : TextDim;
@@ -430,16 +430,16 @@ public sealed partial class ANPRCRadioWindow : DefaultWindow
         var hasFill = !string.IsNullOrEmpty(state.CryptoFaction);
         var secured = hasFill && !state.CryptoStale;
 
-        CryptoStatusLabel.Text = secured ? $"SECURED ({state.CryptoDesignation})"
-                                             : hasFill ? $"STALE ({state.CryptoDesignation})"
-                                                        : "UNSECURED";
+        CryptoStatusLabel.Text = secured ? $"ЗАЩИЩЕНО ({state.CryptoDesignation})"
+                                             : hasFill ? $"УСТАРЕЛО ({state.CryptoDesignation})"
+                                                        : "НЕ ЗАЩИЩЕНО";
         CryptoStatusLabel.FontColorOverride = secured ? TextGood : hasFill ? TextWarn : TextBad;
 
         CryptoFillLabel.Text = hasFill
             ? state.CryptoStale
-                ? $"FILL: {state.CryptoDesignation} ({state.CryptoFaction.ToUpperInvariant()}) - SUPERSEDED, RECRYPTO REQUIRED"
-                : $"FILL: {state.CryptoDesignation} ({state.CryptoFaction.ToUpperInvariant()})"
-            : "FILL: NONE - insert fill card to load";
+                ? $"КЛЮЧ: {state.CryptoDesignation} ({state.CryptoFaction.ToUpperInvariant()}) — УСТАРЕЛ, НУЖНА СМЕНА"
+                : $"КЛЮЧ: {state.CryptoDesignation} ({state.CryptoFaction.ToUpperInvariant()})"
+            : "КЛЮЧ: НЕТ — вставьте карту";
         CryptoFillLabel.FontColorOverride = secured ? TextGood : hasFill ? TextWarn : TextDim;
 
         ZeroizeButton.Disabled = !online || !hasFill;
@@ -455,12 +455,12 @@ public sealed partial class ANPRCRadioWindow : DefaultWindow
             : Loc.GetString("anprc-power-on-button");
 
         var net = hasActiveDynFreq
-            ? $"DIRECT {FormatFreq(activeDynFreq)}"
-            : activeProto?.LocalizedName ?? "No net";
+            ? $"ПРЯМАЯ {FormatFreq(activeDynFreq)}"
+            : activeProto?.LocalizedName ?? "Нет сети";
 
         StatusLabel.Text =
-            $"{(state.Planted ? "PLANTED" : state.IsEquipped ? "EQUIPPED" : "UNEQUIPPED")}" +
-            $" · {(state.Enabled ? "ON" : "OFF")}" +
+            $"{(state.Planted ? "РАЗВЁРНУТА" : state.IsEquipped ? "НАДЕТА" : "НЕ НАДЕТА")}" +
+            $" · {(state.Enabled ? "ВКЛ" : "ВЫКЛ")}" +
             $" · {net}";
     }
 
@@ -478,7 +478,7 @@ public sealed partial class ANPRCRadioWindow : DefaultWindow
         _callsignPresets.AddRange(state.CallsignPresets);
 
         CallsignPresetButton.Clear();
-        CallsignPresetButton.AddItem("PRESETS", 0);
+        CallsignPresetButton.AddItem("ШАБЛОНЫ", 0);
         for (var i = 0; i < _callsignPresets.Count; i++)
         {
             CallsignPresetButton.AddItem(_callsignPresets[i], i + 1);
@@ -502,11 +502,11 @@ public sealed partial class ANPRCRadioWindow : DefaultWindow
 
             string freqText;
             if (state.FrequencyOverrides.TryGetValue(slot, out var dynFreq))
-                freqText = $"{FormatFreq(dynFreq)} MHz · DIRECT";
+                freqText = $"{FormatFreq(dynFreq)} МГц · ПРЯМАЯ";
             else if (state.Presets.TryGetValue(slot, out var ch) && _prototype.TryIndex(ch, out var proto))
-                freqText = $"{FormatFreq(PlanFreq(proto))} MHz · {proto.LocalizedName.ToUpperInvariant()}";
+                freqText = $"{FormatFreq(PlanFreq(proto))} МГц · {proto.LocalizedName.ToUpperInvariant()}";
             else
-                freqText = "--- EMPTY ---";
+                freqText = "--- ПУСТО ---";
 
             var row = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Horizontal, SeparationOverride = 4 };
 
@@ -522,7 +522,7 @@ public sealed partial class ANPRCRadioWindow : DefaultWindow
 
             var tuneBtn = new Button
             {
-                Text = "TUNE",
+                Text = "НАСТР.",
                 MinWidth = 52,
                 Disabled = !online,
             };
@@ -530,7 +530,7 @@ public sealed partial class ANPRCRadioWindow : DefaultWindow
 
             var delBtn = new Button
             {
-                Text = "DEL",
+                Text = "УДАЛ.",
                 MinWidth = 44,
             };
             delBtn.OnPressed += _ => OnDeleteSlot?.Invoke(capturedSlot);
@@ -546,7 +546,7 @@ public sealed partial class ANPRCRadioWindow : DefaultWindow
     {
         _entryTargetSlot = slot;
         var label = state.SlotLabels.TryGetValue(slot, out var lbl) ? lbl : $"P{slot + 1}";
-        SlotEntryHeaderLabel.Text = $"TUNE [{label}]:";
+        SlotEntryHeaderLabel.Text = $"НАСТРОЙКА [{label}]:";
         SlotEntryPanel.Visible = true;
         EntryFreqLineEdit.Text = string.Empty;
         ShowEntryTab(EntryTab.Freq);
@@ -600,7 +600,7 @@ public sealed partial class ANPRCRadioWindow : DefaultWindow
             var capturedProto = proto;
             var btn = new Button
             {
-                Text = $"{proto.LocalizedName.ToUpperInvariant()}  -  {FormatFreq(PlanFreq(proto))} MHz",
+                Text = $"{proto.LocalizedName.ToUpperInvariant()}  -  {FormatFreq(PlanFreq(proto))} МГц",
                 HorizontalExpand = true,
             };
             btn.OnPressed += _ =>
@@ -647,14 +647,14 @@ public sealed partial class ANPRCRadioWindow : DefaultWindow
 
         var filtered = _netLogChannelFilter != null || _netLogSearchFilter.Length > 0;
         NetLogCountLabel.Text = filtered
-            ? $"{shown}/{state.NetLog.Count} entries"
-            : $"{state.NetLog.Count} entries";
+            ? $"Записей: {shown}/{state.NetLog.Count}"
+            : $"Записей: {state.NetLog.Count}";
 
         if (filtered && shown == 0 && state.NetLog.Count > 0)
         {
             NetLogContainer.AddChild(new Label
             {
-                Text = "NO ENTRIES MATCH FILTER",
+                Text = "НЕТ ЗАПИСЕЙ ПО ФИЛЬТРУ",
                 FontColorOverride = TextDim,
             });
         }
@@ -687,7 +687,7 @@ public sealed partial class ANPRCRadioWindow : DefaultWindow
         _netLogChannels.AddRange(channels);
 
         NetLogChannelFilter.Clear();
-        NetLogChannelFilter.AddItem("ALL NETS", 0);
+        NetLogChannelFilter.AddItem("ВСЕ СЕТИ", 0);
         for (var i = 0; i < _netLogChannels.Count; i++)
         {
             NetLogChannelFilter.AddItem(_netLogChannels[i], i + 1);

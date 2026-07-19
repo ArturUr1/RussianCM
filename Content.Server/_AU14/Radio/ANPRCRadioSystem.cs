@@ -162,7 +162,7 @@ public sealed partial class ANPRCRadioSystem : EntitySystem
                 radio,
                 _timing.CurTime.TotalSeconds,
                 GetSenderDisplayName(args.MessageSource),
-                $"{args.Channel.LocalizedName} ({TunableFrequencySystem.FormatFreq(_freqPlan.GetFrequency(args.Channel))} MHz)",
+                    $"{args.Channel.LocalizedName} ({TunableFrequencySystem.FormatFreq(_freqPlan.GetFrequency(args.Channel))} МГц)",
                 heard);
 
             UpdateBuiState(ent);

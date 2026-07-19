@@ -295,7 +295,7 @@ public sealed partial class ANPRCRadioSystem
             ? battery.CurrentCharge / battery.MaxCharge
             : 0f;
 
-        var antennaLabel = "NONE";
+        var antennaLabel = "НЕТ";
 
         if (_itemSlots.TryGetSlot(ent.Owner, AntennaSlotId, out var antennaSlot) &&
             TryComp(antennaSlot.Item, out ANPRCAntennaComponent? antenna))

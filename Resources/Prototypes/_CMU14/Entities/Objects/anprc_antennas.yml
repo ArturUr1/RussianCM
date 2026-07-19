@@ -20,7 +20,7 @@
     state: flare_unlit
     color: "#6B7A6B"
   - type: ANPRCAntenna
-    label: WHIP
+    label: ШТЫРЬ
     fullRange: 30
     partialRange: 45
     requiresStationary: false
@@ -37,7 +37,7 @@
     sprite: _RMC14/Objects/Devices/vulture_spotter.rsi
     state: vulture_tripod
   - type: ANPRCAntenna
-    label: MAST
+    label: МАЧТА
     fullRange: 55
     partialRange: 80
     requiresStationary: true

@@ -23,8 +23,8 @@ public sealed partial class ANPRCGarbleSystem : EntitySystem
     [Dependency] private IConfigurationManager _config = default!;
 
     private static readonly string[] LightNoise = ["~~~~", "~~~~", "~~~~", "---"];
-    private static readonly string[] MediumNoise = ["~~~~", "*static*", "kzzkt", "---", "~~~~"];
-    private static readonly string[] HeavyNoise = ["*static*", "kzzkt", "fzzzt", "~~~~", "krrkk", "----", "*static*"];
+    private static readonly string[] MediumNoise = ["~~~~", "*помехи*", "кззкт", "---", "~~~~"];
+    private static readonly string[] HeavyNoise = ["*помехи*", "кззкт", "фзззт", "~~~~", "крркк", "----", "*помехи*"];
 
     private GameTick _jamCacheTick;
     private readonly Dictionary<EntityUid, RadioJamIntensity> _jamCache = new();

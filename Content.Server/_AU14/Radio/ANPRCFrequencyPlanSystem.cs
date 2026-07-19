@@ -142,8 +142,8 @@ public sealed partial class ANPRCFrequencyPlanSystem : EntitySystem
     {
         var sb = new StringBuilder();
 
-        sb.AppendLine("[head=2]SIGNAL OPERATING INSTRUCTIONS[/head]");
-        sb.AppendLine("[head=3]AN/PRC-117G NET FREQUENCY ASSIGNMENTS[/head]");
+        sb.AppendLine("[head=2]ИНСТРУКЦИЯ ПО ОРГАНИЗАЦИИ СВЯЗИ[/head]");
+        sb.AppendLine("[head=3]ЧАСТОТЫ СЕТЕЙ AN/PRC-117G[/head]");
         sb.AppendLine();
 
         var channels = _prototype.EnumeratePrototypes<RadioChannelPrototype>()
@@ -153,13 +153,13 @@ public sealed partial class ANPRCFrequencyPlanSystem : EntitySystem
 
         foreach (var channel in channels)
         {
-            sb.AppendLine($"[bold]{channel.LocalizedName}[/bold] - {TunableFrequencySystem.FormatFreq(GetFrequency(channel))} MHz");
+            sb.AppendLine($"[bold]{channel.LocalizedName}[/bold] - {TunableFrequencySystem.FormatFreq(GetFrequency(channel))} МГц");
         }
 
         sb.AppendLine();
-        sb.AppendLine("Enter a frequency in the radio panel's FREQ tab (with or without the dot, 2592 and 2.592 are the same) to assign the matching net to a preset slot.");
+        sb.AppendLine("Введите частоту во вкладке «ЧАСТОТА» (с точкой или без неё: 2592 и 2.592 равнозначны), чтобы назначить сеть ячейке.");
         sb.AppendLine();
-        sb.Append("[italic]COMSEC NOTICE: This card is a controlled document. Destroy before capture. Frequencies are assigned per operation and expire with it.[/italic]");
+        sb.Append("[italic]COMSEC: контролируемый документ. Уничтожить при угрозе захвата. Частоты назначаются на операцию и перестают действовать после её завершения.[/italic]");
 
         return sb.ToString();
     }

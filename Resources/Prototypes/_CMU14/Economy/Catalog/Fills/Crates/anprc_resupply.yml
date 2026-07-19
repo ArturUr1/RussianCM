@@ -1,7 +1,7 @@
 - type: entity
   parent: RMCCrateBase
   id: ANPRCFillCardResupplyCrateGOVFOR
-  name: COMSEC fill card resupply crate (GOVFOR)
+  name: ящик карт ключей COMSEC (GOVFOR)
   components:
   - type: StorageFill
     contents:
@@ -11,7 +11,7 @@
 - type: entity
   parent: RMCCrateBase
   id: ANPRCFillCardResupplyCrateOPFOR
-  name: COMSEC fill card resupply crate (OPFOR)
+  name: ящик карт ключей COMSEC (OPFOR)
   components:
   - type: StorageFill
     contents:
@@ -21,7 +21,7 @@
 - type: entity
   parent: RMCCrateBase
   id: ANPRCRadioResupplyCrateGOVFOR
-  name: AN/PRC-117G resupply crate (GOVFOR)
+  name: ящик снабжения AN/PRC-117G (GOVFOR)
   components:
   - type: StorageFill
     contents:
@@ -33,7 +33,7 @@
 - type: entity
   parent: RMCCrateBase
   id: ANPRCRadioResupplyCrateOPFOR
-  name: AN/PRC-117G resupply crate (OPFOR)
+  name: ящик снабжения AN/PRC-117G (OPFOR)
   components:
   - type: StorageFill
     contents:

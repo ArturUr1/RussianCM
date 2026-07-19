@@ -49,12 +49,12 @@
   - type: ItemSlots
     slots:
       fill_card:
-        name: COMSEC fill card
+        name: карта ключа COMSEC
         whitelist:
           components:
           - ANPRCFillCard
       antenna:
-        name: antenna
+        name: антенна
         whitelist:
           components:
           - ANPRCAntenna

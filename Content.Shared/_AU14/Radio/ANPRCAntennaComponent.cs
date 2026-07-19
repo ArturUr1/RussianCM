@@ -6,7 +6,7 @@ namespace Content.Shared._AU14.Radio;
 public sealed partial class ANPRCAntennaComponent : Component
 {
     [DataField, AutoNetworkedField]
-    public string Label = "WHIP";
+    public string Label = "ШТЫРЬ";
 
     [DataField, AutoNetworkedField]
     public float FullRange = 30f;

@@ -19,11 +19,11 @@
         <BoxContainer Orientation="Horizontal" Margin="6,4" SeparationOverride="6">
           <BoxContainer Orientation="Vertical" HorizontalExpand="True" SeparationOverride="1">
             <Label Text="AN/PRC-117G" FontColorOverride="#C8D2E8" />
-            <Label Text="RTO MANPACK RELAY" FontColorOverride="#687A9A" />
+            <Label Text="РАНЦЕВЫЙ РЕТРАНСЛЯТОР РТО" FontColorOverride="#687A9A" />
           </BoxContainer>
           <BoxContainer Orientation="Vertical" SeparationOverride="1">
-            <Label Name="HeaderPowerLabel" Text="PWR: ---"  FontColorOverride="#687A9A" />
-            <Label Name="HeaderLinkLabel"  Text="LINK: ---" FontColorOverride="#687A9A" />
+            <Label Name="HeaderPowerLabel" Text="ПИТАНИЕ: ---"  FontColorOverride="#687A9A" />
+            <Label Name="HeaderLinkLabel"  Text="СВЯЗЬ: ---" FontColorOverride="#687A9A" />
           </BoxContainer>
         </BoxContainer>
       </PanelContainer>
@@ -38,37 +38,37 @@
             </PanelContainer.PanelOverride>
             <BoxContainer Orientation="Vertical" Margin="8,6" SeparationOverride="3">
               <BoxContainer Orientation="Horizontal" SeparationOverride="5">
-                <Label Name="LcdModeLabel"  Text="MODE: FH"  FontColorOverride="#4A7A55" />
+                <Label Name="LcdModeLabel"  Text="РЕЖИМ: FH"  FontColorOverride="#4A7A55" />
                 <Control HorizontalExpand="True" />
                 <Label Name="TxIndicator"   Text="●"        FontColorOverride="#1E4A2E" />
-                <Label Name="TxLabel"       Text="OFF"      FontColorOverride="#1E4A2E" />
-                <Label Name="CryptoLabel"   Text="SEC"      FontColorOverride="#4A7A55" />
+                <Label Name="TxLabel"       Text="ВЫКЛ"      FontColorOverride="#1E4A2E" />
+                <Label Name="CryptoLabel"   Text="ЗАЩ"      FontColorOverride="#4A7A55" />
               </BoxContainer>
               <Label Name="FrequencyLabel"   Text="-- . ---"      FontColorOverride="#1E4A2E" />
-              <Label Name="ChannelNameLabel" Text="NO NET LOADED" FontColorOverride="#1E4A2E" />
+              <Label Name="ChannelNameLabel" Text="СЕТЬ НЕ ЗАГРУЖЕНА" FontColorOverride="#1E4A2E" />
               <BoxContainer Orientation="Horizontal" SeparationOverride="6">
-                <Label Name="ChannelIdLabel" Text="CH: ---"   FontColorOverride="#4A7A55" HorizontalExpand="True" />
-                <Label Name="BandLabel"      Text="BAND: ---" FontColorOverride="#4A7A55" />
-                <Label Name="WaveformLabel"  Text="WF: ---"   FontColorOverride="#4A7A55" />
+                <Label Name="ChannelIdLabel" Text="КАНАЛ: ---"   FontColorOverride="#4A7A55" HorizontalExpand="True" />
+                <Label Name="BandLabel"      Text="ДИАПАЗОН: ---" FontColorOverride="#4A7A55" />
+                <Label Name="WaveformLabel"  Text="СИГНАЛ: ---"   FontColorOverride="#4A7A55" />
               </BoxContainer>
               <BoxContainer Orientation="Horizontal" SeparationOverride="6" Margin="0,3,0,0">
-                <Label Text="SIG" FontColorOverride="#4A7A55" />
+                <Label Text="СИГ" FontColorOverride="#4A7A55" />
                 <Label Name="SignalBarsLabel"  Text="░░░░░░░░" FontColorOverride="#1E4A2E" HorizontalExpand="True" />
-                <Label Text="BAT" FontColorOverride="#4A7A55" />
+                <Label Text="БАТ" FontColorOverride="#4A7A55" />
                 <Label Name="BatteryBarsLabel" Text="░░░░░░"   FontColorOverride="#1E4A2E" />
               </BoxContainer>
               <BoxContainer Orientation="Horizontal" SeparationOverride="6">
-                <Label Name="BitStatusLabel" Text="BIT: OFFLINE" FontColorOverride="#4A7A55" HorizontalExpand="True" />
-                <Label Name="AntennaLabel"   Text="ANT: ---"     FontColorOverride="#4A7A55" HorizontalExpand="True" />
-                <Label Name="FaultLabel"     Text="FAULT: NONE"  FontColorOverride="#687A9A" />
+                <Label Name="BitStatusLabel" Text="ТЕСТ: НЕТ СВЯЗИ" FontColorOverride="#4A7A55" HorizontalExpand="True" />
+                <Label Name="AntennaLabel"   Text="АНТ: ---"     FontColorOverride="#4A7A55" HorizontalExpand="True" />
+                <Label Name="FaultLabel"     Text="ОШИБКА: НЕТ"  FontColorOverride="#687A9A" />
               </BoxContainer>
             </BoxContainer>
           </PanelContainer>
 
           <!-- Callsign -->
           <BoxContainer Orientation="Horizontal" Margin="2,1,2,0">
-            <Label Text="CALLSIGN" FontColorOverride="#A9C3E8" HorizontalExpand="True" />
-            <Label Name="CallsignDisplayLabel" Text="NOT SET" FontColorOverride="#687A9A" />
+            <Label Text="ПОЗЫВНОЙ" FontColorOverride="#A9C3E8" HorizontalExpand="True" />
+            <Label Name="CallsignDisplayLabel" Text="НЕ ЗАДАН" FontColorOverride="#687A9A" />
           </BoxContainer>
           <PanelContainer>
             <PanelContainer.PanelOverride>
@@ -79,16 +79,16 @@
                 <OptionButton Name="CallsignPresetButton" MinWidth="110" />
                 <LineEdit Name="CallsignLineEdit"
                           HorizontalExpand="True"
-                          PlaceHolder="Max 16 chars (e.g. LIMA-6)" />
-                <Button Name="CallsignSetButton" Text="SET" MinWidth="48" />
+                          PlaceHolder="До 16 знаков (например LIMA-6)" />
+                <Button Name="CallsignSetButton" Text="ЗАДАТЬ" MinWidth="48" />
               </BoxContainer>
-              <Label Text="Station override. Blank = your assigned callsign (AUTO). SET empty to clear." FontColorOverride="#4A7A55" />
+              <Label Text="Позывной станции. Пусто — назначенный автоматически; задайте пустое значение для сброса." FontColorOverride="#4A7A55" />
             </BoxContainer>
           </PanelContainer>
 
           <!-- Preset slots -->
           <BoxContainer Orientation="Horizontal" Margin="2,1,2,0">
-            <Label Text="PRESET NETS" FontColorOverride="#A9C3E8" HorizontalExpand="True" />
+            <Label Text="ЯЧЕЙКИ СЕТЕЙ" FontColorOverride="#A9C3E8" HorizontalExpand="True" />
             <Label Name="PresetSummaryLabel" Text="0/4" FontColorOverride="#687A9A" />
           </BoxContainer>
 
@@ -101,9 +101,9 @@
               <BoxContainer Name="SlotListContainer" Orientation="Vertical" SeparationOverride="3" />
               <!-- ADD button row -->
               <BoxContainer Orientation="Horizontal" SeparationOverride="4">
-                <Button Name="AddSlotButton" Text="+ ADD NET" HorizontalExpand="True" />
+                <Button Name="AddSlotButton" Text="+ ДОБАВИТЬ СЕТЬ" HorizontalExpand="True" />
               </BoxContainer>
-              <Label Text=":r transmits on the selected net." FontColorOverride="#4A7A55" />
+              <Label Text=":r передаёт в выбранной сети." FontColorOverride="#4A7A55" />
             </BoxContainer>
           </PanelContainer>
 
@@ -113,13 +113,13 @@
               <gfx:StyleBoxFlat BackgroundColor="#0E1A10" BorderColor="#245236" BorderThickness="2" />
             </PanelContainer.PanelOverride>
             <BoxContainer Orientation="Vertical" Margin="6,5" SeparationOverride="4">
-              <Label Text="NEW NET LABEL:" FontColorOverride="#A9C3E8" />
+              <Label Text="МЕТКА НОВОЙ СЕТИ:" FontColorOverride="#A9C3E8" />
               <BoxContainer Orientation="Horizontal" SeparationOverride="4">
                 <LineEdit Name="AddSlotLabelEdit"
                           HorizontalExpand="True"
-                          PlaceHolder="Max 8 chars (e.g. CMD)" />
-                <Button Name="AddSlotConfirmButton" Text="ADD"    MinWidth="48" />
-                <Button Name="AddSlotCancelButton"  Text="CANCEL" MinWidth="60" />
+                          PlaceHolder="До 8 знаков (например CMD)" />
+                <Button Name="AddSlotConfirmButton" Text="ДОБАВИТЬ"    MinWidth="48" />
+                <Button Name="AddSlotCancelButton"  Text="ОТМЕНА" MinWidth="60" />
               </BoxContainer>
             </BoxContainer>
           </PanelContainer>
@@ -130,21 +130,21 @@
               <gfx:StyleBoxFlat BackgroundColor="#0E1A10" BorderColor="#245236" BorderThickness="2" />
             </PanelContainer.PanelOverride>
             <BoxContainer Orientation="Vertical" Margin="6,5" SeparationOverride="4">
-              <Label Name="SlotEntryHeaderLabel" Text="TUNE SLOT:" FontColorOverride="#A9C3E8" />
+              <Label Name="SlotEntryHeaderLabel" Text="НАСТРОЙКА ЯЧЕЙКИ:" FontColorOverride="#A9C3E8" />
 
               <!-- Tab buttons -->
               <BoxContainer Orientation="Horizontal" SeparationOverride="4">
-                <Button Name="EntryTabFreqButton" Text="FREQ"  HorizontalExpand="True" />
-                <Button Name="EntryTabNetButton"  Text="NET"   HorizontalExpand="True" />
-                <Button Name="EntryTabClearButton" Text="CLEAR" HorizontalExpand="True" />
+                <Button Name="EntryTabFreqButton" Text="ЧАСТОТА"  HorizontalExpand="True" />
+                <Button Name="EntryTabNetButton"  Text="СЕТЬ"   HorizontalExpand="True" />
+                <Button Name="EntryTabClearButton" Text="ОЧИСТИТЬ" HorizontalExpand="True" />
               </BoxContainer>
 
               <!-- FREQ tab content -->
               <BoxContainer Name="EntryFreqPanel" Orientation="Horizontal" SeparationOverride="4">
                 <LineEdit Name="EntryFreqLineEdit"
                           HorizontalExpand="True"
-                          PlaceHolder="e.g. 1606 or 1.606" />
-                <Button Name="EntryFreqConfirmButton" Text="SET"    MinWidth="48" />
+                          PlaceHolder="например, 1606 или 1.606" />
+                <Button Name="EntryFreqConfirmButton" Text="ЗАДАТЬ"    MinWidth="48" />
               </BoxContainer>
 
               <!-- NET tab content: scrollable channel list -->
@@ -152,7 +152,7 @@
                 <BoxContainer Name="EntryNetList" Orientation="Vertical" SeparationOverride="2" />
               </ScrollContainer>
 
-              <Button Name="SlotEntryCloseButton" Text="CLOSE" />
+              <Button Name="SlotEntryCloseButton" Text="ЗАКРЫТЬ" />
             </BoxContainer>
           </PanelContainer>
 
@@ -163,24 +163,24 @@
             </PanelContainer.PanelOverride>
             <BoxContainer Orientation="Vertical" Margin="6,5" SeparationOverride="4">
               <BoxContainer Orientation="Horizontal" SeparationOverride="4">
-                <Button Name="ModeButton"    HorizontalExpand="True" Text="MODE FH"  />
-                <Button Name="MonitorButton" HorizontalExpand="True" Text="MON OFF"  />
-                <Button Name="ScanButton"    HorizontalExpand="True" Text="SCAN OFF" />
-                <Button Name="SquelchButton" HorizontalExpand="True" Text="SQL 3"    />
-                <Button Name="TxPowerButton" HorizontalExpand="True" Text="TX MED"   />
+                <Button Name="ModeButton"    HorizontalExpand="True" Text="РЕЖИМ FH"  />
+                <Button Name="MonitorButton" HorizontalExpand="True" Text="МОНИТОР ВЫКЛ"  />
+                <Button Name="ScanButton"    HorizontalExpand="True" Text="СКАН ВЫКЛ" />
+                <Button Name="SquelchButton" HorizontalExpand="True" Text="ШУМ 3"    />
+                <Button Name="TxPowerButton" HorizontalExpand="True" Text="ПЕРЕДАЧА СР"   />
               </BoxContainer>
               <BoxContainer Orientation="Horizontal" SeparationOverride="6">
-                <Label Text="ROLE"  FontColorOverride="#687A9A" />
-                <Label Name="RoleValueLabel"  Text="RTO RELAY" FontColorOverride="#C8D2E8" HorizontalExpand="True" />
-                <Label Text="RELAY" FontColorOverride="#687A9A" />
-                <Label Name="RelayValueLabel" Text="STBY"      FontColorOverride="#C8D2E8" />
+                <Label Text="РОЛЬ"  FontColorOverride="#687A9A" />
+                <Label Name="RoleValueLabel"  Text="РЕТРАНСЛЯТОР РТО" FontColorOverride="#C8D2E8" HorizontalExpand="True" />
+                <Label Text="РЕТР." FontColorOverride="#687A9A" />
+                <Label Name="RelayValueLabel" Text="ОЖИДАНИЕ"      FontColorOverride="#C8D2E8" />
               </BoxContainer>
               <BoxContainer Orientation="Horizontal" SeparationOverride="6">
-                <Label Name="DiagnosticLineA" Text="ANCHOR: OFFLINE" FontColorOverride="#687A9A" HorizontalExpand="True" />
-                <Label Name="DiagnosticLineB" Text="BYPASS: NO"      FontColorOverride="#687A9A" />
+                <Label Name="DiagnosticLineA" Text="ОПОРА: НЕТ СВЯЗИ" FontColorOverride="#687A9A" HorizontalExpand="True" />
+                <Label Name="DiagnosticLineB" Text="ОБХОД: НЕТ"      FontColorOverride="#687A9A" />
               </BoxContainer>
               <BoxContainer Orientation="Horizontal" SeparationOverride="4" Margin="0,3,0,0">
-                <Button Name="RadioCheckButton" Text="RADIO CHECK" HorizontalExpand="True" />
+                <Button Name="RadioCheckButton" Text="ПРОВЕРКА СВЯЗИ" HorizontalExpand="True" />
               </BoxContainer>
             </BoxContainer>
           </PanelContainer>
@@ -188,33 +188,33 @@
           <!-- COMSEC -->
           <BoxContainer Orientation="Horizontal" Margin="2,1,2,0">
             <Label Text="COMSEC" FontColorOverride="#A9C3E8" HorizontalExpand="True" />
-            <Label Name="CryptoStatusLabel" Text="UNSECURED" FontColorOverride="#D65A5A" />
+            <Label Name="CryptoStatusLabel" Text="НЕ ЗАЩИЩЕНО" FontColorOverride="#D65A5A" />
           </BoxContainer>
           <PanelContainer>
             <PanelContainer.PanelOverride>
               <gfx:StyleBoxFlat BackgroundColor="#17181D" BorderColor="#3D4059" BorderThickness="1" />
             </PanelContainer.PanelOverride>
             <BoxContainer Orientation="Vertical" Margin="6,5" SeparationOverride="4">
-              <Label Name="CryptoFillLabel" Text="FILL: NONE - insert fill card to load" FontColorOverride="#687A9A" />
+              <Label Name="CryptoFillLabel" Text="КЛЮЧ: НЕТ — вставьте карту" FontColorOverride="#687A9A" />
               <BoxContainer Orientation="Horizontal" SeparationOverride="4">
-                <Button Name="ZeroizeButton"  Text="ZEROIZE" HorizontalExpand="True" StyleClasses="Caution" />
-                <Button Name="DestroyButton"  Text="DESTROY" HorizontalExpand="True" StyleClasses="Caution" />
+                <Button Name="ZeroizeButton"  Text="ОБНУЛИТЬ" HorizontalExpand="True" StyleClasses="Caution" />
+                <Button Name="DestroyButton"  Text="УНИЧТОЖИТЬ" HorizontalExpand="True" StyleClasses="Caution" />
               </BoxContainer>
-              <Button Name="RecryptoButton" Text="ORDER RECRYPTO - SUPERSEDE FACTION FILL" StyleClasses="Caution" />
+              <Button Name="RecryptoButton" Text="ПРИКАЗАТЬ СМЕНУ КЛЮЧЕЙ ФРАКЦИИ" StyleClasses="Caution" />
             </BoxContainer>
           </PanelContainer>
 
           <!-- Net log -->
           <BoxContainer Orientation="Horizontal" Margin="2,1,2,0">
-            <Label Text="NET LOG" FontColorOverride="#A9C3E8" HorizontalExpand="True" />
-            <Label Name="NetLogCountLabel" Text="0 entries" FontColorOverride="#687A9A" />
+            <Label Text="ЖУРНАЛ СЕТИ" FontColorOverride="#A9C3E8" HorizontalExpand="True" />
+            <Label Name="NetLogCountLabel" Text="Записей: 0" FontColorOverride="#687A9A" />
           </BoxContainer>
           <BoxContainer Orientation="Horizontal" SeparationOverride="4">
             <OptionButton Name="NetLogChannelFilter" MinWidth="120" />
             <LineEdit Name="NetLogSearchEdit"
                       HorizontalExpand="True"
-                      PlaceHolder="Filter sender / text" />
-            <Button Name="NetLogFilterClearButton" Text="CLR" MinWidth="44" />
+                      PlaceHolder="Фильтр по отправителю или тексту" />
+            <Button Name="NetLogFilterClearButton" Text="СБРОС" MinWidth="44" />
           </BoxContainer>
           <PanelContainer>
             <PanelContainer.PanelOverride>

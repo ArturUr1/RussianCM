@@ -210,7 +210,7 @@ public sealed partial class TunableFrequencySystem : EntitySystem
                             "anprc-scan-switched",
                             ("slot", slot + 1),
                             ("label", radio.SlotLabels.TryGetValue(slot, out var label) ? label : $"P{slot + 1}"),
-                            ("channel", $"{FormatFreq(frequency)} MHz")),
+                            ("channel", $"{FormatFreq(frequency)} МГц")),
                         wearer);
 
                     break;
@@ -379,9 +379,9 @@ public sealed partial class TunableFrequencySystem : EntitySystem
         var senderName = FormattedMessage.EscapeText(senderNameOverride ?? Name(sender));
         var messageText = FormattedMessage.EscapeText(message);
 
-        var wrapped = $"[color=#5B9BD5][bold]FREQ {frequencyText}[/bold][/color] " +
+        var wrapped = $"[color=#5B9BD5][bold]ЧАСТОТА {frequencyText}[/bold][/color] " +
                       $"[color=#C8D2E8]{senderName}[/color] " +
-                      $"says, \"{messageText}\"";
+                      $"говорит: «{messageText}»";
 
         return new ChatMessage(
             ChatChannel.Radio,
@@ -392,8 +392,8 @@ public sealed partial class TunableFrequencySystem : EntitySystem
             display: new ChatDisplayMetadata(
                 ChatDisplayKind.Radio,
                 senderName: senderName,
-                verb: "says",
-                channelLabel: $"FREQ {frequencyText}",
+                verb: "говорит",
+                channelLabel: $"ЧАСТОТА {frequencyText}",
                 quoteBody: true,
                 accentColor: Color.FromHex("#5B9BD5")));
     }

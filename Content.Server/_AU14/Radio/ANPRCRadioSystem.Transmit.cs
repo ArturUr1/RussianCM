@@ -175,7 +175,7 @@ public sealed partial class ANPRCRadioSystem
                     logRadio,
                     _timing.CurTime.TotalSeconds,
                     logName,
-                    $"{args.Channel.LocalizedName} ({TunableFrequencySystem.FormatFreq(_freqPlan.GetFrequency(args.Channel))} MHz)",
+                    $"{args.Channel.LocalizedName} ({TunableFrequencySystem.FormatFreq(_freqPlan.GetFrequency(args.Channel))} МГц)",
                     args.Message);
 
                 UpdateBuiState(new Entity<ANPRCRadioComponent>(wearing.Radio, logRadio));
@@ -225,7 +225,7 @@ public sealed partial class ANPRCRadioSystem
                 radio,
                 _timing.CurTime.TotalSeconds,
                 senderName,
-                $"{TunableFrequencySystem.FormatFreq(frequency)} MHz",
+                $"{TunableFrequencySystem.FormatFreq(frequency)} МГц",
                 outMessage);
 
             UpdateBuiState(pack);
@@ -304,7 +304,7 @@ public sealed partial class ANPRCRadioSystem
             radio,
             _timing.CurTime.TotalSeconds,
             senderName,
-            $"{channel.LocalizedName} ({TunableFrequencySystem.FormatFreq(_freqPlan.GetFrequency(channel))} MHz)",
+                $"{channel.LocalizedName} ({TunableFrequencySystem.FormatFreq(_freqPlan.GetFrequency(channel))} МГц)",
             outMessage);
 
         UpdateBuiState(pack);
@@ -475,14 +475,14 @@ public sealed partial class ANPRCRadioSystem
     {
         return direction switch
         {
-            Direction.North => "N",
-            Direction.NorthEast => "NE",
-            Direction.East => "E",
-            Direction.SouthEast => "SE",
-            Direction.South => "S",
-            Direction.SouthWest => "SW",
-            Direction.West => "W",
-            Direction.NorthWest => "NW",
+            Direction.North => "С",
+            Direction.NorthEast => "СВ",
+            Direction.East => "В",
+            Direction.SouthEast => "ЮВ",
+            Direction.South => "Ю",
+            Direction.SouthWest => "ЮЗ",
+            Direction.West => "З",
+            Direction.NorthWest => "СЗ",
             _ => "?"
         };
     }

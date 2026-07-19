@@ -64,9 +64,9 @@ public static class RadioTxPowerExtensions
 
     public static string Short(this RadioTxPower power) => power switch
     {
-        RadioTxPower.Low => "LO",
-        RadioTxPower.High => "HI",
-        _ => "MED",
+        RadioTxPower.Low => "НИЗК",
+        RadioTxPower.High => "ВЫС",
+        _ => "СР",
     };
 }
 
