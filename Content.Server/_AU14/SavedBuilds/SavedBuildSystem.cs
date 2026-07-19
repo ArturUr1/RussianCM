@@ -66,6 +66,7 @@ public sealed partial class SavedBuildSystem : EntitySystem
     [Dependency] private ISharedAdminLogManager _adminLog = default!;
     [Dependency] private CMUZLevelsSystem _zLevels = default!;
     [Dependency] private ZLevelBuildingSystem _zBuilding = default!;
+    [Dependency] private ZStairSystem _zStairs = default!;
     [Dependency] private SharedMapSystem _map = default!;
     [Dependency] private IPrototypeManager _prototype = default!;
     [Dependency] private IComponentFactory _componentFactory = default!;
@@ -149,6 +150,13 @@ public sealed partial class SavedBuildSystem : EntitySystem
             return;
         }
 
+        if (!HasValidZBounds(root))
+        {
+            Log.Warning($"{session.Name} sent saved build '{id}' with a malformed or out-of-range z offset.");
+            _popup.PopupEntity(Loc.GetString("saved-build-error-load"), user, user);
+            return;
+        }
+
         // "Place at original location": resolve the original grid + anchor and place there, unrotated.
         if (atOriginal)
         {
@@ -175,18 +183,37 @@ public sealed partial class SavedBuildSystem : EntitySystem
 
         var anchor = ReadAnchor(root);
         var savedTiles = ReadSavedTiles(root);
-        var placedTiles = PlaceSavedTiles(savedTiles, targetMapUid, gridUid, targetMap, rotation);
+        if (!TryPlanSavedTiles(savedTiles, targetMapUid, gridUid, targetMap, rotation, out var tilePlan) ||
+            !PreflightEntityLevels(root, targetMapUid, gridUid, targetMap, rotation))
+        {
+            _popup.PopupEntity(Loc.GetString("saved-build-error-load"), user, user);
+            return;
+        }
+
         var entityCount = ReadMetaInt(root, "entityCount");
 
         if (entityCount <= 0)
         {
+            int tileOnlyCount;
+            try
+            {
+                tileOnlyCount = ApplyPlannedTiles(tilePlan);
+            }
+            catch (Exception e)
+            {
+                Log.Error($"Failed to apply saved-build tiles '{id}' for {session.Name}: {e}");
+                _popup.PopupEntity(Loc.GetString("saved-build-error-load"), user, user);
+                return;
+            }
+
             _adminLog.Add(LogType.Action, LogImpact.Medium,
-                $"{ToPrettyString(user):player} (user {session.UserId}) placed saved build '{id}' ({placedTiles} tiles) at {targetMap}");
-            _popup.PopupEntity(Loc.GetString("saved-build-placed", ("count", placedTiles)), user, user);
+                $"{ToPrettyString(user):player} (user {session.UserId}) placed saved build '{id}' ({tileOnlyCount} tiles) at {targetMap}");
+            _popup.PopupEntity(Loc.GetString("saved-build-placed", ("count", tileOnlyCount)), user, user);
             return;
         }
 
         LoadResult result;
+        _zStairs.BeginDeferredSetup();
         try
         {
             // Merge onto the target map so the entities are properly map-initialized (collisions, etc.);
@@ -205,6 +232,10 @@ public sealed partial class SavedBuildSystem : EntitySystem
             _popup.PopupEntity(Loc.GetString("saved-build-error-load"), user, user);
             return;
         }
+        finally
+        {
+            _zStairs.EndDeferredSetup();
+        }
 
         // After the merge the build's root entities are normally parented to the target map - but if a loaded
         // orphan happened to land where a grid already sits, the loader can parent it straight onto that grid.
@@ -219,72 +250,124 @@ public sealed partial class SavedBuildSystem : EntitySystem
         // preview (keyed by prototype + quarter-tile offset). Only entries that actually recorded "anchored"
         // are used; older saves without it fall back to the physics-body heuristic below, unchanged.
         var anchoredByKey = ReadAnchoredIntent(root);
+        var savedOffsets = ReadSavedEntityOffsets(root);
 
         // Multi-z: per-entry z-level offsets from the preview. Queued per key because two identical entities
         // can share the same x/y on DIFFERENT levels (that's exactly what multi-z builds do).
         var zByKey = ReadZOffsets(root);
-        var skippedZ = 0;
-
-        foreach (var rootEnt in roots)
+        int placedTiles;
+        try
         {
-            // WORLD-frame math throughout, not raw transform locals: a map's transform is identity, so for
-            // map-parented roots world == the original saved grid-local (merge offset is zero). For roots the
-            // loader parented onto a grid, world position resolves through that grid's own offset/rotation.
-            // The old local-frame arithmetic silently mixed a MAP-frame offset into GRID-local coordinates,
-            // which scrambled placements whenever the target grid was offset or rotated relative to its map.
-            var savedWorld = _transform.GetWorldPosition(rootEnt);
-            var savedRot = _transform.GetWorldRotation(rootEnt);
-
-            var desired = new MapCoordinates(targetMap.Position + rotation.RotateVec(savedWorld - anchor), targetMap.MapId);
-
-            var relSave = savedWorld - anchor;
-            var protoId = MetaData(rootEnt).EntityPrototype?.ID ?? string.Empty;
-
-            // Multi-z: entities saved on another level go to the matching level relative to the target (levels
-            // are world-aligned, so the x/y math is identical). Missing levels are created on demand through
-            // the z-building bootstrap; if that fails, the entity is dropped rather than dumped on the wrong level.
-            var placeGrid = gridUid;
-            var placeMapId = targetMap.MapId;
-            if (TakeZOffset(zByKey, protoId, relSave) is { } zOff && zOff != 0)
+            foreach (var rootEnt in roots)
             {
-                if (TryResolveLevel(targetMapUid, gridUid, zOff, desired.Position, out var levelGrid, out var levelMapId))
+                // WORLD-frame math throughout, not raw transform locals: a map's transform is identity, so for
+                // map-parented roots world == the original saved grid-local (merge offset is zero). For roots the
+                // loader parented onto a grid, world position resolves through that grid's own offset/rotation.
+                var savedWorld = _transform.GetWorldPosition(rootEnt);
+                var savedRot = _transform.GetWorldRotation(rootEnt);
+                var protoId = MetaData(rootEnt).EntityPrototype?.ID ?? string.Empty;
+                var savedPlacement = TakeSavedEntityOffset(savedOffsets, protoId, Transform(rootEnt).LocalPosition);
+                var relSave = savedPlacement?.Offset ?? savedWorld - anchor;
+                var relativeRotation = savedPlacement?.Rotation ?? savedRot;
+                var desired = new MapCoordinates(targetMap.Position + rotation.RotateVec(relSave), targetMap.MapId);
+
+                var placeGrid = gridUid;
+                var placeMapId = targetMap.MapId;
+                var zOff = savedPlacement?.ZOffset ?? TakeZOffset(zByKey, protoId, relSave);
+                if (zOff is { } levelOffset && levelOffset != 0)
                 {
+                    if (!TryResolveLevel(targetMapUid, gridUid, levelOffset, desired.Position, out var levelGrid, out var levelMapId))
+                        throw new InvalidOperationException($"Preflighted z-level {levelOffset} could not be resolved during placement.");
+
                     placeGrid = levelGrid;
                     placeMapId = levelMapId;
                 }
-                else
-                {
-                    skippedZ++;
-                    QueueDel(rootEnt);
-                    continue;
-                }
+
+                var desiredOnLevel = new MapCoordinates(desired.Position, placeMapId);
+                _transform.SetCoordinates(rootEnt, new EntityCoordinates(placeGrid, _transform.ToCoordinates(placeGrid, desiredOnLevel).Position));
+                _transform.SetWorldRotation(rootEnt, relativeRotation + rotation);
+
+                var wasAnchored = anchoredByKey.TryGetValue((protoId, QuantizeOffset(relSave.X), QuantizeOffset(relSave.Y)), out var recorded)
+                    ? recorded
+                    : TryComp<PhysicsComponent>(rootEnt, out var body) && body.BodyType == BodyType.Static;
+
+                if (wasAnchored)
+                    _transform.AnchorEntity(rootEnt);
+
+                _playerBuilt.MarkBuilt(rootEnt, user);
             }
 
-            var desiredOnLevel = new MapCoordinates(desired.Position, placeMapId);
-            _transform.SetCoordinates(rootEnt, new EntityCoordinates(placeGrid, _transform.ToCoordinates(placeGrid, desiredOnLevel).Position));
-            _transform.SetWorldRotation(rootEnt, savedRot + rotation);
+            // Tiles commit only after every entity has loaded and reached its final transform.
+            placedTiles = ApplyPlannedTiles(tilePlan);
 
-            // Restore the original anchored state. Prefer the recorded intent (handles props anchored without a
-            // Static physics body - the mapper-mode case); fall back to "Static body => anchored" for old saves.
-            var wasAnchored = anchoredByKey.TryGetValue((protoId, QuantizeOffset(relSave.X), QuantizeOffset(relSave.Y)), out var recorded)
-                ? recorded
-                : TryComp<PhysicsComponent>(rootEnt, out var body) && body.BodyType == BodyType.Static;
-
-            if (wasAnchored)
-                _transform.AnchorEntity(rootEnt);
-
-            // Mark placed entities as built by the placer (accountability + makes them re-saveable).
-            _playerBuilt.MarkBuilt(rootEnt, user);
+            // Saved roots were map-initialized before relocation, while stair package setup was deliberately
+            // deferred. Rebuild each package now at its final level and coordinates.
+            foreach (var rootEnt in roots)
+            {
+                if (TryComp<ZStairComponent>(rootEnt, out var stair))
+                    _zStairs.EnsureSetup((rootEnt, stair));
+            }
+        }
+        catch (Exception e)
+        {
+            Log.Error($"Failed to commit saved build '{id}' for {session.Name}; deleting staged entities: {e}");
+            _mapLoader.Delete(result);
+            _popup.PopupEntity(Loc.GetString("saved-build-error-load"), user, user);
+            return;
         }
 
         // NOTE: this is effectively the ADMIN/free placement (instant, free, keeps container contents).
         // TODO (player costed version): strip container contents and consume materials via a ghost build.
 
         _adminLog.Add(LogType.Action, LogImpact.Medium,
-            $"{ToPrettyString(user):player} (user {session.UserId}) placed saved build '{id}' ({roots.Count} roots, {placedTiles} tiles, {skippedZ} skipped for missing z-levels) at {targetMap}");
-        _popup.PopupEntity(Loc.GetString("saved-build-placed", ("count", roots.Count - skippedZ + placedTiles)), user, user);
-        if (skippedZ > 0)
-            _popup.PopupEntity(Loc.GetString("saved-build-z-skipped", ("count", skippedZ)), user, user, PopupType.MediumCaution);
+            $"{ToPrettyString(user):player} (user {session.UserId}) placed saved build '{id}' ({roots.Count} roots, {placedTiles} tiles) at {targetMap}");
+        _popup.PopupEntity(Loc.GetString("saved-build-placed", ("count", roots.Count + placedTiles)), user, user);
+    }
+
+    private readonly record struct SavedEntityPlacement(Vector2 Offset, Angle Rotation, int ZOffset);
+
+    /// <summary>
+    /// New-format saves record both the serializer's root-local position and the world-aligned placement offset.
+    /// This lookup reconnects a loaded root to that offset without assuming that every z-level grid has the same
+    /// local origin. Older files have no savedX/savedY fields and continue through the original fallback path.
+    /// </summary>
+    private Dictionary<(string, int, int), Queue<SavedEntityPlacement>> ReadSavedEntityOffsets(MappingDataNode root)
+    {
+        var map = new Dictionary<(string, int, int), Queue<SavedEntityPlacement>>();
+        if (!root.TryGet<MappingDataNode>("meta", out var meta) || !meta.TryGet<SequenceDataNode>("preview", out var seq))
+            return map;
+
+        foreach (var node in seq)
+        {
+            if (node is not MappingDataNode entry ||
+                !entry.TryGet<ValueDataNode>("savedX", out var savedXNode) ||
+                !entry.TryGet<ValueDataNode>("savedY", out var savedYNode) ||
+                !float.TryParse(savedXNode.Value, NumberStyles.Float, CultureInfo.InvariantCulture, out var savedX) ||
+                !float.TryParse(savedYNode.Value, NumberStyles.Float, CultureInfo.InvariantCulture, out var savedY))
+                continue;
+
+            var key = (MetaString(entry, "proto"), QuantizeOffset(savedX), QuantizeOffset(savedY));
+            var placement = new SavedEntityPlacement(
+                new Vector2(MetaFloat(entry, "x"), MetaFloat(entry, "y")),
+                new Angle(MetaFloat(entry, "rot")),
+                ReadInt(entry, "z"));
+            if (!map.TryGetValue(key, out var queue))
+                map[key] = queue = new Queue<SavedEntityPlacement>();
+            queue.Enqueue(placement);
+        }
+
+        return map;
+    }
+
+    private static SavedEntityPlacement? TakeSavedEntityOffset(
+        Dictionary<(string, int, int), Queue<SavedEntityPlacement>> offsets,
+        string proto,
+        Vector2 savedLocal)
+    {
+        return offsets.TryGetValue((proto, QuantizeOffset(savedLocal.X), QuantizeOffset(savedLocal.Y)), out var queue) &&
+               queue.TryDequeue(out var placement)
+            ? placement
+            : null;
     }
 
     /// <summary>Per-entry z-level offsets from the preview, queued per (proto, x, y) key - identical entities
@@ -330,6 +413,9 @@ public sealed partial class SavedBuildSystem : EntitySystem
         levelGrid = default;
         levelMapId = MapId.Nullspace;
 
+        if (zOffset is < -MaxZRange or > MaxZRange)
+            return false;
+
         var currentMap = baseMap;
         var currentGrid = baseGrid;
         var step = Math.Sign(zOffset);
@@ -347,6 +433,42 @@ public sealed partial class SavedBuildSystem : EntitySystem
 
         levelGrid = currentGrid;
         levelMapId = mapComp.MapId;
+        return true;
+    }
+
+    /// <summary>
+    /// Rejects malformed or out-of-range z values before any tile, map, or entity mutation occurs.
+    /// Missing z fields belong to the original 2D format and are treated as zero.
+    /// </summary>
+    private static bool HasValidZBounds(MappingDataNode root)
+    {
+        if (!root.TryGet<MappingDataNode>("meta", out var meta))
+            return true;
+
+        return SequenceHasValidZ(meta, "preview") && SequenceHasValidZ(meta, "tiles");
+    }
+
+    private static bool SequenceHasValidZ(MappingDataNode meta, string key)
+    {
+        if (!meta.TryGet<SequenceDataNode>(key, out var sequence))
+            return true;
+
+        foreach (var node in sequence)
+        {
+            if (node is not MappingDataNode mapping)
+                continue;
+
+            var raw = MetaString(mapping, "z");
+            if (string.IsNullOrWhiteSpace(raw))
+                continue;
+
+            if (!int.TryParse(raw, NumberStyles.Integer, CultureInfo.InvariantCulture, out var z) ||
+                z is < -MaxZRange or > MaxZRange)
+            {
+                return false;
+            }
+        }
+
         return true;
     }
 
@@ -409,18 +531,24 @@ public sealed partial class SavedBuildSystem : EntitySystem
         return tiles;
     }
 
-    private int PlaceSavedTiles(
+    private readonly record struct PlannedTile(EntityUid Grid, Vector2i Indices, Tile Previous, Tile Desired);
+
+    private bool TryPlanSavedTiles(
         List<BuildPreviewTile> tiles,
         EntityUid targetMapUid,
         EntityUid gridUid,
         MapCoordinates targetMap,
-        Angle rotation)
+        Angle rotation,
+        out List<PlannedTile> plan)
     {
-        var placed = 0;
+        var planned = new Dictionary<(EntityUid Grid, Vector2i Indices), PlannedTile>();
         foreach (var tile in tiles)
         {
             if (!_prototype.TryIndex<ContentTileDefinition>(tile.Tile, out var tileDef))
-                continue;
+            {
+                plan = new();
+                return false;
+            }
 
             var desired = new MapCoordinates(targetMap.Position + rotation.RotateVec(new Vector2(tile.X, tile.Y)), targetMap.MapId);
             var placeGrid = gridUid;
@@ -434,20 +562,86 @@ public sealed partial class SavedBuildSystem : EntitySystem
                 }
                 else
                 {
-                    continue;
+                    plan = new();
+                    return false;
                 }
             }
 
             var desiredOnLevel = new MapCoordinates(desired.Position, placeMapId);
             if (!TryComp<MapGridComponent>(placeGrid, out var grid))
-                continue;
+            {
+                plan = new();
+                return false;
+            }
 
             var indices = _map.TileIndicesFor(placeGrid, grid, desiredOnLevel);
-            _map.SetTile(placeGrid, grid, indices, new Tile(tileDef.TileId));
-            placed++;
+            var key = (placeGrid, indices);
+            var previous = _map.TryGetTileRef(placeGrid, grid, indices, out var tileRef) ? tileRef.Tile : Tile.Empty;
+            if (planned.TryGetValue(key, out var existing))
+                previous = existing.Previous;
+            planned[key] = new PlannedTile(placeGrid, indices, previous, new Tile(tileDef.TileId));
         }
 
-        return placed;
+        plan = planned.Values.ToList();
+        return true;
+    }
+
+    private bool PreflightEntityLevels(
+        MappingDataNode root,
+        EntityUid targetMapUid,
+        EntityUid gridUid,
+        MapCoordinates targetMap,
+        Angle rotation)
+    {
+        if (!root.TryGet<MappingDataNode>("meta", out var meta) ||
+            !meta.TryGet<SequenceDataNode>("preview", out var preview))
+            return true;
+
+        foreach (var node in preview)
+        {
+            if (node is not MappingDataNode mapping)
+                continue;
+
+            var z = ReadInt(mapping, "z");
+            if (z == 0)
+                continue;
+
+            var offset = new Vector2(MetaFloat(mapping, "x"), MetaFloat(mapping, "y"));
+            var position = targetMap.Position + rotation.RotateVec(offset);
+            if (!TryResolveLevel(targetMapUid, gridUid, z, position, out _, out _))
+                return false;
+        }
+
+        return true;
+    }
+
+    private int ApplyPlannedTiles(List<PlannedTile> plan)
+    {
+        var applied = 0;
+        try
+        {
+            foreach (var tile in plan)
+            {
+                if (!TryComp<MapGridComponent>(tile.Grid, out var grid))
+                    throw new InvalidOperationException($"Saved-build target grid {tile.Grid} disappeared before commit.");
+
+                _map.SetTile(tile.Grid, grid, tile.Indices, tile.Desired);
+                applied++;
+            }
+        }
+        catch
+        {
+            for (var i = applied - 1; i >= 0; i--)
+            {
+                var tile = plan[i];
+                if (TryComp<MapGridComponent>(tile.Grid, out var grid))
+                    _map.SetTile(tile.Grid, grid, tile.Indices, tile.Previous);
+            }
+
+            throw;
+        }
+
+        return applied;
     }
 
     private static string MetaString(MappingDataNode meta, string key)
@@ -554,6 +748,10 @@ public sealed partial class SavedBuildSystem : EntitySystem
                             continue;
 
                         _lookup.GetEntitiesIntersecting(otherMapComp.MapId, box, found);
+                        // Sparse/generated z-level grids can have incomplete broadphase bounds around freshly
+                        // built structures. CanSave only accepts direct grid children anyway, so supplement the
+                        // physics lookup with those roots and select them by their world position.
+                        AddGridChildrenInBox(otherMapComp.MapId, box, found);
                     }
                 }
 
@@ -584,6 +782,19 @@ public sealed partial class SavedBuildSystem : EntitySystem
         }
 
         return result;
+    }
+
+    private void AddGridChildrenInBox(MapId mapId, Box2 box, HashSet<EntityUid> found)
+    {
+        foreach (var grid in _mapManager.GetAllGrids(mapId))
+        {
+            var children = Transform(grid).ChildEnumerator;
+            while (children.MoveNext(out var child))
+            {
+                if (box.Contains(_transform.GetWorldPosition(child)))
+                    found.Add(child);
+            }
+        }
     }
 
     private List<BuildSelectionTile> ResolveTiles(ICommonSession saver, BuildSelectionData selection, BuildSaveMode mode, bool includeTiles)
@@ -773,6 +984,7 @@ public sealed partial class SavedBuildSystem : EntitySystem
 
         var entities = ResolveSelection(saver, selection, mode, includeLoose);
         var tiles = ResolveTiles(saver, selection, mode, includeTiles);
+        ExcludeGeneratedStairParts(entities, tiles);
         entities = FilterSerializableEntities(entities, name, saver);
         if (entities.Count == 0 && tiles.Count == 0)
         {
@@ -816,7 +1028,17 @@ public sealed partial class SavedBuildSystem : EntitySystem
         var sample = baseEntities.Count > 0 ? baseEntities.First() : (entities.Count > 0 ? entities.First() : EntityUid.Invalid);
         // Multi-z builds are tagged so the menu category makes their nature obvious.
         var gridName = (sample.Valid ? ResolveSourceName(sample) : ResolveTileSourceName(tiles.First())) + (multiZ ? " (Multi-Z)" : "");
-        var sourceGrid = sample.Valid ? Transform(sample).GridUid : TryGetTileGrid(tiles.First());
+        var baseTileIndex = tileDepths.FindIndex(depth => depth == baseDepth);
+        var sourceGrid = baseEntities.Count > 0
+            ? Transform(baseEntities.First()).GridUid
+            : baseTileIndex >= 0
+                ? TryGetTileGrid(tiles[baseTileIndex])
+                : sample.Valid
+                    ? Transform(sample).GridUid
+                    : null;
+        var anchorWorld = sourceGrid is { } source
+            ? _transform.ToMapCoordinates(new EntityCoordinates(source, anchor)).Position
+            : anchor;
 
         // Per-entity preview (prototype + offset from anchor + z-level offset) for the placement ghost.
         var preview = new SequenceDataNode();
@@ -825,12 +1047,17 @@ public sealed partial class SavedBuildSystem : EntitySystem
             if (MetaData(uid).EntityPrototype is not { } proto)
                 continue;
 
-            var rel = Transform(uid).LocalPosition - anchor;
+            var savedLocal = Transform(uid).LocalPosition;
+            var rel = _transform.GetWorldPosition(uid) - anchorWorld;
             var entry = new MappingDataNode();
             entry.Add("proto", new ValueDataNode(proto.ID));
             entry.Add("x", new ValueDataNode(rel.X.ToString("R", CultureInfo.InvariantCulture)));
             entry.Add("y", new ValueDataNode(rel.Y.ToString("R", CultureInfo.InvariantCulture)));
-            entry.Add("rot", new ValueDataNode(Transform(uid).LocalRotation.Theta.ToString("R", CultureInfo.InvariantCulture)));
+            entry.Add("rot", new ValueDataNode(_transform.GetWorldRotation(uid).Theta.ToString("R", CultureInfo.InvariantCulture)));
+            // Keep the serializer-frame position solely as a stable key for reconnecting this metadata to the
+            // root after load. Placement itself always uses the world-aligned x/y offset above.
+            entry.Add("savedX", new ValueDataNode(savedLocal.X.ToString("R", CultureInfo.InvariantCulture)));
+            entry.Add("savedY", new ValueDataNode(savedLocal.Y.ToString("R", CultureInfo.InvariantCulture)));
             // Record whether the entity was anchored, so placement restores the exact anchored state instead of
             // guessing from physics body type (mapper-mode saves can include props anchored without a Static body).
             entry.Add("anchored", new ValueDataNode(Transform(uid).Anchored ? "true" : "false"));
@@ -845,10 +1072,10 @@ public sealed partial class SavedBuildSystem : EntitySystem
         for (var i = 0; i < tiles.Count; i++)
         {
             var tile = tiles[i];
-            if (!TryGetTileLocalPosition(tile, out var local))
+            if (!TryGetTileWorldPosition(tile, out var world))
                 continue;
 
-            var rel = local - anchor;
+            var rel = world - anchorWorld;
             var entry = new MappingDataNode();
             entry.Add("tile", new ValueDataNode(tile.Tile));
             entry.Add("x", new ValueDataNode(rel.X.ToString("R", CultureInfo.InvariantCulture)));
@@ -931,9 +1158,39 @@ public sealed partial class SavedBuildSystem : EntitySystem
     }
 
     /// <summary>
-    /// Grid-local bounding-box centre of the selection. This matches the frame the serializer stores each
-    /// entity's <see cref="TransformComponent.LocalPosition"/> in, so placement can reposition by
-    /// (savedLocal - anchor) without a world/grid frame mismatch.
+    /// A staircase is the single player-authored part of its saved build. Its linked beam and platform tiles are
+    /// setup products that <see cref="ZStairSystem"/> regenerates when the stair is constructed; serializing them
+    /// as separate ghosts either duplicates them or blocks the stair ghost on placement.
+    /// </summary>
+    private void ExcludeGeneratedStairParts(HashSet<EntityUid> entities, List<BuildSelectionTile> tiles)
+    {
+        var stairs = entities.Where(HasComp<ZStairComponent>).ToHashSet();
+        if (stairs.Count == 0)
+            return;
+
+        var generatedTiles = new HashSet<(EntityUid Grid, int X, int Y)>();
+        var links = EntityQueryEnumerator<ZStairBeamLinkComponent>();
+        while (links.MoveNext(out var beam, out var link))
+        {
+            if (!link.Stair.Valid || !stairs.Contains(link.Stair))
+                continue;
+
+            entities.Remove(beam);
+            if (!link.HasPlatform)
+                continue;
+
+            foreach (var tile in link.LaidTiles)
+                generatedTiles.Add((link.PlatformGrid, tile.X, tile.Y));
+        }
+
+        tiles.RemoveAll(tile =>
+            TryGetEntity(tile.Grid, out var grid) && generatedTiles.Contains((grid.Value, tile.X, tile.Y)));
+    }
+
+    /// <summary>
+    /// Filters the selection down to roots the engine serializer can safely persist. Placement metadata records
+    /// the serializer-local position separately from its world-aligned offset, so roots on different z grids do
+    /// not have to share a local coordinate frame.
     /// </summary>
     private HashSet<EntityUid> FilterSerializableEntities(HashSet<EntityUid> entities, string name, ICommonSession saver)
     {
@@ -1001,6 +1258,18 @@ public sealed partial class SavedBuildSystem : EntitySystem
             return false;
 
         local = _map.GridTileToLocal(gridUid.Value, grid, new Vector2i(tile.X, tile.Y)).Position;
+        return true;
+    }
+
+    private bool TryGetTileWorldPosition(BuildSelectionTile tile, out Vector2 world)
+    {
+        world = default;
+        if (!TryGetEntity(tile.Grid, out var gridUid) ||
+            !TryComp<MapGridComponent>(gridUid.Value, out var grid))
+            return false;
+
+        world = _transform.ToMapCoordinates(
+            _map.GridTileToLocal(gridUid.Value, grid, new Vector2i(tile.X, tile.Y))).Position;
         return true;
     }
 

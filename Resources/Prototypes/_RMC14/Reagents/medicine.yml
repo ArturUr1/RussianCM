@@ -204,10 +204,6 @@
         reductionDecreaseRate: 0
         durationPerUnit: 8
         additive: true
-      - !type:Jitter
-        conditions:
-        - !type:ReagentThreshold
-          min: 110
       - !type:GenericStatusEffect
         conditions:
         - !type:ReagentThreshold

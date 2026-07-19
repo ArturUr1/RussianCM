@@ -5,6 +5,7 @@ using Content.Shared._RMC14.Entrenching;
 using Content.Shared._RMC14.Ladder;
 using Content.Shared._RMC14.Map;
 using Content.Shared._RMC14.Marines.Skills;
+using Content.Shared.Construction;
 using Content.Shared.Construction.Components;
 using Content.Shared.Coordinates;
 using Content.Shared.DoAfter;
@@ -45,30 +46,6 @@ public sealed partial class RMCConstructionSystem : EntitySystem
     [Dependency] private ExamineSystemShared _examine = default!;
 
     private static readonly EntProtoId Blocker = "RMCDropshipDoorBlocker";
-
-    // AU14: construction-skill economy. Every point of construction skill shaves 10% off material costs
-    // (basic materials only: metal, plasteel, wood, and both rod types) and adds 10% build speed.
-    // These three values are the only knobs.
-    private const float AU14MaterialDiscountPerSkill = 0.10f;
-    private const float AU14SpeedBonusPerSkill = 0.10f;
-    private static readonly HashSet<string> AU14DiscountedStacks = new()
-    {
-        "CMSteel", "CMPlasteel", "RMCWood", "CMRodMetal", "CMRodPlasteel",
-    };
-
-    // AU14: the discounted material cost for this builder, floored at 1 so nothing is ever free.
-    private int AU14ApplySkillDiscount(EntityUid user, StackComponent stack, int cost)
-    {
-        if (!AU14DiscountedStacks.Contains(stack.StackTypeId))
-            return cost;
-
-        var level = _skills.GetSkill(user, "RMCSkillConstruction");
-        if (level <= 0)
-            return cost;
-
-        var multiplier = MathF.Max(0.1f, 1f - AU14MaterialDiscountPerSkill * level);
-        return Math.Max(1, (int) MathF.Ceiling(cost * multiplier));
-    }
 
     private readonly List<EntityCoordinates> _toCreate = new();
 
@@ -177,7 +154,9 @@ public sealed partial class RMCConstructionSystem : EntitySystem
         {
             var totalAmount = amount / proto.Amount;
             var cost = (amount == proto.Amount) ? materialCost : totalAmount * materialCost;
-            cost = AU14ApplySkillDiscount(user, stack, cost); // AU14: skill discount on basic materials.
+            var costEv = new RMCConstructionCostEvent(user, stack.StackTypeId, cost, cost);
+            RaiseLocalEvent(user, ref costEv, true);
+            cost = Math.Max(1, costEv.Cost);
 
             if (stack.Count < cost)
             {
@@ -199,10 +178,9 @@ public sealed partial class RMCConstructionSystem : EntitySystem
         var skillMultiplier = _skills.HasSkill(user, proto.DelaySkill, 2) ? 1 : 2;
         var delay = proto.DoAfterTime * skillMultiplier;
 
-        // AU14: +10% build speed per construction skill point.
-        var au14ConstructionLevel = _skills.GetSkill(user, "RMCSkillConstruction");
-        if (au14ConstructionLevel > 0)
-            delay /= 1.0 + AU14SpeedBonusPerSkill * au14ConstructionLevel;
+        var delayEv = new RMCConstructionDelayEvent(user, delay, delay);
+        RaiseLocalEvent(user, ref delayEv, true);
+        delay = delayEv.Delay;
 
         var doAfterTime = Math.Max(delay.TotalSeconds, proto.DoAfterTimeMin.TotalSeconds);
 
@@ -269,23 +247,23 @@ public sealed partial class RMCConstructionSystem : EntitySystem
         var totalAmount = args.Amount / entry.Amount; // So a stack of 20 with an amount of 4 and a cost of 1 is correctly 5 cost
         var cost = (args.Amount == entry.Amount) ? entry.MaterialCost : totalAmount * entry.MaterialCost;
 
-        var au14Shortfall = 0;
-        var au14StackType = string.Empty;
+        var materialShortfall = 0;
+        var stackType = string.Empty;
         if (TryComp<StackComponent>(ent.Owner, out var stack))
         {
-            // AU14: the same skill discount that was quoted at the start of the build.
-            var au14Cost = AU14ApplySkillDiscount(args.User, stack, cost ?? 1);
-            if (!_stack.Use(ent.Owner, au14Cost, stack))
+            var baseCost = cost ?? 1;
+            var costEv = new RMCConstructionCostEvent(args.User, stack.StackTypeId, baseCost, baseCost);
+            RaiseLocalEvent(args.User, ref costEv, true);
+            var paidCost = Math.Max(1, costEv.Cost);
+            if (!_stack.Use(ent.Owner, paidCost, stack))
             {
                 var message = Loc.GetString("rmc-construction-more-material", ("material", ent.Owner), ("object", entry.Name));
                 _popup.PopupEntity(message, args.User, args.User, PopupType.SmallCaution);
                 return;
             }
 
-            // AU14 anti-dupe: remember what the discount saved, so deconstructing this structure can never
-            // refund more material than was actually invested (Input = Output).
-            au14Shortfall = Math.Max(0, (cost ?? 1) - au14Cost);
-            au14StackType = stack.StackTypeId;
+            materialShortfall = Math.Max(0, baseCost - paidCost);
+            stackType = stack.StackTypeId;
         }
         else if (_net.IsServer)
         {
@@ -295,21 +273,15 @@ public sealed partial class RMCConstructionSystem : EntitySystem
         if (!Deleted(ent))
             UpdateStackAmountUI(ent);
 
+        var builtEntities = new List<EntityUid>();
         if (args.Amount > 1)
         {
-            SpawnMultiple(entry.Prototype, args.Amount, coordinates);
+            builtEntities.AddRange(SpawnMultiple(entry.Prototype, args.Amount, coordinates));
         }
         else
         {
             var built = SpawnAtPosition(entry.Prototype, coordinates);
-
-            // AU14 anti-dupe: stamp the discount shortfall onto the built structure (see AU14MaterialShortfallSystem).
-            if (au14Shortfall > 0)
-            {
-                var shortfall = EnsureComp<Content.Shared._AU14.Construction.AU14MaterialShortfallComponent>(built);
-                shortfall.StackTypeId = au14StackType;
-                shortfall.Missing = au14Shortfall;
-            }
+            builtEntities.Add(built);
 
             if (!entry.NoRotate)
                 _transform.SetLocalRotation(built, args.Direction.ToAngle());
@@ -318,6 +290,24 @@ public sealed partial class RMCConstructionSystem : EntitySystem
             // Removes collision with the construction until you leave
             if (!HasComp<BarricadeComponent>(built))
                 MakeConstructionImmuneToCollision(built, args.User);
+
+        }
+
+        for (var i = 0; i < builtEntities.Count; i++)
+        {
+            var built = builtEntities[i];
+            var perEntityShortfall = builtEntities.Count == 0
+                ? 0
+                : materialShortfall / builtEntities.Count + (i < materialShortfall % builtEntities.Count ? 1 : 0);
+            var transactionEv = new RMCConstructionTransactionCompletedEvent(
+                built,
+                args.User,
+                stackType,
+                perEntityShortfall);
+            RaiseLocalEvent(built, ref transactionEv, broadcast: true);
+
+            var completedEv = new ConstructionCompletedEvent(built, args.User);
+            RaiseLocalEvent(built, ref completedEv, broadcast: true);
         }
     }
 
@@ -531,3 +521,19 @@ public sealed partial class RMCConstructionSystem : EntitySystem
         return true;
     }
 }
+
+/// <summary>Extension point for server-authoritative material pricing without coupling RMC construction to a fork.</summary>
+[ByRefEvent]
+public record struct RMCConstructionCostEvent(EntityUid User, string StackType, int BaseCost, int Cost);
+
+/// <summary>Extension point for construction delay modifiers.</summary>
+[ByRefEvent]
+public record struct RMCConstructionDelayEvent(EntityUid User, TimeSpan BaseDelay, TimeSpan Delay);
+
+/// <summary>Reports the exact material delta associated with one newly-built entity.</summary>
+[ByRefEvent]
+public record struct RMCConstructionTransactionCompletedEvent(
+    EntityUid Built,
+    EntityUid User,
+    string StackType,
+    int MaterialShortfall);

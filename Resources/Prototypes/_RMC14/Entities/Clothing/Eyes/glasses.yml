@@ -517,9 +517,11 @@
 
 - type: entity
   parent: RMCGogglesBallistic
-  id: RMCGogglesPrescriptionBallistic # TODO make this actually prescription
+  id: RMCGogglesPrescriptionBallistic
   name: prescription marine ballistic goggles
   description: Standard issue USCM goggles. Mostly used to decorate one's helmet. Contains prescription lenses in case you weren't sure if they were lame or not.
+  components:
+  - type: VisionCorrection
 
 - type: entity
   parent: RMCGogglesBallistic
@@ -582,6 +584,8 @@
   id: RMCPrescriptionSunglasses
   name: prescription sunglasses
   description: A mixture of coolness and the inherent nerdiness of a prescription. Somehow manages to conceal both.
+  components:
+  - type: VisionCorrection
 
 # Identical to upstream ones, sans the name and description
 - type: entity
@@ -731,6 +735,7 @@
   components:
   - type: Item
     storedRotation: 0
+  - type: VisionCorrection
   - type: Sprite
     sprite: _RMC14/Objects/Clothing/Eyes/Glasses/hipster.rsi
   - type: Clothing

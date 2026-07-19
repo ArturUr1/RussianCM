@@ -7350,5 +7350,287 @@
   id: 500
   time: '2026-07-18T21:51:11.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1655
+- author: troytroy400
+  changes:
+  - message: The food/water system has been reworked. Eating and drinking now take
+      twice as long and no longer auto-repeats. If you go long enough without food/water
+      you will start to get slowed down, then you will get a desaturated filter over
+      your screen and after a long period of time (around two hours) you will die
+      of thirst/hunger. On GOVFOR you will now spawn hungry and thirsty, so go get
+      some breakfast from the galley!
+    type: Tweak
+  - message: The USS Bush's first floor has been updated with missing vendors and
+      content, requisitions has a lot more quality of life now.
+    type: Add
+  - message: VMarkers for GOVFOR/OPFOR double doors now exist for mappers to use.
+    type: Add
+  - message: New armory shutter on the USS Bush that starts locked, but will auto-unlock
+      open if no GOVFOR Adjutant/Commander is on deck within five minutes of round
+      start. The armory door can be shut/opened from the CIC. If the armory is not
+      otherwise opened by the 30 minute mark of the round, the doors will automatically
+      open on their own.
+    type: Add
+  - message: Added new shipside clothing vendors to the USS Bush that contain shipside
+      uniforms for when the armory is not open. Has basic uniforms, shoes, softcovers
+      and other accessories.
+    type: Add
+  - message: The Nearsighted trait has been fixed. You now spawn with prescription
+      glasses and all glasses marked as prescription actually work.
+    type: Fix
+  - message: Inaprovaline overdose no longer makes you have a seizure to prevent cheesy
+      chemical spam tactics.
+    type: Fix
+  id: 486
+  time: '2026-07-19T08:26:40.0000000+00:00'
+  url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1651
+- author: wray-git
+  changes:
+  - message: Jerrie's Mod construction style menu. The classic menu can be re-selected
+      in Options > Misc. The classic menu does not have certain features supplied
+      in the Improved construction menu.
+    type: Add
+  - message: Saved Builds. Select structures you built, save them to a file, and place
+      them again later. Only works on entities you built. You can either click the
+      entity or append it by range. Saved builds' files can be shared.
+    type: Add
+  - message: Z-Level building. Dig down into generated caverns and build floors.
+    type: Add
+  - message: OSHA safety requirements for z-level building. Goodluck.
+    type: Add
+  - message: Build partners. Allow another player to include your builds in their
+      saves.
+    type: Add
+  - message: Construction Item Editor, allows you to add entities into the construction
+      menu.
+    type: Add
+  - message: Tiles Editor, allows you to add tiles into the construction menu(for
+      z-levels)
+    type: Add
+  - message: Lathe Editor, allows you to add entities into Autolathe and Armylathes.
+    type: Add
+  - message: Mass Entity Editor, allows you to add entities en-masse into the construction
+      menu.
+    type: Add
+  - message: Z-Level toggle, allows you to allow/ban z-level building(made by this
+      PR) from prototypes and maps. Mapper's boolean to enable/disable overrides this.
+    type: Add
+  - message: '"Look Up" now allows you to first faintly look at upper z-levels, with
+      the second time using it makes you fully look & aim up. No more "why is that
+      empty space shooting me".'
+    type: Tweak
+  - message: Metal, plasteel, and wood barricades now place as a construction ghost
+      instead of an instant build.
+    type: Tweak
+  - message: In-game editors for adding menu items, tiles, and lathe recipes, plus
+      per-recipe Change and Remove, under Admin Tools (Host flag by defualt).
+    type: Admin
+  - message: au_multiz console command to list and toggle which maps allow vertical
+      building.
+    type: Admin
+  - message: There are 3 different modes for saving & loading saved builds, Player,
+      Admin, and Mapper. Player spawns construction ghosts by as if its vanilla, and
+      can only save entities they built themselves. Admin spawns the saved build instantly
+      without any cost. Mapper does the same as Admin, except they are able to save
+      any and all entities spawned in the round.
+    type: Admin
+  - message: The construction menu now runs through one view-agnostic presenter with
+      a spawnlist system, a new entityId construction step, and a Construction verb
+      category.
+    type: Code
+  - message: INSFOR Editor. INSFOR factions can now be made. Every detail about what
+      makes an INSFOR faction is covered.
+    type: Add
+  - message: CLF Leader can now pick which INSFOR faction they want. It is dependent
+      on the GOVFOR faction in the round.
+    type: Add
+  - message: "New Role! \U0001F527\U0001F9F0 CLF Sapper. Able to lay down traps, craft\
+      \ them from the sapper's workbench, and gunsmith-lite. Equipment include: [Tripwire,\
+      \ Audio, Buried *#&, Snare, Spy Camera, \U0001F4B5 Siphon Rig \U0001F4B5 ]"
+    type: Add
+  - message: Siphon Rig, able to siphon from colony budget console, ASRS consoles,
+      and ATMs. ATM siphon is based on how many ATMs are in the round(i.e 10 ATMs
+      would give you 10% of the colony budget)
+    type: Add
+  - message: CLF Sapper's Gunsmithing. Able to forcefully attach any attachments into
+      a weapon.
+    type: Add
+  - message: A switch(attachment). Craftable in the CLF Sapper's Workbench. Horrible
+      decision to use it.
+    type: Add
+  - message: Added "A Package". A box of contents(set by the INSFOR Editor) that selected
+      jobs receive based on the INSFOR faction, if set by the INSFOR Editor(s).
+    type: Add
+  - message: INSFOR Editor function added to Improved Construction Menu
+    type: Tweak
+  - message: CLF Leader can now individually pick the items from the heavy cell kit
+      to place down.
+    type: Tweak
+  - message: INSFOR/CLF can now use captured WS equipment.
+    type: Tweak
+  - message: Each 1 construction skill point reduces material consumption(metal/plasteel/wood)
+      and increases building speed by 10%.
+    type: Tweak
+  - message: Removed the restriction on placing down barricade ghosts and foldable
+      barricades for the ungifted in construction.
+    type: Remove
+  - message: Z-Sync List, admin menu for controlling which wall prototypes sync across
+      z-level borders.
+    type: Add
+  - message: z-sync whitelist/blacklist persistence, parent-aware matching, blacklist-family
+      expansion, and in-round "pick clicked entity" whitelist/blacklist buttons
+    type: Add
+  - message: Mass Tile Recipe mode to the Mass Entity Editor, including tile search,
+      tile previews, shared cost/category form, and server-side batch tile recipe
+      generation.
+    type: Add
+  - message: Client now has "Faint Look Up opacity" slider in their options, clamped
+      from 5% to 80%.
+    type: Add
+  - message: Separated HUD's viewport now can be centered. Yes.
+    type: Add
+  - message: Collapse vignette feedback for nearby z-level collapses/cave-ins
+    type: Add
+  - message: '(EXPERIMENTAL) multi-z saved-build support: saves/places entities across
+      linked z-levels and creates missing target levels when possible.'
+    type: Add
+  - message: Material shortfall tracking so construction skill discounts cannot be
+      converted into extra refund materials on deconstruction.
+    type: Add
+  - message: Added eyewear, masks, and headwear to CLF and colony/WeYu role loadouts
+    type: Add
+  - message: Separated HUD chat layout can now be shrinked further
+    type: Tweak
+  - message: z-level generated maps to use map-grid entities instead of child grids,
+      improving CMU z-level movement/tile detection
+    type: Tweak
+  - message: cave-in/collapse camera shake from map-wide to local range-limited feedback
+    type: Tweak
+  - message: saved-build names to mark multi-z saves with (Multi-Z). Once again, heavily
+      experimental. Best save per z-level to be sure of your saves.
+    type: Tweak
+  - message: CLF Sapper radio prefix to CIV
+    type: Tweak
+  - message: RobustToolbox `Splitcontainer` with a free resize mode used by the Separated
+      HUD chat
+    type: Tweak
+  - message: Added Z-Sync lists button to the construction's admin tools menu.
+    type: Admin
+  - message: Added mass tile construction recipe tool.
+    type: Admin
+  - message: Removed forced minimum chat width behavior in Separated HUD
+    type: Remove
+  - message: Removed map-wide collapse shake behavior
+    type: Remove
+  id: 487
+  time: '2026-07-19T17:36:17.0000000+00:00'
+  url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1600
+- author: wray-git
+  changes:
+  - message: Jerrie's Mod construction style menu. The classic menu can be re-selected
+      in Options > Misc. The classic menu does not have certain features supplied
+      in the Improved construction menu.
+    type: Add
+  - message: Saved Builds. Select structures you built, save them to a file, and place
+      them again later. Only works on entities you built. You can either click the
+      entity or append it by range. Saved builds' files can be shared.
+    type: Add
+  - message: Z-Level building. Dig down into generated caverns and build floors.
+    type: Add
+  - message: OSHA safety requirements for z-level building. Goodluck.
+    type: Add
+  - message: Build partners. Allow another player to include your builds in their
+      saves.
+    type: Add
+  - message: Construction Item Editor, allows you to add entities into the construction
+      menu.
+    type: Add
+  - message: Tiles Editor, allows you to add tiles into the construction menu(for
+      z-levels)
+    type: Add
+  - message: Lathe Editor, allows you to add entities into Autolathe and Armylathes.
+    type: Add
+  - message: Mass Entity Editor, allows you to add entities en-masse into the construction
+      menu.
+    type: Add
+  - message: Z-Level toggle, allows you to allow/ban z-level building(made by this
+      PR) from prototypes and maps. Mapper's boolean to enable/disable overrides this.
+    type: Add
+  - message: '"Look Up" now allows you to first faintly look at upper z-levels, with
+      the second time using it makes you fully look & aim up. No more "why is that
+      empty space shooting me".'
+    type: Tweak
+  - message: Metal, plasteel, and wood barricades now place as a construction ghost
+      instead of an instant build.
+    type: Tweak
+  - message: In-game editors for adding menu items, tiles, and lathe recipes, plus
+      per-recipe Change and Remove, under Admin Tools (Host flag by defualt).
+    type: Admin
+  - message: au_multiz console command to list and toggle which maps allow vertical
+      building.
+    type: Admin
+  - message: There are 3 different modes for saving & loading saved builds, Player,
+      Admin, and Mapper. Player spawns construction ghosts by as if its vanilla, and
+      can only save entities they built themselves. Admin spawns the saved build instantly
+      without any cost. Mapper does the same as Admin, except they are able to save
+      any and all entities spawned in the round.
+    type: Admin
+  - message: The construction menu now runs through one view-agnostic presenter with
+      a spawnlist system, a new entityId construction step, and a Construction verb
+      category.
+    type: Code
+  id: 488
+  time: '2026-07-19T17:36:19.0000000+00:00'
+  url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1497
+- author: wray-git
+  changes:
+  - message: INSFOR Editor. INSFOR factions can now be made. Every detail about what
+      makes an INSFOR faction is covered.
+    type: Add
+  - message: CLF Leader can now pick which INSFOR faction they want. It is dependent
+      on the GOVFOR faction in the round.
+    type: Add
+  - message: "New Role! \U0001F527\U0001F9F0 CLF Sapper. Able to lay down traps, craft\
+      \ them from the sapper's workbench, and gunsmith-lite. Equipment include: [Tripwire,\
+      \ Audio, Buried *#&, Snare, Spy Camera, \U0001F4B5 Siphon Rig \U0001F4B5 ]"
+    type: Add
+  - message: Siphon Rig, able to siphon from colony budget console, ASRS consoles,
+      and ATMs. ATM siphon is based on how many ATMs are in the round(i.e 10 ATMs
+      would give you 10% of the colony budget)
+    type: Add
+  - message: CLF Sapper's Gunsmithing. Able to forcefully attach any attachments into
+      a weapon.
+    type: Add
+  - message: A switch(attachment). Craftable in the CLF Sapper's Workbench. Horrible
+      decision to use it.
+    type: Add
+  - message: Added "A Package". A box of contents(set by the INSFOR Editor) that selected
+      jobs receive based on the INSFOR faction, if set by the INSFOR Editor(s).
+    type: Add
+  - message: INSFOR Editor function added to Improved Construction Menu
+    type: Tweak
+  - message: CLF Leader can now individually pick the items from the heavy cell kit
+      to place down.
+    type: Tweak
+  - message: INSFOR/CLF can now use captured WS equipment.
+    type: Tweak
+  - message: Each 1 construction skill point reduces material consumption(metal/plasteel/wood)
+      and increases building speed by 10%.
+    type: Tweak
+  - message: Removed the restriction on placing down barricade ghosts and foldable
+      barricades for the ungifted in construction.
+    type: Remove
+  id: 489
+  time: '2026-07-19T17:36:19.0000000+00:00'
+  url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1541
+- author: maertayn
+  changes:
+  - message: CMUUniversalPaperTool for the Counselor's Law Bundle & AO/LO & Corporate
+      Assistant
+    type: Add
+  - message: EO access to CT vendor
+    type: Tweak
+  id: 490
+  time: '2026-07-19T17:50:06.0000000+00:00'
+  url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1657
 Name: CMU
 Order: -1
