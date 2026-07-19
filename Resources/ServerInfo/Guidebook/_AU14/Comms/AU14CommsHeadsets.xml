@@ -1,245 +1,253 @@
 <Document>
-  # Field Headsets
+  # Полевые гарнитуры
 
-  Field headsets are the standard personal radios issued to ground forces. They provide access to assigned faction nets and, on supported models, one tunable direct frequency.
+Полевые гарнитуры — стандартные индивидуальные средства радиосвязи, выдаваемые наземным подразделениям. Они обеспечивают доступ к назначенным радиосетям своей стороны, а поддерживаемые модели также позволяют настроить одну дополнительную прямую частоту.
 
   <Box>
-    <GuideEntityEmbed Entity="AU14HeadsetGovforMarineFTL" Caption="Squad Headset"/>
-    <GuideEntityEmbed Entity="AU14HeadsetGovforCommand" Caption="Command Headset"/>
+    <GuideEntityEmbed Entity="AU14HeadsetGovforMarineFTL" Caption="Гарнитура отделения"/>
+    <GuideEntityEmbed Entity="AU14HeadsetGovforCommand" Caption="Командная гарнитура"/>
   </Box>
 
-  ## Named Nets
+## Именованные радиосети
 
-  Use [color=#a4885c]:h[/color] to transmit on the headset's default net.
+Для передачи по основной радиосети гарнитуры используйте [color=#a4885c]:h.
 
-  Some headsets contain additional keyed nets. Examine the headset to view its available nets and chat prefixes.
+Некоторые гарнитуры содержат ключи дополнительных радиосетей. Осмотрите гарнитуру, чтобы просмотреть доступные радиосети и соответствующие им префиксы чата.
 
-  For example:
+Например:
 
-  - [color=#a4885c]:v[/color] transmits on command when the headset contains the command key.
-  - [color=#a4885c]:a[/color] transmits on Alpha when the headset contains the Alpha key.
+- [color=#a4885c]:v передаёт сообщение по командной радиосети, если в гарнитуре установлен командный ключ.
+- [color=#a4885c]:a передаёт сообщение по радиосети «Альфа», если в гарнитуре установлен ключ «Альфы».
 
-  Named faction nets are secured by keys installed in the headset. A headset cannot transmit on or receive a named net without its matching key.
+Именованные радиосети стороны защищены ключами, установленными в гарнитуре. Гарнитура не может передавать или принимать сообщения в именованной радиосети без соответствующего ключа.
 
-  ## Net Coverage
+## Зона покрытия радиосети
 
-  Combat nets require coverage from a radio relay or fixed communications infrastructure.
+Для работы боевых радиосетей требуется покрытие от радиоретранслятора или стационарной инфраструктуры связи.
 
-  Coverage can be provided by:
+Покрытие может обеспечиваться следующими средствами:
 
-  - A powered [textlink="AN/PRC-117G" link="AU14CommsANPRC"] worn by a trained operator.
-  - A deployed retransmission station.
-  - A powered shipboard communications array.
-  - A command-post antenna mast.
+- Включённой [textlink="AN/PRC-117G" link="AU14CommsANPRC"], которую носит подготовленный радиооператор.
+- Развёрнутой ретрансляционной станцией.
+- Включённым корабельным комплексом связи.
+- Антенной мачтой командного пункта.
 
-  A worn AN/PRC does not relay while carried by an untrained wearer.
+Носимая AN/PRC не ретранслирует сигнал, если её несёт неподготовленный пользователь.
 
-  Coverage reaches one level above or below the anchor, so deep tunnels need their own relay. Shipboard arrays cover every deck.
+Покрытие распространяется на один уровень выше и ниже точки ретрансляции, поэтому для глубоких тоннелей требуется отдельный ретранслятор. Корабельные комплексы связи обеспечивают покрытие на всех палубах.
 
-  Support nets, including MILP and colony channels, are not relay-gated and remain available without an anchor.
+Вспомогательные радиосети, включая MILP и каналы колонии, не зависят от ретрансляторов и остаются доступными без точки покрытия.
 
-  ### Standard relay range
-
-  <Table Columns="2" MinForcedColumnWidth="120">
-    <ColorBox Color="#263238">
-      <Box Margin="4">[bold]Distance from relay[/bold]</Box>
-    </ColorBox>
-    <ColorBox Color="#263238">
-      <Box Margin="4">[bold]Signal[/bold]</Box>
-    </ColorBox>
-
-    <ColorBox>
-      <Box Margin="4">0-30 tiles</Box>
-    </ColorBox>
-    <ColorBox>
-      <Box Margin="4">Clear transmission and reception.</Box>
-    </ColorBox>
-
-    <ColorBox>
-      <Box Margin="4">30-45 tiles</Box>
-    </ColorBox>
-    <ColorBox>
-      <Box Margin="4">Lightly degraded.</Box>
-    </ColorBox>
-
-    <ColorBox>
-      <Box Margin="4">Beyond 45 tiles</Box>
-    </ColorBox>
-    <ColorBox>
-      <Box Margin="4">No relay signal.</Box>
-    </ColorBox>
-  </Table>
-
-  These ranges assume standard transmit power and a whip antenna.
-
-  Relay range is affected by the radio's transmit power and antenna:
-
-  - Low transmit power reduces range.
-  - High transmit power increases range.
-  - A stationary mast antenna provides greater range than a whip antenna.
-  - Command-post antenna masts cover approximately 75 tiles.
-  - Shipboard communications arrays cover the connected ship.
-
-  If no relay or fixed anchor is available, relay-gated nets cannot be used in that area.
-
-  ## Using the Command Net
-
-  Squad leader headsets contain the squad and JTAC nets, but not the command net.
-
-  A squad leader can use an RTO's AN/PRC handset to communicate on command:
-
-  - Stand near the RTO or a deployed radio.
-  - Alt-click the wearer or radio.
-  - Select [bold]Take Handset[/bold].
-  - Transmit with [color=#a4885c]:r[/color].
-
-  The handset reaches approximately two tiles and disconnects when the user moves out of range.
-
-  Handset transmissions use the handset user's own callsign rather than the radio operator's callsign.
-
-  ## Jamming
-
-  Enemy jammers affect headset traffic.
-
-  While the wearer is inside a jammer field:
-
-  - Outgoing headset transmissions are blocked.
-  - Incoming traffic may become degraded.
-  - Stronger nearby jamming causes more severe degradation.
-
-  Direct-frequency traffic is affected in the same way.
-
-  The AN/PRC can continue transmitting from inside a jammer field while using FH mode. Standard headsets cannot.
-
-  ## Direct Frequency Tuning
-
-  Some headsets can store one additional direct frequency.
-
-  Use [color=#a4885c]:x[/color] to transmit on the tuned frequency.
-
-  Direct-frequency traffic:
-
-  - Does not use a named net.
-  - Does not require a headset encryption key.
-  - Does not require fixed communications infrastructure.
-  - Can be received by any compatible radio tuned to the same frequency.
-
-  To tune the headset:
-
-  - Right-click the headset.
-  - Select [bold]Tune Frequency[/bold].
-  - Enter a frequency between [color=#a4885c]30.000[/color] and [color=#a4885c]87.999[/color] MHz.
-
-  Frequencies may be entered with or without a decimal point.
-
-  For example:
-
-  - [color=#a4885c]30750[/color]
-  - [color=#a4885c]30.750[/color]
-
-  Both values select the same frequency.
-
-  The headset must be worn in the ears slot to transmit or receive.
-
-  ## Direct Frequency Range
-
-  Without an AN/PRC relay:
+### Стандартная дальность ретрансляции
 
   <Table Columns="2" MinForcedColumnWidth="120">
     <ColorBox Color="#263238">
-      <Box Margin="4">[bold]Distance[/bold]</Box>
+      <Box Margin="4">[bold]Расстояние от ретранслятора[/bold]</Box>
     </ColorBox>
     <ColorBox Color="#263238">
-      <Box Margin="4">[bold]Signal[/bold]</Box>
+      <Box Margin="4">[bold]Сигнал[/bold]</Box>
     </ColorBox>
 
-    <ColorBox>
-      <Box Margin="4">0-30 tiles</Box>
-    </ColorBox>
-    <ColorBox>
-      <Box Margin="4">Clear.</Box>
-    </ColorBox>
 
-    <ColorBox>
-      <Box Margin="4">30-50 tiles</Box>
-    </ColorBox>
-    <ColorBox>
-      <Box Margin="4">Lightly degraded.</Box>
-    </ColorBox>
+<ColorBox>
+  <Box Margin="4">0–30 тайлов</Box>
+</ColorBox>
+<ColorBox>
+  <Box Margin="4">Уверенная передача и приём.</Box>
+</ColorBox>
 
-    <ColorBox>
-      <Box Margin="4">Beyond 50 tiles</Box>
-    </ColorBox>
-    <ColorBox>
-      <Box Margin="4">No signal.</Box>
-    </ColorBox>
+<ColorBox>
+  <Box Margin="4">30–45 тайлов</Box>
+</ColorBox>
+<ColorBox>
+  <Box Margin="4">Незначительное ухудшение сигнала.</Box>
+</ColorBox>
+
+<ColorBox>
+  <Box Margin="4">Более 45 тайлов</Box>
+</ColorBox>
+<ColorBox>
+  <Box Margin="4">Сигнал ретранслятора отсутствует.</Box>
+</ColorBox>
+
+
   </Table>
 
-  A powered AN/PRC can bridge direct-frequency traffic when the same frequency is loaded into one of its slots.
+Указанные значения предполагают использование стандартной мощности передатчика и штыревой антенны.
 
-  Both headset users must be within [bold]50 tiles[/bold] of the radio.
+Дальность ретрансляции зависит от мощности передатчика и установленной антенны:
 
-  ## Clearing a Direct Frequency
+- Низкая мощность передатчика уменьшает дальность.
+- Высокая мощность передатчика увеличивает дальность.
+- Стационарная мачтовая антенна обеспечивает большую дальность, чем штыревая.
+- Антенные мачты командных пунктов обеспечивают покрытие приблизительно в радиусе 75 тайлов.
+- Корабельные комплексы связи обеспечивают покрытие всего подключённого корабля.
 
-  To remove the tuned frequency:
+Если ретранслятор или стационарная точка покрытия отсутствует, зависимые от ретрансляции радиосети в этой области работать не будут.
 
-  - Right-click the headset.
-  - Select [bold]Clear Tuned Frequency[/bold].
+## Использование командной радиосети
 
-  Headsets issued with a preset frequency may also provide [bold]Reset to Default Frequency[/bold].
+Гарнитуры командиров отделений содержат ключи радиосети отделения и JTAC, но не имеют доступа к командной радиосети.
 
-  ## Troubleshooting
+Командир отделения может использовать телефонную трубку AN/PRC своего RTO для связи по командной радиосети:
+
+- Встаньте рядом с RTO или развёрнутой радиостанцией.
+- Нажмите Alt по носителю радиостанции или самой радиостанции.
+- Выберите [bold]Взять трубку[/bold].
+- Передавайте сообщения с помощью [color=#a4885c]:r.
+
+Дальность действия трубки составляет приблизительно два тайла. При выходе пользователя за пределы этой дальности соединение разрывается.
+
+При передаче через трубку используется позывной пользователя трубки, а не позывной радиооператора.
+
+## Радиоэлектронное подавление
+
+Вражеские средства постановки помех воздействуют на связь через гарнитуры.
+
+Пока носитель находится в зоне действия подавителя:
+
+- Исходящие передачи через гарнитуру блокируются.
+- Входящие сообщения могут приниматься с искажениями.
+- Чем мощнее ближайший источник помех, тем сильнее ухудшается качество сигнала.
+
+Передачи на прямой частоте подвергаются такому же воздействию.
+
+AN/PRC может продолжать передачу из зоны действия подавителя при работе в режиме FH. Стандартные гарнитуры такой возможности не имеют.
+
+## Настройка прямой частоты
+
+Некоторые гарнитуры могут хранить одну дополнительную прямую частоту.
+
+Для передачи на настроенной частоте используйте [color=#a4885c]:x.
+
+Связь на прямой частоте:
+
+- Не использует именованную радиосеть.
+- Не требует ключа шифрования гарнитуры.
+- Не требует стационарной инфраструктуры связи.
+- Может приниматься любой совместимой радиостанцией, настроенной на ту же частоту.
+
+Чтобы настроить гарнитуру:
+
+- Нажмите по гарнитуре правой кнопкой мыши.
+- Выберите [bold]Настроить частоту[/bold].
+- Введите частоту в диапазоне от [color=#a4885c]30.000[/color] до [color=#a4885c]87.999[/color] МГц.
+
+Частоту можно вводить как с десятичной точкой, так и без неё.
+
+Например:
+
+- [color=#a4885c]30750[/color]
+- [color=#a4885c]30.750[/color]
+
+Оба значения соответствуют одной и той же частоте.
+
+Для передачи и приёма гарнитура должна находиться в слоте ушей.
+
+## Дальность связи на прямой частоте
+
+Без ретрансляции через AN/PRC:
 
   <Table Columns="2" MinForcedColumnWidth="120">
     <ColorBox Color="#263238">
-      <Box Margin="4">[bold]Problem[/bold]</Box>
+      <Box Margin="4">[bold]Расстояние[/bold]</Box>
     </ColorBox>
     <ColorBox Color="#263238">
-      <Box Margin="4">[bold]Check[/bold]</Box>
+      <Box Margin="4">[bold]Сигнал[/bold]</Box>
     </ColorBox>
 
-    <ColorBox>
-      <Box Margin="4">[bold]No frequency set[/bold] when using [color=#a4885c]:x[/color]</Box>
-    </ColorBox>
-    <ColorBox>
-      <Box Margin="4">Tune a direct frequency before transmitting.</Box>
-    </ColorBox>
 
-    <ColorBox>
-      <Box Margin="4">Named-net traffic is garbled</Box>
-    </ColorBox>
-    <ColorBox>
-      <Box Margin="4">Check relay distance and nearby jamming.</Box>
-    </ColorBox>
+<ColorBox>
+  <Box Margin="4">0–30 тайлов</Box>
+</ColorBox>
+<ColorBox>
+  <Box Margin="4">Уверенный сигнал.</Box>
+</ColorBox>
 
-    <ColorBox>
-      <Box Margin="4">AN/PRC traffic is received as static</Box>
-    </ColorBox>
-    <ColorBox>
-      <Box Margin="4">The transmitting or receiving radio may not have matching COMSEC fill.</Box>
-    </ColorBox>
+<ColorBox>
+  <Box Margin="4">30–50 тайлов</Box>
+</ColorBox>
+<ColorBox>
+  <Box Margin="4">Незначительное ухудшение сигнала.</Box>
+</ColorBox>
 
-    <ColorBox>
-      <Box Margin="4">A named net cannot be heard</Box>
-    </ColorBox>
-    <ColorBox>
-      <Box Margin="4">Examine the headset and confirm that it contains the matching net key.</Box>
-    </ColorBox>
+<ColorBox>
+  <Box Margin="4">Более 50 тайлов</Box>
+</ColorBox>
+<ColorBox>
+  <Box Margin="4">Сигнал отсутствует.</Box>
+</ColorBox>
 
-    <ColorBox>
-      <Box Margin="4">Direct-frequency traffic cannot be heard</Box>
-    </ColorBox>
-    <ColorBox>
-      <Box Margin="4">Confirm that both users have entered the same frequency and are within range.</Box>
-    </ColorBox>
 
-    <ColorBox>
-      <Box Margin="4">No traffic is received on a combat net</Box>
-    </ColorBox>
-    <ColorBox>
-      <Box Margin="4">Confirm that a powered relay or fixed net anchor is available.</Box>
-    </ColorBox>
   </Table>
 
-  Headsets do not use COMSEC fill cards. Fill cards are used only by the AN/PRC.
-</Document>
+Включённая AN/PRC может ретранслировать связь на прямой частоте, если эта же частота загружена в один из её слотов.
+
+Оба пользователя гарнитур должны находиться в пределах [bold]50 тайлов[/bold] от радиостанции.
+
+## Сброс прямой частоты
+
+Чтобы удалить настроенную частоту:
+
+- Нажмите по гарнитуре правой кнопкой мыши.
+- Выберите [bold]Очистить настроенную частоту[/bold].
+
+Для гарнитур с предустановленной частотой также может быть доступна функция [bold]Восстановить частоту по умолчанию[/bold].
+
+## Устранение неисправностей
+
+  <Table Columns="2" MinForcedColumnWidth="120">
+    <ColorBox Color="#263238">
+      <Box Margin="4">[bold]Проблема[/bold]</Box>
+    </ColorBox>
+    <ColorBox Color="#263238">
+      <Box Margin="4">[bold]Что проверить[/bold]</Box>
+    </ColorBox>
+
+
+<ColorBox>
+  <Box Margin="4">Сообщение [bold]Частота не установлена[/bold] при использовании [color=#a4885c]:x[/color]</Box>
+</ColorBox>
+<ColorBox>
+  <Box Margin="4">Перед передачей настройте прямую частоту.</Box>
+</ColorBox>
+
+<ColorBox>
+  <Box Margin="4">Передачи в именованной радиосети принимаются с искажениями</Box>
+</ColorBox>
+<ColorBox>
+  <Box Margin="4">Проверьте расстояние до ретранслятора и наличие поблизости средств постановки помех.</Box>
+</ColorBox>
+
+<ColorBox>
+  <Box Margin="4">Передача AN/PRC принимается как статический шум</Box>
+</ColorBox>
+<ColorBox>
+  <Box Margin="4">В передающей или принимающей радиостанции может отсутствовать соответствующий комплект ключей COMSEC.</Box>
+</ColorBox>
+
+<ColorBox>
+  <Box Margin="4">Именованная радиосеть не принимается</Box>
+</ColorBox>
+<ColorBox>
+  <Box Margin="4">Осмотрите гарнитуру и убедитесь, что в ней установлен ключ соответствующей радиосети.</Box>
+</ColorBox>
+
+<ColorBox>
+  <Box Margin="4">Передачи на прямой частоте не принимаются</Box>
+</ColorBox>
+<ColorBox>
+  <Box Margin="4">Убедитесь, что оба пользователя настроили одинаковую частоту и находятся в пределах дальности связи.</Box>
+</ColorBox>
+
+<ColorBox>
+  <Box Margin="4">В боевой радиосети отсутствует связь</Box>
+</ColorBox>
+<ColorBox>
+  <Box Margin="4">Убедитесь, что в области действует включённый ретранслятор или стационарная точка покрытия радиосети.</Box>
+</ColorBox>
+
+
+  </Table>
+
+В гарнитурах не используются карты загрузки ключей COMSEC. Такие карты применяются только в радиостанциях AN/PRC. </Document>
