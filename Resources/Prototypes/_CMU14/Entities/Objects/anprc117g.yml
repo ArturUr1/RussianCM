@@ -2,20 +2,32 @@
   id: ANPRC117GRadio
   name: AN/PRC-117G
   description: >-
-    A ruggedized multiband manpack radio, the lifeline between a platoon in
-    the field and its command net. Heavy, over-engineered, and utterly
-    indispensable. Commonly carried by Radio Telephone Operators.
+    Защищённая многодиапазонная ранцевая радиостанция, связывающая взвод в поле
+    с командной сетью. Тяжёлая, избыточно прочная и совершенно незаменимая.
+    Обычно её носят радиотелефонисты.
   parent: BaseItem
   components:
   - type: Sprite
-    sprite: _AU14/Clothing/RTOPack/blackrtopack.rsi
+    sprite: _AU14/Objects/Radio/anprc117g.rsi
     layers:
-    - state: icon
+    - state: base
       map: [ "base" ]
+  # worn and in-hand art stays on the old pack rsi, the new rsi only carries
+  # the ground states
   - type: Item
     size: Huge
+    sprite: _AU14/Clothing/RTOPack/blackrtopack.rsi
     shape:
     - 0,0,1,1
+  - type: GenericVisualizer
+    visuals:
+      enum.ANPRCPackVisuals.State:
+        base:
+          Bare: { sprite: _AU14/Objects/Radio/anprc117g.rsi, state: base, offset: "0,0" }
+          Whip: { sprite: _AU14/Objects/Radio/anprc117g.rsi, state: base_w, offset: "0,0" }
+          Mast: { sprite: _AU14/Objects/Radio/anprc117g.rsi, state: base_m, offset: "0,0" }
+          DeployedWhip: { sprite: _AU14/Objects/Radio/anprc117g_deployed.rsi, state: whip_deploy, offset: "0,0.5" }
+          DeployedMast: { sprite: _AU14/Objects/Radio/anprc117g_deployed.rsi, state: mast_deploy, offset: "0,0.5" }
   - type: ANPRCRadio
     activeSlot: -1
     enabled: true
@@ -38,7 +50,7 @@
     cellSlotId: cell_slot
   - type: PowerCellDraw
     enabled: false
-    drawRate: 3
+    drawRate: 1
     useRate: 0
   - type: ContainerContainer
     containers:
@@ -71,11 +83,19 @@
     interfaces:
       enum.ANPRCRadioUI.Key:
         type: ANPRCRadioBoundUserInterface
+      enum.AU14CallsignConsoleUI.Key:
+        type: AU14CallsignConsoleBui
+  # every pack carries a viewing copy of the faction's comms net directory,
+  # opened from the panel; readOnly locks out edits even for trained operators
+  - type: AU14CallsignConsole
+    faction: govfor
+    readOnly: true
   - type: Appearance
   - type: ClothingSpeedModifier
     walkModifier: 0.95
     sprintModifier: 0.95
   - type: Clothing
+    sprite: _AU14/Clothing/RTOPack/blackrtopack.rsi
     slots:
     - back
 
@@ -84,6 +104,9 @@
   id: ANPRC117GRadioOPFOR
   suffix: OPFOR
   components:
+  - type: AU14CallsignConsole
+    faction: opfor
+    readOnly: true
   - type: ANPRCRadio
     operatorFaction: opfor
     callsignPresets:
@@ -107,6 +130,9 @@
   id: ANPRC117GRadioCLF
   suffix: CLF
   components:
+  - type: AU14CallsignConsole
+    faction: clf
+    readOnly: true
   - type: ANPRCRadio
     operatorFaction: clf
     callsignPresets:
@@ -125,10 +151,10 @@
 - type: entity
   parent: BaseItem
   id: AU14ANPRCHandset
-  name: AN/PRC-117G handset
+  name: телефонная трубка AN/PRC-117G
   description: >-
-    A corded handset wired into an AN/PRC-117G manpack. The cord never
-    stretches quite as far as you need it to.
+    Проводная телефонная трубка, подключённая к ранцевой радиостанции AN/PRC-117G.
+    Провода всегда не хватает именно тогда, когда он нужнее всего.
   components:
   - type: Sprite
     sprite: _RMC14/Objects/phone.rsi
@@ -141,7 +167,7 @@
 - type: entity
   parent: ANPRC117GRadio
   id: ANPRC117GRadioFilled
-  suffix: GOVFOR, Filled
+  suffix: GOVFOR, заполнено
   components:
   - type: ContainerFill
     containers:
@@ -151,7 +177,7 @@
 - type: entity
   parent: ANPRC117GRadioOPFOR
   id: ANPRC117GRadioOPFORFilled
-  suffix: OPFOR, Filled
+  suffix: OPFOR, заполнено
   components:
   - type: ContainerFill
     containers:
@@ -161,7 +187,7 @@
 - type: entity
   parent: ANPRC117GRadioCLF
   id: ANPRC117GRadioCLFFilled
-  suffix: CLF, Filled
+  suffix: CLF, заполнено
   components:
   - type: ContainerFill
     containers:

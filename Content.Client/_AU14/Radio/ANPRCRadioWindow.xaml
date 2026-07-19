@@ -2,7 +2,8 @@
                xmlns:gfx="clr-namespace:Robust.Client.Graphics;assembly=Robust.Client"
                Title="{Loc anprc-window-title}"
                MinWidth="400"
-               MinHeight="620">
+               MinHeight="420"
+               SetSize="420 680">
 
   <PanelContainer>
     <PanelContainer.PanelOverride>
@@ -19,7 +20,7 @@
         <BoxContainer Orientation="Horizontal" Margin="6,4" SeparationOverride="6">
           <BoxContainer Orientation="Vertical" HorizontalExpand="True" SeparationOverride="1">
             <Label Text="AN/PRC-117G" FontColorOverride="#C8D2E8" />
-            <Label Text="РАНЦЕВЫЙ РЕТРАНСЛЯТОР РТО" FontColorOverride="#687A9A" />
+            <Label Text="НОСИМЫЙ РЕТРАНСЛЯТОР РТО" FontColorOverride="#687A9A" />
           </BoxContainer>
           <BoxContainer Orientation="Vertical" SeparationOverride="1">
             <Label Name="HeaderPowerLabel" Text="ПИТАНИЕ: ---"  FontColorOverride="#687A9A" />
@@ -28,7 +29,7 @@
         </BoxContainer>
       </PanelContainer>
 
-      <ScrollContainer VerticalExpand="True">
+      <ScrollContainer VerticalExpand="True" SizeFlagsStretchRatio="3">
         <BoxContainer Orientation="Vertical" SeparationOverride="5">
 
           <!-- LCD -->
@@ -42,7 +43,7 @@
                 <Control HorizontalExpand="True" />
                 <Label Name="TxIndicator"   Text="●"        FontColorOverride="#1E4A2E" />
                 <Label Name="TxLabel"       Text="ВЫКЛ"      FontColorOverride="#1E4A2E" />
-                <Label Name="CryptoLabel"   Text="ЗАЩ"      FontColorOverride="#4A7A55" />
+                <Label Name="CryptoLabel"   Text="SEC"      FontColorOverride="#4A7A55" />
               </BoxContainer>
               <Label Name="FrequencyLabel"   Text="-- . ---"      FontColorOverride="#1E4A2E" />
               <Label Name="ChannelNameLabel" Text="СЕТЬ НЕ ЗАГРУЖЕНА" FontColorOverride="#1E4A2E" />
@@ -52,15 +53,15 @@
                 <Label Name="WaveformLabel"  Text="СИГНАЛ: ---"   FontColorOverride="#4A7A55" />
               </BoxContainer>
               <BoxContainer Orientation="Horizontal" SeparationOverride="6" Margin="0,3,0,0">
-                <Label Text="СИГ" FontColorOverride="#4A7A55" />
+                <Label Text="СИГН." FontColorOverride="#4A7A55" />
                 <Label Name="SignalBarsLabel"  Text="░░░░░░░░" FontColorOverride="#1E4A2E" HorizontalExpand="True" />
-                <Label Text="БАТ" FontColorOverride="#4A7A55" />
+                <Label Text="БАТ." FontColorOverride="#4A7A55" />
                 <Label Name="BatteryBarsLabel" Text="░░░░░░"   FontColorOverride="#1E4A2E" />
               </BoxContainer>
               <BoxContainer Orientation="Horizontal" SeparationOverride="6">
-                <Label Name="BitStatusLabel" Text="ТЕСТ: НЕТ СВЯЗИ" FontColorOverride="#4A7A55" HorizontalExpand="True" />
-                <Label Name="AntennaLabel"   Text="АНТ: ---"     FontColorOverride="#4A7A55" HorizontalExpand="True" />
-                <Label Name="FaultLabel"     Text="ОШИБКА: НЕТ"  FontColorOverride="#687A9A" />
+                <Label Name="BitStatusLabel" Text="КОНТРОЛЬ: НЕТ СВЯЗИ" FontColorOverride="#4A7A55" HorizontalExpand="True" />
+                <Label Name="AntennaLabel"   Text="АНТЕННА: ---"     FontColorOverride="#4A7A55" HorizontalExpand="True" />
+                <Label Name="FaultLabel"     Text="НЕИСПР.: НЕТ"  FontColorOverride="#687A9A" />
               </BoxContainer>
             </BoxContainer>
           </PanelContainer>
@@ -83,6 +84,7 @@
                 <Button Name="CallsignSetButton" Text="ЗАДАТЬ" MinWidth="48" />
               </BoxContainer>
               <Label Text="Позывной станции. Пусто — назначенный автоматически; задайте пустое значение для сброса." FontColorOverride="#4A7A55" />
+              <Button Name="DirectoryButton" Text="КАТАЛОГ ПОЗЫВНЫХ" />
             </BoxContainer>
           </PanelContainer>
 
@@ -118,7 +120,7 @@
                 <LineEdit Name="AddSlotLabelEdit"
                           HorizontalExpand="True"
                           PlaceHolder="До 8 знаков (например CMD)" />
-                <Button Name="AddSlotConfirmButton" Text="ДОБАВИТЬ"    MinWidth="48" />
+                <Button Name="AddSlotConfirmButton" Text="ДОБАВИТЬ" MinWidth="48" />
                 <Button Name="AddSlotCancelButton"  Text="ОТМЕНА" MinWidth="60" />
               </BoxContainer>
             </BoxContainer>
@@ -134,8 +136,8 @@
 
               <!-- Tab buttons -->
               <BoxContainer Orientation="Horizontal" SeparationOverride="4">
-                <Button Name="EntryTabFreqButton" Text="ЧАСТОТА"  HorizontalExpand="True" />
-                <Button Name="EntryTabNetButton"  Text="СЕТЬ"   HorizontalExpand="True" />
+                <Button Name="EntryTabFreqButton" Text="ЧАСТОТА" HorizontalExpand="True" />
+                <Button Name="EntryTabNetButton"  Text="СЕТЬ" HorizontalExpand="True" />
                 <Button Name="EntryTabClearButton" Text="ОЧИСТИТЬ" HorizontalExpand="True" />
               </BoxContainer>
 
@@ -144,7 +146,7 @@
                 <LineEdit Name="EntryFreqLineEdit"
                           HorizontalExpand="True"
                           PlaceHolder="например, 1606 или 1.606" />
-                <Button Name="EntryFreqConfirmButton" Text="ЗАДАТЬ"    MinWidth="48" />
+                <Button Name="EntryFreqConfirmButton" Text="ЗАДАТЬ" MinWidth="48" />
               </BoxContainer>
 
               <!-- NET tab content: scrollable channel list -->
@@ -163,21 +165,21 @@
             </PanelContainer.PanelOverride>
             <BoxContainer Orientation="Vertical" Margin="6,5" SeparationOverride="4">
               <BoxContainer Orientation="Horizontal" SeparationOverride="4">
-                <Button Name="ModeButton"    HorizontalExpand="True" Text="РЕЖИМ FH"  />
-                <Button Name="MonitorButton" HorizontalExpand="True" Text="МОНИТОР ВЫКЛ"  />
+                <Button Name="ModeButton"    HorizontalExpand="True" Text="РЕЖИМ FH" />
+                <Button Name="MonitorButton" HorizontalExpand="True" Text="МОНИТОР ВЫКЛ" />
                 <Button Name="ScanButton"    HorizontalExpand="True" Text="СКАН ВЫКЛ" />
-                <Button Name="SquelchButton" HorizontalExpand="True" Text="ШУМ 3"    />
-                <Button Name="TxPowerButton" HorizontalExpand="True" Text="ПЕРЕДАЧА СР"   />
+                <Button Name="SquelchButton" HorizontalExpand="True" Text="ШУМ 3" />
+                <Button Name="TxPowerButton" HorizontalExpand="True" Text="ПЕРЕДАЧА СР" />
               </BoxContainer>
               <BoxContainer Orientation="Horizontal" SeparationOverride="6">
-                <Label Text="РОЛЬ"  FontColorOverride="#687A9A" />
-                <Label Name="RoleValueLabel"  Text="РЕТРАНСЛЯТОР РТО" FontColorOverride="#C8D2E8" HorizontalExpand="True" />
+                <Label Text="РОЛЬ" FontColorOverride="#687A9A" />
+                <Label Name="RoleValueLabel" Text="РЕТРАНСЛЯТОР РТО" FontColorOverride="#C8D2E8" HorizontalExpand="True" />
                 <Label Text="РЕТР." FontColorOverride="#687A9A" />
-                <Label Name="RelayValueLabel" Text="ОЖИДАНИЕ"      FontColorOverride="#C8D2E8" />
+                <Label Name="RelayValueLabel" Text="ОЖИДАНИЕ" FontColorOverride="#C8D2E8" />
               </BoxContainer>
               <BoxContainer Orientation="Horizontal" SeparationOverride="6">
                 <Label Name="DiagnosticLineA" Text="ОПОРА: НЕТ СВЯЗИ" FontColorOverride="#687A9A" HorizontalExpand="True" />
-                <Label Name="DiagnosticLineB" Text="ОБХОД: НЕТ"      FontColorOverride="#687A9A" />
+                <Label Name="DiagnosticLineB" Text="ОБХОД: НЕТ" FontColorOverride="#687A9A" />
               </BoxContainer>
               <BoxContainer Orientation="Horizontal" SeparationOverride="4" Margin="0,3,0,0">
                 <Button Name="RadioCheckButton" Text="ПРОВЕРКА СВЯЗИ" HorizontalExpand="True" />
@@ -200,33 +202,33 @@
                 <Button Name="ZeroizeButton"  Text="ОБНУЛИТЬ" HorizontalExpand="True" StyleClasses="Caution" />
                 <Button Name="DestroyButton"  Text="УНИЧТОЖИТЬ" HorizontalExpand="True" StyleClasses="Caution" />
               </BoxContainer>
-              <Button Name="RecryptoButton" Text="ПРИКАЗАТЬ СМЕНУ КЛЮЧЕЙ ФРАКЦИИ" StyleClasses="Caution" />
+              <Button Name="RecryptoButton" Text="{Loc anprc-recrypto-button}" StyleClasses="Caution" />
             </BoxContainer>
-          </PanelContainer>
-
-          <!-- Net log -->
-          <BoxContainer Orientation="Horizontal" Margin="2,1,2,0">
-            <Label Text="ЖУРНАЛ СЕТИ" FontColorOverride="#A9C3E8" HorizontalExpand="True" />
-            <Label Name="NetLogCountLabel" Text="Записей: 0" FontColorOverride="#687A9A" />
-          </BoxContainer>
-          <BoxContainer Orientation="Horizontal" SeparationOverride="4">
-            <OptionButton Name="NetLogChannelFilter" MinWidth="120" />
-            <LineEdit Name="NetLogSearchEdit"
-                      HorizontalExpand="True"
-                      PlaceHolder="Фильтр по отправителю или тексту" />
-            <Button Name="NetLogFilterClearButton" Text="СБРОС" MinWidth="44" />
-          </BoxContainer>
-          <PanelContainer>
-            <PanelContainer.PanelOverride>
-              <gfx:StyleBoxFlat BackgroundColor="#07130A" BorderColor="#245236" BorderThickness="1" />
-            </PanelContainer.PanelOverride>
-            <ScrollContainer MinHeight="100" MaxHeight="160">
-              <BoxContainer Name="NetLogContainer" Orientation="Vertical" SeparationOverride="2" Margin="4,3" />
-            </ScrollContainer>
           </PanelContainer>
 
         </BoxContainer>
       </ScrollContainer>
+
+      <!-- Net log: outside the settings scroll so it grows with the window -->
+      <BoxContainer Orientation="Horizontal" Margin="2,1,2,0">
+        <Label Text="ЖУРНАЛ СЕТИ" FontColorOverride="#A9C3E8" HorizontalExpand="True" />
+        <Label Name="NetLogCountLabel" Text="Записей: 0" FontColorOverride="#687A9A" />
+      </BoxContainer>
+      <BoxContainer Orientation="Horizontal" SeparationOverride="4">
+        <OptionButton Name="NetLogChannelFilter" MinWidth="120" />
+        <LineEdit Name="NetLogSearchEdit"
+                  HorizontalExpand="True"
+                  PlaceHolder="Фильтр по отправителю или тексту" />
+        <Button Name="NetLogFilterClearButton" Text="СБРОС" MinWidth="44" />
+      </BoxContainer>
+      <PanelContainer VerticalExpand="True" SizeFlagsStretchRatio="2">
+        <PanelContainer.PanelOverride>
+          <gfx:StyleBoxFlat BackgroundColor="#07130A" BorderColor="#245236" BorderThickness="1" />
+        </PanelContainer.PanelOverride>
+        <ScrollContainer VerticalExpand="True" MinHeight="100">
+          <BoxContainer Name="NetLogContainer" Orientation="Vertical" SeparationOverride="2" Margin="4,3" />
+        </ScrollContainer>
+      </PanelContainer>
 
       <!-- Footer -->
       <PanelContainer>

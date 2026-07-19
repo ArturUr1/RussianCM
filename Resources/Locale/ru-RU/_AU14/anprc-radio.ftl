@@ -64,3 +64,6 @@ anprc-handset-hands-full = Чтобы взять трубку, нужна сво
 anprc-handset-cord = Вы отходите слишком далеко, и провод вырывает трубку из руки.
 anprc-handset-radio-gone = Трубка замолкает.
 anprc-handset-hint = Пока вы держите трубку, речь передаётся в активную сеть ранца. Шепчите, чтобы не выйти в эфир.
+anprc-recrypto-button = ПРИКАЗАТЬ СМЕНУ КЛЮЧЕЙ ФРАКЦИИ
+anprc-recrypto-button-confirm = ПОДТВЕРДИТЬ СМЕНУ КЛЮЧЕЙ
+anprc-recrypto-superseded-notice = Ключи COMSEC вашей стороны были заменены. Все ранее выданные карты устарели.

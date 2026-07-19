@@ -25,6 +25,7 @@
   roundComponents:
   - type: AU14CallsignRole
     radioTag: FTL
+  - type: ANPRCRadioUser # radio trained so an FTL can run the manpack if the RTO drops, they don't spawn with one
   - type: Skills
     preset: AU14SkillPresetPlatoonRTO
   - type: JobPrefix

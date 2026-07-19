@@ -25,3 +25,4 @@ au14-callsign-console-create-group-button = СОЗДАТЬ ГРУППУ
 au14-callsign-console-delete-group-button = РАСФОРМИРОВАТЬ
 au14-callsign-console-group-none = — элемент —
 au14-callsign-headset-examine = В сети вы отзываетесь на [color=#6BC7FF]{ $callsign }[/color].
+au14-overwatch-console-comms-directory = Каталог сети связи

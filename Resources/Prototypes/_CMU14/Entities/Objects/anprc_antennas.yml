@@ -1,7 +1,7 @@
 - type: entity
   abstract: true
   id: ANPRCAntennaBase
-  name: AN/PRC-117G antenna
+  name: антенна AN/PRC-117G
   parent: BaseItem
   components:
   - type: Item
@@ -10,15 +10,14 @@
 - type: entity
   parent: ANPRCAntennaBase
   id: ANPRCWhipAntenna
-  name: AN/PRC-117G whip antenna
+  name: штыревая антенна AN/PRC-117G
   description: >-
-    A flexible steel tape-whip antenna, standard fit for manpack radios.
-    Bends around brush and doorframes without snapping.
+    Гибкая стальная ленточно-штыревая антенна — штатное оснащение ранцевых радиостанций.
+    Огибает кустарник и дверные проёмы, не ломаясь.
   components:
   - type: Sprite
-    sprite: _RMC14/Objects/Misc/flares.rsi
-    state: flare_unlit
-    color: "#6B7A6B"
+    sprite: _AU14/Objects/Radio/anprc117g.rsi
+    state: antenna_w
   - type: ANPRCAntenna
     label: ШТЫРЬ
     fullRange: 30
@@ -28,14 +27,14 @@
 - type: entity
   parent: ANPRCAntennaBase
   id: ANPRCMastAntenna
-  name: AN/PRC-117G mast antenna
+  name: мачтовая антенна AN/PRC-117G
   description: >-
-    A collapsible high-gain mast antenna. Meant to be raised over a command
-    post or retrans site, not hauled around on patrol.
+    Складная мачтовая антенна с высоким коэффициентом усиления. Предназначена
+    для установки над командным пунктом или узлом ретрансляции, а не для переноски в патруле.
   components:
   - type: Sprite
-    sprite: _RMC14/Objects/Devices/vulture_spotter.rsi
-    state: vulture_tripod
+    sprite: _AU14/Objects/Radio/anprc117g.rsi
+    state: antenna_m
   - type: ANPRCAntenna
     label: МАЧТА
     fullRange: 55
