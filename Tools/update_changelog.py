@@ -12,6 +12,8 @@ import yaml
 import argparse
 import datetime
 
+from changelog_translation import translate_changelog
+
 MAX_ENTRIES = 500
 
 HEADER_RE = r"(?::cl:|🆑) *\r?\n(.+)$"
@@ -52,6 +54,11 @@ def main():
     parser.add_argument("changelog_file")
     parser.add_argument("parts_dir")
     parser.add_argument("--category", default=CATEGORY_MAIN)
+    parser.add_argument(
+        "--translate",
+        action="store_true",
+        help="translate all untranslated changelog messages to Russian",
+    )
     args = parser.parse_args()
     category = args.category
 
@@ -66,6 +73,7 @@ def main():
     entries_list: List[Any] = current_data.get("Entries", [])
     max_id = max(map(lambda e: e["id"], entries_list), default=0)
 
+    processed_parts = []
     for partname in os.listdir(args.parts_dir):
         if not partname.endswith(".yml"):
             continue
@@ -105,7 +113,7 @@ def main():
                     "url": url,
                 }
             )
-        os.remove(partpath)
+        processed_parts.append(partpath)
     print(f"Have {len(entries_list)} changelog entries")
 
     overflow = len(entries_list) - MAX_ENTRIES
@@ -121,8 +129,16 @@ def main():
     # why yes, this is slightly cursed but- path of least resistance
     new_data = sort_and_renumber(new_data)
 
+    if args.translate:
+        translated_count = translate_changelog(new_data)
+        print(f"Translated {translated_count} changelog messages to Russian")
+
     with open(args.changelog_file, "w", encoding="utf-8-sig") as f:
         yaml.safe_dump(new_data, f)
+
+    # Keep parts intact when assembly, translation, or writing fails.
+    for partpath in processed_parts:
+        os.remove(partpath)
 
 
 if __name__ == "__main__":
