@@ -437,12 +437,13 @@ public sealed partial class GmodConstructionMenu : DefaultWindow, IConstructionM
         _canEditMenu = _isAdmin
             || IoCManager.Resolve<Players.PlayTimeTracking.JobRequirementsManager>().IsWhitelisted(EditorWhitelistJob);
 
-        // Build-mode dropdown: Player is always available; Admin needs the Spawn flag; Mapper needs Mapping.
+        // Build-mode dropdown: Player is always available; Admin needs the Spawn flag; Mapper needs Mapping
+        // OR Spawn, so admins get the mapper ruleset too without needing a separate flag.
         // You can never select a mode you aren't authorized for (and the server re-validates regardless).
         ModeDropdown.AddItem(Loc.GetString("gmod-construction-menu-mode-player"), ModePlayerId);
         if (adminMgr.HasFlag(Shared.Administration.AdminFlags.Spawn))
             ModeDropdown.AddItem(Loc.GetString("gmod-construction-menu-mode-admin"), ModeAdminId);
-        if (adminMgr.HasFlag(Shared.Administration.AdminFlags.Mapping))
+        if (adminMgr.HasFlag(Shared.Administration.AdminFlags.Mapping) || adminMgr.HasFlag(Shared.Administration.AdminFlags.Spawn))
             ModeDropdown.AddItem(Loc.GetString("gmod-construction-menu-mode-mapper"), ModeMapperId);
         ModeDropdown.SelectId(ModePlayerId);
         ModeDropdown.OnItemSelected += args =>

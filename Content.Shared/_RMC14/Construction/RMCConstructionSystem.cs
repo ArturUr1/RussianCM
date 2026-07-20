@@ -1,3 +1,4 @@
+using Content.Shared._AU14.ZLevelBuilding;
 using Content.Shared._RMC14.Construction.Prototypes;
 using Content.Shared._RMC14.Dropship;
 using Content.Shared._RMC14.Emplacements;
@@ -455,7 +456,14 @@ public sealed partial class RMCConstructionSystem : EntitySystem
         if (!_prototype.TryIndex<EntityPrototype>(prototype, out var proto))
             return false;
 
-        var canBuild = CanBuildAt(coordinates, proto.Name, out popup, anchoring, direction, collision);
+        // AU14: laying a floor is precisely how you make unbuildable terrain buildable, so a tile applier is
+        // not subject to the terrain's own blockConstruction/blockAnchoring flags - otherwise beach, coast and
+        // water-shore tiles (whose abstract parents carry those flags, so every variant inherits them) refuse
+        // the tile ghost outright and the player just sees nothing appear. Structures, barricades and every
+        // other recipe stay blocked exactly as before; they can be built once a floor is down.
+        var isTileApplier = proto.TryComp<TileApplierComponent>(out _, _componentFactory);
+
+        var canBuild = CanBuildAt(coordinates, proto.Name, out popup, anchoring, direction, collision, isTileApplier);
         if (!canBuild)
             return false;
 
@@ -473,7 +481,9 @@ public sealed partial class RMCConstructionSystem : EntitySystem
         return canBuild;
     }
 
-    public bool CanBuildAt(EntityCoordinates coordinates, string? prototypeName, out string? popup, bool anchoring = false, Direction direction = Direction.Invalid, CollisionGroup? collision = null)
+    /// <param name="ignoreBlockedTerrain">Skips the tile's own blockConstruction/blockAnchoring veto. Set for
+    /// tile appliers, which exist to replace that terrain.</param>
+    public bool CanBuildAt(EntityCoordinates coordinates, string? prototypeName, out string? popup, bool anchoring = false, Direction direction = Direction.Invalid, CollisionGroup? collision = null, bool ignoreBlockedTerrain = false)
     {
         popup = default;
         if (_transform.GetGrid(coordinates) is not { } gridId)
@@ -496,9 +506,9 @@ public sealed partial class RMCConstructionSystem : EntitySystem
         if (!_map.TryGetTileDef(grid, indices, out var def))
             return true;
 
-        var invalid = def is ContentTileDefinition { BlockConstruction: true };
+        var invalid = !ignoreBlockedTerrain && def is ContentTileDefinition { BlockConstruction: true };
         if (anchoring)
-            invalid = def is ContentTileDefinition { BlockAnchoring: true };
+            invalid = !ignoreBlockedTerrain && def is ContentTileDefinition { BlockAnchoring: true };
 
         if (invalid || _rmcMap.HasAnchoredEntityEnumerator<LadderComponent>(coordinates))
         {

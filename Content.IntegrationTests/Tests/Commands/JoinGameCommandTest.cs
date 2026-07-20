@@ -22,8 +22,8 @@ namespace Content.IntegrationTests.Tests.Commands;
 public sealed class JoinGameCommandTest
 {
     private const string TestMap = "JoinGameCommandTestMap";
-    private static readonly ProtoId<JobPrototype> SelectedJob = "JoinGameCommandSelectedJob";
-    private static readonly ProtoId<JobPrototype> FallbackJob = "JoinGameCommandFallbackJob";
+    private const string SelectedJob = "JoinGameCommandSelectedJob";
+    private const string FallbackJob = "JoinGameCommandFallbackJob";
 
     [TestPrototypes]
     private static readonly string Prototypes = $@"
