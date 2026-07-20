@@ -1,52 +1,4 @@
 ﻿Entries:
-- author: potatoed6
-  changes:
-  - message: "\u0421\u043D\u043E\u0432\u0430 \u0438\u0441\u043F\u0440\u0430\u0432\u043B\
-      \u0435\u043D\u044B \u0442\u0430\u0439\u043C\u0435\u0440\u044B \u0440\u0430\u043D\
-      \u0433\u043E\u0432!"
-    type: Fix
-  id: 1
-  time: '2026-02-18T00:46:43.0000000+00:00'
-  url: https://github.com/AU-14/ColonialMarinesUniverse/pull/625
-- author: potatoed6
-  changes:
-  - message: "\u0410\u041380 \u0434\u043B\u044F \u0423\u041F\u041F"
-    type: Add
-  - message: "\u041E\u041360 \u0434\u043B\u044F \u0423\u041F\u041F. \u041F\u0440\u043E\
-      \u0432\u0435\u0440\u044C\u0442\u0435 \u0442\u0440\u0435\u0431\u043E\u0432\u0430\
-      \u043D\u0438\u044F \u0434\u043B\u044F \u044D\u0442\u043E\u0433\u043E!"
-    type: Add
-  - message: "\u041D\u043E\u0432\u0430\u044F \u0444\u043E\u0440\u043C\u0430, \u0440\
-      \u0435\u043C\u043D\u0438, \u044D\u043A\u0438\u043F\u0438\u0440\u043E\u0432\u043A\
-      \u0430 \u0434\u043B\u044F \u0423\u041F\u041F"
-    type: Add
-  - message: "\u0418\u0437\u043C\u0435\u043D\u0435\u043D\u044B \u0442\u0440\u0435\u0431\
-      \u043E\u0432\u0430\u043D\u0438\u044F UPP \u043D\u0430 \u043F\u0440\u0430\u0432\
-      \u0438\u043B\u044C\u043D\u044B\u0435."
-    type: Tweak
-  - message: "Type 88 DMR \u043E\u0441\u043B\u0430\u0431\u043B\u0435\u043D, \u0442\
-      \u0435\u043F\u0435\u0440\u044C \u043E\u043D \u043D\u0435\u043C\u043D\u043E\u0433\
-      \u043E \u043B\u0443\u0447\u0448\u0435, \u0447\u0435\u043C DMR \u043E\u0442 TWE."
-    type: Tweak
-  - message: "\u0424\u0438\u043A\u0441\u0438\u0440\u043E\u0432\u0430\u043D\u043D\u0430\
-      \u044F \u0443\u043D\u0438\u0444\u043E\u0440\u043C\u0430"
-    type: Fix
-  - message: "\u0414\u043E\u0431\u0430\u0432\u043B\u0435\u043D\u043E \u043A\u0430\u0447\
-      \u0435\u0441\u0442\u0432\u043E \u0436\u0438\u0437\u043D\u0438 \u0434\u043B\u044F\
-      \ UPP."
-    type: Add
-  id: 2
-  time: '2026-02-19T00:35:01.0000000+00:00'
-  url: https://github.com/AU-14/ColonialMarinesUniverse/pull/586
-- author: potatoed6
-  changes:
-  - message: "\u0422\u0435\u043F\u0435\u0440\u044C \u0443 \u043A\u0430\u0436\u0434\
-      \u043E\u0433\u043E \u043A\u0441\u0435\u043D\u043E \u0435\u0441\u0442\u044C \u0441\
-      \u043F\u0440\u0430\u0439\u0442 Cm13!"
-    type: Add
-  id: 3
-  time: '2026-02-20T05:53:58.0000000+00:00'
-  url: https://github.com/AU-14/ColonialMarinesUniverse/pull/630
 - author: JaSeNeSaJ
   changes:
   - message: "\u041F\u043E\u043B\u043D\u044B\u0439 \u0440\u0435\u043C\u0435\u0439\u043A"
@@ -58,7 +10,7 @@
   - message: "\u041F\u043E\u0441\u0442\u0430\u0432\u0449\u0438\u043A \u043E\u0431\u043E\
       \u0440\u0443\u0434\u043E\u0432\u0430\u043D\u0438\u044F WYGuard"
     type: Add
-  id: 4
+  id: 1
   time: '2026-02-20T12:50:06.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/634
 - author: JaSeNeSaJ
@@ -77,7 +29,7 @@
       \u0443\u043F CMAccessColonyCommand \u043A \u0433\u0440\u0443\u043F\u043F\u0435\
       \ \u0434\u043E\u0441\u0442\u0443\u043F\u0430 auadmin."
     type: Tweak
-  id: 5
+  id: 2
   time: '2026-02-21T20:15:26.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/641
 - author: JaSeNeSaJ
@@ -98,7 +50,7 @@
     type: Tweak
   - message: "\u0426\u0435\u043B\u0438"
     type: Tweak
-  id: 6
+  id: 3
   time: '2026-02-22T20:20:04.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/648
 - author: Berkin101
@@ -106,7 +58,7 @@
   - message: "\u041D\u043E\u0432\u044B\u0435 \u0433\u043E\u043B\u043E\u0441\u043E\u0432\
       \u044B\u0435 \u0440\u0435\u043F\u043B\u0438\u043A\u0438 Warcry \u0438 Medic"
     type: Add
-  id: 7
+  id: 4
   time: '2026-02-22T20:43:39.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/637
 - author: potatoed6
@@ -119,7 +71,7 @@
       \u0440\u0438\u0442\u043E\u0440\u0438\u0430\u043B\u044C\u043D\u043E\u0439 \u041E\
       \u0431\u043E\u0440\u043E\u043D\u044B \u0423\u041F\u041F!"
     type: Add
-  id: 8
+  id: 5
   time: '2026-02-23T00:56:01.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/635
 - author: potatoed6
@@ -149,7 +101,7 @@
       \ \u0434\u0438\u0432\u0438\u0437\u0438\u0438 \u0430\u0440\u043C\u0438\u0438\
       \ \u0421\u0428\u0410!"
     type: Add
-  id: 9
+  id: 6
   time: '2026-02-25T02:05:18.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/638
 - author: NexusLeader
@@ -160,7 +112,7 @@
       \ \u043D\u0430\u0437\u0435\u043C\u043D\u043E\u0439 \u0437\u043E\u043D\u044B\
       \ Colony Liasion."
     type: Add
-  id: 10
+  id: 7
   time: '2026-02-26T13:26:42.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/658
 - author: JaSeNeSaJ
@@ -189,7 +141,7 @@
       \ \u0438 \u043D\u0430\u0437\u0432\u0430\u043D\u0438\u044F \u043C\u0435\u0442\
       \u0430\u0434\u0430\u043D\u043D\u044B\u0445."
     type: Tweak
-  id: 11
+  id: 8
   time: '2026-02-26T16:17:49.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/659
 - author: NexusLeader
@@ -200,7 +152,7 @@
   - message: "\u0424\u0438\u043A\u0441\u0438\u0440\u043E\u0432\u0430\u043D\u043D\u044B\
       \u0435 \u043A\u0430\u043B\u0435\u043D\u0434\u0430\u0440\u0438"
     type: Fix
-  id: 12
+  id: 9
   time: '2026-02-28T22:03:48.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/663
 - author: JaSeNeSaJ
@@ -210,7 +162,7 @@
       \u043B\u0435\u0435 \u0446\u0435\u043D\u0442\u0440\u0438\u0440\u043E\u0432\u0430\
       \u043D\u044B."
     type: Fix
-  id: 13
+  id: 10
   time: '2026-02-28T22:15:16.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/665
 - author: Zetera-Tertia
@@ -231,7 +183,7 @@
       \u043A\u043B\u0430 \u043D\u0430 \u043E\u0441\u043D\u043E\u0432\u0435 \u0431\u0440\
       \u043E\u043D\u0438 \u0427\u0412\u041A)"
     type: Tweak
-  id: 14
+  id: 11
   time: '2026-03-02T05:30:35.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/666
 - author: potatoed6
@@ -250,7 +202,7 @@
   - message: "\u0420\u0435\u0441\u0442\u0440\u0443\u043A\u0442\u0443\u0440\u0438\u0437\
       \u0430\u0446\u0438\u044F RMC RRT"
     type: Code
-  id: 15
+  id: 12
   time: '2026-03-08T09:42:27.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/672
 - author: potatoed6
@@ -262,7 +214,7 @@
   - message: "\u0423\u0431\u0440\u0430\u043D\u0430 \u043F\u0430\u043F\u043A\u0430\
       \ \u0441 \u0442\u0435\u043A\u0441\u0442\u0443\u0440\u0430\u043C\u0438 _CMU14!"
     type: Code
-  id: 16
+  id: 13
   time: '2026-03-17T06:48:57.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/670
 - author: potatoed6
@@ -307,7 +259,7 @@
       \ \u043C\u0430\u0433\u0430\u0437\u0438\u043D\u0430 \u0443\u043C\u0435\u043D\u044C\
       \u0448\u0435\u043D\u0430 \u0434\u043E 20."
     type: Tweak
-  id: 17
+  id: 14
   time: '2026-03-23T09:13:30.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/695
 - author: JaSeNeSaJ
@@ -385,7 +337,7 @@
       \u0435\u043D\u043A\u0438 \u0434\u0432\u0438\u0433\u0430\u0442\u0435\u043B\u044F\
       )"
     type: Remove
-  id: 18
+  id: 15
   time: '2026-03-23T21:51:19.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/697
 - author: MACMAN2003
@@ -397,7 +349,7 @@
       \ \u043D\u0443\u0436\u043D\u044B\u0439 \u043F\u0440\u043E\u0434\u0430\u0432\u0435\
       \u0446."
     type: Fix
-  id: 19
+  id: 16
   time: '2026-03-24T13:42:39.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/696
 - author: potatoed6
@@ -442,7 +394,7 @@
       \u0441\u043A\u0438\u0439 M4RA \u043E\u0442 FORECON \u0438\u0437\u043C\u0435\u043D\
       \u0435\u043D \u043D\u0430 M49."
     type: Tweak
-  id: 20
+  id: 17
   time: '2026-03-25T22:23:53.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/703
 - author: potatoed6
@@ -454,7 +406,7 @@
       \u043A\u043E\u0442\u043E\u0440\u044B\u0435 \u043E\u0448\u0438\u0431\u043A\u0438\
       \ RSI."
     type: Code
-  id: 21
+  id: 18
   time: '2026-03-26T07:52:32.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/704
 - author: Berkin101
@@ -462,7 +414,7 @@
   - message: "\u0411\u043E\u043B\u044C\u0448\u0435 \u0433\u043E\u043B\u043E\u0441\u043E\
       \u0432\u044B\u0445 \u043B\u0438\u043D\u0438\u0439"
     type: Add
-  id: 22
+  id: 19
   time: '2026-03-27T21:00:07.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/706
 - author: JaSeNeSaJ
@@ -473,7 +425,7 @@
   - message: "\u041D\u0435\u043A\u043E\u0442\u043E\u0440\u044B\u0435 \u0432\u0440\u0430\
       \u0449\u0435\u043D\u0438\u044F RMCEntityDesertWaterShallowCornerEdge"
     type: Fix
-  id: 23
+  id: 20
   time: '2026-03-27T21:17:13.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/705
 - author: shamblestf
@@ -486,7 +438,7 @@
       \u044C \u043D\u0435\u043C\u043D\u043E\u0433\u043E \u043C\u0435\u043D\u0435\u0435\
       \ \u0437\u0430\u0449\u0438\u0442\u043D\u0430."
     type: Tweak
-  id: 24
+  id: 21
   time: '2026-03-29T04:46:20.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/669
 - author: potatoed6
@@ -500,7 +452,7 @@
       \ \u0433\u0430\u0434\u0436\u0438\u043B\u0438\u043E\u043D \u043E\u0434\u0438\u043D\
       \u0430\u043A\u043E\u0432\u044B\u0445 \u0437\u0430\u0434\u0430\u0447."
     type: Code
-  id: 25
+  id: 22
   time: '2026-03-29T15:34:43.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/671
 - author: MACMAN2003
@@ -515,7 +467,7 @@
       \u043E\u0432\u0430\u043D\u0438\u044F \u0441\u0438\u043D\u0442\u0435\u0437\u0430\
       \u0442\u043E\u0440\u043E\u0432 \u0432 CLF."
     type: Add
-  id: 26
+  id: 23
   time: '2026-03-31T11:44:35.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/718
 - author: potatoed6
@@ -550,7 +502,7 @@
       \u043A\u043E\u043B\u043E 200 \u0433\u043E\u043B\u043E\u0441\u043E\u0432\u044B\
       \u0445 \u043B\u0438\u043D\u0438\u0439."
     type: Add
-  id: 27
+  id: 24
   time: '2026-04-01T22:16:21.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/721
 - author: JaSeNeSaJ
@@ -572,7 +524,7 @@
       \u044C \u0434\u0436\u0443\u043D\u0433\u043B\u0435\u0439 \u0434\u043B\u044F Colony\
       \ Fall"
     type: Add
-  id: 28
+  id: 25
   time: '2026-04-03T05:06:05.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/724
 - author: potatoed6
@@ -638,7 +590,7 @@
       \u043E\u0441\u0442\u0430\u0432\u043B\u0435\u043D\u043D\u044B\u0445 \u043E\u0444\
       \u0438\u0446\u0435\u0440\u043E\u0432 WeYu \u0432 \u043A\u0438\u043D\u043E."
     type: Add
-  id: 29
+  id: 26
   time: '2026-04-04T15:50:08.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/726
 - author: Berkin101
@@ -651,7 +603,7 @@
       \ \u043B\u0435\u0433\u043A\u0438\u0435, \u043A\u043E\u0433\u0434\u0430 \u043E\
       \u0442\u0434\u0430\u0435\u0442 \u043F\u0440\u0438\u043A\u0430\u0437."
     type: Add
-  id: 30
+  id: 27
   time: '2026-04-04T15:52:07.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/725
 - author: potatoed6
@@ -702,7 +654,7 @@
       \u043E \u0430\u0434\u043C\u0438\u043D\u0438\u0441\u0442\u0440\u0430\u0442\u0438\
       \u0432\u043D\u043E\u0439 \u0440\u043E\u043B\u044C\u044E."
     type: Tweak
-  id: 31
+  id: 28
   time: '2026-04-04T16:32:22.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/729
 - author: potatoed6
@@ -710,7 +662,7 @@
   - message: "\u0418\u0441\u043F\u0440\u0430\u0432\u043B\u0435\u043D yaml-\u043B\u0438\
       \u043D\u0442\u0435\u0440"
     type: Code
-  id: 32
+  id: 29
   time: '2026-04-06T02:21:11.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/732
 - author: MACMAN2003
@@ -728,7 +680,7 @@
       \u0435\u043D\u0438\u044F, \u0432\u0432\u0435\u0434\u044F \u0441\u0443\u0444\u0444\
       \u0438\u043A\u0441 \xABCMU, Admin\xBB."
     type: Admin
-  id: 33
+  id: 30
   time: '2026-04-10T23:23:08.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/733
 - author: potatoed6
@@ -737,7 +689,7 @@
       \u0435\u0444\u0438\u043A\u0441 Xeno \u0442\u0435\u043F\u0435\u0440\u044C \u0442\
       \u0440\u0435\u0431\u0443\u044E\u0442 0 \u0447\u0430\u0441\u043E\u0432."
     type: Tweak
-  id: 34
+  id: 31
   time: '2026-04-13T23:34:50.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/747
 - author: potatoed6
@@ -750,7 +702,7 @@
   - message: "\u0414\u043E\u0431\u0430\u0432\u043B\u0435\u043D\u044B \u0437\u0430\u0433\
       \u0440\u0443\u0437\u043A\u0438"
     type: Add
-  id: 35
+  id: 32
   time: '2026-04-14T00:56:42.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/745
 - author: potatoed6
@@ -771,7 +723,7 @@
       \ \u044F\u0434\u0440\u0430 \u0418\u0418. \u041C\u0410\u0422\u042C \u0438 \u041E\
       \u0422\u0415\u0426 \u0418\u0418"
     type: Add
-  id: 36
+  id: 33
   time: '2026-04-14T01:34:04.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/746
 - author: Teragenic
@@ -793,7 +745,7 @@
       \u043E\u043B\u0443\u0447\u0430\u0435\u0442 \u041C\u0435\u0434\u0445\u0443\u0434\
       \u0430"
     type: Fix
-  id: 37
+  id: 34
   time: '2026-04-14T20:08:06.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/754
 - author: nicholast013
@@ -805,7 +757,7 @@
       \ \u043C\u0435\u0434\u0438\u0446\u0438\u043D\u0441\u043A\u0438\u043C \u043C\u0430\
       \u0442\u0435\u0440\u0438\u0430\u043B\u0430\u043C"
     type: Add
-  id: 38
+  id: 35
   time: '2026-04-14T20:08:22.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/753
 - author: nicholast013
@@ -821,7 +773,7 @@
       \ \u0432\u043D\u0443\u0442\u0440\u0438\u0432\u0435\u043D\u043D\u043E\u0439 \u043A\
       \u0430\u043F\u0435\u043B\u044C\u043D\u0438\u0446\u044B."
     type: Tweak
-  id: 39
+  id: 36
   time: '2026-04-16T22:10:41.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/768
 - author: Teragenic
@@ -830,7 +782,7 @@
       \u043D\u0441\u043F\u0435\u043A\u0442\u043E\u0440\u0430\u043C PaP \u043D\u0430\
       \u0431\u043E\u0440 \u043D\u0430\u0432\u044B\u043A\u043E\u0432 CMB CM13 Equiv"
     type: Tweak
-  id: 40
+  id: 37
   time: '2026-04-16T22:28:50.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/769
 - author: Piticzu
@@ -840,7 +792,7 @@
       \u0442\u0441\u044F \u0430\u0432\u0442\u043E\u043C\u0430\u0442\u0438\u0447\u0435\
       \u0441\u043A\u0438 \u043F\u0440\u0438 \u043F\u0440\u044B\u0436\u043A\u0435."
     type: Tweak
-  id: 41
+  id: 38
   time: '2026-04-17T19:28:43.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/775
 - author: MarshesAndMeadows
@@ -942,7 +894,7 @@
       \ \u0441\u043A\u043E\u0440\u043E\u0441\u0442\u0438 \u043D\u0430 \u043A\u043E\
       \u0440\u043E\u0442\u043A\u043E\u0435 \u0432\u0440\u0435\u043C\u044F."
     type: Add
-  id: 42
+  id: 39
   time: '2026-04-21T08:28:26.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/784
 - author: MACMAN2003
@@ -958,7 +910,7 @@
       \u043E\u0437\u0434\u0443\u0445\u0443, \u043D\u0435 \u0432\u043A\u043B\u044E\u0447\
       \u0435\u043D\u044B."
     type: Add
-  id: 43
+  id: 40
   time: '2026-04-23T08:19:03.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/798
 - author: sunzu432
@@ -974,7 +926,7 @@
       \u043E\u0435\u043D\u043D\u043E\u0439 \u0431\u0430\u0437\u044B \xAB\u041F\u043B\
       \u0430\u0447 \u0411\u0430\u0440\u043A\u0435\u0440\u0430\xBB."
     type: Tweak
-  id: 44
+  id: 41
   time: '2026-04-23T08:46:40.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/799
 - author: Tyzemol
@@ -983,7 +935,7 @@
       \ \u0437\u0430\u043F\u0443\u0441\u043A\u0430 \u0440\u0430\u0443\u043D\u0434\u0430\
       \ \u043E\u0431\u0435\u0437\u044C\u044F\u043D\u044B."
     type: Remove
-  id: 45
+  id: 42
   time: '2026-04-23T09:13:32.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/801
 - author: maertayn
@@ -994,7 +946,7 @@
       \u043E \u0431\u044B\u043B\u043E \u043E\u0442\u043B\u0438\u0447\u0438\u0442\u044C\
       \ \u0432\u0438\u043D\u0442\u043E\u0432\u043A\u0438 M16 \u043E\u0442 L83A."
     type: Fix
-  id: 46
+  id: 43
   time: '2026-04-23T10:20:57.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/789
 - author: maertayn
@@ -1008,7 +960,7 @@
       \u044F \u043F\u0438\u0441\u0442\u043E\u043B\u0435\u0442\u0430-\u043F\u0443\u043B\
       \u0435\u043C\u0435\u0442\u0430 \u0422\u0438\u043F-19."
     type: Fix
-  id: 47
+  id: 44
   time: '2026-04-23T10:21:28.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/787
 - author: maertayn
@@ -1019,7 +971,7 @@
       \u043E \u0431\u044B\u043B\u043E \u043E\u0442\u043B\u0438\u0447\u0438\u0442\u044C\
       \ AR10 \u043E\u0442 M60-LMG."
     type: Fix
-  id: 48
+  id: 45
   time: '2026-04-23T10:21:51.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/788
 - author: Tyzemol
@@ -1041,7 +993,7 @@
       \u043E\u043D\u0442\u0430\u043D\u043D\u043E \u043F\u043E\u0441\u043B\u0435 400\
       \ \u0442\u0443\u043F\u043E\u0433\u043E \u0443\u0440\u043E\u043D\u0430."
     type: Fix
-  id: 49
+  id: 46
   time: '2026-04-23T11:19:24.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/793
 - author: sunzu432
@@ -1071,7 +1023,7 @@
       \ \u043F\u043E\u0434 \u0437\u0430\u043C\u043A\u043E\u043C \u0432 \u043A\u043E\
       \u043B\u043E\u043D\u0438\u044E AUX"
     type: Fix
-  id: 50
+  id: 47
   time: '2026-04-24T15:25:39.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/817
 - author: maertayn
@@ -1085,7 +1037,7 @@
       \u0430\u043D\u0438\u044F \u0431\u043E\u0435\u043F\u0440\u0438\u043F\u0430\u0441\
       \u043E\u0432 UPP 9,7x16 \u043C\u043C."
     type: Fix
-  id: 51
+  id: 48
   time: '2026-04-24T15:27:10.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/790
 - author: sunzu432
@@ -1099,7 +1051,7 @@
       \u0446\u0438\u043D\u0441\u043A\u0438\u043C \u043F\u043E\u0441\u0442\u0430\u0432\
       \u0449\u0438\u043A\u0430\u043C"
     type: Fix
-  id: 52
+  id: 49
   time: '2026-04-25T05:58:56.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/826
 - author: JaSeNeSaJ
@@ -1114,7 +1066,7 @@
   - message: "\u041F\u043E\u043B \u043F\u043E\u0434 \u0432\u0445\u043E\u0434\u043D\
       \u043E\u0439 \u0434\u0432\u0435\u0440\u044C\u044E \u0423\u041F\u041F."
     type: Fix
-  id: 53
+  id: 50
   time: '2026-04-25T06:09:54.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/829
 - author: maertayn
@@ -1163,7 +1115,7 @@
       \u0442\u043E \u043D\u0438\u0436\u043D\u0435\u0433\u043E \u0431\u0435\u043B\u044C\
       \u044F"
     type: Fix
-  id: 54
+  id: 51
   time: '2026-04-25T06:11:03.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/825
 - author: nicholast013
@@ -1172,7 +1124,7 @@
       \u043E\u0434\u0435\u043B\u044C\u043D\u0430\u044F \u0431\u043E\u043C\u0431\u0430\
       \ \u043E\u0431\u0440\u0430\u0442\u043D\u043E."
     type: Add
-  id: 55
+  id: 52
   time: '2026-04-25T15:29:02.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/783
 - author: maertayn
@@ -1188,7 +1140,7 @@
       \u043E\u0435 \u043D\u0430\u0432\u0435\u0441\u043D\u043E\u0435 \u043E\u0431\u043E\
       \u0440\u0443\u0434\u043E\u0432\u0430\u043D\u0438\u0435 (UNISC)."
     type: Fix
-  id: 56
+  id: 53
   time: '2026-04-25T15:30:24.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/833
 - author: KeiKiyomi
@@ -1202,7 +1154,7 @@
       \u0430 (\u0443\u0432\u0435\u043B\u0438\u0447\u0435\u043D \u0441 10 \u0442\u044B\
       \u0441. \u0434\u043E 45 \u0442\u044B\u0441.)"
     type: Fix
-  id: 57
+  id: 54
   time: '2026-04-26T15:48:22.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/862
 - author: KeiKiyomi
@@ -1216,7 +1168,7 @@
       \u0438\u0447\u0435\u0441\u0442\u0432\u043E \u0441\u043D\u0430\u0440\u044F\u0434\
       \u043E\u0432 \u0432 \u044F\u0449\u0438\u043A\u0435"
     type: Tweak
-  id: 58
+  id: 55
   time: '2026-04-27T10:59:53.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/865
 - author: MarshesAndMeadows
@@ -1242,7 +1194,7 @@
       \u0436\u0430\u043B\u0430\u0441\u044C \u043F\u0440\u0438 \u043F\u0440\u043E\u0432\
       \u0430\u043B\u0435 \u043F\u0440\u043E\u0432\u0435\u0440\u043A\u0438 LOS."
     type: Fix
-  id: 59
+  id: 56
   time: '2026-04-27T11:00:27.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/824
 - author: MarshesAndMeadows
@@ -1341,7 +1293,7 @@
       \ \u0440\u0435\u0437\u0435\u0440\u0432\u0443\u0430\u0440\u0430\u043C \u0441\
       \ \u0440\u0435\u0430\u0433\u0435\u043D\u0442\u0430\u043C\u0438."
     type: Fix
-  id: 60
+  id: 57
   time: '2026-04-27T11:01:09.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/782
 - author: L0pz
@@ -1350,7 +1302,7 @@
       \u0430\u0439\u0442\u044B \u0431\u0430\u043D\u043A\u043E\u043C\u0430\u0442\u043E\
       \u0432!"
     type: Add
-  id: 61
+  id: 58
   time: '2026-04-29T13:49:53.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/880
 - author: maertayn
@@ -1359,7 +1311,7 @@
       \u043F\u0443\u0442\u0430\u0442\u043E\u0432 \u0438 \u0432\u043E\u0435\u043D\u043D\
       \u044B\u0445 \u0432\u0440\u0430\u0447\u0435\u0439 (GOVFOR/OPFOR)"
     type: Fix
-  id: 62
+  id: 59
   time: '2026-04-30T18:24:47.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/889
 - author: maertayn
@@ -1371,7 +1323,7 @@
       \u0434\u0435\u0432\u0430\u043D\u0438\u0438/\u0432\u044B\u0431\u0440\u0430\u0441\
       \u044B\u0432\u0430\u043D\u0438\u0438."
     type: Fix
-  id: 63
+  id: 60
   time: '2026-05-01T03:50:14.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/896
 - author: maertayn
@@ -1382,7 +1334,7 @@
       \u0430\u0437\u0440\u0430\u0431\u043E\u0442\u0447\u0438\u043A\u043E\u0432 \u0438\
       \ setgovfor/setopforship"
     type: Add
-  id: 64
+  id: 61
   time: '2026-05-01T17:26:27.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/901
 - author: KeiKiyomi
@@ -1392,7 +1344,7 @@
       \u0432 JTAC, \u0441\u043E\u043E\u0442\u0432\u0435\u0442\u0441\u0442\u0432\u0443\
       \u044E\u0449\u0438\u0439 \u043D\u0430\u0432\u044B\u043A\u0443 JO."
     type: Fix
-  id: 65
+  id: 62
   time: '2026-05-02T13:03:58.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/910
 - author: MarshesAndMeadows
@@ -1408,7 +1360,7 @@
       \ \u043F\u043B\u0430\u0437\u043C\u044B \u0432\u043C\u0435\u0441\u0442\u043E\
       \ 20."
     type: Fix
-  id: 66
+  id: 63
   time: '2026-05-02T13:05:17.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/907
 - author: JaSeNeSaJ
@@ -1428,7 +1380,7 @@
       , \u043C\u043E\u0436\u0435\u0442 \u0431\u044B\u0442\u044C \u0441 \u043D\u0430\
       \u0447\u0430\u043B\u0430 \u0440\u0430\u0443\u043D\u0434\u0430)"
     type: Add
-  id: 67
+  id: 64
   time: '2026-05-02T13:16:03.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/915
 - author: maertayn
@@ -1438,7 +1390,7 @@
       \u0435\u0442\u0441\u0442\u0432\u0443\u044E\u0449\u0438\u0435 \u043D\u0430\u0433\
       \u0440\u0443\u0434\u043D\u044B\u0435 \u0437\u043D\u0430\u043A\u0438."
     type: Add
-  id: 68
+  id: 65
   time: '2026-05-02T16:14:24.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/917
 - author: SurfinNinja1
@@ -1447,14 +1399,14 @@
       \u043E\u043D\u0442\u0438\u0440\u043E\u0432\u0430\u043D \u0432\u043E\u0435\u043D\
       \u043D\u044B\u0439 \u043C\u0435\u0434\u043E\u0442\u0441\u0435\u043A."
     type: Tweak
-  id: 69
+  id: 66
   time: '2026-05-03T01:37:05.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/925
 - author: JaSeNeSaJ
   changes:
   - message: "rockwallremoveinshybrisia_colonyfall \u0432 rockwallremoveinshybrisia_colonyfall_inverted"
     type: Tweak
-  id: 70
+  id: 67
   time: '2026-05-03T18:17:25.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/931
 - author: maertayn
@@ -1489,7 +1441,7 @@
       \u0434\u0438\u0440\u043E\u0432 \u0438 \u043C\u043B\u0430\u0434\u0448\u0438\u0445\
       \ \u043E\u0444\u0438\u0446\u0435\u0440\u043E\u0432."
     type: Fix
-  id: 71
+  id: 68
   time: '2026-05-03T22:21:18.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/934
 - author: KeiKiyomi
@@ -1500,7 +1452,7 @@
       \u044E\u0447\u0430\u0435\u0442 \u043F\u043E\u043B\u043D\u044B\u0439 \u043A\u043E\
       \u043C\u043F\u043B\u0435\u043A\u0442."
     type: Fix
-  id: 72
+  id: 69
   time: '2026-05-04T01:57:44.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/935
 - author: KeiKiyomi
@@ -1509,7 +1461,7 @@
       \u0430\u043B\u0435\u043D\u0438\u0435 LIFEPAK \u0438\u0437 \u0432\u0440\u0435\
       \u043C\u0435\u043D\u0438 \u043A\u043E\u0441\u0442\u044E\u043C\u0430."
     type: Fix
-  id: 73
+  id: 70
   time: '2026-05-07T01:36:37.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/959
 - author: maertayn
@@ -1539,7 +1491,7 @@
       \u0435\u0442 \u0441\u0432\u043E\u0439 \u043C\u0451\u0440\u0442\u0432\u044B\u0439\
       \ \u0441\u043F\u0440\u0430\u0439\u0442"
     type: Fix
-  id: 74
+  id: 71
   time: '2026-05-07T19:24:23.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/968
 - author: L0pz
@@ -1548,7 +1500,7 @@
       \u044B\u0435 \u0441\u0430\u043C\u043E\u0434\u0435\u043B\u044C\u043D\u044B\u0435\
       \ \u0431\u043E\u043C\u0431\u044B"
     type: Tweak
-  id: 75
+  id: 72
   time: '2026-05-07T19:29:53.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/964
 - author: Arcticular1
@@ -1563,7 +1515,7 @@
       \u0430\u0442\u044C \u043F\u0440\u0438\u0446\u0435\u043B\u044C\u043D\u044B\u0439\
       \ \u0432\u044B\u0441\u0442\u0440\u0435\u043B."
     type: Fix
-  id: 76
+  id: 73
   time: '2026-05-07T19:30:27.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/962
 - author: Arcticular1
@@ -1572,7 +1524,7 @@
       \u0442 \u0434\u0443\u0448\u0443 \u0432 \u0441\u0432\u043E\u0438\u0445 \u043F\
       \u043E\u0441\u0442\u0430\u0432\u0449\u0438\u043A\u043E\u0432!"
     type: Tweak
-  id: 77
+  id: 74
   time: '2026-05-07T19:31:16.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/961
 - author: Tyzemol
@@ -1584,7 +1536,7 @@
       \ \u043D\u0435\u043F\u0435\u0440\u0435\u043F\u043B\u0430\u0432\u043B\u0435\u043D\
       \u044B \u043A\u0441\u0435\u043D\u043E\u0441\u0430\u043C\u0438)."
     type: Tweak
-  id: 78
+  id: 75
   time: '2026-05-07T19:31:47.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/960
 - author: KeiKiyomi
@@ -1595,7 +1547,7 @@
       \u043E\u043B\u0436\u043D\u043E\u0441\u0442\u0435\u0439, \u0430 \u0442\u0430\u043A\
       \u0436\u0435 WEYU-SEC \u0438 WEYU-SCI."
     type: Add
-  id: 79
+  id: 76
   time: '2026-05-07T19:32:11.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/956
 - author: Arcticular1
@@ -1608,7 +1560,7 @@
       \u0435\u043F\u043B\u0435\u043D\u0438\u0435 GOVFOR \u0431\u044B\u043B\u0438 \u0441\
       \u043D\u0438\u0436\u0435\u043D\u044B."
     type: Tweak
-  id: 80
+  id: 77
   time: '2026-05-08T21:05:28.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/973
 - author: Arcticular1
@@ -1618,7 +1570,7 @@
       \ \u0441\u043D\u0430\u0440\u044F\u0436\u0435\u043D\u0438\u0438 \u043A\u043E\u043C\
       \u0430\u043D\u0434\u0438\u0440\u0430."
     type: Add
-  id: 81
+  id: 78
   time: '2026-05-09T20:55:30.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/978
 - author: maertayn
@@ -1629,7 +1581,7 @@
       \u043E\u043C \u0437\u0430\u0440\u0430\u0431\u043E\u0442\u0430\u043D\u043D\u043E\
       \u0439 \u0437\u0430\u0440\u043F\u043B\u0430\u0442\u044B!"
     type: Fix
-  id: 82
+  id: 79
   time: '2026-05-10T05:47:51.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/983
 - author: flex5hybrid
@@ -1642,7 +1594,7 @@
       \u043D\u0441\u043E\u043B\u0438 \u0438 \u043D\u0435 \u043F\u043E\u0442\u0440\u0435\
       \u0431\u043B\u044F\u044E\u0442 \u0437\u0432\u043E\u043D\u043E\u043A."
     type: Fix
-  id: 83
+  id: 80
   time: '2026-05-11T04:20:47.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/987
 - author: Arcticular1
@@ -1656,7 +1608,7 @@
       \u0445 \u043A\u043E\u0440\u0440\u0435\u043A\u0442\u0438\u0440\u043E\u0432\u0449\
       \u0438\u043A\u043E\u0432."
     type: Tweak
-  id: 84
+  id: 81
   time: '2026-05-11T07:36:26.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/971
 - author: KeiKiyomi
@@ -1665,7 +1617,7 @@
       \u043D\u043E\u0433\u043E \u043D\u043E\u0436\u0430 \u0438\u0437\u043C\u0435\u043D\
       \u0435\u043D \u0441 50 \u043D\u0430 25."
     type: Tweak
-  id: 85
+  id: 82
   time: '2026-05-14T19:45:58.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1001
 - author: Piticzu
@@ -1718,7 +1670,7 @@
       \ \u0441 \u0433\u043B\u0443\u0448\u0435\u043D\u0438\u0435\u043C \u043D\u0430\
       \ \u043A\u0440\u044B\u0448\u0435."
     type: Code
-  id: 86
+  id: 83
   time: '2026-05-14T22:41:14.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1000
 - author: OmerF-afk
@@ -1730,7 +1682,7 @@
       , \u0430 \u0442\u0430\u043A\u0436\u0435 \u0434\u043E\u043F\u043E\u043B\u043D\
       \u0435\u043D\u0438\u044F CLF."
     type: Add
-  id: 87
+  id: 84
   time: '2026-05-14T22:45:48.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/993
 - author: Kadeo64
@@ -1742,7 +1694,7 @@
       \u043D\u044B\u0435 \u044D\u043A\u0441\u043F\u0435\u0440\u0438\u043C\u0435\u043D\
       \u0442\u044B \u0432\u0435\u0439\u044E."
     type: Remove
-  id: 88
+  id: 85
   time: '2026-05-17T09:31:49.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1017
 - author: Piticzu
@@ -1765,7 +1717,7 @@
       \u043A\u043E\u0433\u043E \u0440\u0430\u0441\u0441\u0442\u043E\u044F\u043D\u0438\
       \u044F."
     type: Fix
-  id: 89
+  id: 86
   time: '2026-05-17T09:32:47.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1015
 - author: Arcticular1
@@ -1774,7 +1726,7 @@
       \ \u0431\u043E\u0442\u0438\u043D\u043A\u0438 \u043B\u0430\u0437\u0443\u0442\u0447\
       \u0438\u043A\u0430"
     type: Tweak
-  id: 90
+  id: 87
   time: '2026-05-17T09:35:48.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/997
 - author: MACMAN2003
@@ -1792,7 +1744,7 @@
       \u0443\u0434\u0435\u0442 \u0432\u0432\u0435\u0441\u0442\u0438 \xABspawn CMUcorruptedHive\xBB\
       ."
     type: Admin
-  id: 91
+  id: 88
   time: '2026-05-17T09:38:11.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1018
 - author: maertayn
@@ -1853,7 +1805,7 @@
       \u043A\u043B\u044E\u0447\u0430\u044E\u0442\u0441\u044F \u0438\u0437 \u0443\u0441\
       \u043B\u043E\u0432\u0438\u0439 \u043F\u043E\u0431\u0435\u0434\u044B."
     type: Tweak
-  id: 92
+  id: 89
   time: '2026-05-17T21:46:59.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1012
 - author: Arcticular1
@@ -1865,7 +1817,7 @@
       \u044C + \u0445\u0440\u0430\u043D\u0438\u043B\u0438\u0449\u0435 \u043E\u0440\
       \u0443\u0436\u0438\u044F"
     type: Fix
-  id: 93
+  id: 90
   time: '2026-05-18T20:38:55.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1026
 - author: KeiKiyomi
@@ -1873,7 +1825,7 @@
   - message: "\u041F\u0440\u043E\u0434\u0438\u0434\u0436\u0438 3-\u044F \u0441\u0442\
       \u043E\u0440\u043E\u043D\u0430"
     type: Add
-  id: 94
+  id: 91
   time: '2026-05-20T01:16:33.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1034
 - author: MACMAN2003
@@ -1895,7 +1847,7 @@
       \u043E\u0433\u043E-\u0442\u043E \u0432 \u0440\u0435\u043A\u0440\u0443\u0442\u0430\
       \ CLF."
     type: Admin
-  id: 95
+  id: 92
   time: '2026-05-20T01:17:01.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1038
 - author: L0pz
@@ -1905,7 +1857,7 @@
       \u0438\u0435 \u043A\u043B\u044E\u0447\u0435\u0432\u044B\u0435 \u0441\u043F\u0440\
       \u0430\u0439\u0442\u044B."
     type: Add
-  id: 96
+  id: 93
   time: '2026-05-20T02:19:16.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1023
 - author: OmerF-afk
@@ -1915,7 +1867,7 @@
       \u0443\u0442\u0430\u0442\u0430 \u0438 \u0441\u043E\u0432\u0435\u0442\u043D\u0438\
       \u043A\u0430."
     type: Add
-  id: 97
+  id: 94
   time: '2026-05-20T13:41:52.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1044
 - author: NzzyFk
@@ -1925,7 +1877,7 @@
       \ \u0443\u0440\u043E\u043D\u0430 \u0443\u043C\u0435\u043D\u044C\u0448\u0435\u043D\
       \u043E"
     type: Tweak
-  id: 98
+  id: 95
   time: '2026-05-21T00:43:45.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1048
 - author: mikusssssss
@@ -1939,7 +1891,7 @@
       \u0432\u044B\u0445 \u0440\u0435\u0446\u0435\u043F\u0442\u0430 \u043D\u0430\u043F\
       \u0430\u043B\u043C\u0430."
     type: Add
-  id: 99
+  id: 96
   time: '2026-05-21T00:44:18.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1043
 - author: OmerF-afk
@@ -1949,7 +1901,7 @@
       \u0435\u0439 \u043A\u0440\u0430\u0444\u0442\u0430 \u0434\u0435\u0440\u0435\u0432\
       \u0430."
     type: Add
-  id: 100
+  id: 97
   time: '2026-05-21T00:44:38.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1045
 - author: MACMAN2003
@@ -1962,7 +1914,7 @@
       \ \u043D\u0430\u0441\u0442\u043E\u044F\u0449\u0438\u0439 \u043A\u043B\u043E\u0443\
       \u043D."
     type: Add
-  id: 101
+  id: 98
   time: '2026-05-21T00:45:12.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1052
 - author: OmerF-afk
@@ -1972,7 +1924,7 @@
       \u043E\u0431\u0430\u0432\u043B\u0435\u043D\u044B Exp-\u043C\u0435\u0437\u043E\
       \u043D\u044B."
     type: Add
-  id: 102
+  id: 99
   time: '2026-05-21T01:15:32.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1046
 - author: mikusssssss
@@ -1985,7 +1937,7 @@
       \u0442\u043E\u043C\u043D\u044B\u0439 \u0431\u0430\u043A \u043C\u0435\u043D\u044C\
       \u0448\u0435."
     type: Tweak
-  id: 103
+  id: 100
   time: '2026-05-21T07:24:53.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1057
 - author: mikusssssss
@@ -1997,7 +1949,7 @@
       \u043F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u044C \u043E\u0433\u043D\
       \u0435\u043C\u0435\u0442 M34-T."
     type: Fix
-  id: 104
+  id: 101
   time: '2026-05-21T19:55:25.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1063
 - author: mikusssssss
@@ -2007,7 +1959,7 @@
       \u0434\u0435\u0440\u0436\u043A\u0438 \u0434\u043E\u0431\u0430\u0432\u043B\u0435\
       \u043D\u044B 3 \u0431\u0435\u0440\u0435\u0442\u0430."
     type: Add
-  id: 105
+  id: 102
   time: '2026-05-21T19:57:23.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1060
 - author: deponiann
@@ -2019,7 +1971,7 @@
       \u044F \u0445\u0440\u0430\u043D\u0435\u043D\u0438\u044F \u043A\u043E\u0441\u0442\
       \u044E\u043C\u0430."
     type: Tweak
-  id: 106
+  id: 103
   time: '2026-05-21T19:57:40.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1059
 - author: maertayn
@@ -2030,7 +1982,7 @@
       \ \u043D\u0430 \u043E\u0441\u043D\u043E\u0432\u0435 \u043E\u043F\u0438\u0441\
       \u0430\u043D\u0438\u0439 PR."
     type: Code
-  id: 107
+  id: 104
   time: '2026-05-22T01:59:25.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1039
 - author: Piticzu
@@ -2078,7 +2030,7 @@
       \ \u0434\u0440\u0443\u0433\u0438\u0445 \u0438\u0433\u0440\u043E\u043A\u043E\u0432\
       ."
     type: Tweak
-  id: 108
+  id: 105
   time: '2026-05-22T13:25:52.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1031
 - author: CrazeTheDragon
@@ -2089,7 +2041,7 @@
       \u0430 \u043C\u043E\u0440\u0441\u043A\u0438\u0445 \u0448\u0430\u0442\u0442\u043B\
       \u0430."
     type: Fix
-  id: 109
+  id: 106
   time: '2026-05-22T13:31:32.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1074
 - author: troytroy400
@@ -2103,7 +2055,7 @@
   - message: "\u041E\u0431\u043D\u043E\u0432\u043B\u0435\u043D\u043D\u044B\u0439 \u0441\
       \u0432\u043E\u0434 \u043F\u0440\u0430\u0432\u0438\u043B."
     type: Tweak
-  id: 110
+  id: 107
   time: '2026-05-22T15:10:59.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1075
 - author: mikusssssss
@@ -2113,7 +2065,7 @@
       \u0439 \u0438\u043C\u043F\u0443\u043B\u044C\u0441\u043D\u043E\u0439 \u0432\u0438\
       \u043D\u0442\u043E\u0432\u043A\u0438 XM99A."
     type: Add
-  id: 111
+  id: 108
   time: '2026-05-22T16:40:36.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1025
 - author: troytroy400
@@ -2123,7 +2075,7 @@
       \u043B\u0430\u0433\u0438 \u043F\u0440\u043E\u0434\u0430\u0432\u0446\u0430\u043C\
       \ \u0437\u0430\u044F\u0432\u043E\u043A."
     type: Add
-  id: 112
+  id: 109
   time: '2026-05-22T17:14:47.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1077
 - author: maertayn
@@ -2139,7 +2091,7 @@
       \u0431\u0440\u0430\u0431\u043E\u0442\u0430\u043D\u043D\u044B\u043C\u0438 \u0441\
       \u0442\u0440\u043E\u043A\u0430\u043C\u0438."
     type: Code
-  id: 113
+  id: 110
   time: '2026-05-23T19:46:19.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1086
 - author: Piticzu
@@ -2163,7 +2115,7 @@
       \ \u0441\u043B\u0443\u0447\u0430\u0439\u043D\u043E\u043C\u0443 \u0432\u044B\u0431\
       \u043E\u0440\u0443."
     type: Tweak
-  id: 114
+  id: 111
   time: '2026-05-23T22:12:33.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1079
 - author: CrazeTheDragon
@@ -2171,7 +2123,7 @@
   - message: "\u0431\u0438\u043E\u0441\u043A\u0430\u043D \u0441\u043B\u043E\u043C\u0430\
       \u043B \u043B\u043E\u043A\u0430\u043B\u0438"
     type: Fix
-  id: 115
+  id: 112
   time: '2026-05-23T22:13:00.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1090
 - author: MarshesAndMeadows
@@ -2181,7 +2133,7 @@
       , \u043F\u043E\u0445\u043E\u0436\u0435\u0435 \u043D\u0430 \u0440\u0430\u0431\
       \u043E\u0447\u0435\u0435 \u043C\u0435\u043D\u044E \u0414\u0436\u043E."
     type: Add
-  id: 116
+  id: 113
   time: '2026-05-23T22:41:40.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1093
 - author: Piticzu
@@ -2222,7 +2174,7 @@
       \u0438\u044F \u0438\u0437 \u0432\u0438\u0437\u0433\u0430 \u043A\u043E\u0440\u043E\
       \u043B\u0435\u0432\u044B."
     type: Remove
-  id: 117
+  id: 114
   time: '2026-05-24T17:20:59.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1106
 - author: maertayn
@@ -2232,7 +2184,7 @@
       \u0435\u043D \u0432 \u043A\u0430\u043D\u043E\u043D\u0435 \u0412\u0435\u0439\u043B\
       \u0430\u043D\u0434-\u042E\u0442\u0430\u043D\u0438."
     type: Tweak
-  id: 118
+  id: 115
   time: '2026-05-24T17:21:55.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1100
 - author: troytroy400
@@ -2247,7 +2199,7 @@
       \u0445\u043E\u0434\u0438\u043C\u044B\u0445 \u0434\u043B\u044F \u043F\u043E\u0440\
       \u0442\u0430 CM13 Navalis."
     type: Add
-  id: 119
+  id: 116
   time: '2026-05-25T20:49:52.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1112
 - author: troytroy400
@@ -2266,7 +2218,7 @@
       \u0435, \u043C\u0435\u043C\u043D\u044B\u0435 \u0432\u043E\u043B\u043E\u0441\u044B\
       \ \u0438 \u0442.\_\u0434.)."
     type: Remove
-  id: 120
+  id: 117
   time: '2026-05-26T01:36:53.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1113
 - author: Arcticular1
@@ -2282,7 +2234,7 @@
       \u0430\u0440 \u0432\u043E \u0432\u0440\u0435\u043C\u044F \u0434\u0432\u0438\u0436\
       \u0435\u043D\u0438\u044F!"
     type: Tweak
-  id: 121
+  id: 118
   time: '2026-05-26T03:08:23.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1101
 - author: KeiKiyomi
@@ -2291,7 +2243,7 @@
       \u043E\u043D\u0442\u043D\u0430\u044F \u0431\u0440\u0438\u0433\u0430\u0434\u0430\
       \ Prodigy."
     type: Add
-  id: 122
+  id: 119
   time: '2026-05-26T06:10:17.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1078
 - author: potatoed6
@@ -2315,7 +2267,7 @@
       \ \u043C\u0435\u0445\u0430\u043D\u0438\u0447\u0435\u0441\u043A\u0438\u0445 \u0438\
       \u0437\u043C\u0435\u043D\u0435\u043D\u0438\u0439"
     type: Tweak
-  id: 123
+  id: 120
   time: '2026-05-26T06:11:22.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1107
 - author: Berkin101
@@ -2326,7 +2278,7 @@
   - message: "\u0414\u043E\u0431\u0430\u0432\u043B\u0435\u043D\u044B \u043F\u0435\u0441\
       \u0447\u0430\u043D\u044B\u0435 \u043D\u0430\u0441\u044B\u043F\u0438."
     type: Add
-  id: 124
+  id: 121
   time: '2026-05-26T06:12:27.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/580
 - author: maertayn
@@ -2347,7 +2299,7 @@
       \u043D\u0430\u043C\u0438 \u043F\u0435\u0440\u0441\u043E\u043D\u0430\u0436\u0435\
       \u0439-\u043F\u0440\u0438\u0437\u0440\u0430\u043A\u043E\u0432"
     type: Fix
-  id: 125
+  id: 122
   time: '2026-05-27T01:12:06.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1116
 - author: troytroy400
@@ -2357,7 +2309,7 @@
       \u0440\u0442\u043E\u0433\u0440\u0430\u0444\u0438\u0440\u043E\u0432\u0430\u043D\
       \u0438\u044F."
     type: Add
-  id: 126
+  id: 123
   time: '2026-05-27T01:12:46.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1122
 - author: sunzu432
@@ -2365,7 +2317,7 @@
   - message: "\u041A\u0430\u0440\u0442\u0430 Hope's Retreat \u0434\u043B\u044F INS,\
       \ CF \u0438 DS."
     type: Add
-  id: 127
+  id: 124
   time: '2026-05-27T03:15:39.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1125
 - author: maertayn
@@ -2374,7 +2326,7 @@
       \u043B\u0438 \u0434\u043E\u0441\u0442\u0443\u043F \u043A ASRS \u0437\u0430 26\
       \ \u0434\u043D\u0435\u0439."
     type: Remove
-  id: 128
+  id: 125
   time: '2026-05-27T14:01:21.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1129
 - author: maertayn
@@ -2386,7 +2338,7 @@
       \u043A\u0430 \u043A\u0430\u0440\u0442\u044B \u043D\u0435 \u043F\u0440\u043E\u0439\
       \u0434\u0435\u043D\u0430."
     type: Map
-  id: 129
+  id: 126
   time: '2026-05-27T14:19:47.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1102
 - author: mikusssssss
@@ -2396,7 +2348,7 @@
       \u043E \u0434\u043B\u0438\u043D\u043D\u044B\u0435 \u0441\u043F\u0438\u043D\u043A\
       \u0438 \u043A\u0440\u043E\u0432\u0430\u0442\u0435\u0439."
     type: Add
-  id: 130
+  id: 127
   time: '2026-05-27T21:16:04.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1130
 - author: Piticzu
@@ -2485,7 +2437,7 @@
       \ \u0434\u043B\u044F \u043A\u0430\u0436\u0434\u043E\u0433\u043E \u043E\u0440\
       \u0443\u0436\u0438\u044F \u0432 MeleeWeaponComponent."
     type: Code
-  id: 131
+  id: 128
   time: '2026-05-27T21:17:38.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1133
 - author: NzzyFk
@@ -2500,7 +2452,7 @@
       \u0438\u0447\u0435\u0441\u0442\u0432\u043E \u043C\u0430\u0433\u0430\u0437\u0438\
       \u043D\u043E\u0432 AP \u0434\u043B\u044F Type 71 (6 --> 2)."
     type: Tweak
-  id: 132
+  id: 129
   time: '2026-05-28T00:23:31.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1081
 - author: maertayn
@@ -2512,7 +2464,7 @@
       \u043B\u044C\u044E \u043F\u043E\u043B\u0443\u0447\u0435\u043D\u0438\u044F \u043F\
       \u0440\u0438\u0431\u044B\u043B\u0438 \u0432 ASRS."
     type: Remove
-  id: 133
+  id: 130
   time: '2026-05-28T01:58:49.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1135
 - author: Omonda2
@@ -2526,7 +2478,7 @@
   - message: "\u0418\u0441\u043F\u0440\u0430\u0432\u043B\u0435\u043D \u0438\u0434\u0435\
       \u043D\u0442\u0438\u0444\u0438\u043A\u0430\u0442\u043E\u0440 SupportAuxSynth."
     type: Fix
-  id: 134
+  id: 131
   time: '2026-05-28T09:54:35.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1118
 - author: Piticzu
@@ -2548,7 +2500,7 @@
       \ \u0434\u0440\u043E\u0431\u0438\u043B\u043A\u0438 \u0443\u043C\u0435\u043D\u044C\
       \u0448\u0435\u043D\u0430 \u0441 45 \u0434\u043E 35."
     type: Tweak
-  id: 135
+  id: 132
   time: '2026-05-28T23:47:19.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1142
 - author: maertayn
@@ -2575,7 +2527,7 @@
       , \u043F\u0438\u043B\u043E\u0442\u0438\u0440\u043E\u0432\u0430\u043D\u0438\u044F\
       ."
     type: Add
-  id: 136
+  id: 133
   time: '2026-05-29T03:13:28.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1145
 - author: maertayn
@@ -2599,7 +2551,7 @@
       \ \u0434\u043B\u044F \u043F\u043E\u043C\u0435\u0449\u0435\u043D\u0438\u0439\
       \ \u0430\u0434\u0432\u043E\u043A\u0430\u0442\u043E\u0432."
     type: Map
-  id: 137
+  id: 134
   time: '2026-05-29T18:27:14.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1148
 - author: maertayn
@@ -2617,7 +2569,7 @@
       \u0430\u043D\u0438\u0439 \u0434\u043B\u044F WYPMC \u2013 UPP \u2013 RMC \u2013\
       \ CMCIU"
     type: Add
-  id: 138
+  id: 135
   time: '2026-05-29T18:27:45.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1146
 - author: BadaBoomie
@@ -2631,7 +2583,7 @@
       \u0442\u0430 \u0432\u043C\u0435\u0441\u0442\u043E \u043E\u0434\u043D\u043E\u0433\
       \u043E."
     type: Tweak
-  id: 139
+  id: 136
   time: '2026-05-29T21:47:20.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1155
 - author: potatoed6
@@ -2665,7 +2617,7 @@
       \u043C, \u043D\u0438 \u0441 \u0433\u0430\u0440\u043D\u0438\u0442\u0443\u0440\
       \u043E\u0439."
     type: Fix
-  id: 140
+  id: 137
   time: '2026-05-30T21:35:36.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1164
 - author: maertayn
@@ -2700,7 +2652,7 @@
       \u0437\u043D\u0430\u0447\u0435\u043D\u044B \u0434\u043B\u044F \u043D\u043E\u0432\
       \u0438\u0447\u043A\u043E\u0432."
     type: Add
-  id: 141
+  id: 138
   time: '2026-05-30T21:38:14.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1163
 - author: potatoed6
@@ -2711,7 +2663,7 @@
       \u043B\u0435\u043C\u0435\u0442\u044B \u0438 \u043A\u0430\u0440\u0430\u0431\u0438\
       \u043D\u044B."
     type: Tweak
-  id: 142
+  id: 139
   time: '2026-05-30T21:39:21.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1150
 - author: toot621
@@ -2745,7 +2697,7 @@
       \u0440\u0430\u0431\u0430\u043D\u0434\u043E\u0439 \u043D\u0430\u0440\u043A\u043E\
       \u0442\u0438\u043A\u043E\u0432."
     type: Add
-  id: 143
+  id: 140
   time: '2026-05-30T21:40:45.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1138
 - author: NzzyFk
@@ -2782,7 +2734,7 @@
       \u044B \u0437\u0432\u0443\u043A\u0430, \u043A\u043E\u0442\u043E\u0440\u044B\u0435\
       \ \u043D\u0435 \u0437\u0430\u043C\u0435\u0442\u043D\u044B."
     type: Tweak
-  id: 144
+  id: 141
   time: '2026-05-30T21:42:05.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1160
 - author: NzzyFk
@@ -2797,7 +2749,7 @@
       \u0440\u0430\u043D\u0430\u0442\u044B (1\u20132,5 \u0441\u0435\u043A\u0443\u043D\
       \u0434\u044B)"
     type: Tweak
-  id: 145
+  id: 142
   time: '2026-05-30T21:42:46.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1161
 - author: NzzyFk
@@ -2806,7 +2758,7 @@
       \u043C\u0441\u043F\u0440\u0430\u0439\u0442 \u0442\u0440\u0435\u0442\u044C\u0435\
       \u0433\u043E \u043B\u0438\u0446\u0430 Prodigy."
     type: Fix
-  id: 146
+  id: 143
   time: '2026-05-30T21:43:15.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1166
 - author: Kadeo64
@@ -2819,7 +2771,7 @@
       \u043B\u044C\u0441\u043A\u0438\u0445 \u044D\u043A\u0441\u043F\u0435\u0440\u0438\
       \u043C\u0435\u043D\u0442\u043E\u0432."
     type: Tweak
-  id: 147
+  id: 144
   time: '2026-05-30T21:43:54.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1159
 - author: deepdarkdepths
@@ -2831,7 +2783,7 @@
       \u043B\u0438 \u043C\u0435\u043D\u0435\u0435 \u0437\u0430\u043C\u0435\u0442\u043D\
       \u044B."
     type: Tweak
-  id: 148
+  id: 145
   time: '2026-05-30T21:44:37.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1136
 - author: RomiGur
@@ -2843,7 +2795,7 @@
       \u0439 GOVFOR \u0438 \u043F\u0440\u0435\u0444\u0438\u043A\u0441\u043E\u0432\
       /\u0438\u043C\u0435\u043D \u0440\u0430\u043D\u0433\u043E\u0432."
     type: Code
-  id: 149
+  id: 146
   time: '2026-05-31T18:29:23.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1154
 - author: NzzyFk
@@ -2856,7 +2808,7 @@
       \ \u044D\u0444\u0444\u0435\u043A\u0442\u044B L42A \u0434\u043B\u044F \u043E\u0447\
       \u043A\u043E\u0432 \u0430\u0443\u0440\u044B."
     type: Tweak
-  id: 150
+  id: 147
   time: '2026-05-31T23:38:20.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1169
 - author: KeiKiyomi
@@ -2864,7 +2816,7 @@
   - message: "\u0418\u0437\u043C\u0435\u043D\u0435\u043D F44AA, \u0443\u0431\u0440\
       \u0430\u0432 \u0441\u043E\u0448\u043A\u0438."
     type: Tweak
-  id: 151
+  id: 148
   time: '2026-05-31T23:39:15.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1170
 - author: toot521
@@ -2873,7 +2825,7 @@
       \u0430\u043D\u0434 \u042E\u0442\u0430\u043D\u0438 \u0422\u0440\u0435\u0442\u044C\
       \u044F \u0441\u0442\u043E\u0440\u043E\u043D\u0430"
     type: Add
-  id: 152
+  id: 149
   time: '2026-05-31T23:40:18.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1172
 - author: 7-62x54r
@@ -2883,7 +2835,7 @@
       \u043E\u043C\u043E\u043D\u044B \u0434\u0440\u043E\u043D\u043E\u0432 (\u0443\u0440\
       \u043E\u0432\u0435\u043D\u044C 1)."
     type: Add
-  id: 153
+  id: 150
   time: '2026-06-01T00:24:57.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1144
 - author: troytroy400
@@ -2895,7 +2847,7 @@
   - message: "\u041F\u0430\u043B\u044C\u043C\u044B \u043F\u0435\u0440\u0435\u0440\u0438\
       \u0441\u043E\u0432\u0430\u043D\u044B."
     type: Tweak
-  id: 154
+  id: 151
   time: '2026-06-01T01:08:40.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1173
 - author: Piticzu
@@ -2959,7 +2911,7 @@
       \u043E\u0433\u043E \u043E\u0431\u044A\u0435\u043A\u0442\u0430 \u0432 \u043A\u043B\
       \u0438\u0435\u043D\u0442\u0435."
     type: Fix
-  id: 155
+  id: 152
   time: '2026-06-01T20:56:59.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1179
 - author: Arcticular1
@@ -2970,7 +2922,7 @@
       \u0430\u043D\u043D\u0438\u043A\u043E\u0432 WY \u0438 \u0441\u0432\u044F\u0437\
       \u043D\u043E\u0433\u043E WY."
     type: Add
-  id: 156
+  id: 153
   time: '2026-06-01T21:42:19.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1174
 - author: potatoed6
@@ -2987,7 +2939,7 @@
       \u044F \u0441\u0451\u0440\u0432\u043E\u0432, \u0442\u0435\u043F\u0435\u0440\u044C\
       \ \u043E\u043D\u0430 \u0432\u044B\u0448\u0435"
     type: Fix
-  id: 157
+  id: 154
   time: '2026-06-01T21:42:49.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1177
 - author: TheHellFireo
@@ -3314,7 +3266,7 @@
       \ \u0438 \u043A\u043E\u043D\u0435\u0447\u043D\u043E\u0441\u0442\u0435\u0439\xBB\
       ."
     type: Tweak
-  id: 158
+  id: 155
   time: '2026-06-02T00:37:27.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1184
 - author: troytroy400
@@ -3325,7 +3277,7 @@
       \u0442\u0430\u043B\u0430 \u0431\u043E\u043B\u0435\u0435 \u043F\u0440\u043E\u043F\
       \u043E\u0440\u0446\u0438\u043E\u043D\u0430\u043B\u044C\u043D\u043E\u0439."
     type: Tweak
-  id: 159
+  id: 156
   time: '2026-06-02T00:50:22.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1186
 - author: KeiKiyomi
@@ -3334,7 +3286,7 @@
       \u044F\u0432\u043B\u0435\u043D\u0438\u0435 Prodigy (\u0441\u043D\u043E\u0432\
       \u0430)"
     type: Fix
-  id: 160
+  id: 157
   time: '2026-06-02T01:47:15.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1187
 - author: 7-62x54r
@@ -3344,7 +3296,7 @@
       \u044E\u0441\u044C, \u043D\u0430 \u044D\u0442\u043E\u0442 \u0440\u0430\u0437\
       \ \u043F\u043E-\u043D\u0430\u0441\u0442\u043E\u044F\u0449\u0435\u043C\u0443)"
     type: Fix
-  id: 161
+  id: 158
   time: '2026-06-02T01:50:29.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1182
 - author: troytroy400
@@ -3383,7 +3335,7 @@
       \u043F\u043E\u043A \u043C\u0430\u0442\u0435\u0440\u0438\u0430\u043B\u043E\u0432\
       ."
     type: Tweak
-  id: 162
+  id: 159
   time: '2026-06-02T04:47:38.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1188
 - author: troytroy400
@@ -3409,7 +3361,7 @@
       \u043B\u044C\u0448\u0435 \u043D\u0435\u0442 \u0441\u043D\u0435\u0436\u043D\u043E\
       \u0433\u043E \u043A\u0430\u043C\u0443\u0444\u043B\u044F\u0436\u0430."
     type: Fix
-  id: 163
+  id: 160
   time: '2026-06-02T21:34:25.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1151
 - author: toot521
@@ -3420,7 +3372,7 @@
       \u043E\u0439 \u043F\u043E\u0432\u044F\u0437\u043A\u0438 \u043D\u0430 \u0437\u0435\
       \u043C\u043B\u0435, \u0430 \u043D\u0435 \u043D\u0430 \u0448\u0435\u0435."
     type: Tweak
-  id: 164
+  id: 161
   time: '2026-06-02T23:03:10.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1197
 - author: ver0098
@@ -3435,7 +3387,7 @@
       \ \u043F\u0440\u0435\u0434\u043C\u0435\u0442\u043E\u0432 \u0437\u0430\u044F\u0432\
       \u043A\u0438 UPP."
     type: Add
-  id: 165
+  id: 162
   time: '2026-06-02T23:04:06.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1194
 - author: Piticzu
@@ -3447,7 +3399,7 @@
       \ \u043C\u0435\u0436\u0434\u0443 \u0432\u044B\u0441\u0442\u0440\u0435\u043B\u0430\
       \u043C\u0438."
     type: Tweak
-  id: 166
+  id: 163
   time: '2026-06-02T23:05:50.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1192
 - author: troytroy400
@@ -3456,7 +3408,7 @@
       \u0440\u0443\u0436\u0430\u0435\u0442\u0441\u044F \u043F\u0440\u0430\u0432\u0438\
       \u043B\u044C\u043D\u043E."
     type: Fix
-  id: 167
+  id: 164
   time: '2026-06-03T01:46:04.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1201
 - author: toot521
@@ -3466,7 +3418,7 @@
       \u0438\u0445 \u043F\u0440\u043E\u0438\u0437\u0432\u043E\u0434\u0438\u0442\u0435\
       \u043B\u0435\u0439"
     type: Add
-  id: 168
+  id: 165
   time: '2026-06-03T09:12:26.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1193
 - author: RomiGur
@@ -3474,7 +3426,7 @@
   - message: "\u0418\u0437\u043C\u0435\u043D\u0435\u043D\u043E \u0432\u0435\u0441\u0435\
       \u043B\u044C\u0435!"
     type: Tweak
-  id: 169
+  id: 166
   time: '2026-06-03T16:32:44.0000000+00:00'
   url: https://github.com/flex5hybrid/RussianCM/pull/191
 - author: RomiGur
@@ -3485,7 +3437,7 @@
       \u043E\u043C\u0430\u0442 \u0441 \u043E\u0434\u0435\u0436\u0434\u043E\u0439 \u0441\
       \u043F\u0435\u0446\u043D\u0430\u0437\u0430 \u0411\u041A\u041C."
     type: Tweak
-  id: 170
+  id: 167
   time: '2026-06-03T16:33:00.0000000+00:00'
   url: https://github.com/flex5hybrid/RussianCM/pull/192
 - author: 400Ferrets
@@ -3496,7 +3448,7 @@
   - message: "\u0423 USS Bush \u0442\u0435\u043F\u0435\u0440\u044C \u0442\u043E\u043B\
       \u0441\u0442\u0430\u044F \u043A\u0440\u044B\u0448\u0430."
     type: Map
-  id: 171
+  id: 168
   time: '2026-06-03T18:48:17.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1202
 - author: toot521
@@ -3508,7 +3460,7 @@
       \u0440\u0435\u0434\u043D\u0435\u043C \u0445\u0443\u0434\u0448\u0435\u0435 \u043E\
       \u0440\u0443\u0436\u0438\u0435."
     type: Tweak
-  id: 172
+  id: 169
   time: '2026-06-03T21:12:25.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1198
 - author: toot521
@@ -3525,7 +3477,7 @@
       \ Green Hell, Hybrisa Metropolitan, Port Neroid, Raijin Hydroelectric, Shiva's\
       \ Snowball, Kutjevo Biolab, Fiorina Prison."
     type: Add
-  id: 173
+  id: 170
   time: '2026-06-03T21:21:15.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1199
 - author: HotdogMan52
@@ -3543,7 +3495,7 @@
       \u044B\u0439 \u0438 \u0434\u0440\u0443\u0433\u043E\u0433\u043E \u0446\u0432\u0435\
       \u0442\u0430."
     type: Add
-  id: 174
+  id: 171
   time: '2026-06-03T21:25:55.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1206
 - author: toot521
@@ -3563,7 +3515,7 @@
   - message: "CLF Surv Leader \u0442\u0435\u043F\u0435\u0440\u044C \u0438\u043C\u0435\
       \u0435\u0442 \u0444\u043E\u043D\u0430\u0440\u0438\u043A."
     type: Tweak
-  id: 175
+  id: 172
   time: '2026-06-04T00:50:41.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1209
 - author: troytroy400
@@ -3633,7 +3585,7 @@
       \u043D\u043E\u0432\u043B\u0435\u043D\u043D\u0443\u044E \u0430\u043F\u0442\u0435\
       \u0447\u043A\u0443."
     type: Tweak
-  id: 176
+  id: 173
   time: '2026-06-04T03:46:16.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1210
 - author: KeiKiyomi
@@ -3643,7 +3595,7 @@
       \u043D\u043E\u0441\u0442\u044C \xAB\u0443\u043C\u043D\u043E\u0433\u043E \u043F\
       \u0438\u0441\u0442\u043E\u043B\u0435\u0442\u0430 ML79A 'Breaker'\xBB."
     type: Fix
-  id: 177
+  id: 174
   time: '2026-06-04T03:56:29.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1190
 - author: 400Ferrets
@@ -3653,7 +3605,7 @@
       \ \u0442\u0435\u043F\u0435\u0440\u044C \u043D\u0430\u043C\u043D\u043E\u0433\u043E\
       \ \u0431\u043E\u043B\u044C\u0448\u0435!"
     type: Add
-  id: 178
+  id: 175
   time: '2026-06-04T08:52:13.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1211
 - author: TheHellFireo
@@ -3936,7 +3888,7 @@
       \u0432\u043A\u0430 \u0432\u0435\u0431-\u0445\u0443\u043A\u0430 \u0441\u0442\u0430\
       \u0442\u0443\u0441\u0430 \u0440\u0430\u0443\u043D\u0434\u0430 Discord\xBB."
     type: Add
-  id: 179
+  id: 176
   time: '2026-06-05T01:03:04.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1208
 - author: OmerF-afk
@@ -3954,7 +3906,7 @@
       \u0435\u0439\u0441\u0442\u0432\u0438\u0442\u0435\u043B\u044C\u043D\u043E \u0442\
       \u044F\u0436\u0435\u043B\u044B\u043C\u0438."
     type: Add
-  id: 180
+  id: 177
   time: '2026-06-05T13:59:14.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1218
 - author: mikusssssss
@@ -3965,7 +3917,7 @@
       \ \u0446\u0432\u0435\u0442\u0430 \u0441\u0443\u043C\u043A\u0438-\u0441\u043F\
       \u0430\u0441\u0430\u0442\u0435\u043B\u044F."
     type: Add
-  id: 181
+  id: 178
   time: '2026-06-05T14:13:52.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1140
 - author: KriegersMustDie
@@ -3975,7 +3927,7 @@
       \ \u043D\u0430\u0434\u043B\u0435\u0436\u0430\u0449\u0435\u0433\u043E \u0440\u0435\
       \u043C\u043E\u043D\u0442\u0430."
     type: Tweak
-  id: 182
+  id: 179
   time: '2026-06-05T16:09:41.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1217
 - author: 400Ferrets
@@ -3986,7 +3938,7 @@
       \u0433\u043E \u0443\u0434\u043E\u0441\u0442\u043E\u0432\u0435\u0440\u0435\u043D\
       \u0438\u044F \u043B\u0438\u0447\u043D\u043E\u0441\u0442\u0438."
     type: Fix
-  id: 183
+  id: 180
   time: '2026-06-05T16:20:27.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1221
 - author: TheHellFireo
@@ -4020,7 +3972,7 @@
       \u043D\u0438\u0435 \u043A\u0441\u0435\u043D\u043E \u043D\u0430 0,3 \u0434\u043B\
       \u044F DS \u0438 \u043D\u0430 0,1 \u0434\u043B\u044F CF."
     type: Tweak
-  id: 184
+  id: 181
   time: '2026-06-05T16:56:26.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1226
 - author: Tyzemol
@@ -4029,7 +3981,7 @@
       \u0430\u0437\u0434\u043E \u043C\u0435\u043D\u044C\u0448\u0435 \u0441\u0438\u0433\
       \u043D\u0430\u043B\u044C\u043D\u044B\u0445 \u0440\u0430\u043A\u0435\u0442."
     type: Tweak
-  id: 185
+  id: 182
   time: '2026-06-05T18:47:05.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1227
 - author: flex5hybrid
@@ -4057,7 +4009,7 @@
       \u043E\u0434\u0435 \u0434\u043B\u044F \u043A\u043E\u043D\u0442\u0440\u0438\u0431\
       \u044C\u044E\u0442\u043E\u0440\u043E\u0432!"
     type: Code
-  id: 186
+  id: 183
   time: '2026-06-05T19:56:29.0000000+00:00'
   url: https://github.com/flex5hybrid/RussianCM/pull/208
 - author: TheHellFireo
@@ -4308,7 +4260,7 @@
       \u0437\u0432\u0430\u0442\u044C \u043E\u043F\u044C\u044F\u043D\u0435\u043D\u0438\
       \u0435."
     type: Tweak
-  id: 187
+  id: 184
   time: '2026-06-06T00:48:41.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1231
 - author: troytroy400
@@ -4322,7 +4274,7 @@
       \u043E \u0432\u0441\u0435 \u043D\u0430 \u0441\u0442\u043E\u0440\u043E\u043D\u0435\
       \ \u043A\u043B\u0438\u0435\u043D\u0442\u0430."
     type: Add
-  id: 188
+  id: 185
   time: '2026-06-06T05:18:36.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1230
 - author: toot521
@@ -4331,7 +4283,7 @@
       \u044C \u0435\u0441\u0442\u044C \u0438\u0441\u0442\u043E\u0447\u043D\u0438\u043A\
       \u0438 \u0441\u0432\u0435\u0442\u0430 \u0438 \u043B\u043E\u043C\u044B."
     type: Tweak
-  id: 189
+  id: 186
   time: '2026-06-06T10:00:06.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1213
 - author: HotdogMan52
@@ -4359,7 +4311,7 @@
       \u0432\u0438\u043B\u044C\u043D\u043E\u0435 \u0437\u043D\u0430\u0447\u0435\u043D\
       \u0438\u0435."
     type: Fix
-  id: 190
+  id: 187
   time: '2026-06-06T15:28:53.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1215
 - author: maertayn
@@ -4406,7 +4358,7 @@
       \u043D\u0438 \u043D\u0435 \u0432\u0440\u0430\u0436\u0434\u0435\u0431\u043D\u044B\
       \ \u043A\u0441\u0435\u043D\u043E\u0441\u0430\u043C)"
     type: Fix
-  id: 191
+  id: 188
   time: '2026-06-06T16:09:50.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1229
 - author: maertayn
@@ -4465,7 +4417,7 @@
       \u043A\u0430\u043B\u0438\u0437\u0430\u0446\u0438\u0438 (overwatch.ftl) \u0434\
       \u043B\u044F \u043A\u043E\u043D\u0441\u043E\u043B\u0435\u0439 OW."
     type: Code
-  id: 192
+  id: 189
   time: '2026-06-06T16:10:11.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1233
 - author: toot521
@@ -4479,7 +4431,7 @@
   - message: "\u0414\u043E\u0431\u0430\u0432\u043B\u0435\u043D\u044B \u0441\u043F\u0430\
       \u0432\u043D\u044B IASF Surv \u0432 Hybrisa Metropolitan \u0438 Raijin Hydroelectric."
     type: Add
-  id: 193
+  id: 190
   time: '2026-06-06T16:13:00.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1214
 - author: Piticzu
@@ -4544,7 +4496,7 @@
       \ \u0448\u0430\u0431\u043B\u043E\u043D\u0443 \u043F\u0440\u044B\u0436\u043A\u0430\
       \ \u043A\u0441\u0435\u043D\u043E."
     type: Code
-  id: 194
+  id: 191
   time: '2026-06-06T18:34:24.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1223
 - author: flex5hybrid
@@ -4555,7 +4507,7 @@
   - message: "\u041F\u043B\u044E\u0448\u043A\u0438 \u0441\u043F\u043E\u043D\u0441\u043E\
       \u0440\u0430\u043C"
     type: Add
-  id: 195
+  id: 192
   time: '2026-06-06T19:16:15.0000000+00:00'
   url: https://github.com/flex5hybrid/RussianCM/pull/211
 - author: flex5hybrid
@@ -4583,7 +4535,7 @@
       \u043E\u0434\u0435 \u0434\u043B\u044F \u043A\u043E\u043D\u0442\u0440\u0438\u0431\
       \u044C\u044E\u0442\u043E\u0440\u043E\u0432!"
     type: Code
-  id: 196
+  id: 193
   time: '2026-06-06T19:54:30.0000000+00:00'
   url: https://github.com/flex5hybrid/RussianCM/pull/213
 - author: RomiGur
@@ -4595,14 +4547,14 @@
       \u0435 \u0438\u0441\u0441\u043B\u0435\u0434\u043E\u0432\u0430\u043D\u0438\u044F\
       ."
     type: Code
-  id: 197
+  id: 194
   time: '2026-06-06T22:16:17.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1238
 - author: KriegersMustDie
   changes:
   - message: "\u041C\u0430\u0440\u043A\u0438."
     type: Add
-  id: 198
+  id: 195
   time: '2026-06-06T22:55:40.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1239
 - author: TheHellFireo
@@ -4665,7 +4617,7 @@
       \u043D\u0443\u0442\u0440\u0435\u043D\u043D\u0435\u0435 \u043A\u0440\u043E\u0432\
       \u043E\u0442\u0435\u0447\u0435\u043D\u0438\u0435."
     type: Fix
-  id: 199
+  id: 196
   time: '2026-06-07T00:09:50.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1240
 - author: toot521
@@ -4675,7 +4627,7 @@
       \u043B\u044C\u043A\u043E \u043F\u043E \u0441\u0438\u0433\u043D\u0430\u043B\u0443\
       \ \u0431\u0435\u0434\u0441\u0442\u0432\u0438\u044F."
     type: Fix
-  id: 200
+  id: 197
   time: '2026-06-07T09:21:53.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1243
 - author: RomiGur
@@ -4686,7 +4638,7 @@
       \u0438\u0447\u0435\u0441\u0442\u0432\u0430 \u0434\u043B\u044F \u0440\u0430\u0431\
       \u043E\u0442\u044B."
     type: Admin
-  id: 201
+  id: 198
   time: '2026-06-07T15:35:01.0000000+00:00'
   url: https://github.com/flex5hybrid/RussianCM/pull/210
 - author: RomiGur
@@ -4694,7 +4646,7 @@
   - message: "\u0423\u0434\u0430\u043B\u0435\u043D\u044B \u0444\u0438\u0433\u0443\u0440\
       \u043A\u0438 \u0438\u0433\u0440\u043E\u043A\u043E\u0432 \u0441 \u0420\u041C\u0421"
     type: Remove
-  id: 202
+  id: 199
   time: '2026-06-07T15:35:14.0000000+00:00'
   url: https://github.com/flex5hybrid/RussianCM/pull/215
 - author: RomiGur
@@ -4705,7 +4657,7 @@
       \u043E\u043F\u043B\u0438\u0432\u043D\u0443\u044E \u044F\u0447\u0435\u0439\u043A\
       \u0443 \u0438\u0437 \u0440\u0435\u0430\u043A\u0442\u043E\u0440\u0430"
     type: Fix
-  id: 203
+  id: 200
   time: '2026-06-07T15:35:31.0000000+00:00'
   url: https://github.com/flex5hybrid/RussianCM/pull/216
 - author: TheHellFireo
@@ -4988,7 +4940,7 @@
       \u043D\u044C\u0448\u0435\u043D\u0430 \u0441 700 \u0434\u043E 500 \u0435\u0434\
       \u0438\u043D\u0438\u0446 \u043F\u043B\u0430\u0437\u043C\u044B."
     type: Fix
-  id: 204
+  id: 201
   time: '2026-06-07T16:13:58.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1246
 - author: JaSeNeSaJ
@@ -5001,7 +4953,7 @@
   - message: "\u041E\u0447\u0438\u0449\u0435\u043D\u043E \u0444\u043E\u0440\u043C\u0430\
       \u0442\u0438\u0440\u043E\u0432\u0430\u043D\u0438\u0435 \u0432 gamemodes.yml."
     type: Tweak
-  id: 205
+  id: 202
   time: '2026-06-07T21:19:19.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/991
 - author: maertayn
@@ -5037,7 +4989,7 @@
       \u0437\u0430\u0442\u043E\u0440\u043E\u0432/\u0441\u043C\u0430\u0439\u043B\u0438\
       \u043A\u043E\u0432!)"
     type: Add
-  id: 206
+  id: 203
   time: '2026-06-08T00:38:32.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1250
 - author: potatoed6
@@ -5054,7 +5006,7 @@
   - message: "\u0417\u043D\u0430\u0447\u043E\u043A CO \u0441\u0442\u0430\u043B \u043D\
       \u0435\u043C\u043D\u043E\u0433\u043E \u043A\u0440\u0443\u0447\u0435"
     type: Tweak
-  id: 207
+  id: 204
   time: '2026-06-08T00:39:15.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1216
 - author: Kadeo64
@@ -5064,7 +5016,7 @@
       \u043E\u0442\u0430\u0446\u0438\u0438 \u043A\u0430\u0440\u0442 \u043F\u043E\u0432\
       \u0441\u0442\u0430\u043D\u0446\u0435\u0432."
     type: Remove
-  id: 208
+  id: 205
   time: '2026-06-08T00:41:46.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1253
 - author: troytroy400
@@ -5085,7 +5037,7 @@
       \u0438\u0433\u043D\u0430\u043B\u0430 \u0431\u0435\u0434\u0441\u0442\u0432\u0438\
       \u044F."
     type: Tweak
-  id: 209
+  id: 206
   time: '2026-06-08T06:52:34.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1257
 - author: 400Ferrets
@@ -5097,7 +5049,7 @@
       . (\u0422\u043E\u043B\u044C\u043A\u043E \u043A\u043B\u0430\u0441\u0442\u0435\
       \u0440\u044B, \u0441\u043E\u0440\u043D\u044F\u043A\u0438 Gardener)"
     type: Fix
-  id: 210
+  id: 207
   time: '2026-06-08T11:37:08.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1261
 - author: deepdarkdepths
@@ -5107,7 +5059,7 @@
       \u0435\u043D\u043E\u0441 3-\u0433\u043E \u0443\u0440\u043E\u0432\u043D\u044F\
       ."
     type: Add
-  id: 211
+  id: 208
   time: '2026-06-08T12:16:45.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1256
 - author: TheHellFireo
@@ -5147,7 +5099,7 @@
       \u0438 \u0436\u0443\u0440\u043D\u0430\u043B\u043E\u0432 \u0430\u0434\u043C\u0438\
       \u043D\u0438\u0441\u0442\u0440\u0430\u0442\u043E\u0440\u0430."
     type: Fix
-  id: 212
+  id: 209
   time: '2026-06-08T12:29:49.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1262
 - author: NzzyFk
@@ -5156,7 +5108,7 @@
       \u044B\u0445 \u0431\u0430\u0437\u043E\u0432\u044B\u0445 \u043F\u043B\u0438\u0442\
       \u043E\u043A"
     type: Add
-  id: 213
+  id: 210
   time: '2026-06-08T16:41:49.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1258
 - author: maertayn
@@ -5166,7 +5118,7 @@
       \u0438 Xeno Despoiler (\u0438\u0441\u043F\u043E\u043B\u044C\u0437\u0443\u0439\
       \u0442\u0435 ent- \u0438 .desc)"
     type: Code
-  id: 214
+  id: 211
   time: '2026-06-08T17:51:09.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1263
 - author: potatoed6
@@ -5204,7 +5156,7 @@
       \u043C\u0430 \u0441\u043C\u0435\u043D\u044B \u0434\u043E\u043B\u0436\u043D\u043E\
       \u0441\u0442\u0435\u0439."
     type: Code
-  id: 215
+  id: 212
   time: '2026-06-08T18:24:27.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1228
 - author: TheHellFireo
@@ -5541,7 +5493,7 @@
       \u0430\u043C, \u043D\u0430\u0445\u043E\u0434\u044F\u0449\u0438\u043C\u0441\u044F\
       \ \u0432 \u0442\u043E\u043C \u0436\u0435 \u0443\u043B\u044C\u0435."
     type: Fix
-  id: 216
+  id: 213
   time: '2026-06-08T20:40:16.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1266
 - author: 400Ferrets
@@ -5556,7 +5508,7 @@
       \u043D\u0442\u043D\u044B\u0445 \u043A\u043E\u0440\u0430\u0431\u043B\u0435\u0439\
       ."
     type: Tweak
-  id: 217
+  id: 214
   time: '2026-06-09T02:35:00.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1260
 - author: 400Ferrets
@@ -5566,7 +5518,7 @@
       \ \u0442\u0435\u043F\u0435\u0440\u044C \u043C\u043E\u0436\u043D\u043E \u043F\
       \u0440\u043E\u043F\u043E\u043B\u0438\u0442\u044C."
     type: Fix
-  id: 218
+  id: 215
   time: '2026-06-09T02:36:11.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1259
 - author: troytroy400
@@ -5590,7 +5542,7 @@
       \u0430 \u0430\u0432\u0438\u0430\u043D\u043E\u0441\u0446\u0430 \u0414\u0436\u043E\
       \u0440\u0434\u0436\u0430 \u0411\u0443\u0448\u0430 AI."
     type: Fix
-  id: 219
+  id: 216
   time: '2026-06-09T12:24:35.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1269
 - author: TheHellFireo
@@ -5714,7 +5666,7 @@
       \ \u0443\u043B\u0443\u0447\u0448\u0435\u043D\u043D\u044B\u0439 \u0437\u0432\u0443\
       \u043A \u043F\u0440\u043E\u043B\u0435\u0442\u0430 \u043F\u0443\u043B\u0438."
     type: Add
-  id: 220
+  id: 217
   time: '2026-06-09T15:31:37.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1270
 - author: KeiKiyomi
@@ -5723,7 +5675,7 @@
       \u0442\u0435\u0440\u0435\u044F \u0441\u0438\u043D\u0442\u0435\u0437\u0430\u0442\
       \u043E\u0440\u043E\u0432 Prodigy."
     type: Fix
-  id: 221
+  id: 218
   time: '2026-06-09T16:59:31.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1272
 - author: Piticzu
@@ -5736,7 +5688,7 @@
       \u044C\u043D\u043E \u0434\u043B\u044F \u0432\u0441\u0435\u0445 \u0438\u0433\u0440\
       \u043E\u043A\u043E\u0432."
     type: Fix
-  id: 222
+  id: 219
   time: '2026-06-09T23:50:37.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1274
 - author: jok989372-lgtm
@@ -5744,7 +5696,7 @@
   - message: "\u0424\u0438\u043A\u0441\u0438\u0440\u043E\u0432\u0430\u043D\u043D\u044B\
       \u0435 \u0448\u0442\u0430\u043C\u043F\u044B"
     type: Fix
-  id: 223
+  id: 220
   time: '2026-06-09T23:51:07.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1273
 - author: maertayn
@@ -5791,7 +5743,7 @@
       \u0434\u0430\u043B\u0435\u043D\u044B \u043E\u0442 \u043F\u043E\u0441\u0442\u0430\
       \u0432\u0449\u0438\u043A\u043E\u0432 govfor/opfor"
     type: Remove
-  id: 224
+  id: 221
   time: '2026-06-10T05:15:29.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1276
 - author: 400Ferrets
@@ -5799,7 +5751,7 @@
   - message: "\u043E\u0433\u043D\u0435\u043C\u0435\u0442\u044B \u0416\u0415\u0421\u0422\
       \u041A\u041E \u041F\u041E\u041D\u0415\u0414\u0420\u0415\u041B\u0418!!"
     type: Tweak
-  id: 225
+  id: 222
   time: '2026-06-10T07:40:13.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1281
 - author: 400Ferrets
@@ -5832,7 +5784,7 @@
   - message: "\u041F\u043E\u0440\u0442 \u041D\u0435\u0440\u043E\u0438\u0434 \u0442\
       \u0435\u043F\u0435\u0440\u044C \u0442\u0435\u043C\u043D\u0435\u0435."
     type: Add
-  id: 226
+  id: 223
   time: '2026-06-10T07:43:29.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1279
 - author: Squagg
@@ -5852,7 +5804,7 @@
       \ \u0441\u0442\u0440\u043E\u0438\u0442\u0435\u043B\u044C\u0441\u0442\u0432\u0430\
       ."
     type: Fix
-  id: 227
+  id: 224
   time: '2026-06-10T16:32:34.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1283
 - author: johnnny34y
@@ -5864,7 +5816,7 @@
       \u044B \u0438\u043D\u0436\u0435\u043D\u0435\u0440\u043E\u043C \u0438\u043B\u0438\
       \ \u0443\u0431\u043E\u0440\u0449\u0438\u043A\u043E\u043C."
     type: Remove
-  id: 228
+  id: 225
   time: '2026-06-10T16:40:02.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1277
 - author: johnnny34y
@@ -5876,7 +5828,7 @@
       \u0438 \u0434\u043B\u044F CT \u0438 \u0443\u0431\u043E\u0440\u0449\u0438\u043A\
       \u0430."
     type: Remove
-  id: 229
+  id: 226
   time: '2026-06-10T16:40:16.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1278
 - author: HubaBub
@@ -5884,7 +5836,7 @@
   - message: "\u0418\u0437\u043C\u0435\u043D\u0435\u043D\u044B \u0441\u043F\u0440\u0430\
       \u0439\u0442\u044B \u0444\u043E\u0440\u043C\u044B \u0421\u041F\u041D."
     type: Tweak
-  id: 230
+  id: 227
   time: '2026-06-10T21:15:27.0000000+00:00'
   url: https://github.com/flex5hybrid/RussianCM/pull/230
 - author: RomiGur
@@ -5895,7 +5847,7 @@
       \ \u043C\u0430\u0440\u0438\u043D\u043E\u0432 \u043F\u0440\u0438 \u0441\u043F\
       \u0430\u0432\u043D\u0435"
     type: Fix
-  id: 231
+  id: 228
   time: '2026-06-10T21:15:42.0000000+00:00'
   url: https://github.com/flex5hybrid/RussianCM/pull/231
 - author: RomiGur
@@ -5905,7 +5857,7 @@
       \u0435 \u0446\u0435\u043D\u044B \u0432 \u0442\u043E\u0447\u043A\u0438 \u0441\
       \u0434\u0430\u0447\u0438 \u0440\u0435\u0441\u0443\u0440\u0441\u043E\u0432"
     type: Tweak
-  id: 232
+  id: 229
   time: '2026-06-10T21:18:05.0000000+00:00'
   url: https://github.com/flex5hybrid/RussianCM/pull/233
 - author: maertayn
@@ -5918,7 +5870,7 @@
       \u044F\u0435\u0442 \u0444\u0440\u0430\u043A\u0446\u0438\u044F\u043C\u0438 +\
       \ op \u0434\u043B\u044F \u0444\u0440\u0430\u043A\u0446\u0438\u0439."
     type: Add
-  id: 233
+  id: 230
   time: '2026-06-10T23:52:50.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1287
 - author: maertayn
@@ -5929,7 +5881,7 @@
       \u044B \u0434\u0435\u043F\u0443\u0442\u0430\u0442\u0430\u043C \u043E\u0442 \u0438\
       \u0445 \u043F\u0440\u043E\u0434\u0430\u0432\u0446\u0430."
     type: Add
-  id: 234
+  id: 231
   time: '2026-06-11T01:36:49.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1288
 - author: Evergreendev12
@@ -5947,7 +5899,7 @@
   - message: "\u041D\u043E\u0432\u044B\u0439 \u0446\u0438\u043A\u043B \u0437\u0430\
       \u0434\u0430\u043D\u0438\u0439 \u0424\u0430\u0431\u0440\u0438\u043A\u0438"
     type: Add
-  id: 235
+  id: 232
   time: '2026-06-11T12:02:06.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1289
 - author: troytroy400
@@ -5957,7 +5909,7 @@
       \u0440\u0434\u043E\u0441\u0442\u0438 \u043C\u0435\u0441\u044F\u0446\u0430 \u0433\
       \u043E\u0440\u0434\u043E\u0441\u0442\u0438."
     type: Tweak
-  id: 236
+  id: 233
   time: '2026-06-11T17:10:13.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1293
 - author: troytroy400
@@ -5970,7 +5922,7 @@
       \u0436\u043D\u043E \u0438\u0441\u043F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\
       \u0442\u044C OB."
     type: Add
-  id: 237
+  id: 234
   time: '2026-06-11T17:38:05.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1294
 - author: UnicornOnLSD
@@ -5981,7 +5933,7 @@
       \u0433 \u0438\u043C\u0435\u044E\u0442 \u0432\u0441\u0435 \u043D\u0435\u043E\u0431\
       \u0445\u043E\u0434\u0438\u043C\u043E\u0435."
     type: Add
-  id: 238
+  id: 235
   time: '2026-06-11T20:08:57.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1292
 - author: troytroy400
@@ -6002,7 +5954,7 @@
       \u044C\u043D\u044B\u0445 \u043F\u0440\u0435\u0434\u043C\u0435\u0442\u043E\u0432\
       ."
     type: Tweak
-  id: 239
+  id: 236
   time: '2026-06-11T20:14:01.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1295
 - author: troytroy400
@@ -6018,7 +5970,7 @@
       \ \u043F\u0440\u0430\u0432\u0438\u0442\u0435\u043B\u044C\u0441\u0442\u0432\u0435\
       \u043D\u043D\u044B\u043C \u0434\u0432\u0435\u0440\u044F\u043C."
     type: Fix
-  id: 240
+  id: 237
   time: '2026-06-11T21:14:45.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1296
 - author: UnicornOnLSD
@@ -6029,7 +5981,7 @@
       \u043B\u0438 \xAB\u0432\u044B\u0433\u043B\u044F\u0434\u0438\u0442 \u0441\u043C\
       \u0443\u0449\u0435\u043D\u043D\u044B\u043C\xBB."
     type: Remove
-  id: 241
+  id: 238
   time: '2026-06-11T23:58:36.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1291
 - author: maertayn
@@ -6068,7 +6020,7 @@
       \u044B \u043A\u0441\u0435\u043D\u043E \u0434\u043B\u044F \u0430\u0431\u043E\u043C\
       \u0431\u043E\u0432 \u0438 \u0442.\_\u0434."
     type: Fix
-  id: 242
+  id: 239
   time: '2026-06-12T01:53:54.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1297
 - author: maertayn
@@ -6081,7 +6033,7 @@
       \u043B\u044C\u0442\u0438\u0441\u0442\u0430\u043C\u0438 \u0438\u043B\u0438 \u043A\
       \u0441\u0435\u043D\u043E\u0441\u0430\u043C\u0438."
     type: Add
-  id: 243
+  id: 240
   time: '2026-06-12T02:59:05.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1298
 - author: maertayn
@@ -6109,7 +6061,7 @@
       \ \u0441\u0438\u0433\u043D\u0430\u043B\u0435 \u0431\u0435\u0434\u0441\u0442\u0432\
       \u0438\u044F."
     type: Fix
-  id: 244
+  id: 241
   time: '2026-06-12T04:23:44.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1299
 - author: troytroy400
@@ -6161,7 +6113,7 @@
       \u0436\u0435 \u041D\u0415\u041C\u041D\u041E\u0413\u041E (0,5) \u0431\u043E\u043B\
       \u0435\u0435 \u0437\u0430\u043C\u0435\u0442\u0435\u043D."
     type: Fix
-  id: 245
+  id: 242
   time: '2026-06-12T11:19:00.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1300
 - author: basementoWasntAvailable
@@ -6172,7 +6124,7 @@
       \u044B\u043C\xBB \u0438\u043B\u0438 \xAB\u0432\u044B\u0433\u043B\u044F\u0434\
       \u0438\u0442 \u0441\u043C\u0443\u0449\u0435\u043D\u043D\u044B\u043C\xBB"
     type: Add
-  id: 246
+  id: 243
   time: '2026-06-12T17:18:21.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1301
 - author: troytroy400
@@ -6190,7 +6142,7 @@
       \ \u0431\u0443\u0434\u0435\u0442 \u043F\u043E\u0441\u0442\u0440\u043E\u0438\u0442\
       \u044C \u0434\u0430\u043B\u044C\u0448\u0435."
     type: Remove
-  id: 247
+  id: 244
   time: '2026-06-12T18:45:58.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1302
 - author: KeiKiyomi
@@ -6362,7 +6314,7 @@
       \ \u043F\u0440\u043E\u0446\u0435\u0434\u0443\u0440\u044B \u0430\u0440\u0435\u0441\
       \u0442\u0430 UCMJ."
     type: Add
-  id: 248
+  id: 245
   time: '2026-06-12T19:34:34.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1284
 - author: toot521
@@ -6372,7 +6324,7 @@
       \u0432\u0438\u043B\u044C\u043D\u044B\u0445 \u0431\u043E\u0435\u043F\u0440\u0438\
       \u043F\u0430\u0441\u043E\u0432."
     type: Fix
-  id: 249
+  id: 246
   time: '2026-06-12T19:40:02.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1303
 - author: troytroy400
@@ -6389,7 +6341,7 @@
       \u044A\u044F\u0432\u043B\u0435\u043D\u044B \u0432\u043D\u0435 \u0437\u0430\u043A\
       \u043E\u043D\u0430."
     type: Tweak
-  id: 250
+  id: 247
   time: '2026-06-12T19:58:34.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1304
 - author: troytroy400
@@ -6413,7 +6365,7 @@
   - message: "\u041E\u0431\u043D\u043E\u0432\u043B\u0435\u043D \u0441\u043A\u0430\u043D\
       \u0435\u0440 Atmos/Radio Jammer."
     type: Tweak
-  id: 251
+  id: 248
   time: '2026-06-13T19:23:32.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1309
 - author: thoughtlessuser
@@ -6424,7 +6376,7 @@
       \u043D\u043E\u0439 \u0446\u0435\u043F\u043E\u0447\u043A\u043E\u0439 \u043F\u043E\
       \u0441\u0442\u0430\u0432\u043E\u043A!"
     type: Tweak
-  id: 252
+  id: 249
   time: '2026-06-13T19:43:28.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1220
 - author: JaSeNeSaJ
@@ -6491,7 +6443,7 @@
       \u043A\u0442\u044B \u0431\u0430\u0448\u043D\u0438 \u0441\u0432\u044F\u0437\u0438\
       \ \u0438 \u0441\u0435\u043D\u0441\u043E\u0440\u043E\u0432."
     type: Fix
-  id: 253
+  id: 250
   time: '2026-06-13T21:18:09.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1308
 - author: johnnny34y
@@ -6501,7 +6453,7 @@
       \u0438\u0441\u0442\u043E\u0432 \u043F\u043E \u043E\u0440\u0443\u0436\u0438\u044E\
       \ \u0434\u043B\u044F HAZOPS."
     type: Add
-  id: 254
+  id: 251
   time: '2026-06-13T21:20:42.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1305
 - author: JaSeNeSaJ
@@ -6511,7 +6463,7 @@
       \u043B\u044C\u0441\u043A\u043E\u0439 \u043B\u0430\u0431\u043E\u0440\u0430\u0442\
       \u043E\u0440\u0438\u0438."
     type: Fix
-  id: 255
+  id: 252
   time: '2026-06-14T06:24:39.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1313
 - author: troytroy400
@@ -6520,7 +6472,7 @@
       \u043A\u0438 \u0432\u044B\u0448\u0435 \u043F\u043E \u0442\u0435\u0447\u0435\u043D\
       \u0438\u044E."
     type: Remove
-  id: 256
+  id: 253
   time: '2026-06-14T06:29:20.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1314
 - author: maertayn
@@ -6584,7 +6536,7 @@
       \u0435\u0440\u0430\u0437\u0440\u0443\u0448\u0438\u043C\u044B\u0435 \u043A\u043E\
       \u043C\u043F\u044C\u044E\u0442\u0435\u0440\u044B)."
     type: Fix
-  id: 257
+  id: 254
   time: '2026-06-14T06:29:43.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1311
 - author: troytroy400
@@ -6600,7 +6552,7 @@
   - message: "\u041F\u0440\u0430\u0432\u0438\u043B\u0430 \u0438\u0437\u043C\u0435\u043D\
       \u0435\u043D\u044B \u0438 \u0443\u0442\u043E\u0447\u043D\u0435\u043D\u044B."
     type: Admin
-  id: 258
+  id: 255
   time: '2026-06-14T12:41:23.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1317
 - author: Piticzu
@@ -6679,7 +6631,7 @@
       \u0432\u0443\u043A\u0438 \u0438\u0437 \u042F\u0443\u0442\u0434\u0436\u0430\u0441\
       \u0430."
     type: Remove
-  id: 259
+  id: 256
   time: '2026-06-14T12:57:16.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1310
 - author: Squagg
@@ -6689,7 +6641,7 @@
       \u043E\u043B\u0438 \u0433\u043B\u0430\u0432\u043D\u043E\u0433\u043E \u0432\u0440\
       \u0430\u0447\u0430-\u043A\u043E\u043B\u043E\u043D\u0438\u0441\u0442\u0430."
     type: Fix
-  id: 260
+  id: 257
   time: '2026-06-14T12:58:22.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1316
 - author: deepdarkdepths
@@ -6721,7 +6673,7 @@
       \u0438\u0435 \u043A\u0438\u0441\u043B\u043E\u0442\u043D\u043E\u0439 \u0431\u043E\
       \u043C\u0431\u044B."
     type: Tweak
-  id: 261
+  id: 258
   time: '2026-06-14T13:55:17.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1315
 - author: troytroy400
@@ -6763,7 +6715,7 @@
       \u043D (\u043C\u0435\u0437\u043E\u043D\u043D\u044B\u0435 \u043E\u0447\u043A\u0438\
       ) \u0438\u0437 \u0441\u043D\u0430\u0440\u044F\u0436\u0435\u043D\u0438\u044F."
     type: Tweak
-  id: 262
+  id: 259
   time: '2026-06-14T20:14:13.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1319
 - author: JaSeNeSaJ
@@ -6817,7 +6769,7 @@
       \u0440\u0441\u0435\u043D\u0430\u043B, \u0440\u0443\u0447\u043A\u0430 \u0438\
       \ \u0431\u0443\u043C\u0430\u0433\u0430 \u0434\u043B\u044F CWPS."
     type: Add
-  id: 263
+  id: 260
   time: '2026-06-14T20:14:41.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1318
 - author: HolySSSS
@@ -6830,7 +6782,7 @@
       \ \u043F\u043E \u0432\u0430\u0448\u0435\u043C\u0443 \u0432\u044B\u0431\u043E\
       \u0440\u0443."
     type: Add
-  id: 264
+  id: 261
   time: '2026-06-14T20:15:17.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1321
 - author: KeiKiyomi
@@ -6848,7 +6800,7 @@
       \u0435\u0442\u0441\u044F \u0435\u0433\u043E \u0438\u0441\u043F\u043E\u043B\u044C\
       \u0437\u043E\u0432\u0430\u0442\u044C."
     type: Add
-  id: 265
+  id: 262
   time: '2026-06-14T22:39:16.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1307
 - author: KeiKiyomi
@@ -6892,7 +6844,7 @@
       \u0430 \u043C\u0438\u043D\u043E\u043C\u0435\u0442\u0430 \u0438\u0437\u043C\u0435\
       \u043D\u0435\u043D\u0430 \u043D\u0430 950."
     type: Tweak
-  id: 266
+  id: 263
   time: '2026-06-14T22:46:32.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1323
 - author: troytroy400
@@ -6932,7 +6884,7 @@
       \ \u0440\u0430\u0431\u043E\u0442\u0430\u0442\u044C \u043F\u0440\u0430\u0432\u0438\
       \u043B\u044C\u043D\u043E."
     type: Fix
-  id: 267
+  id: 264
   time: '2026-06-14T23:25:40.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1324
 - author: JaSeNeSaJ
@@ -6944,7 +6896,7 @@
       \u0442\u0430\u0446\u0438\u0438 \u0441\u0438\u0433\u043D\u0430\u043B\u043E\u0432\
       \ \u0431\u0435\u0434\u0441\u0442\u0432\u0438\u044F"
     type: Remove
-  id: 268
+  id: 265
   time: '2026-06-15T06:49:31.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1331
 - author: Piticzu
@@ -6954,7 +6906,7 @@
       \u0440\u0442\u0430\u0445 \u0441\u0438\u0433\u043D\u0430\u043B\u0430 \u0431\u0435\
       \u0434\u0441\u0442\u0432\u0438\u044F."
     type: Add
-  id: 269
+  id: 266
   time: '2026-06-15T14:16:31.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1325
 - author: TheHellFireo
@@ -6986,7 +6938,7 @@
       \u0438, \u0434\u0435\u0444\u0438\u0431\u0440\u0438\u043B\u043B\u044F\u0446\u0438\
       \u0438 \u0438 \u0448\u0440\u0430\u043F\u043D\u0435\u043B\u0438."
     type: Fix
-  id: 270
+  id: 267
   time: '2026-06-15T16:04:57.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1332
 - author: TheHellFireo
@@ -7035,7 +6987,7 @@
       \u0432\u0435\u0434\u0435\u043D\u0438\u0435 \u0442\u0440\u0430\u0435\u043A\u0442\
       \u043E\u0440\u0438\u0438 \u043F\u0440\u044B\u0436\u043A\u0430."
     type: Fix
-  id: 271
+  id: 268
   time: '2026-06-15T16:06:22.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1333
 - author: 400Ferrets
@@ -7104,7 +7056,7 @@
       \ \u043D\u0435 \u0438\u043C\u0435\u0435\u0442 \u0436\u0443\u0442\u043A\u043E\
       \u0439 \u0442\u0435\u043D\u0438."
     type: Add
-  id: 272
+  id: 269
   time: '2026-06-15T16:11:38.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1330
 - author: sunzu432
@@ -7117,7 +7069,7 @@
       \u0442\u0430\u043D\u0446\u0435\u0432\xBB \u0438 \xAB\u0421\u0438\u0433\u043D\
       \u0430\u043B\u0430 \u0431\u0435\u0434\u0441\u0442\u0432\u0438\u044F\xBB."
     type: Add
-  id: 273
+  id: 270
   time: '2026-06-15T16:14:34.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1322
 - author: Crime481
@@ -7161,7 +7113,7 @@
       \u0442\u0440\u0430\u0441\u0442\u043D\u044B\u0439 \u0446\u0432\u0435\u0442 \u043D\
       \u0430 \u043A\u043E\u0440\u043E\u043D\u0430\u0445."
     type: Tweak
-  id: 274
+  id: 271
   time: '2026-06-15T20:03:39.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1329
 - author: sunzu432
@@ -7210,7 +7162,7 @@
       \u043D\u044B \u0431\u044B\u0442\u044C \u0438\u0441\u043F\u0440\u0430\u0432\u043B\
       \u0435\u043D\u044B."
     type: Fix
-  id: 275
+  id: 272
   time: '2026-06-16T02:01:32.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1335
 - author: JaSeNeSaJ
@@ -7259,7 +7211,7 @@
       \u0438\u043C\u0438\u043A\u0430 \u0434\u043E \u043C\u0435\u0434\u043E\u0442\u0441\
       \u0435\u043A\u0430, 2-\u0439 \u044D\u0442\u0430\u0436."
     type: Add
-  id: 276
+  id: 273
   time: '2026-06-16T06:17:09.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1336
 - author: maertayn
@@ -7351,7 +7303,7 @@
       \u0438\u0432\u0430\u044E\u0442\u0441\u044F \u0434\u0435\u0442\u0435\u043A\u0442\
       \u043E\u0440\u0430\u043C\u0438 \u0434\u0432\u0438\u0436\u0435\u043D\u0438\u044F"
     type: Fix
-  id: 277
+  id: 274
   time: '2026-06-16T06:28:12.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1334
 - author: Kadeo64
@@ -7365,7 +7317,7 @@
       \u0438\u044F Hivebreaker. \u0418\u0441\u043F\u043E\u043B\u044C\u0437\u0443\u0439\
       \u0442\u0435 \u0441 \u0443\u043C\u043E\u043C."
     type: Tweak
-  id: 278
+  id: 275
   time: '2026-06-16T06:36:36.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1337
 - author: KeiKiyomi
@@ -7411,7 +7363,7 @@
       \u0438 \u0432\u044B \u043F\u043E\u0442\u0435\u0440\u044F\u0435\u0442\u0435 \u043E\
       \u0440\u0438\u0433\u0438\u043D\u0430\u043B)"
     type: Add
-  id: 279
+  id: 276
   time: '2026-06-16T07:15:40.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1167
 - author: RomiGur
@@ -7419,7 +7371,7 @@
   - message: "\u041C\u0438\u043D\u0438\u043C\u0443\u043C \u0438\u0433\u0440\u043E\u043A\
       \u043E\u0432 \u0434\u043B\u044F Force on Force - 100"
     type: Tweak
-  id: 280
+  id: 277
   time: '2026-06-16T15:45:56.0000000+00:00'
   url: https://github.com/flex5hybrid/RussianCM/pull/249
 - author: RomiGur
@@ -7428,7 +7380,7 @@
       \u044B \u0443 \u043A\u043E\u043B\u043E\u043D\u0438\u0441\u0442\u043E\u0432 2\
       \ -> 1"
     type: Tweak
-  id: 281
+  id: 278
   time: '2026-06-16T15:46:06.0000000+00:00'
   url: https://github.com/flex5hybrid/RussianCM/pull/251
 - author: RomiGur
@@ -7437,7 +7389,7 @@
       \u043B\u043E\u043C\u043A\u0438 \u0443 \u0442\u0440\u0430\u043D\u0441\u043F\u043E\
       \u0440\u0442\u0430"
     type: Tweak
-  id: 282
+  id: 279
   time: '2026-06-16T15:46:31.0000000+00:00'
   url: https://github.com/flex5hybrid/RussianCM/pull/248
 - author: jok989372-lgtm
@@ -7465,7 +7417,7 @@
       \u043E\u0434\u0435 \u0434\u043B\u044F \u043A\u043E\u043D\u0442\u0440\u0438\u0431\
       \u044C\u044E\u0442\u043E\u0440\u043E\u0432!"
     type: Code
-  id: 283
+  id: 280
   time: '2026-06-16T15:49:00.0000000+00:00'
   url: https://github.com/flex5hybrid/RussianCM/pull/241
 - author: coolshows2342342-ctrl
@@ -7473,7 +7425,7 @@
   - message: "\u0411\u0440\u0438\u0442\u0430\u043D\u0441\u043A\u0438\u0439 \u0430\u043A\
       \u0446\u0435\u043D\u0442 (V0.5!)"
     type: Add
-  id: 284
+  id: 281
   time: '2026-06-17T02:22:29.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1338
 - author: KriegersMustDie
@@ -7488,7 +7440,7 @@
   - message: "\u041D\u0430\u0437\u0432\u0430\u043D\u0438\u0435 \u043C\u0430\u0440\u043A\
       \u0438 \u043F\u043E\u0441\u043B\u0430 \u041A\u041C\u0413\u0421"
     type: Fix
-  id: 285
+  id: 282
   time: '2026-06-17T20:19:06.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1349
 - author: TheHellFireo
@@ -8770,7 +8722,7 @@
       \u043B\u044C\u0448\u0438\u043C \u043A\u043E\u043B\u0438\u0447\u0435\u0441\u0442\
       \u0432\u043E\u043C \u0436\u0435\u0440\u0442\u0432."
     type: Code
-  id: 286
+  id: 283
   time: '2026-06-17T21:10:58.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1354
 - author: Kadeo64
@@ -8787,7 +8739,7 @@
       \u043E\u0432\u0430\u0442\u0435\u043B\u044C\u0441\u043A\u0438\u0435 \u043D\u043E\
       \u0443\u0442\u0431\u0443\u043A\u0438."
     type: Tweak
-  id: 287
+  id: 284
   time: '2026-06-17T22:01:31.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1346
 - author: 400Ferrets
@@ -8810,7 +8762,7 @@
       \u0442\u0435\u043D\u044B \u0431\u0443\u0434\u0443\u0442 \u0435\u0441\u0442\u044C\
       \ \u043C\u0435\u043D\u044C\u0448\u0435!"
     type: Add
-  id: 288
+  id: 285
   time: '2026-06-17T22:03:58.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1342
 - author: HolySSSS
@@ -8846,7 +8798,7 @@
       \ \u0445\u0440\u0430\u043D\u0438\u0442\u044C \u0435\u0435 \u0432 \u0441\u0443\
       \u043C\u043A\u0435."
     type: Tweak
-  id: 289
+  id: 286
   time: '2026-06-17T22:05:18.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1348
 - author: HotdogMan52
@@ -8874,7 +8826,7 @@
       \u0441\u0442\u0435\u043C\u044B \u043A\u0441\u0435\u043D\u043E\u043D\u0435\u0439\
       \u0440\u043E\u0442\u043E\u043A\u0441\u0438\u043D\u043E\u0432."
     type: Tweak
-  id: 290
+  id: 287
   time: '2026-06-17T22:16:17.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1355
 - author: wray-git
@@ -8950,7 +8902,7 @@
       \u0433\u043E \u044D\u043A\u0438\u043F\u0438\u0440\u043E\u0432\u0430\u043D\u0438\
       \u044F F-\u043A\u043B\u0430\u0432\u0438\u0448."
     type: Code
-  id: 291
+  id: 288
   time: '2026-06-17T22:52:29.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1352
 - author: jok989372-lgtm
@@ -8959,7 +8911,7 @@
       \u0438\u0442\u0430 \u0434\u043B\u044F \u0440\u0430\u0431\u043E\u0442\u0430\u044E\
       \u0449\u0435\u0433\u043E \u0414\u0436\u043E."
     type: Add
-  id: 292
+  id: 289
   time: '2026-06-17T22:54:24.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1350
 - author: maertayn
@@ -9016,7 +8968,7 @@
       \ \u043D\u0435 \u043C\u0438\u043D\u0438 \u2014 \u0431\u0443\u0434\u0435\u0442\
       \ \u0438\u0441\u043F\u0440\u0430\u0432\u043B\u0435\u043D\u043E"
     type: Tweak
-  id: 293
+  id: 290
   time: '2026-06-17T23:35:26.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1356
 - author: Piticzu
@@ -9080,7 +9032,7 @@
       \u043D\u0435\u043D\u044B \u043D\u043E\u0432\u044B\u043C\u0438 \u0432\u0430\u0440\
       \u0438\u0430\u043D\u0442\u0430\u043C\u0438."
     type: Remove
-  id: 294
+  id: 291
   time: '2026-06-17T23:40:27.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1341
 - author: troytroy400
@@ -9101,7 +9053,7 @@
   - message: "\u041F\u0443\u0448\u043A\u0430 LTB \u043E\u0441\u043B\u0430\u0431\u043B\
       \u0435\u043D\u0430."
     type: Tweak
-  id: 295
+  id: 292
   time: '2026-06-18T00:20:11.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1357
 - author: flex5hybrid
@@ -9109,7 +9061,7 @@
   - message: "\u0434\u043E\u0431\u0430\u0432\u043B\u0435\u043D\u0430 \u0441\u0438\u0441\
       \u0442\u0435\u043C\u0430 \u0437\u043D\u0430\u043A\u043E\u043C\u0441\u0442\u0432"
     type: Add
-  id: 296
+  id: 293
   time: '2026-06-18T19:43:56.0000000+00:00'
   url: https://github.com/flex5hybrid/RussianCM/pull/258
 - author: HubaBub
@@ -9121,7 +9073,7 @@
       \u0439\u0442\u044B \u0440\u044E\u043A\u0437\u0430\u043A\u043E\u0432 \u0421\u041F\
       \u041D."
     type: Tweak
-  id: 297
+  id: 294
   time: '2026-06-18T19:44:33.0000000+00:00'
   url: https://github.com/flex5hybrid/RussianCM/pull/257
 - author: jok989372-lgtm
@@ -9149,7 +9101,7 @@
       \u043E\u0434\u0435 \u0434\u043B\u044F \u043A\u043E\u043D\u0442\u0440\u0438\u0431\
       \u044C\u044E\u0442\u043E\u0440\u043E\u0432!"
     type: Code
-  id: 298
+  id: 295
   time: '2026-06-18T19:45:05.0000000+00:00'
   url: https://github.com/flex5hybrid/RussianCM/pull/254
 - author: Arcticular1
@@ -9173,7 +9125,7 @@
   - message: "\u0423\u0431\u0440\u0430\u043D \u041C240-\u0422 \u0438\u0437 \u0430\u0441\
       \u0440\u0441."
     type: Remove
-  id: 299
+  id: 296
   time: '2026-06-19T03:40:55.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1361
 - author: sunzu432
@@ -9266,7 +9218,7 @@
       \u043A\u043E\u0442\u043E\u0440\u044B\u0435 \u0443\u0447\u0430\u0441\u0442\u043A\
       \u0438 \u043A\u0440\u044B\u0448\u0438."
     type: Fix
-  id: 300
+  id: 297
   time: '2026-06-19T05:01:53.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1370
 - author: maertayn
@@ -9285,7 +9237,7 @@
       \u0441\u0443\u043C\u043A\u0438/\u0436\u0438\u043B\u0435\u0442\u044B \u0438 \u0442\
       .\_\u0434.)."
     type: Fix
-  id: 301
+  id: 298
   time: '2026-06-19T05:41:17.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1380
 - author: maertayn
@@ -9293,7 +9245,7 @@
   - message: "\u041C\u0443\u043B\u044C\u0442\u0438-\u0430\u0443\u0442\u0435\u043D\u0442\
       \u0438\u0444\u0438\u043A\u0430\u0446\u0438\u044F"
     type: Add
-  id: 302
+  id: 299
   time: '2026-06-19T06:27:19.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1379
 - author: troytroy400
@@ -9307,7 +9259,7 @@
       \u0441\u0442\u0438\u0431\u044E\u043B\u0435 \u043F\u0440\u0435\u0434\u043E\u0441\
       \u0442\u0430\u0432\u043B\u0435\u043D\u043E ak105intow"
     type: Add
-  id: 303
+  id: 300
   time: '2026-06-19T08:48:36.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1381
 - author: jok989372-lgtm
@@ -9317,7 +9269,7 @@
       \u043C \u043E\u043F\u0430\u0441\u043D\u043E\u0433\u043E \u0440\u0430\u0431\u043E\
       \u0447\u0435\u0433\u043E \u0414\u0436\u043E /"
     type: Fix
-  id: 304
+  id: 301
   time: '2026-06-19T09:58:07.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1368
 - author: Arcticular1
@@ -9326,7 +9278,7 @@
       \u044C \u0438\u043C\u0435\u044E\u0442 35% \u0441\u043E\u043F\u0440\u043E\u0442\
       \u0438\u0432\u043B\u0435\u043D\u0438\u0435 \u043E\u0433\u043D\u044E."
     type: Tweak
-  id: 305
+  id: 302
   time: '2026-06-19T10:02:27.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1347
 - author: 400Ferrets
@@ -9388,7 +9340,7 @@
       \u043A\u043E\u0440\u0440\u0435\u043A\u0442\u043D\u043E \u043F\u043E\u0432\u043E\
       \u0440\u0430\u0447\u0438\u0432\u0430\u044E\u0442\u0441\u044F."
     type: Add
-  id: 306
+  id: 303
   time: '2026-06-19T10:19:31.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1378
 - author: HotdogMan52
@@ -9420,7 +9372,7 @@
       \ \u043F\u043E\u0436\u0438\u0440\u0430\u0435\u043C\u044B\u0445 \u043B\u044E\u0434\
       \u0435\u0439"
     type: Fix
-  id: 307
+  id: 304
   time: '2026-06-19T18:07:53.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1371
 - author: sunzu432
@@ -9513,7 +9465,7 @@
       \u044E, \u0430 \u043D\u0435 \u0432\u043E\u0441\u0445\u043E\u0434\u044F\u0449\
       \u0435\u0439."
     type: Fix
-  id: 308
+  id: 305
   time: '2026-06-19T18:10:09.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1387
 - author: wray-git
@@ -9612,7 +9564,7 @@
       \u0433\u043E/\u0437\u0430\u043F\u043E\u043B\u043D\u0435\u043D\u043D\u043E\u0433\
       \u043E \u0441\u043E\u0441\u0442\u043E\u044F\u043D\u0438\u044F."
     type: Code
-  id: 309
+  id: 306
   time: '2026-06-19T18:10:35.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1360
 - author: JaSeNeSaJ
@@ -9640,7 +9592,7 @@
       \u043B\u0443\u0447\u0448\u0435\u043D\u0438\u044F \u043B\u0435\u0441\u0442\u043D\
       \u0438\u0447\u043D\u043E\u0439 \u043A\u043B\u0435\u0442\u043A\u0438."
     type: Tweak
-  id: 310
+  id: 307
   time: '2026-06-19T19:03:32.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1362
 - author: HotdogMan52
@@ -9656,7 +9608,7 @@
       \u0430 \u0438 \u0432\u043E\u0441\u0435\u043C\u044C \u0444\u0438\u043B\u044C\u0442\
       \u0440\u043E\u0432"
     type: Add
-  id: 311
+  id: 308
   time: '2026-06-20T01:24:20.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1388
 - author: wray-git
@@ -9671,7 +9623,7 @@
       \ \u0442\u043E\u0433\u0434\u0430, \u043A\u043E\u0433\u0434\u0430 \u0432\u043B\
       \u0430\u0434\u0435\u043B\u0435\u0446 \u0441\u0442\u043E\u0438\u0442."
     type: Fix
-  id: 312
+  id: 309
   time: '2026-06-20T01:31:30.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1389
 - author: maertayn
@@ -9698,7 +9650,7 @@
       \u0436\u0430\u043B \u0432\u0437\u0432\u043E\u0434\u044B \u0438 \u0442\u043E\u0440\
       \u0433\u043E\u0432\u0446\u0435\u0432."
     type: Fix
-  id: 313
+  id: 310
   time: '2026-06-20T04:35:54.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1391
 - author: Arcticular1
@@ -9764,7 +9716,7 @@
       \u0430\u0436\u0434\u0430\u043D\u0441\u043A\u0438\u0435 \u0431\u0438\u043D\u043E\
       \u043A\u043B\u0438."
     type: Tweak
-  id: 314
+  id: 311
   time: '2026-06-20T11:19:31.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1394
 - author: RomiGur
@@ -9773,7 +9725,7 @@
       \u043C\u044F \u0434\u044B\u043C\u0430 \u0434\u043B\u044F \u0434\u044B\u043C\u043E\
       \u0432\u044B\u0445 \u0433\u0440\u0430\u043D\u0430\u0442"
     type: Tweak
-  id: 315
+  id: 312
   time: '2026-06-20T17:04:56.0000000+00:00'
   url: https://github.com/flex5hybrid/RussianCM/pull/263
 - author: jok989372-lgtm
@@ -9782,7 +9734,7 @@
       \u0440\u0442\u0435\u0440\u0433\u0438\u0440 \u0443 \u0431\u043E\u0435\u0432\u043E\
       \u0433\u043E \u0434\u0440\u043E\u043D\u0430 \u0432\u044E."
     type: Fix
-  id: 316
+  id: 313
   time: '2026-06-20T17:05:06.0000000+00:00'
   url: https://github.com/flex5hybrid/RussianCM/pull/264
 - author: sunzu432
@@ -9838,7 +9790,7 @@
       \u0440\u0430\u0436\u0435\u043D\u043D\u043E\u0439 \u043E\u0431\u043B\u0430\u0441\
       \u0442\u0438."
     type: Fix
-  id: 317
+  id: 314
   time: '2026-06-20T22:47:29.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1390
 - author: KeiKiyomi
@@ -9887,7 +9839,7 @@
       \u0441\u044C\u044E \u0438 4 \u0437\u0435\u043D\u0438\u0442\u043D\u044B\u0445\
       \ \u043C\u0430\u0433\u0430\u0437\u0438\u043D\u0430."
     type: Tweak
-  id: 318
+  id: 315
   time: '2026-06-20T23:35:22.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1397
 - author: KeiKiyomi
@@ -9898,7 +9850,7 @@
       \u0430\u044F \u0441\u043A\u0430\u0443\u0442\u0441\u043A\u0430\u044F \u043B\u0435\
       \u043D\u0442\u0430."
     type: Add
-  id: 319
+  id: 316
   time: '2026-06-20T23:36:08.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1396
 - author: HolySSSS
@@ -9915,7 +9867,7 @@
       \u043F\u043E\u043B\u043D\u044F\u0435\u0442\u0441\u044F \u0443 \u0442\u043E\u0440\
       \u0433\u043E\u0432\u0446\u0435\u0432 MP."
     type: Fix
-  id: 320
+  id: 317
   time: '2026-06-20T23:38:49.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1395
 - author: wray-git
@@ -9946,7 +9898,7 @@
       \ \u043E\u0442 \u0434\u0440\u0443\u0433\u0438\u0445 \u043F\u0440\u0438\u043A\
       \u0430\u0437\u043E\u0432."
     type: Add
-  id: 321
+  id: 318
   time: '2026-06-21T00:37:51.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1399
 - author: maertayn
@@ -9990,7 +9942,7 @@
       \u043E\u0438\u043C \u0443\u0434\u043E\u0441\u0442\u043E\u0432\u0435\u0440\u0435\
       \u043D\u0438\u044F\u043C \u043B\u0438\u0447\u043D\u043E\u0441\u0442\u0438"
     type: Fix
-  id: 322
+  id: 319
   time: '2026-06-21T09:52:49.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1398
 - author: flex5hybrid
@@ -9998,7 +9950,7 @@
   - message: "\u0414\u043E\u0431\u0430\u0432\u043B\u0435\u043D\u044B \u0442\u0435\u0441\
       \u0442\u044B \u043D\u0430 \u0440\u043E\u043B\u0438."
     type: Add
-  id: 323
+  id: 320
   time: '2026-06-21T14:29:02.0000000+00:00'
   url: https://github.com/flex5hybrid/RussianCM/pull/273
 - author: deepdarkdepths
@@ -10007,7 +9959,7 @@
       \u043E\u0432\u0430 \u0435\u0441\u0442\u044C \u0442\u0440\u0435\u0431\u043E\u0432\
       \u0430\u043D\u0438\u044F \u043A\u043E \u0432\u0440\u0435\u043C\u0435\u043D\u0438"
     type: Tweak
-  id: 324
+  id: 321
   time: '2026-06-21T19:30:55.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1401
 - author: sunzu432
@@ -10058,7 +10010,7 @@
       \ \u0438 \u043F\u0440\u0438\u0435\u043C\u0430 \u043A\u043E\u043B\u043E\u043D\
       \u0438\u0438."
     type: Fix
-  id: 325
+  id: 322
   time: '2026-06-22T03:29:51.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1403
 - author: OverusedMeme
@@ -10069,7 +10021,7 @@
       \u044B \u0431\u0440\u043E\u0448\u044E\u0440\u044B \u043A\u043E\u0440\u0440\u0435\
       \u043A\u0442\u0438\u0440\u043E\u0432\u0449\u0438\u043A\u043E\u0432."
     type: Add
-  id: 326
+  id: 323
   time: '2026-06-22T03:30:19.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1405
 - author: JaSeNeSaJ
@@ -10088,7 +10040,7 @@
   - message: "Sheperds': \u0446\u0435\u043B\u044C \u0443\u0431\u0438\u0442\u044C \u043A\
       \u0430\u0440\u043F\u0430 \u0434\u043B\u044F CLF"
     type: Fix
-  id: 327
+  id: 324
   time: '2026-06-22T06:40:00.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1408
 - author: Arcticular1
@@ -10109,7 +10061,7 @@
       \ \u043E\u0434\u0438\u043D \u043C\u0430\u0433\u0430\u0437\u0438\u043D \u0431\
       \u043E\u043B\u044C\u0448\u0435."
     type: Tweak
-  id: 328
+  id: 325
   time: '2026-06-22T06:58:43.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1407
 - author: sunzu432
@@ -10187,7 +10139,7 @@
       \u0442\u044C \u0441\u0432\u043E\u0439 \u0430\u0432\u0430\u0440\u0438\u0439\u043D\
       \u044B\u0439 \u0430\u0440\u0441\u0435\u043D\u0430\u043B."
     type: Fix
-  id: 329
+  id: 326
   time: '2026-06-22T21:52:34.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1410
 - author: HotdogMan52
@@ -10213,7 +10165,7 @@
       \u043E\u0442\u0438\u0432\u043E\u0433\u0430\u0437 \u0432\u044B\u043A\u043B\u044E\
       \u0447\u0435\u043D/\u0441\u043A\u0440\u044B\u0442."
     type: Fix
-  id: 330
+  id: 327
   time: '2026-06-22T21:52:56.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1406
 - author: KriegersMustDie
@@ -10221,7 +10173,7 @@
   - message: "\u041F\u043E\u0440\u0442\u0444\u0435\u043B\u0438 Ambassador \u0441 \u0438\
       \u0437\u044E\u043C\u0438\u043D\u043A\u043E\u0439."
     type: Add
-  id: 331
+  id: 328
   time: '2026-06-23T03:17:39.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1417
 - author: maertayn
@@ -10282,7 +10234,7 @@
       \u0435\u0436\u0434\u0435\u043D\u0438\u044F \u043F\u0430\u043D\u0435\u043B\u0438\
       \ \u0438\u043D\u0441\u0442\u0440\u0443\u043C\u0435\u043D\u0442\u043E\u0432."
     type: Fix
-  id: 332
+  id: 329
   time: '2026-06-23T03:39:16.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1416
 - author: ProspectorAres
@@ -10290,7 +10242,7 @@
   - message: "\u043D\u043E\u0432\u044B\u0439 \u0430\u0440\u0442 \u0432 \u043B\u043E\
       \u0431\u0431\u0438"
     type: Add
-  id: 333
+  id: 330
   time: '2026-06-23T12:20:46.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1418
 - author: OverusedMeme
@@ -10302,7 +10254,7 @@
       \u0449\u0438\u043A\u043E\u0432 \u0444\u0440\u0430\u043A\u0446\u0438\u0439 WS\
       \ (LACN/USCM/TWE/WY)."
     type: Add
-  id: 334
+  id: 331
   time: '2026-06-24T11:50:05.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1423
 - author: OverusedMeme
@@ -10312,7 +10264,7 @@
       \u043B\u0435\u043D\u044B \u0434\u0432\u0430 \u043C\u0435\u0448\u043A\u0430 \u0441\
       \ \u0440\u0430\u0441\u0442\u0435\u043D\u0438\u044F\u043C\u0438."
     type: Add
-  id: 335
+  id: 332
   time: '2026-06-24T12:12:14.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1430
 - author: KriegersMustDie
@@ -10320,7 +10272,7 @@
   - message: "Xeno Queen \u0437\u0430\u043F\u0440\u0435\u0442\u0438\u043B\u0438 \u0443\
       \u0447\u0430\u0441\u0442\u0432\u043E\u0432\u0430\u0442\u044C \u0432 Space Jam"
     type: Tweak
-  id: 336
+  id: 333
   time: '2026-06-24T12:22:31.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1428
 - author: nicholast013
@@ -10343,7 +10295,7 @@
   - message: "\u041E\u0433\u0440\u043E\u043C\u043D\u043E\u0435 \u043A\u043E\u043B\u0438\
       \u0447\u0435\u0441\u0442\u0432\u043E \u0421\u0412\u0423 2 -> 3"
     type: Tweak
-  id: 337
+  id: 334
   time: '2026-06-24T12:25:40.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1411
 - author: TheHellFireo
@@ -10678,7 +10630,7 @@
       \u0430\u043D\u0441\u043F\u043E\u0440\u0442\u043D\u044B\u0445 \u0441\u0440\u0435\
       \u0434\u0441\u0442\u0432."
     type: Fix
-  id: 338
+  id: 335
   time: '2026-06-24T18:26:59.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1432
 - author: TheHellFireo
@@ -10743,7 +10695,7 @@
       \u044E\u0449\u0438\u0445 \u043D\u0430 \u044D\u0442\u043E\u0442 \u0440\u0430\u0437\
       ."
     type: Add
-  id: 339
+  id: 336
   time: '2026-06-24T21:10:04.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1434
 - author: flex5hybrid
@@ -10754,7 +10706,7 @@
       \u043E\u043C\u0430\u043D\u0434\u0438\u0440\u0430\u043C, \u043C\u043B\u0430\u0434\
       \u0448\u0438\u043C \u043E\u0444\u0438\u0446\u0435\u0440\u0430\u043C!"
     type: Tweak
-  id: 340
+  id: 337
   time: '2026-06-24T22:21:12.0000000+00:00'
   url: https://github.com/flex5hybrid/RussianCM/pull/285
 - author: RomiGur
@@ -10766,7 +10718,7 @@
       \u043E\u0440\u0442\u043E\u0432 \u0431\u0430\u0433\u043E\u0432 \u043B\u043E\u043A\
       \u0430\u043B\u0438\u0437\u0430\u0446\u0438\u0438."
     type: Fix
-  id: 341
+  id: 338
   time: '2026-06-24T22:22:45.0000000+00:00'
   url: https://github.com/flex5hybrid/RussianCM/pull/276
 - author: TheHellFireo
@@ -10788,7 +10740,7 @@
       \u0430\u0441 \u043F\u043E\u043F\u043E\u043B\u043D\u044F\u0435\u0442\u0441\u044F\
       \ \u043A\u0430\u0436\u0434\u044B\u0435 5 \u043C\u0438\u043D\u0443\u0442."
     type: Add
-  id: 342
+  id: 339
   time: '2026-06-24T22:22:45.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1439
 - author: jok989372-lgtm
@@ -10796,7 +10748,7 @@
   - message: "\u0418\u0441\u043F\u0440\u0430\u0432\u043B\u0435\u043D \u043C\u0430\u0448\
       \u0438\u043D\u043D\u044B\u0439 \u043F\u0435\u0440\u0435\u0432\u043E\u0434"
     type: Fix
-  id: 343
+  id: 340
   time: '2026-06-24T22:24:01.0000000+00:00'
   url: https://github.com/flex5hybrid/RussianCM/pull/280
 - author: RomiGur
@@ -10816,7 +10768,7 @@
       \ \u043F\u043E \u0438\u0433\u0440\u043E\u0432\u043E\u043C\u0443 \u0440\u0435\
       \u0436\u0438\u043C\u0443."
     type: Code
-  id: 344
+  id: 341
   time: '2026-06-24T22:24:16.0000000+00:00'
   url: https://github.com/flex5hybrid/RussianCM/pull/281
 - author: RomiGur
@@ -10825,7 +10777,7 @@
       \u043E\u0432 \u043F\u043E\u0434\u043A\u0440\u0435\u043F\u043B\u0435\u043D\u0438\
       \u0439 \u0441 \u043A\u043E\u043D\u0441\u043E\u043B\u0435\u0439"
     type: Fix
-  id: 345
+  id: 342
   time: '2026-06-24T22:24:24.0000000+00:00'
   url: https://github.com/flex5hybrid/RussianCM/pull/283
 - author: RomiGur
@@ -10835,7 +10787,7 @@
       \u0440\u0443\u0436\u0435\u043D\u0438\u044E \u0434\u043B\u044F \u041E\u041F\u0424\
       \u041E\u0420."
     type: Tweak
-  id: 346
+  id: 343
   time: '2026-06-24T22:24:34.0000000+00:00'
   url: https://github.com/flex5hybrid/RussianCM/pull/284
 - author: flex5hybrid
@@ -10845,7 +10797,7 @@
       \u043F\u0440\u043E\u0441\u043E\u0432 \u043A \u043A\u0430\u0436\u0434\u043E\u0439\
       \ \u0440\u043E\u043B\u0438."
     type: Tweak
-  id: 347
+  id: 344
   time: '2026-06-24T23:36:28.0000000+00:00'
   url: https://github.com/flex5hybrid/RussianCM/pull/287
 - author: potatoed6
@@ -10916,7 +10868,7 @@
       \u0438\u0439 \u0440\u0430\u043D\u0433, \u0435\u0441\u043B\u0438 \u043D\u0430\
       \u0438\u0433\u0440\u0430\u0435\u0442\u0435\u0441\u044C."
     type: Fix
-  id: 348
+  id: 345
   time: '2026-06-25T03:56:41.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1431
 - author: KeiKiyomi
@@ -10925,7 +10877,7 @@
       \u0449\u0430 Scout Spec \u0443\u0432\u0435\u043B\u0438\u0447\u0435\u043D\u043E\
       \ \u0441 10 \u0434\u043E 15."
     type: Tweak
-  id: 349
+  id: 346
   time: '2026-06-25T07:03:56.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1450
 - author: KeiKiyomi
@@ -10937,7 +10889,7 @@
       \u0440\u0441\u043A\u0443\u044E \u0432\u0438\u043D\u0442\u043E\u0432\u043A\u0443\
       , \u0430 \u043D\u0435 \u0432\u0438\u043D\u0442\u043E\u0432\u043A\u0443."
     type: Fix
-  id: 350
+  id: 347
   time: '2026-06-25T07:05:09.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1449
 - author: KeiKiyomi
@@ -10949,7 +10901,7 @@
       \u043B\u044C\u043A\u043E 3 \u0441\u043B\u043E\u0442\u0430 \u0432\u043C\u0435\
       \u0441\u0442\u043E 4."
     type: Fix
-  id: 351
+  id: 348
   time: '2026-06-25T07:17:35.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1442
 - author: KeiKiyomi
@@ -10959,7 +10911,7 @@
       \ (\u0417\u0435\u043B\u0435\u043D\u044B\u0439 \u043E\u0433\u043E\u043D\u044C\
       ) \u0441 50% \u0434\u043E 75%."
     type: Tweak
-  id: 352
+  id: 349
   time: '2026-06-25T07:18:07.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1427
 - author: KeiKiyomi
@@ -10979,7 +10931,7 @@
       \ \u043A \u043F\u043E\u0441\u0442\u0430\u0432\u0449\u0438\u043A\u0443 USCM \u0438\
       \ HAZOPS."
     type: Add
-  id: 353
+  id: 350
   time: '2026-06-25T12:12:00.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1443
 - author: deepdarkdepths
@@ -11021,7 +10973,7 @@
       \u0432 \u0432\u044B \u043F\u043E\u0442\u0440\u0435\u0431\u043B\u044F\u0435\u0442\
       \u0435."
     type: Tweak
-  id: 354
+  id: 351
   time: '2026-06-25T12:52:44.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1343
 - author: maertayn
@@ -11048,7 +11000,7 @@
       \u043D\u0438\u0439 \u0442\u0435\u043F\u0435\u0440\u044C \u0442\u0430\u043A\u0436\
       \u0435 \u0432\u0438\u0434\u0435\u043D \u0432 \u0438\u0433\u0440\u0435."
     type: Add
-  id: 355
+  id: 352
   time: '2026-06-25T17:51:28.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1444
 - author: TheHellFireo
@@ -11068,7 +11020,7 @@
       \u043F\u0435\u0440\u044C \u0441\u043D\u043E\u0432\u0430 \u043C\u043E\u0436\u0435\
       \u0442 \u043B\u0435\u0442\u0430\u0442\u044C"
     type: Fix
-  id: 356
+  id: 353
   time: '2026-06-26T18:17:02.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1463
 - author: flex5hybrid
@@ -11077,7 +11029,7 @@
     type: Remove
   - message: "\u0432\u043B\u044B \u043F\u043E\u0447\u0438\u043D\u0435\u043D\u044B"
     type: Fix
-  id: 357
+  id: 354
   time: '2026-06-26T18:25:12.0000000+00:00'
   url: https://github.com/flex5hybrid/RussianCM/pull/292
 - author: jok989372-lgtm
@@ -11087,7 +11039,7 @@
       \u043B\u044F \u0432\u0437\u0432\u043E\u0434\u0430 \u0423\u041F\u041F \u0414\u0436\
       \u043E."
     type: Add
-  id: 358
+  id: 355
   time: '2026-06-27T01:30:22.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1462
 - author: KeiKiyomi
@@ -11098,7 +11050,7 @@
       \ 250 \u043D\u0430 450, \u0430 \u0440\u0430\u0437\u043C\u0435\u0440 \u0431\u0433\
       \u0435\u043B\u044F \u0441 250 \u043D\u0430 500."
     type: Tweak
-  id: 359
+  id: 356
   time: '2026-06-27T01:50:08.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1445
 - author: maertayn
@@ -11106,7 +11058,7 @@
   - message: "\u041D\u0435\u043C\u043D\u043E\u0433\u043E \u0440\u0435\u0444\u0430\u043A\
       \u0442\u043E\u0440\u0438\u043D\u0433 \u044F\u0437\u044B\u043A\u043E\u0432"
     type: Code
-  id: 360
+  id: 357
   time: '2026-06-27T02:17:09.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1465
 - author: stranthbackup
@@ -11118,7 +11070,7 @@
       \u0432\u0440\u0435\u043C\u0435\u043D\u043D\u044B\u0439 \u043A\u0430\u0442\u0430\
       \u043B\u043E\u0433 _CMU14."
     type: Code
-  id: 361
+  id: 358
   time: '2026-06-27T02:23:54.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1464
 - author: stranthbackup
@@ -11131,7 +11083,7 @@
       \u0433\u043E \u0438\u0441\u043F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u043D\
       \u0438\u044F."
     type: Fix
-  id: 362
+  id: 359
   time: '2026-06-27T02:27:29.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1467
 - author: Arcticular1
@@ -11143,7 +11095,7 @@
       \u0435\u0440\u044C \u044F\u0432\u043B\u044F\u0435\u0442\u0441\u044F \u043B\u0435\
       \u0433\u043A\u043E\u0439 \u0431\u0440\u043E\u043D\u0435\u0439!"
     type: Tweak
-  id: 363
+  id: 360
   time: '2026-06-27T03:50:43.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1461
 - author: Arcticular1
@@ -11152,7 +11104,7 @@
       \u0430\u0435\u0442 1 \u0431\u0430\u043B\u043B \u0437\u0430 \u043A\u0430\u0436\
       \u0434\u044B\u0435 15$"
     type: Tweak
-  id: 364
+  id: 361
   time: '2026-06-27T03:52:11.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1459
 - author: stranthbackup
@@ -11161,7 +11113,7 @@
       \u043F\u0440\u0438\u043F\u0430\u0441\u043E\u0432 \u0440\u0430\u0437\u043D\u043E\
       \u0433\u043E \u0440\u0430\u0437\u043C\u0435\u0440\u0430."
     type: Add
-  id: 365
+  id: 362
   time: '2026-06-27T07:04:30.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1466
 - author: ver0098
@@ -11191,7 +11143,7 @@
       \ \u0440\u0430\u0437\u0434\u0432\u0438\u0436\u043D\u044B\u0435 \u043B\u0435\u0441\
       \u0442\u043D\u0438\u0446\u044B."
     type: Add
-  id: 366
+  id: 363
   time: '2026-06-27T08:14:49.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1460
 - author: OmerF-afk
@@ -11210,7 +11162,7 @@
       \u043E \u0441\u0434\u0435\u043B\u0430\u0442\u044C \u0443\u0436\u0435 \u0441\u0435\
       \u0439\u0447\u0430\u0441."
     type: Add
-  id: 367
+  id: 364
   time: '2026-06-27T11:03:39.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1470
 - author: stranthbackup
@@ -11220,7 +11172,7 @@
       \u043F\u0435\u0440\u044C \u043C\u043E\u0436\u043D\u043E \u0438\u0437\u0433\u043E\
       \u0442\u043E\u0432\u0438\u0442\u044C."
     type: Fix
-  id: 368
+  id: 365
   time: '2026-06-28T00:54:14.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1473
 - author: sunzu432
@@ -11304,7 +11256,7 @@
       \ \u0438\u043C\u0435\u044E\u0442 \u043F\u0440\u0430\u0432\u0438\u043B\u044C\u043D\
       \u0443\u044E \u043C\u0430\u0440\u043A\u0438\u0440\u043E\u0432\u043A\u0443."
     type: Fix
-  id: 369
+  id: 366
   time: '2026-06-28T00:54:20.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1472
 - author: maertayn
@@ -11345,7 +11297,7 @@
       \u0432\u043B\u044F\u0435\u0442 6,5%, \u0430 CLF \u043F\u043E\u043B\u0443\u0447\
       \u0430\u0435\u0442 1 \u0432\u043C\u0435\u0441\u0442\u043E 2."
     type: Tweak
-  id: 370
+  id: 367
   time: '2026-06-28T05:13:55.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1475
 - author: stranthbackup
@@ -11358,7 +11310,7 @@
       \u0432\u0430\u0442\u044C \u043E\u0440\u0443\u0436\u0438\u0435 \u043D\u0430 \u043C\
       \u0435\u0441\u0442\u0435."
     type: Tweak
-  id: 371
+  id: 368
   time: '2026-06-28T13:10:00.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1476
 - author: deepdarkdepths
@@ -11378,7 +11330,7 @@
       \u0439\u0441\u0442\u0432\u0438\u044F \u044D\u0444\u0444\u0435\u043A\u0442\u0430\
       ."
     type: Fix
-  id: 372
+  id: 369
   time: '2026-06-28T13:33:10.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1478
 - author: deepdarkdepths
@@ -11405,7 +11357,7 @@
       \u043F\u0430\u0447\u043A\u0430 \u043E\u0442 \u043F\u0443\u043B\u0438 \u0432\
       \ \u0449\u0438\u0442\u0435."
     type: Tweak
-  id: 373
+  id: 370
   time: '2026-06-28T13:34:33.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1468
 - author: HubaBub
@@ -11418,7 +11370,7 @@
       \u043B\u0430 \u0442\u044F\u0436\u0435\u043B\u043E\u0433\u043E \u0448\u043B\u0435\
       \u043C\u0430 UPP."
     type: Add
-  id: 374
+  id: 371
   time: '2026-06-28T15:12:12.0000000+00:00'
   url: https://github.com/flex5hybrid/RussianCM/pull/245
 - author: veseliiyar
@@ -11427,7 +11379,7 @@
       \u0435\u0432\u043E\u0434\u0443 \u0438\u0437 \u0431\u0430\u0433 \u0440\u0435\u043F\
       \u043E\u0440\u0442\u043E\u0432"
     type: Fix
-  id: 375
+  id: 372
   time: '2026-06-28T15:13:01.0000000+00:00'
   url: https://github.com/flex5hybrid/RussianCM/pull/278
 - author: maertayn
@@ -11466,7 +11418,7 @@
       \ \u043E\u0433\u043D\u0435\u043D\u043D\u044B\u043C \u043F\u043B\u0438\u0442\u043A\
       \u0430\u043C."
     type: Add
-  id: 376
+  id: 373
   time: '2026-06-28T16:52:06.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1479
 - author: OverusedMeme
@@ -11483,7 +11435,7 @@
       \u044B \u0441\u0440\u0435\u0434\u043D\u0435\u0433\u043E \u0440\u0430\u0437\u043C\
       \u0435\u0440\u0430."
     type: Fix
-  id: 377
+  id: 374
   time: '2026-06-29T04:13:19.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1486
 - author: JaSeNeSaJ
@@ -11530,7 +11482,7 @@
   - message: "Sheperds': \u043C\u0435\u043D\u0437\u0443\u0440\u043A\u0438 \u0438 \u0440\
       \u0435\u0430\u0433\u0435\u043D\u0442\u044B \u0434\u043B\u044F Mob \u0438 Hydro"
     type: Add
-  id: 378
+  id: 375
   time: '2026-06-29T04:52:12.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1484
 - author: sunzu432
@@ -11602,7 +11554,7 @@
       \u043D\u044B\u0445 \u0441\u043E\u043E\u0431\u0449\u0435\u043D\u0438\u0439 \u0447\
       \u0435\u0440\u0435\u0437 \u043A\u043E\u0441\u043C\u043E\u0441."
     type: Fix
-  id: 379
+  id: 376
   time: '2026-06-29T06:07:24.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1482
 - author: OverusedMeme
@@ -11611,7 +11563,7 @@
       \u043F\u0435\u0440\u044C \u0441\u043D\u043E\u0432\u0430 \u043D\u0435\u043F\u043B\
       \u0430\u0432\u043A\u0438\u0439."
     type: Add
-  id: 380
+  id: 377
   time: '2026-06-29T06:16:32.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1485
 - author: deepdarkdepths
@@ -11623,7 +11575,7 @@
       \u0438\u0442\u044C \u0435\u0433\u043E \u0432\u044B\u0436\u0438\u0432\u0430\u0435\
       \u043C\u043E\u0441\u0442\u044C."
     type: Tweak
-  id: 381
+  id: 378
   time: '2026-06-29T06:57:12.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1483
 - author: TheHellFireo
@@ -11711,7 +11663,7 @@
       \u0435 \u043E \u043D\u0435\u0443\u0434\u0430\u0447\u0430\u0445 \u043F\u043B\u0430\
       \u043D\u0430 \u0441\u0446\u0435\u043D\u0430\u0440\u0438\u044F."
     type: Fix
-  id: 382
+  id: 379
   time: '2026-06-29T16:47:19.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1491
 - author: TheHellFireo
@@ -11769,7 +11721,7 @@
       \u0438 \u043A\u043E\u043D\u0446\u0435\u043D\u0442\u0440\u0430\u0446\u0438\u0438\
       ."
     type: Fix
-  id: 383
+  id: 380
   time: '2026-06-29T23:01:17.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1496
 - author: RomiGur
@@ -11783,7 +11735,7 @@
       \u0430 \u0420\u0424 \u0434\u043B\u044F \u0440\u0443\u0441\u0441\u043A\u043E\u0433\
       \u043E \u044F\u0437\u044B\u043A\u0430."
     type: Fix
-  id: 384
+  id: 381
   time: '2026-07-01T12:34:37.0000000+00:00'
   url: https://github.com/flex5hybrid/RussianCM/pull/294
 - author: Vencallium
@@ -11805,7 +11757,7 @@
       \u0440\u0443\u0435\u0442\u0441\u044F \u043E\u0442 13 \u043F\u043B\u0438\u0442\
       \u043E\u043A -> 9 \u043F\u043B\u0438\u0442\u043E\u043A."
     type: Tweak
-  id: 385
+  id: 382
   time: '2026-07-02T09:34:07.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1498
 - author: MarshesAndMeadows
@@ -11845,7 +11797,7 @@
       \u044F\u0434\u043D\u043E\u0433\u043E \u0443\u0441\u0442\u0440\u043E\u0439\u0441\
       \u0442\u0432\u0430"
     type: Remove
-  id: 386
+  id: 383
   time: '2026-07-02T09:34:18.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1203
 - author: TheHellFireo
@@ -11869,7 +11821,7 @@
       \ \u043D\u0430 \u043A\u043E\u0442\u043E\u0440\u0443\u044E \u043D\u0430\u0436\
       \u0430\u043B\u0438."
     type: Fix
-  id: 387
+  id: 384
   time: '2026-07-03T05:05:52.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1515
 - author: TheHellFireo
@@ -11889,7 +11841,7 @@
       \ \u0430 \u043D\u0435 \u043D\u0430 \u0432\u0441\u0435 \u0442\u0435\u043B\u043E\
       ."
     type: Fix
-  id: 388
+  id: 385
   time: '2026-07-03T05:06:04.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1514
 - author: TheHellFireo
@@ -11921,7 +11873,7 @@
       \ \u0434\u043B\u044F \u0443\u0441\u0442\u0440\u0430\u043D\u0435\u043D\u0438\u044F\
       \ \u043E\u0436\u043E\u0433\u043E\u0432."
     type: Tweak
-  id: 389
+  id: 386
   time: '2026-07-03T06:09:00.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1516
 - author: MarshesAndMeadows
@@ -11931,7 +11883,7 @@
       \u043E\u0433\u043E \u0443\u0441\u0442\u0440\u043E\u0439\u0441\u0442\u0432\u0430\
       ."
     type: Tweak
-  id: 390
+  id: 387
   time: '2026-07-03T15:26:24.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1517
 - author: TheHellFireo
@@ -11940,7 +11892,7 @@
       \u0447\u0430\u043B\u044C\u043D\u0443\u044E \u043B\u0438\u0447\u0438\u043D\u043A\
       \u0443 \u0440\u0430\u0443\u043D\u0434\u0430 \u043D\u0430 5."
     type: Tweak
-  id: 391
+  id: 388
   time: '2026-07-03T15:47:56.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1518
 - author: TheHellFireo
@@ -11985,7 +11937,7 @@
       \u0434\u0441\u0442\u0430\u0432\u043B\u0435\u043D\u0438\u0435 \u044D\u043C\u043E\
       \u0446\u0438\u0439."
     type: Fix
-  id: 392
+  id: 389
   time: '2026-07-03T16:43:16.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1519
 - author: OmerF-afk
@@ -12017,7 +11969,7 @@
       \u0437\u043E\u0432\u0430\u0442\u044C \u0432 \u043E\u0431\u044B\u0447\u043D\u043E\
       \u0439 \u043E\u0434\u0435\u0436\u0434\u0435."
     type: Add
-  id: 393
+  id: 390
   time: '2026-07-04T11:27:37.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1522
 - author: OverusedMeme
@@ -12031,7 +11983,7 @@
       \u043E\u043B\u043E\u0432\u043D\u044B\u0445 \u0443\u0431\u043E\u0440\u043E\u0432\
       \ \u0438 \u043E\u0447\u043A\u043E\u0432."
     type: Add
-  id: 394
+  id: 391
   time: '2026-07-04T11:42:19.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1521
 - author: TheHellFireo
@@ -12190,7 +12142,7 @@
       \u0435\u043D\u0438\u044F \u043F\u0440\u043E\u0438\u0437\u0432\u043E\u0434\u0438\
       \u0442\u0435\u043B\u044C\u043D\u043E\u0441\u0442\u0438."
     type: Fix
-  id: 395
+  id: 392
   time: '2026-07-04T12:44:44.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1524
 - author: maertayn
@@ -12206,7 +12158,7 @@
       \u043D\u044B\u043C \u043A\u0430\u043F\u0438\u0442\u0430\u043B\u0438\u0441\u0442\
       \u043E\u043C*"
     type: Fix
-  id: 396
+  id: 393
   time: '2026-07-04T19:31:46.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1529
 - author: OverusedMeme
@@ -12238,7 +12190,7 @@
       \u0430\u044F \u0441\u0443\u043C\u043A\u0430 \u0434\u043B\u044F \u0441\u043F\u0430\
       \u0441\u0435\u043D\u0438\u044F \u0436\u0438\u0437\u043D\u0438)"
     type: Remove
-  id: 397
+  id: 394
   time: '2026-07-04T20:50:56.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1523
 - author: HolySSSS
@@ -12249,7 +12201,7 @@
       \u043A\u0438\u043C\u0438 \u0434\u0443\u0431\u0438\u043D\u043A\u0430\u043C\u0438\
       \ \u0438 \u043A\u0443\u043B\u0430\u043A\u0430\u043C\u0438."
     type: Tweak
-  id: 398
+  id: 395
   time: '2026-07-04T20:55:22.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1526
 - author: maertayn
@@ -12258,7 +12210,7 @@
       \u0435 \u0446\u0435\u043B\u0438 \u0438 \u0438\u043D\u0444\u043E\u0440\u043C\u0430\
       \u0446\u0438\u044F"
     type: Fix
-  id: 399
+  id: 396
   time: '2026-07-04T20:56:21.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1513
 - author: murdocstarsim
@@ -12282,7 +12234,7 @@
       \u043B\u0430 \u0440\u043E\u043B\u0435\u0432\u043E\u0439 \u0438\u0433\u0440\u044B\
       ."
     type: Admin
-  id: 400
+  id: 397
   time: '2026-07-05T01:55:29.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1532
 - author: maertayn
@@ -12300,7 +12252,7 @@
       \u0442\u043E\u0432\u0435\u0440\u0435\u043D\u0438\u044F \u043B\u0438\u0447\u043D\
       \u043E\u0441\u0442\u0438."
     type: Code
-  id: 401
+  id: 398
   time: '2026-07-05T01:55:48.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1508
 - author: TheHellFireo
@@ -12379,7 +12331,7 @@
       \u0438\u0447\u0435\u0441\u043A\u043E\u0439 \u043E\u043F\u0435\u0440\u0430\u0446\
       \u0438\u0438."
     type: Fix
-  id: 402
+  id: 399
   time: '2026-07-05T07:16:12.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1535
 - author: TheHellFireo
@@ -12590,7 +12542,7 @@
       \u043E\u0433\u043E \u0434\u043B\u044F \u0443\u0434\u043E\u0431\u0441\u0442\u0432\
       \u0430 \u0447\u0442\u0435\u043D\u0438\u044F."
     type: Tweak
-  id: 403
+  id: 400
   time: '2026-07-05T16:53:22.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1539
 - author: TheHellFireo
@@ -12627,7 +12579,7 @@
       \u0435\u0436\u0438\u043C \u0438\u0441\u043F\u0440\u0430\u0432\u043B\u0435\u043D\
       ."
     type: Fix
-  id: 404
+  id: 401
   time: '2026-07-05T18:21:01.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1540
 - author: murdocstarsim
@@ -12636,7 +12588,7 @@
       \u0440\u0435\u043F\u0438\u0441\u044B\u0432\u0430\u043D\u0438\u044F \u0421\u041E\
       \u041F"
     type: Add
-  id: 405
+  id: 402
   time: '2026-07-05T21:45:28.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1538
 - author: maertayn
@@ -12705,7 +12657,7 @@
       \u0438\u0441\u0442\u043E\u043C \u043F\u043E \u0431\u043E\u0435\u043F\u0440\u0438\
       \u043F\u0430\u0441\u0430\u043C"
     type: Add
-  id: 406
+  id: 403
   time: '2026-07-06T00:29:24.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1543
 - author: maertayn
@@ -12716,7 +12668,7 @@
       \u044F \u041F\u043E\u0432\u0441\u0442\u0430\u043D\u0446\u0435\u0432 \u0441 40\
       \ \u0434\u043E 35."
     type: Tweak
-  id: 407
+  id: 404
   time: '2026-07-06T11:05:59.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1546
 - author: HubaBuba
@@ -12736,7 +12688,7 @@
       \u043D\u0438\u0442\u0438\u0442\u0441\u044F \u043A \u0431\u0440\u043E\u043D\u0435\
       ."
     type: Fix
-  id: 408
+  id: 405
   time: '2026-07-06T12:50:37.0000000+00:00'
   url: https://github.com/flex5hybrid/RussianCM/pull/301
 - author: jok989372-lgtm
@@ -12745,7 +12697,7 @@
       \u0445\u0440\u0430\u043D\u043D\u044B\u0439 \u0430\u043D\u0434\u0440\u043E\u0438\
       \u0434\u0430\u043C."
     type: Tweak
-  id: 409
+  id: 406
   time: '2026-07-06T12:51:52.0000000+00:00'
   url: https://github.com/flex5hybrid/RussianCM/pull/306
 - author: Releks76
@@ -12755,7 +12707,7 @@
       \u043E\u0441\u0430 \u0441\u0438\u043D\u0442\u0435\u0442\u0438\u043A\u0430\u043C\
       \ (We-Yu, Prodidgy, Hyperdyne)."
     type: Add
-  id: 410
+  id: 407
   time: '2026-07-06T12:52:31.0000000+00:00'
   url: https://github.com/flex5hybrid/RussianCM/pull/307
 - author: RomiGur
@@ -12765,7 +12717,7 @@
       \u0430\u043D\u0438\u043B\u044C\u043D\u043E\u0439 \u0432\u0435\u0440\u0441\u0438\
       \u0438 \u0438\u0433\u0440\u044B."
     type: Add
-  id: 411
+  id: 408
   time: '2026-07-06T12:52:47.0000000+00:00'
   url: https://github.com/flex5hybrid/RussianCM/pull/308
 - author: RomiGur
@@ -12776,7 +12728,7 @@
       \u0430\u0437\u0432\u0451\u0440\u043D\u0443\u0442\u044B\u043C\u0438 \u0441\u043E\
       \u0448\u043A\u0430\u043C\u0438"
     type: Fix
-  id: 412
+  id: 409
   time: '2026-07-06T12:53:02.0000000+00:00'
   url: https://github.com/flex5hybrid/RussianCM/pull/309
 - author: Tyzemol
@@ -12785,7 +12737,7 @@
       \ \u0441\u043D\u043E\u0432\u0430 \u043C\u043E\u0436\u0435\u0442 \u0441\u043A\
       \u0430\u0437\u0430\u0442\u044C \xAB\u0430\u0434\u043C\u0438\u043D\xBB."
     type: Fix
-  id: 413
+  id: 410
   time: '2026-07-07T10:17:32.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1549
 - author: murdocstarsim
@@ -12794,7 +12746,7 @@
       \u041F \u043F\u0435\u0440\u0435\u043F\u0438\u0448\u0438\u0442\u0435 \u043F\u043E\
       -\u043D\u0430\u0441\u0442\u043E\u044F\u0449\u0435\u043C\u0443. \U0001F91E"
     type: Add
-  id: 414
+  id: 411
   time: '2026-07-07T10:17:46.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1547
 - author: TheHellFireo
@@ -12834,7 +12786,7 @@
       \u0442\u043B\u0430\u0434\u043A\u0438 \u043F\u043E\u0441\u0442\u0430\u0432\u0449\
       \u0438\u043A\u0430."
     type: Tweak
-  id: 415
+  id: 412
   time: '2026-07-07T13:42:14.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1553
 - author: TheHellFireo
@@ -12891,7 +12843,7 @@
       \ \u043F\u043E-\u0430\u043D\u0433\u043B\u0438\u0439\u0441\u043A\u0438 \u0438\
       \ \u043F\u043E-\u0430\u043D\u0433\u043B\u0438\u0439\u0441\u043A\u0438."
     type: Fix
-  id: 416
+  id: 413
   time: '2026-07-07T13:48:10.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1552
 - author: jok989372-lgtm
@@ -12902,7 +12854,7 @@
       \ \u043D\u043E\u0432\u044B\u0435 \u0445\u0438\u0440\u0443\u0440\u0433\u0438\u0447\
       \u0435\u0441\u043A\u0438\u0435 \u043B\u0435\u043D\u0442\u044B."
     type: Add
-  id: 417
+  id: 414
   time: '2026-07-08T03:16:01.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1551
 - author: maertayn
@@ -12941,7 +12893,7 @@
       \u0435\u043D\u0434\u0438\u0433\u043E \u0438 \u0431\u043E\u043B\u0435\u0435 \u0441\
       \u0438\u043B\u044C\u043D\u044B\u0435 \u0443\u0440\u043E\u0432\u043D\u0438)"
     type: Tweak
-  id: 418
+  id: 415
   time: '2026-07-08T04:57:47.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1560
 - author: Vencallium
@@ -12958,7 +12910,7 @@
   - message: "\u0421\u043E\u0440\u043E\u043A\u0438\u043D\u043E \u0438 \u0448\u0430\
       \u043D\u0441\u044B \u043F\u043E\u0432\u0441\u0442\u0430\u043D\u0446\u0435\u0432"
     type: Remove
-  id: 419
+  id: 416
   time: '2026-07-08T13:21:59.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1550
 - author: Vencallium
@@ -12998,7 +12950,7 @@
       \u0434\u0443, \u0441\u043E\u043E\u0442\u0432\u0435\u0442\u0441\u0442\u0432\u0443\
       \u044E\u0449\u0443\u044E \u0444\u0440\u0430\u043A\u0446\u0438\u0438."
     type: Tweak
-  id: 420
+  id: 417
   time: '2026-07-09T00:53:58.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1537
 - author: Vencallium
@@ -13011,7 +12963,7 @@
       \u043E \u0441\u0435\u0440\u0432\u0435\u0440 \u043D\u0435 \u0437\u0430\u043F\u0443\
       \u0441\u043A\u0430\u043B\u0441\u044F."
     type: Fix
-  id: 421
+  id: 418
   time: '2026-07-09T01:31:10.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1563
 - author: Vencallium
@@ -13048,7 +13000,7 @@
       \ \u0440\u043E\u043B\u0438 \u043F\u0440\u0438\u0437\u0440\u0430\u043A\u043E\u0432\
       ."
     type: Fix
-  id: 422
+  id: 419
   time: '2026-07-09T05:28:22.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1565
 - author: Crime481
@@ -13061,7 +13013,7 @@
       \u0447\u0430\u043B\u044C\u043D\u0438\u043A\u0430 \u0432\u043E\u0435\u043D\u043D\
       \u043E\u0439 \u043F\u043E\u043B\u0438\u0446\u0438\u0438."
     type: Add
-  id: 423
+  id: 420
   time: '2026-07-09T06:00:15.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1564
 - author: troytroy400
@@ -13117,7 +13069,7 @@
       \u0445 \u0440\u043E\u043B\u0435\u0439 \u0432 \u043E\u0442\u0440\u044F\u0434\u0435\
       ."
     type: Fix
-  id: 424
+  id: 421
   time: '2026-07-10T05:48:42.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1567
 - author: ver0098
@@ -13152,7 +13104,7 @@
       \u0432\u0430\u043D\u043D\u0443\u044E \u043C\u0430\u0433\u043D\u0438\u0442\u043D\
       \u0443\u044E \u043F\u043E\u0434\u0432\u0435\u0441\u043A\u0443."
     type: Tweak
-  id: 425
+  id: 422
   time: '2026-07-10T17:19:35.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1556
 - author: OverusedMeme
@@ -13172,7 +13124,7 @@
       \u044C\u043D\u044B\u0445 \u043F\u0430\u043A\u0435\u0442\u043E\u0432 \u0434\u043B\
       \u044F \u043A\u043E\u043B\u043E\u043D\u0438\u0439."
     type: Remove
-  id: 426
+  id: 423
   time: '2026-07-10T20:01:29.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1570
 - author: TheHellFireo
@@ -13842,7 +13794,7 @@
       \u043D\u0435\u0440\u0430 \u0438 \u0438\u0441\u0441\u043B\u0435\u0434\u043E\u0432\
       \u0430\u043D\u0438\u0439."
     type: Code
-  id: 427
+  id: 424
   time: '2026-07-11T16:10:36.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1572
 - author: Crime481
@@ -13858,7 +13810,7 @@
       \ Vehicle Crewman \u0432\u044B\u0445\u043E\u0434\u0438\u043B \u0437\u0430 \u0433\
       \u0440\u0430\u043D\u0438\u0446\u044B \u0444\u043E\u043D\u0430."
     type: Fix
-  id: 428
+  id: 425
   time: '2026-07-11T16:56:38.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1571
 - author: TheHellFireo
@@ -13872,7 +13824,7 @@
       \u0439 \u043F\u043E\u0431\u0435\u0434\u043E\u0439 \u043A\u0441\u0435\u043D\u043E\
       \u0441\u043E\u0432."
     type: Add
-  id: 429
+  id: 426
   time: '2026-07-11T21:48:14.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1575
 - author: TheHellFireo
@@ -13893,7 +13845,7 @@
       \u0432\u0430\u0440\u0438\u0449\u0435\u0441\u043A\u0438\u0435 \u043C\u0430\u0442\
       \u0447\u0438."
     type: Fix
-  id: 430
+  id: 427
   time: '2026-07-11T21:48:27.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1577
 - author: TheHellFireo
@@ -13904,7 +13856,7 @@
       \u0435 \u043E\u0441\u0442\u0430\u043B\u043E\u0441\u044C \u0442\u0440\u0430\u0432\
       \u043C"
     type: Add
-  id: 431
+  id: 428
   time: '2026-07-11T21:48:29.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1576
 - author: TheHellFireo
@@ -13917,7 +13869,7 @@
       \u044C \u0440\u0430\u0443\u043D\u0434 \u0438 \u043F\u043E\u0431\u0435\u0434\u0438\
       \u0442\u044C."
     type: Add
-  id: 432
+  id: 429
   time: '2026-07-11T21:49:19.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1578
 - author: maertayn
@@ -13986,7 +13938,7 @@
       \u043F \u043A \u043F\u043E\u0441\u0442\u0430\u0432\u0449\u0438\u043A\u0430\u043C\
       \ HM \u0438 MD"
     type: Tweak
-  id: 433
+  id: 430
   time: '2026-07-11T23:32:52.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1579
 - author: NileDeveloper
@@ -14017,7 +13969,7 @@
       \u0438\u0444\u0442\u043E\u043C \u0441\u043B\u043E\u0432 \u0438 \u043F\u0440\u0435\
       \u0434\u043B\u043E\u0436\u0435\u043D\u0438\u0439"
     type: Add
-  id: 434
+  id: 431
   time: '2026-07-12T00:35:06.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1574
 - author: troytroy400
@@ -14050,7 +14002,7 @@
       \u0445 \u043E\u0444\u0438\u0446\u0435\u0440\u043E\u0432 \u0442\u043E\u043B\u044C\
       \u043A\u043E 25, \u0430 \u043D\u0435 30."
     type: Fix
-  id: 435
+  id: 432
   time: '2026-07-12T06:51:25.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1582
 - author: troytroy400
@@ -14090,7 +14042,7 @@
       \u044C\u043D\u044B\u0445 \u0432\u043E\u0437\u043C\u043E\u0436\u043D\u043E\u0441\
       \u0442\u0435\u0439)"
     type: Add
-  id: 436
+  id: 433
   time: '2026-07-12T09:24:51.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1584
 - author: troytroy400
@@ -14125,7 +14077,7 @@
       \u043C\u0435\u043D\u0435 \u043A\u0430\u043C\u0443\u0444\u043B\u044F\u0436\u0430\
       ."
     type: Code
-  id: 437
+  id: 434
   time: '2026-07-12T12:37:50.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1585
 - author: TheHellFireo
@@ -14140,7 +14092,7 @@
       \u0447\u0430\u043B\u0435 \u0440\u0430\u0443\u043D\u0434\u0430 \u0438 \u0441\u043A\
       \u043E\u043B\u044C\u043A\u043E \u0438\u0445."
     type: Add
-  id: 438
+  id: 435
   time: '2026-07-12T13:00:05.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1586
 - author: TheHellFireo
@@ -14153,7 +14105,7 @@
       \u0434\u0438\u0442\u044C \u0437\u0430 \u043E\u0442\u043F\u0440\u0430\u0432\u0438\
       \u0442\u0435\u043B\u0435\u043C."
     type: Add
-  id: 439
+  id: 436
   time: '2026-07-12T13:23:51.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1587
 - author: TheHellFireo
@@ -14173,7 +14125,7 @@
       \ \u043E\u0442\u0437\u044B\u0432\u043E\u0432 \u0441\u043E\u043E\u0431\u0449\u0435\
       \u0441\u0442\u0432\u0430 \u043E \u0431\u0430\u043B\u0430\u043D\u0441\u0435."
     type: Add
-  id: 440
+  id: 437
   time: '2026-07-12T14:09:24.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1589
 - author: TheHellFireo
@@ -14185,7 +14137,7 @@
       \u0437\u043D\u043E\u0439 \u0437\u0430\u0434\u0435\u0440\u0436\u043A\u0435 \u0441\
       \u0435\u0440\u0432\u0435\u0440\u0430."
     type: Fix
-  id: 441
+  id: 438
   time: '2026-07-12T14:17:37.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1590
 - author: troytroy400
@@ -14202,7 +14154,7 @@
       \u0445 \u0441\u043F\u0435\u0446\u0438\u0430\u043B\u044C\u043D\u044B\u0445 \u0432\
       \u043E\u0437\u043C\u043E\u0436\u043D\u043E\u0441\u0442\u0435\u0439."
     type: Add
-  id: 442
+  id: 439
   time: '2026-07-12T15:42:26.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1592
 - author: Sniperzero112
@@ -14213,7 +14165,7 @@
     type: Add
   - message: "\u042D\u043B\u0435\u043C\u0435\u043D\u0442 SGO Medical HUD"
     type: Tweak
-  id: 443
+  id: 440
   time: '2026-07-12T15:47:32.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1593
 - author: troytroy400
@@ -14237,7 +14189,7 @@
       \u0435\u043D\u0438\u0435 \u0431\u0435\u0441\u043F\u0440\u0435\u043F\u044F\u0442\
       \u0441\u0442\u0432\u0435\u043D\u043D\u044B\u043C."
     type: Admin
-  id: 444
+  id: 441
   time: '2026-07-12T15:48:33.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1583
 - author: NileDeveloper
@@ -14247,7 +14199,7 @@
       \u0443 \u0432\u0445\u043E\u0434\u043D\u044B\u0445 \u0434\u0430\u043D\u043D\u044B\
       \u0445."
     type: Fix
-  id: 445
+  id: 442
   time: '2026-07-12T19:06:30.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1594
 - author: troytroy400
@@ -14277,7 +14229,7 @@
       \u043C \u043E\u0431\u043E\u0440\u0443\u0434\u043E\u0432\u0430\u043D\u0438\u044F\
       ."
     type: Fix
-  id: 446
+  id: 443
   time: '2026-07-12T19:11:02.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1597
 - author: ScorchFollower
@@ -14290,7 +14242,7 @@
       \u0442\u0432\u0435\u043D\u043D\u043E\u043C\u0443 \u0441\u0442\u0438\u043B\u044E\
       \ CM."
     type: Tweak
-  id: 447
+  id: 444
   time: '2026-07-12T21:31:25.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1599
 - author: NileDeveloper
@@ -14303,7 +14255,7 @@
       \u0442\u0435\u0440\u0438\u0447\u043D\u043E\u0433\u043E \u0446\u0432\u0435\u0442\
       \u0430."
     type: Fix
-  id: 448
+  id: 445
   time: '2026-07-13T02:11:07.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1601
 - author: troytroy400
@@ -14330,7 +14282,7 @@
       \u0440\u044C \u0438\u043C\u0435\u044E\u0442 \u0442\u043E\u0447\u043D\u044B\u0435\
       \ \u043D\u0430\u0437\u0432\u0430\u043D\u0438\u044F."
     type: Fix
-  id: 449
+  id: 446
   time: '2026-07-13T10:09:30.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1603
 - author: murdocstarsim
@@ -14551,7 +14503,7 @@
       \ \u044F\u0437\u044B\u043A \u043F\u043E\u0434\u0440\u0430\u0437\u0434\u0435\u043B\
       \u0435\u043D\u0438\u044F."
     type: Tweak
-  id: 450
+  id: 447
   time: '2026-07-13T21:30:00.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1566
 - author: IMGXKILLER
@@ -14562,7 +14514,7 @@
     type: Add
   - message: "\u041A\u041E\u0422\u041E\u0420\u042B\u0419"
     type: Remove
-  id: 451
+  id: 448
   time: '2026-07-13T22:23:53.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1598
 - author: HolySSSS
@@ -14588,7 +14540,7 @@
       \u043E\u0440\u0442\u043E\u0432 \u0432\u0438\u043D\u043E\u0433\u0440\u0430\u0434\
       \u0430 \u0438 14 \u044F\u0433\u043E\u0434."
     type: Add
-  id: 452
+  id: 449
   time: '2026-07-14T00:21:05.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1606
 - author: maertayn
@@ -14598,7 +14550,7 @@
       \u043E\u0439 \u043D\u0430\u0441\u0442\u0430\u0432\u043D\u0438\u043A \u043F\u043E\
       \u043C\u043E\u0433\u0430\u0435\u0442"
     type: Admin
-  id: 453
+  id: 450
   time: '2026-07-14T04:04:42.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1607
 - author: troytroy400
@@ -14630,7 +14582,7 @@
       \u0430\u043B\u044C\u043D\u044B\u0439 \u0441\u043F\u0440\u0430\u0439\u0442, \u0441\
       \u043E\u0437\u0434\u0430\u043D\u043D\u044B\u0439 scorchfollower."
     type: Tweak
-  id: 454
+  id: 451
   time: '2026-07-14T04:28:37.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1608
 - author: troytroy400
@@ -14754,7 +14706,7 @@
       \u0443\u0436\u0438\u0432\u0430\u043D\u0438\u044F \u0430\u0432\u0442\u043E\u043C\
       \u043E\u0431\u0438\u043B\u044F."
     type: Fix
-  id: 455
+  id: 452
   time: '2026-07-14T08:06:11.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1611
 - author: troytroy400
@@ -14823,7 +14775,7 @@
       \u0435\u0439\u0441\u0442\u0432\u0438\u0439, \u0441\u0432\u044F\u0437\u0430\u043D\
       \u043D\u044B\u0445 \u0441 \u043B\u043E\u043F\u0430\u0442\u043E\u0439."
     type: Tweak
-  id: 456
+  id: 453
   time: '2026-07-14T12:10:54.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1614
 - author: MACMAN2003
@@ -14837,7 +14789,7 @@
       \u0442\u0440\u043E\u0438\u0442\u0435\u043B\u044C\u0441\u0442\u0432\u043E\u043C\
       \ \u043B\u0443\u0447\u0448\u0438\u0445 \u043C\u0438\u0440\u043E\u0432."
     type: Tweak
-  id: 457
+  id: 454
   time: '2026-07-14T14:08:11.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1609
 - author: JaSeNeSaJ
@@ -14864,7 +14816,7 @@
       \ \u043B\u0435\u0441\u0442\u043D\u0438\u0446\u0430 Strata \u043D\u0430 \u043F\
       \u043B\u0430\u0442\u0444\u043E\u0440\u043C\u0435"
     type: Add
-  id: 458
+  id: 455
   time: '2026-07-14T20:10:32.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1615
 - author: Crime481
@@ -14918,7 +14870,7 @@
       \u043E\u043C \u0441\u043E\u0441\u0442\u043E\u044F\u043D\u0438\u0438, \u043A\u043E\
       \u0433\u0434\u0430 \u043E\u043D\u0430 \u043F\u0443\u0441\u0442\u0430."
     type: Fix
-  id: 459
+  id: 456
   time: '2026-07-14T20:11:06.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1613
 - author: KriegersMustDie
@@ -14934,7 +14886,7 @@
       \ \u0441\u0432\u043E\u0438 **\u0432\u0430\u0436\u043D\u044B\u0435** \u043C\u0430\
       \u0440\u043A\u0438 \u043D\u0430 \u043F\u043E\u043B \u0411\u0443\u0448\u0430."
     type: Fix
-  id: 460
+  id: 457
   time: '2026-07-14T20:34:27.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1617
 - author: TheHellFireo
@@ -14963,7 +14915,7 @@
       \u0435 \u043E\u0441\u0442\u0430\u044E\u0442\u0441\u044F \u043A\u0440\u0438\u0442\
       \u0438\u0447\u0435\u0441\u043A\u0438\u043C\u0438."
     type: Fix
-  id: 461
+  id: 458
   time: '2026-07-15T00:04:52.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1619
 - author: murdocstarsim
@@ -14982,7 +14934,7 @@
       \u0440\u0430\u0432\u043E\u0447\u043D\u0438\u043A\u0435 \u0432 \u0440\u0430\u0437\
       \u0434\u0435\u043B\u0435 \u0421\u041E\u041F."
     type: Fix
-  id: 462
+  id: 459
   time: '2026-07-15T03:08:20.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1621
 - author: JaSeNeSaJ
@@ -14991,7 +14943,7 @@
       \u0438\u0442\u0435 \u043A\u0440\u0430\u0436\u0443 \u0432\u043E\u0434\u044B \u0441\
       \ \u043F\u043E\u043C\u043E\u0449\u044C\u044E \u0448\u0430\u0442\u0442\u043B\u0430"
     type: Fix
-  id: 463
+  id: 460
   time: '2026-07-15T04:12:50.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1623
 - author: troytroy400
@@ -15033,7 +14985,7 @@
       \u0447\u0438\u043D\u044F\u044E\u0442 \u043D\u0435\u043C\u043D\u043E\u0433\u043E\
       \ \u0431\u043E\u043B\u044C\u0448\u0435 \u0432\u0440\u0435\u0434\u0430."
     type: Fix
-  id: 464
+  id: 461
   time: '2026-07-15T04:14:06.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1625
 - author: troytroy400
@@ -15058,7 +15010,7 @@
       \u0432\u0435\u0442\u0441\u0442\u0432\u043E\u0432\u0430\u043B UCMJ/SOP. \u041F\
       \u0425\u0420 \u0437\u0434\u0435\u0441\u044C."
     type: Add
-  id: 465
+  id: 462
   time: '2026-07-15T13:11:42.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1628
 - author: TheMaiji
@@ -15086,7 +15038,7 @@
       \u043E\u0434\u0435 \u0434\u043B\u044F \u043A\u043E\u043D\u0442\u0440\u0438\u0431\
       \u044C\u044E\u0442\u043E\u0440\u043E\u0432!"
     type: Code
-  id: 466
+  id: 463
   time: '2026-07-15T13:38:40.0000000+00:00'
   url: https://github.com/flex5hybrid/RussianCM/pull/322
 - author: TheMaiji
@@ -15114,7 +15066,7 @@
       \u043E\u0434\u0435 \u0434\u043B\u044F \u043A\u043E\u043D\u0442\u0440\u0438\u0431\
       \u044C\u044E\u0442\u043E\u0440\u043E\u0432!"
     type: Code
-  id: 467
+  id: 464
   time: '2026-07-15T14:25:51.0000000+00:00'
   url: https://github.com/flex5hybrid/RussianCM/pull/323
 - author: ver0098
@@ -15124,7 +15076,7 @@
       \u0432\u0435\u0442\u043E\u0432\u043E\u0439 \u0441\u0445\u0435\u043C\u043E\u0439\
       \ W-Y PMC."
     type: Add
-  id: 468
+  id: 465
   time: '2026-07-15T16:05:51.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1612
 - author: MACMAN2003
@@ -15150,7 +15102,7 @@
       \u0442\u0438\u0432\u043D\u043E\u0435 \u0441\u043E\u043A\u0440\u0430\u0449\u0435\
       \u043D\u0438\u0435."
     type: Tweak
-  id: 469
+  id: 466
   time: '2026-07-16T01:43:26.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1622
 - author: troytroy400
@@ -15176,7 +15128,7 @@
       \u0433\u043B\u0430\u043C\u0435\u043D\u0442\u0435 \u0431\u043E\u043B\u044C\u0448\
       \u0435 \u043D\u0435 \u0432\u0440\u0435\u0442."
     type: Tweak
-  id: 470
+  id: 467
   time: '2026-07-16T03:23:08.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1630
 - author: troytroy400
@@ -15341,7 +15293,7 @@
       \u043E\u0435\u043D\u043D\u044B\u0435 \u0431\u0435\u043D\u0437\u043E\u0431\u0430\
       \u043A\u0438."
     type: Tweak
-  id: 471
+  id: 468
   time: '2026-07-16T14:29:41.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1632
 - author: Sniperzero112
@@ -15358,7 +15310,7 @@
       \u044C \u043B\u044E\u0434\u0435\u0439 \u0441\u0438\u043B\u044C\u043D\u0435\u0435\
       ."
     type: Tweak
-  id: 472
+  id: 469
   time: '2026-07-16T21:21:32.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1634
 - author: deepdarkdepths
@@ -15368,7 +15320,7 @@
       \u043A\u043E \u043D\u043E\u0432\u044B\u0445 \u0441\u043F\u0440\u0430\u0439\u0442\
       \u043E\u0432."
     type: Add
-  id: 473
+  id: 470
   time: '2026-07-17T00:25:17.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1631
 - author: JaSeNeSaJ
@@ -15403,7 +15355,7 @@
       \u043E\u043B\u044C\u043D\u0438\u0446\u0430 \u0438 \u0441\u0435\u0442\u044C \u0445\
       \u0438\u043C\u0438\u043A\u043E\u0432 We-Yu."
     type: Fix
-  id: 474
+  id: 471
   time: '2026-07-17T00:36:06.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1633
 - author: Kadeo64
@@ -15422,7 +15374,7 @@
       \ \u0440\u0430\u0437\u0443\u043C\u0430\xBB \u0432 \u044F\u0449\u0438\u043A\u0430\
       \u0445 \u0412\u0435-\u042E."
     type: Tweak
-  id: 475
+  id: 472
   time: '2026-07-17T00:39:42.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1580
 - author: OmerF-afk
@@ -15454,7 +15406,7 @@
       \ \u043D\u0435 \u0430\u0433\u0440\u0435\u0441\u0441\u0438\u0432\u043D\u044B\u0439\
       \ \u043F\u0440\u0438 \u0443\u0434\u0430\u0440\u0435."
     type: Fix
-  id: 476
+  id: 473
   time: '2026-07-17T01:31:45.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1635
 - author: maertayn
@@ -15504,7 +15456,7 @@
       \u043C\u0435\u0442\u0440\u0430 cvar ' Thirdparty_dropship_reusable' \u0437\u043D\
       \u0430\u0447\u0435\u043D\u0438\u0435 false."
     type: Remove
-  id: 477
+  id: 474
   time: '2026-07-17T01:55:54.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1637
 - author: potatoed6
@@ -15584,7 +15536,7 @@
       \u0433\u0440\u0438\u0440\u043E\u0432\u0430\u043D \u0432 \u044F\u0437\u044B\u043A\
       \u043E\u0432\u0443\u044E \u0441\u0438\u0441\u0442\u0435\u043C\u0443"
     type: Fix
-  id: 478
+  id: 475
   time: '2026-07-17T03:48:03.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1490
 - author: troytroy400
@@ -15594,7 +15546,7 @@
       \ \u0442\u043E\u0433\u043E, \u0447\u0442\u043E\u0431\u044B \u043E\u0441\u0442\
       \u0430\u0432\u0430\u0442\u044C\u0441\u044F \u043D\u0430 \u043D\u0435\u043C."
     type: Remove
-  id: 479
+  id: 476
   time: '2026-07-17T05:59:34.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1639
 - author: troytroy400
@@ -15604,7 +15556,7 @@
       \ \u0442\u043E\u0433\u043E, \u0447\u0442\u043E\u0431\u044B \u043E\u0441\u0442\
       \u0430\u0432\u0430\u0442\u044C\u0441\u044F \u043D\u0430 \u043D\u0435\u043C."
     type: Remove
-  id: 480
+  id: 477
   time: '2026-07-17T05:59:34.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1639
 - author: troytroy400
@@ -15629,7 +15581,7 @@
       \u0439 \u043A\u043D\u043E\u043F\u043A\u043E\u0439 \u043C\u044B\u0448\u0438 \u0438\
       \ \u0440\u0430\u0437\u0432\u044F\u0436\u0438\u0442\u0435."
     type: Add
-  id: 481
+  id: 478
   time: '2026-07-17T09:36:41.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1640
 - author: troytroy400
@@ -15654,7 +15606,7 @@
       \u0439 \u043A\u043D\u043E\u043F\u043A\u043E\u0439 \u043C\u044B\u0448\u0438 \u0438\
       \ \u0440\u0430\u0437\u0432\u044F\u0436\u0438\u0442\u0435."
     type: Add
-  id: 482
+  id: 479
   time: '2026-07-17T09:36:41.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1640
 - author: toot521
@@ -15669,7 +15621,7 @@
       \u041F Pointman WeaponSpec \u0434\u043E\u0431\u0430\u0432\u043B\u0435\u043D\
       \ \u0410\u043B\u0442\u044B\u043D-\u04202\u041C."
     type: Add
-  id: 483
+  id: 480
   time: '2026-07-17T15:03:06.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1641
 - author: toot521
@@ -15684,7 +15636,7 @@
       \u041F Pointman WeaponSpec \u0434\u043E\u0431\u0430\u0432\u043B\u0435\u043D\
       \ \u0410\u043B\u0442\u044B\u043D-\u04202\u041C."
     type: Add
-  id: 484
+  id: 481
   time: '2026-07-17T15:03:06.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1641
 - author: TheHellFireo
@@ -15704,7 +15656,7 @@
       \u0438\u0445 \u043A\u043E\u043D\u0435\u0447\u043D\u043E\u0441\u0442\u0435\u0439\
       ."
     type: Fix
-  id: 485
+  id: 482
   time: '2026-07-17T17:40:43.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1644
 - author: TheHellFireo
@@ -15724,7 +15676,7 @@
       \u0438\u0445 \u043A\u043E\u043D\u0435\u0447\u043D\u043E\u0441\u0442\u0435\u0439\
       ."
     type: Fix
-  id: 486
+  id: 483
   time: '2026-07-17T17:40:43.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1644
 - author: maertayn
@@ -15778,7 +15730,7 @@
       \u0441\u0442\u0440\u0443\u043C\u0435\u043D\u0442 \u0434\u043B\u044F \u0440\u0435\
       \u043C\u043E\u043D\u0442\u0430."
     type: Add
-  id: 487
+  id: 484
   time: '2026-07-17T22:00:33.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1645
 - author: maertayn
@@ -15832,7 +15784,7 @@
       \u0441\u0442\u0440\u0443\u043C\u0435\u043D\u0442 \u0434\u043B\u044F \u0440\u0435\
       \u043C\u043E\u043D\u0442\u0430."
     type: Add
-  id: 488
+  id: 485
   time: '2026-07-17T22:00:33.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1645
 - author: Piticzu
@@ -15847,7 +15799,7 @@
       \u0435\u043D\u0438\u0435 \u044D\u0442\u0438\u0445 \u0441\u0442\u0430\u043A\u043E\
       \u0432 \u0441 \u043F\u043E\u043C\u043E\u0449\u044C\u044E Drain Sting."
     type: Add
-  id: 489
+  id: 486
   time: '2026-07-17T23:25:05.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1642
 - author: toot521
@@ -15859,7 +15811,7 @@
       \ \u0432\u0438\u043D\u0442\u043E\u0432\u043A\u0438 \u041A\u0440\u0430\u043C\u0435\
       \u0440\u0430."
     type: Fix
-  id: 490
+  id: 487
   time: '2026-07-18T01:16:55.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1649
 - author: TheHellFireo
@@ -16069,7 +16021,7 @@
       \u0432\u0441\u0442\u0430\u043D\u0447\u0435\u0441\u043A\u043E\u0435 \u0434\u0432\
       \u0438\u0436\u0435\u043D\u0438\u0435\xBB."
     type: Fix
-  id: 491
+  id: 488
   time: '2026-07-18T15:14:45.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1654
 - author: TheHellFireo
@@ -16140,7 +16092,7 @@
       \u043D\u043A\u0443 \u0432\u043E \u0432\u0440\u0435\u043C\u044F \u0437\u0430\u0445\
       \u0432\u0430\u0442\u0430."
     type: Fix
-  id: 492
+  id: 489
   time: '2026-07-18T21:51:11.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1655
 - author: troytroy400
@@ -16247,7 +16199,7 @@
       \u043A\u0442\u0438\u043A\u0443 \u0445\u0438\u043C\u0438\u0447\u0435\u0441\u043A\
       \u043E\u0433\u043E \u0441\u043F\u0430\u043C\u0430."
     type: Fix
-  id: 493
+  id: 490
   time: '2026-07-19T08:26:40.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1651
 - author: wray-git
@@ -16708,7 +16660,7 @@
       \u0438\u0435 \u043F\u0440\u0438 \u043A\u043E\u043B\u043B\u0430\u043F\u0441\u0435\
       \ \u043F\u043E \u0432\u0441\u0435\u0439 \u043A\u0430\u0440\u0442\u0435."
     type: Remove
-  id: 494
+  id: 491
   time: '2026-07-19T17:36:17.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1600
 - author: wray-git
@@ -16898,7 +16850,7 @@
       \u0440\u0438\u0435\u0439 \u0433\u043B\u0430\u0433\u043E\u043B\u0430 \u043F\u043E\
       \u0441\u0442\u0440\u043E\u0435\u043D\u0438\u044F."
     type: Code
-  id: 495
+  id: 492
   time: '2026-07-19T17:36:19.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1497
 - author: wray-git
@@ -17015,7 +16967,7 @@
       \ \u0441\u0442\u0440\u043E\u0438\u0442\u0435\u043B\u044C\u0441\u0442\u0432\u0435\
       ."
     type: Remove
-  id: 496
+  id: 493
   time: '2026-07-19T17:36:19.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1541
 - author: maertayn
@@ -17029,7 +16981,7 @@
   - message: "\u0414\u043E\u0441\u0442\u0443\u043F EO \u043A \u043F\u043E\u0441\u0442\
       \u0430\u0432\u0449\u0438\u043A\u0443 CT"
     type: Tweak
-  id: 497
+  id: 494
   time: '2026-07-19T17:50:06.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1657
 - author: ArturUr1
@@ -17041,7 +16993,19 @@
       \u0437\u043C\u0430\u0440\u0438\u043D\u043E\u0432\u043E\u0439 \u0434\u043E 500\
       \ \u0447\u0430\u0441\u043E\u0432."
     type: Tweak
-  id: 498
+  id: 495
+  time: '2026-07-20T08:10:39.0000000+00:00'
+  url: https://github.com/flex5hybrid/RussianCM/pull/326
+- author: ArturUr1
+  changes:
+  - message: "\u0418\u0437\u043C\u0435\u043D\u0435\u043D\u043E \u0432\u0440\u0435\u043C\
+      \u044F \u0434\u043B\u044F \u043F\u043E\u043B\u0443\u0447\u0435\u043D\u0438\u044F\
+      \ \u0438\u0437\u0443\u043C\u0440\u0443\u0434\u043E\u0439 \u043C\u0435\u0434\u0430\
+      \u043B\u0438 \u0434\u043E 200 \u0447\u0430\u0441\u043E\u0432. \u041F\u0440\u0438\
+      \u0437\u043C\u0430\u0440\u0438\u043D\u043E\u0432\u043E\u0439 \u0434\u043E 500\
+      \ \u0447\u0430\u0441\u043E\u0432."
+    type: Tweak
+  id: 496
   time: '2026-07-20T08:10:39.0000000+00:00'
   url: https://github.com/flex5hybrid/RussianCM/pull/326
 - author: ArturUr1
@@ -17051,9 +17015,30 @@
       \u043D\u0442\u043E\u0447\u043A\u0438 \u0432\u043C\u0435\u0441\u0442\u043E \u043C\
       \u0435\u0434\u0430\u043B\u0435\u0439"
     type: Tweak
-  id: 499
+  id: 497
   time: '2026-07-20T08:10:49.0000000+00:00'
   url: https://github.com/flex5hybrid/RussianCM/pull/327
+- author: ArturUr1
+  changes:
+  - message: "\u0422\u0435\u043F\u0435\u0440\u044C \u043A\u043E\u043B\u043E\u043D\u0438\
+      \u0441\u0442\u044B \u043F\u043E\u043B\u0443\u0447\u0430\u044E\u0442 \u043B\u0435\
+      \u043D\u0442\u043E\u0447\u043A\u0438 \u0432\u043C\u0435\u0441\u0442\u043E \u043C\
+      \u0435\u0434\u0430\u043B\u0435\u0439"
+    type: Tweak
+  id: 498
+  time: '2026-07-20T08:10:49.0000000+00:00'
+  url: https://github.com/flex5hybrid/RussianCM/pull/327
+- author: flex5hybrid
+  changes:
+  - message: "\u0414\u043E\u0431\u0430\u0432\u043B\u0435\u043D \u0430\u0432\u0442\u043E\
+      \u043C\u0430\u0442\u0438\u0447\u0435\u0441\u043A\u0438\u0439 \u043F\u0435\u0440\
+      \u0435\u0432\u043E\u0434 \u0437\u0430\u043F\u0438\u0441\u0435\u0439 \u0447\u0435\
+      \u0439\u043D\u0434\u0436\u043B\u043E\u0433\u0430 CMU \u043D\u0430 \u0440\u0443\
+      \u0441\u0441\u043A\u0438\u0439 \u044F\u0437\u044B\u043A."
+    type: Code
+  id: 499
+  time: '2026-07-20T08:28:50.0000000+00:00'
+  url: https://github.com/flex5hybrid/RussianCM/pull/329
 - author: flex5hybrid
   changes:
   - message: "\u0414\u043E\u0431\u0430\u0432\u043B\u0435\u043D \u0430\u0432\u0442\u043E\
