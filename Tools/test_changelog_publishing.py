@@ -8,7 +8,10 @@ from unittest.mock import patch
 
 import yaml
 
-from Tools.actions_changelogs_since_last_run import diff_changelog
+from Tools.actions_changelogs_since_last_run import (
+    changelog_entries_since,
+    diff_changelog,
+)
 from Tools import update_changelog
 
 
@@ -47,6 +50,23 @@ class ChangelogPublishingTest(unittest.TestCase):
         current = {"Entries": [entry(1, None, "2026-07-19T00:00:00Z")]}
 
         self.assertEqual(list(diff_changelog(old, current)), [])
+
+    def test_backfill_selects_existing_entries_since_date(self):
+        changelog = {
+            "Entries": [
+                entry(499, "https://example.test/pull/1", "2026-07-18T23:59:59Z"),
+                entry(500, "https://example.test/pull/2", "2026-07-19T00:00:00Z"),
+                entry(501, "https://example.test/pull/3", "2026-07-20T00:00:00Z"),
+            ]
+        }
+
+        self.assertEqual(
+            [
+                item["url"]
+                for item in changelog_entries_since(changelog, "2026-07-19T00:00:00Z")
+            ],
+            ["https://example.test/pull/2", "https://example.test/pull/3"],
+        )
 
     def test_sorting_does_not_renumber_persistent_ids(self):
         data = {

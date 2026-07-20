@@ -8,6 +8,7 @@ also pass CHANGELOG_PREVIOUS_REF to compare against a local git ref.
 import itertools
 import os
 import subprocess
+import datetime
 from pathlib import Path
 from typing import Any, Iterable
 
@@ -25,6 +26,7 @@ DISCORD_WEBHOOK_URL = os.environ.get("DISCORD_WEBHOOK_URL")
 
 CHANGELOG_FILE = os.environ.get("CHANGELOG_FILE", "Resources/Changelog/CMU.yml")
 CHANGELOG_PREVIOUS_REF = os.environ.get("CHANGELOG_PREVIOUS_REF")
+CHANGELOG_START_DATE = os.environ.get("CHANGELOG_START_DATE")
 
 TYPES_TO_EMOJI = {
     "Fix": "🔧",
@@ -44,7 +46,16 @@ def main():
         print("No discord webhook URL found, skipping discord send")
         exit(1)
 
-    if DEBUG:
+    with open(CHANGELOG_FILE, "r") as f:
+        cur_changelog = yaml.safe_load(f)
+
+    if CHANGELOG_START_DATE:
+        diff = changelog_entries_since(cur_changelog, CHANGELOG_START_DATE)
+        print(
+            f"Backfill: sending {len(diff)} changelog entries since "
+            f"{CHANGELOG_START_DATE}"
+        )
+    elif DEBUG:
         # to debug this script locally, you can use
         # a separate local file as the old changelog
         last_changelog_stream = DEBUG_CHANGELOG_FILE_OLD.read_text()
@@ -55,13 +66,29 @@ def main():
         # it will get the old changelog from the GitHub API
         last_changelog_stream = get_last_changelog()
 
-    last_changelog = yaml.safe_load(last_changelog_stream)
-    with open(CHANGELOG_FILE, "r") as f:
-        cur_changelog = yaml.safe_load(f)
-
-    diff = diff_changelog(last_changelog, cur_changelog)
+    if not CHANGELOG_START_DATE:
+        last_changelog = yaml.safe_load(last_changelog_stream)
+        diff = diff_changelog(last_changelog, cur_changelog)
     message_lines = changelog_entries_to_message_lines(diff)
     send_message_lines(message_lines)
+
+
+def parse_iso_datetime(value: str) -> datetime.datetime:
+    parsed = datetime.datetime.fromisoformat(value.replace("Z", "+00:00"))
+    if parsed.tzinfo is None:
+        parsed = parsed.replace(tzinfo=datetime.timezone.utc)
+    return parsed
+
+
+def changelog_entries_since(
+    changelog: dict[str, Any], start_date: str
+) -> list[ChangelogEntry]:
+    start = parse_iso_datetime(start_date)
+    return [
+        entry
+        for entry in changelog.get("Entries", [])
+        if parse_iso_datetime(str(entry["time"])) >= start
+    ]
 
 
 def get_most_recent_workflow(
