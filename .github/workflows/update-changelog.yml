@@ -50,7 +50,7 @@ jobs:
 
       - name: Update changelog
         run: Tools/update_changelog.py Resources/Changelog/CMU.yml
-          Resources/Changelog/Parts --category ${{ inputs.category || 'CMU' }}
+          Resources/Changelog/Parts --category ${{ inputs.category || 'CMU' }} --translate
 
       - uses: stefanzweifel/git-auto-commit-action@v7.1.0
         id: auto-commit
