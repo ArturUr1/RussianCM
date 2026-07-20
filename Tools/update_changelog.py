@@ -47,6 +47,22 @@ def sort_entries(data):
     return data
 
 
+def deduplicate_entries(entries: List[Any]) -> List[Any]:
+    result = []
+    seen_urls = set()
+
+    for entry in entries:
+        url = entry.get("url")
+        if url and url in seen_urls:
+            print(f"Removing duplicate changelog entry for {url}")
+            continue
+        if url:
+            seen_urls.add(url)
+        result.append(entry)
+
+    return result
+
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("changelog_file")
@@ -70,6 +86,7 @@ def main():
     # Get the existing entries, or an empty list if the key is missing.
     entries_list: List[Any] = current_data.get("Entries", [])
     max_id = max(map(lambda e: e["id"], entries_list), default=0)
+    entries_list = deduplicate_entries(entries_list)
     existing_urls = {entry.get("url") for entry in entries_list if entry.get("url")}
 
     processed_parts = []

@@ -80,6 +80,18 @@ class ChangelogPublishingTest(unittest.TestCase):
 
         self.assertEqual([item["id"] for item in data["Entries"]], [499, 501])
 
+    def test_existing_duplicate_pr_entries_are_removed(self):
+        entries = [
+            entry(499, "https://example.test/pull/1", "2026-07-18T00:00:00Z"),
+            entry(500, "https://example.test/pull/1", "2026-07-18T00:00:00Z"),
+            entry(501, None, "2026-07-19T00:00:00Z"),
+            entry(502, None, "2026-07-19T00:00:00Z"),
+        ]
+
+        result = update_changelog.deduplicate_entries(entries)
+
+        self.assertEqual([item["id"] for item in result], [499, 501, 502])
+
     def test_assembler_skips_backfill_duplicates_and_keeps_ids_stable(self):
         with tempfile.TemporaryDirectory() as temp_dir:
             root = Path(temp_dir)
