@@ -157,9 +157,25 @@ def diff_changelog(
 ) -> Iterable[ChangelogEntry]:
     """
     Find all new entries not present in the previous publish.
+
+    Changelog IDs were historically renumbered whenever old entries were pruned,
+    so they cannot be used to compare two files. PR URLs are stable; timestamps
+    provide the same property for manually-authored entries without a URL.
     """
-    old_entry_ids = {e["id"] for e in old["Entries"]}
-    return (e for e in cur["Entries"] if e["id"] not in old_entry_ids)
+    old_entries = {changelog_entry_key(entry) for entry in old.get("Entries", [])}
+    return (
+        entry
+        for entry in cur.get("Entries", [])
+        if changelog_entry_key(entry) not in old_entries
+    )
+
+
+def changelog_entry_key(entry: ChangelogEntry) -> tuple[str, str]:
+    if url := entry.get("url"):
+        return "url", url
+    if timestamp := entry.get("time"):
+        return "time", str(timestamp)
+    return "id", str(entry.get("id"))
 
 
 def get_discord_body(content: str):
@@ -227,6 +243,10 @@ def changelog_entries_to_message_lines(entries: Iterable[ChangelogEntry]) -> lis
 
 def send_message_lines(message_lines: list[str]):
     """Join a list of message lines into chunks that are each below Discord's message length limit, and send them."""
+    if not message_lines:
+        print("No new changelog entries to send to Discord")
+        return
+
     chunk_lines = []
     chunk_length = 0
 

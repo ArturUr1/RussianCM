@@ -40,12 +40,10 @@ class NoDatesSafeLoader(yaml.SafeLoader):
 NoDatesSafeLoader.remove_implicit_resolver("tag:yaml.org,2002:timestamp")
 
 
-def sort_and_renumber(data):
+def sort_entries(data):
     if "Entries" not in data:
         return data
     data["Entries"].sort(key=lambda e: e.get("time", ""))
-    for i, entry in enumerate(data["Entries"], start=1):
-        entry["id"] = i
     return data
 
 
@@ -72,6 +70,7 @@ def main():
     # Get the existing entries, or an empty list if the key is missing.
     entries_list: List[Any] = current_data.get("Entries", [])
     max_id = max(map(lambda e: e["id"], entries_list), default=0)
+    existing_urls = {entry.get("url") for entry in entries_list if entry.get("url")}
 
     processed_parts = []
     for partname in os.listdir(args.parts_dir):
@@ -96,6 +95,11 @@ def main():
         changes = partyaml["changes"]
         url = partyaml.get("url")
 
+        if url and url in existing_urls:
+            print(f"Skipping: changelog entry for {url} already exists")
+            processed_parts.append(partpath)
+            continue
+
         if not isinstance(changes, list):
             changes = [changes]
 
@@ -113,9 +117,14 @@ def main():
                     "url": url,
                 }
             )
+            if url:
+                existing_urls.add(url)
         processed_parts.append(partpath)
     print(f"Have {len(entries_list)} changelog entries")
 
+    # Backfilled entries may be older than the current tail. Sort before pruning
+    # so the actual oldest entries are removed, regardless of discovery order.
+    entries_list.sort(key=lambda entry: entry.get("time", ""))
     overflow = len(entries_list) - MAX_ENTRIES
     if overflow > 0:
         print(f"Removing {overflow} old entries.")
@@ -126,8 +135,8 @@ def main():
         if key != "Entries":
             new_data[key] = value
 
-    # why yes, this is slightly cursed but- path of least resistance
-    new_data = sort_and_renumber(new_data)
+    # IDs are persistent: Discord and clients use them to identify unseen entries.
+    new_data = sort_entries(new_data)
 
     if args.translate:
         translated_count = translate_changelog(new_data)
