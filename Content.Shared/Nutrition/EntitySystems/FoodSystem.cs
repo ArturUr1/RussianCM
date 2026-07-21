@@ -300,6 +300,11 @@ public sealed partial class FoodSystem : EntitySystem
 
         _audio.PlayPredicted(entity.Comp.UseSound, args.Target.Value, args.User, AudioParams.Default.WithVolume(-1f).WithVariation(0.20f));
 
+        // The event describes who consumed the food. During force-feeding args.User
+        // is the feeder, while args.Target is the actual consumer.
+        var eatenEvent = new AfterFoodEatenEvent(args.Target.Value);
+        RaiseLocalEvent(entity.Owner, ref eatenEvent);
+
         // Try to break all used utensils
         foreach (var utensil in utensils)
         {

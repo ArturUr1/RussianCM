@@ -26,6 +26,15 @@ public sealed partial class RMCCVars : CVars
     public static readonly CVarDef<bool> RMCShowNewPlayerIcons =
         CVarDef.Create("rmc.show_new_player_icons", true, CVar.REPLICATED | CVar.CLIENT | CVar.ARCHIVE);
 
+    public static readonly CVarDef<bool> RMCOnboardingEnabled =
+        CVarDef.Create("rmc.onboarding_enabled", true, CVar.SERVER | CVar.REPLICATED);
+
+    public static readonly CVarDef<bool> RMCOnboardingPrompt =
+        CVarDef.Create("rmc.onboarding_prompt", true, CVar.CLIENT | CVar.ARCHIVE);
+
+    public static readonly CVarDef<int> RMCOnboardingMaxSessions =
+        CVarDef.Create("rmc.onboarding_max_sessions", 8, CVar.SERVERONLY);
+
     public static readonly CVarDef<bool> RMCMarineOverlayEnabled =
         CVarDef.Create("rmc.marine_overlay_enabled", true, CVar.CLIENT | CVar.ARCHIVE);
 
