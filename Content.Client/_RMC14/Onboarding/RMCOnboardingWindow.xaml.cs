@@ -42,9 +42,6 @@ public sealed partial class RMCOnboardingWindow : FancyWindow
                 Disabled = !status.Available,
             };
 
-            button.OnPressed += _ => TrackSelected?.Invoke(track);
-            container.AddChild(button);
-
             container.AddChild(new Label
             {
                 Text = Loc.GetString(track.LocName()),
@@ -70,6 +67,10 @@ public sealed partial class RMCOnboardingWindow : FancyWindow
                 HorizontalExpand = true,
                 Margin = new Thickness(8, 3, 8, 0),
             });
+
+            button.Margin = new Thickness(0, 8, 0, 0);
+            button.OnPressed += _ => TrackSelected?.Invoke(track);
+            container.AddChild(button);
 
             TrackList.AddChild(container);
         }

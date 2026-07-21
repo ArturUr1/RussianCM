@@ -21,6 +21,7 @@ using Content.Shared._RMC14.Attachable.Components;
 using Content.Shared._RMC14.Attachable.Events;
 using Content.Shared._RMC14.Attachable.Systems;
 using Content.Shared._RMC14.CCVar;
+using Content.Shared._RMC14.EntityPreset;
 using Content.Shared._RMC14.GameTicking;
 using Content.Shared._RMC14.Marines.Skills;
 using Content.Shared._RMC14.Medical.CPR;
@@ -35,6 +36,7 @@ using Content.Shared.Fluids.Components;
 using Content.Shared.Hands;
 using Content.Shared.Interaction;
 using Content.Shared.Interaction.Events;
+using Content.Shared.Inventory;
 using Content.Shared.Item;
 using Content.Shared.Mobs;
 using Content.Shared.Mobs.Components;
@@ -76,9 +78,11 @@ public sealed partial class RMCOnboardingSystem : EntitySystem
     [Dependency] private IConfigurationManager _config = default!;
     [Dependency] private IComponentFactory _componentFactory = default!;
     [Dependency] private DamageableSystem _damageable = default!;
+    [Dependency] private EntityPresetSystem _entityPreset = default!;
     [Dependency] private GameTicker _gameTicker = default!;
     [Dependency] private FractureSystem _fracture = default!;
     [Dependency] private IGameTiming _timing = default!;
+    [Dependency] private InventorySystem _inventory = default!;
     [Dependency] private SharedMapSystem _map = default!;
     [Dependency] private MapLoaderSystem _mapLoader = default!;
     [Dependency] private MetaDataSystem _meta = default!;
@@ -1188,13 +1192,21 @@ public sealed partial class RMCOnboardingSystem : EntitySystem
                     ? Transform(playerMarker).Coordinates
                     : new EntityCoordinates(gridUid, new Vector2(0.5f, 3.5f));
                 if (playerMarker.Valid)
-                    QueueDel(playerMarker);
+                    Del(playerMarker);
 
-                mob = _stationSpawning.SpawnPlayerMob(spawnCoordinates, "AU14VAISOMercenary", profile, null);
-                _stationSpawning.EquipStartingGear(mob, "AU14GearVAISOMercenary", raiseEvent: false);
+                var medicalRole = SpawnMedicalRole("AU14VAISOMercenary", spawnCoordinates);
+                mob = _stationSpawning.SpawnPlayerMob(spawnCoordinates, null, profile, null, medicalRole);
+                _entityPreset.ApplyPreset(mob, "AU14VAISOPreset");
+                EquipMedicalIfak(mob);
+                ApplyMedicalMercenarySkills(mob);
+                var patientCoordinates = patientMarker.Valid
+                    ? Transform(patientMarker).Coordinates
+                    : new EntityCoordinates(gridUid, new Vector2(0.5f, 0.5f));
+                if (patientMarker.Valid)
+                    Del(patientMarker);
+
                 medicalPatient = PrepareMedicalPatient(
-                    gridUid,
-                    patientMarker.Valid ? patientMarker : null);
+                    patientCoordinates);
             }
             else
             {
@@ -1237,14 +1249,36 @@ public sealed partial class RMCOnboardingSystem : EntitySystem
         _skills.SetSkills(mob, new Dictionary<EntProtoId<SkillDefinitionComponent>, int>(preset.Skills));
     }
 
-    private EntityUid PrepareMedicalPatient(EntityUid grid, EntityUid? existingPatient)
+    private void ApplyMedicalMercenarySkills(EntityUid mob)
     {
-        var patient = existingPatient ?? _stationSpawning.SpawnPlayerMob(
-            new EntityCoordinates(grid, new Vector2(0.5f, 0.5f)),
-            "AU14VAISOMachinegunner",
-            null,
-            null);
-        _stationSpawning.EquipStartingGear(patient, "AU14GearVAISOMachinegunner", raiseEvent: false);
+        _skills.SetSkills(mob, new Dictionary<EntProtoId<SkillDefinitionComponent>, int>
+        {
+            ["RMCSkillCqc"] = 1,
+            ["RMCSkillEngineer"] = 1,
+            ["RMCSkillConstruction"] = 1,
+            ["RMCSkillFirearms"] = 2,
+            ["RMCSkillMedical"] = 1,
+            ["RMCSkillMeleeWeapons"] = 1,
+            ["RMCSkillPolice"] = 2,
+            ["RMCSkillFireman"] = 3,
+            ["RMCSkillVehicles"] = 2,
+            ["RMCSkillJtac"] = 1,
+            ["RMCSkillEndurance"] = 2,
+        });
+    }
+
+    private EntityUid SpawnMedicalRole(string prototype, EntityCoordinates coordinates)
+    {
+        var role = EntityManager.CreateEntityUninitialized(prototype, coordinates);
+        _entityPreset.SuppressPreset(role);
+        EntityManager.InitializeAndStartEntity(role);
+        return role;
+    }
+
+    private EntityUid PrepareMedicalPatient(EntityCoordinates coordinates)
+    {
+        var patient = SpawnMedicalRole("AU14VAISOMachinegunner", coordinates);
+        _entityPreset.ApplyPreset(patient, "AU14VAISOMGPreset");
 
         var parts = _body.GetBodyChildren(patient).ToArray();
         var arm = parts.FirstOrDefault(part => part.Component.PartType == BodyPartType.Arm);
@@ -1282,8 +1316,21 @@ public sealed partial class RMCOnboardingSystem : EntitySystem
         criticalDamage.DamageDict["Asphyxiation"] = FixedPoint2.New(100);
         _damageable.TryChangeDamage(patient, criticalDamage, ignoreResistances: true);
         _mobState.ChangeMobState(patient, MobState.Critical);
-        _standing.Down(patient, playSound: false, dropHeldItems: true, force: true);
+        _standing.Down(patient, playSound: false, dropHeldItems: false, force: true);
         return patient;
+    }
+
+    private void EquipMedicalIfak(EntityUid mob)
+    {
+        if (_inventory.TryGetSlotEntity(mob, "pocket1", out var occupied))
+            Del(occupied.Value);
+
+        var ifak = SpawnAtPosition("AU14PouchIFAKFill", Transform(mob).Coordinates);
+        if (_inventory.TryEquip(mob, ifak, "pocket1", silent: true, force: true))
+            return;
+
+        QueueDel(ifak);
+        throw new InvalidOperationException("Could not equip the onboarding medical IFAK.");
     }
 
     private void RecoverMedicalPatient(RMCOnboardingSession active)
@@ -1360,7 +1407,7 @@ public sealed partial class RMCOnboardingSystem : EntitySystem
         lethalDamage.DamageDict["Asphyxiation"] = FixedPoint2.New(300);
         _damageable.TryChangeDamage(corpse, lethalDamage, ignoreResistances: true);
         _mobState.ChangeMobState(corpse, MobState.Dead);
-        _standing.Down(corpse, playSound: false, dropHeldItems: true, force: true);
+        _standing.Down(corpse, playSound: false, dropHeldItems: false, force: true);
         active.CprBody = corpse;
     }
 
