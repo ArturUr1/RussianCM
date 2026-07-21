@@ -16,14 +16,8 @@ rank-AU14RankLACNPettyOfficerSecondClass = Старшина 2-й статьи
 rank-AU14RankLACNPettyOfficerFirstClass = Старшина 1-й статьи
   .prefix = Ст. 1ст.
 
-rank-AU14RankLACNPettyOfficerSecondClass = Петти офицер 2-й статьи
-  .prefix = Петти оф. 2ст.
-
-rank-AU14RankLACNPettyOfficerFirstClass = Петти офицер 1-й статьи
-  .prefix = Петти оф. 1ст.
-
-rank-AU14RankLACNChiefPettyOfficer = Главный петти офицер
-  .prefix = Гл. Петти оф.
+rank-AU14RankLACNChiefPettyOfficer = Главный старшина
+  .prefix = Гл. Ст.
 
 rank-AU14RankLACNSeniorChief = Старший чиф
   .prefix = Ст. чиф
@@ -38,25 +32,25 @@ rank-AU14RankLACNEnsign = Энсин
   .prefix = Энсин
 
 rank-AU14RankLACNLieutenantJuniorGrade = Младший лейтенант флота
-  .prefix = Мл. Лейт. флота
+  .prefix = Мл. Лейт.
 
 rank-AU14RankLACNLieutenant = Лейтенант флота
-  .prefix = Лейт. флота
+  .prefix = Лейт.
 
 rank-AU14RankLACNLieutenantCommander = Лейтенант-коммодор флота
-  .prefix = Лейт.-ком. флота
+  .prefix = Лейт.-ком.
 
 rank-AU14RankLACNCommander = Коммодор флота
-  .prefix = Комм. флота
+  .prefix = Комм.
 
 rank-AU14RankLACNCaptain = Капитан флота
-  .prefix = Кап. флота
+  .prefix = Кап.
 
 rank-AU14RankLACNRearAdmiral = Контр-адмирал
-  .prefix = Контр-адмирал
+  .prefix = Контр-адм.
 
 rank-AU14RankLACNViceAdmiral = Вице-адмирал
-  .prefix = Вице-адмирал
+  .prefix = Вице-адм.
 
 rank-AU14RankLACNAdmiral = Адмирал
-  .prefix = Адмирал
+  .prefix = Адм.
