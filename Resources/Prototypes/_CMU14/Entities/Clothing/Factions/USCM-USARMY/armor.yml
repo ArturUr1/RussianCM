@@ -349,8 +349,29 @@
   parent: [RMCAllowSuitStorageClothingArmorVest, RMCBaseArmor]
   id: AU14USASFICPS2
   name: USASF ICPS-2 Aircrew Armor
-  description: A set of ballistic armor used by USASF aircrew.
+  description: A set of ballistic armor used by USASF aircrew with an attached oxygen tank.
   components:
+  - type: ActivatableUI
+    key: enum.SharedGasTankUiKey.Key
+  - type: UserInterface
+    interfaces:
+      enum.SharedGasTankUiKey.Key:
+        type: GasTankBoundUserInterface
+  - type: GasTank
+    outputPressure: 21.3
+    air:
+      # 31 minutes
+      volume: 5
+      moles:
+      - 2.051379050 # oxygen
+      temperature: 293.15
+  - type: Tag
+    tags:
+    - GasTank
+  - type: UseDelay
+    delays:
+      gasTank:
+        length: 1.0
   - type: Sprite
     sprite: _AU14/Clothing/USASFSecurityForces/USASFPilot/armor.rsi
   - type: RMCArmorSpeedTier
@@ -534,6 +555,78 @@
   - type: ClothingSpeedModifier # light armor speed
     walkModifier: .725
     sprintModifier: .725
+
+- type: entity
+  parent: AU14BaseArmor
+  id: AU14CamoArmorM3Smooth
+  name: M3 pattern smooth USCM armor
+  components:
+  - type: Sprite
+    sprite: _AU14/Clothing/JungleArmor/uscmarmorone.rsi
+  - type: ItemCamouflage
+    camouflageVariations:
+      Jungle: _AU14/Clothing/JungleArmor/uscmarmorone.rsi
+      Desert: _AU14/Clothing/DesertArmor/uscmarmorone.rsi
+      Snow: _AU14/Clothing/JungleArmor/uscmarmorone.rsi
+      Classic: _AU14/Clothing/JungleArmor/uscmarmorone.rsi
+      Urban: _AU14/Clothing/JungleArmor/uscmarmorone.rsi
+
+- type: entity
+  parent: AU14BaseArmor
+  id: AU14CamoArmorM3Ribbed
+  name: M3 pattern ribbed USCM armor
+  components:
+  - type: Sprite
+    sprite: _AU14/Clothing/JungleArmor/uscmarmortwo.rsi
+  - type: ItemCamouflage
+    camouflageVariations:
+      Jungle: _AU14/Clothing/JungleArmor/uscmarmortwo.rsi
+      Desert: _AU14/Clothing/DesertArmor/uscmarmortwo.rsi
+      Snow: _AU14/Clothing/JungleArmor/uscmarmortwo.rsi
+      Classic: _AU14/Clothing/JungleArmor/uscmarmortwo.rsi
+      Urban: _AU14/Clothing/JungleArmor/uscmarmortwo.rsi
+
+- type: entity
+  parent: AU14BaseArmor
+  id: AU14CamoArmorM3Dimpled
+  name: M3 pattern dimpled USCM armor
+  components:
+  - type: Sprite
+    sprite: _AU14/Clothing/JungleArmor/uscmarmorthree.rsi
+  - type: ItemCamouflage
+    camouflageVariations:
+      Jungle: _AU14/Clothing/JungleArmor/uscmarmorthree.rsi
+      Desert: _AU14/Clothing/DesertArmor/uscmarmorthree.rsi
+      Snow: _AU14/Clothing/JungleArmor/uscmarmorthree.rsi
+      Classic: _AU14/Clothing/JungleArmor/uscmarmorthree.rsi
+      Urban: _AU14/Clothing/JungleArmor/uscmarmorthree.rsi
+
+- type: entity
+  parent: [ RMCAllowSuitStorageClothingSmartgunner, AU14BaseArmor ]
+  id: AU14CamoArmorSmartGunCombatHarness
+  name: M56 Combat Harness
+  description: An M56 Combat Harness specially made for Smartgunners.
+  components:
+  - type: Sprite
+    sprite: _AU14/Clothing/JungleArmor/uscmarmorsmartgunner.rsi
+  - type: Storage
+    maxItemSize: Small
+    grid:
+    - 0,0,3,1 # 2 slots
+  - type: RMCArmorSpeedTier
+    speedTier: light
+  - type: ClothingSpeedModifier
+    walkModifier: .725
+    sprintModifier: .725
+  - type: ClothingBlockBackpack
+  - type: SmartGunArmor
+  - type: ItemCamouflage
+    camouflageVariations:
+      Jungle: _AU14/Clothing/JungleArmor/uscmarmorsmartgunner.rsi
+      Desert: _AU14/Clothing/DesertArmor/uscmarmorsmartgunner.rsi
+      Snow: _AU14/Clothing/JungleArmor/uscmarmorsmartgunner.rsi
+      Classic: _AU14/Clothing/JungleArmor/uscmarmorsmartgunner.rsi
+      Urban: _AU14/Clothing/JungleArmor/uscmarmorsmartgunner.rsi
 
 - type: entity
   parent: AU14BaseArmor

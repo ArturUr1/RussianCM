@@ -75,6 +75,7 @@ namespace Content.Shared.Chat
 
         // CMU14
         public NetEntity GhostFollowEntity;
+        public NetEntity XenoWatchEntity;
         // CMU14
 
         /// <summary>
@@ -117,13 +118,15 @@ namespace Content.Shared.Chat
             bool repeatCheckSender = true,
             ChatDisplayMetadata? display = null,
             string? languageIcon = null, // RMC14
-            NetEntity ghostFollowEntity = default) // CMU14
+            NetEntity ghostFollowEntity = default,
+            NetEntity xenoWatchEntity = default) // CMU14
         {
             Channel = channel;
             Message = message;
             WrappedMessage = wrappedMessage;
             SenderEntity = source;
             GhostFollowEntity = ghostFollowEntity;
+            XenoWatchEntity = xenoWatchEntity;
             SenderKey = senderKey;
             HideChat = hideChat;
             MessageColorOverride = colorOverride;
@@ -145,6 +148,7 @@ namespace Content.Shared.Chat
             WrappedMessage = copyFrom.WrappedMessage;
             SenderEntity = copyFrom.SenderEntity;
             GhostFollowEntity = copyFrom.GhostFollowEntity;
+            XenoWatchEntity = copyFrom.XenoWatchEntity;
             SenderKey = copyFrom.SenderKey;
             HideChat = copyFrom.HideChat;
             MessageColorOverride = copyFrom.MessageColorOverride;

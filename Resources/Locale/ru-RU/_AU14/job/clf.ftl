@@ -23,11 +23,19 @@ au14-job-description-clfmachinegunner = Сражайтесь за КОФ, под
 au14-job-prefix-clfmachinegunner = ПУЛ
 AU14JobCLFMachineGunner = Пулемётчик КОФ
 
+au14-job-name-clfradiooperator = Радиооператор КОФ
+au14-job-description-clfradiooperator = Носите ранцевую радиостанцию AN/PRC-117G ячейки, поддерживайте работу сети и передавайте сообщения между лидером ячейки и бойцами в поле.
+au14-job-prefix-clfradiooperator = РАД
+AU14JobCLFRadioOperator = Радиооператор КОФ
+
 au14-job-name-clfcellleader = Лидер ячейки КОФ
 au14-job-description-clfcellleader = Возглавьте своих людей и захватите колонию. Вытесните, захватите в заложники и/или уничтожьте любые правительственные силы, которые не сдадутся. Убедите местных гражданских присоединиться к вашему делу.
 au14-job-prefix-clfcellleader = ЛИД
 AU14JobCLFCellLeader = Лидер ячейки КОФ
 
+AU14JobCLFSapper = Сапёр КОФ
+
+# Missing entries synced from en-US
 au14-job-name-clfguerilla-alt = Боец КОФ (сторонний)
 
 au14-ghost-role-insurgent-reinforcements-name = Подкрепление повстанцев

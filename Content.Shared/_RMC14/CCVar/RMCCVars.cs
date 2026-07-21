@@ -170,6 +170,9 @@ public sealed partial class RMCCVars : CVars
     public static readonly CVarDef<int> RMCDropshipHijackTravelTimeSeconds =
         CVarDef.Create("rmc.dropship_hijack_travel_time_seconds", 180, CVar.REPLICATED | CVar.SERVER);
 
+    public static readonly CVarDef<bool> ThirdPartyDropshipReusable =
+        CVarDef.Create("rmc.thirdparty_dropship_reusable", true, CVar.REPLICATED | CVar.SERVER);
+
     public static readonly CVarDef<bool> RMCEntitiesLogDelete =
         CVarDef.Create("rmc.entities_log_delete", false, CVar.SERVER | CVar.SERVERONLY);
 
@@ -303,10 +306,10 @@ public sealed partial class RMCCVars : CVars
         CVarDef.Create("rmc.playtime_amethyst_medal_time_hours", 120, CVar.REPLICATED | CVar.SERVER);
 
     public static readonly CVarDef<int> RMCPlaytimeEmeraldMedalTimeHours =
-        CVarDef.Create("rmc.playtime_emerald_medal_time_hours", 1000, CVar.REPLICATED | CVar.SERVER);
+        CVarDef.Create("rmc.playtime_emerald_medal_time_hours", 200, CVar.REPLICATED | CVar.SERVER); // RuCM Изменение времени для последних медалей
 
     public static readonly CVarDef<int> RMCPlaytimePrismaticMedalTimeHours =
-        CVarDef.Create("rmc.playtime_prismatic_medal_time_hours", 1500, CVar.REPLICATED | CVar.SERVER);
+        CVarDef.Create("rmc.playtime_prismatic_medal_time_hours", 500, CVar.REPLICATED | CVar.SERVER); // RuCM Изменение времени для последних медалей
     // For the future coder: 2100, 2800, 3600, 4500
 
     public static readonly CVarDef<int> RMCPlaytimeXenoPrefixThreeTimeHours =

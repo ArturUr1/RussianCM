@@ -44,6 +44,21 @@ construction-editor-new-category = New category name…
 construction-editor-add-new = Add new…
 construction-editor-confirm = Confirm
 construction-editor-material-custom = Custom…
+construction-editor-common-material-metal = Metal
+construction-editor-common-material-plasteel = Plasteel
+construction-editor-common-material-glass = Glass
+construction-editor-common-material-reinforced-glass = Reinforced Glass
+construction-editor-common-material-phoron-glass = Phoron Glass
+construction-editor-common-material-phoron = Phoron
+construction-editor-common-material-wood = Wood
+construction-editor-common-material-aluminum = Aluminum
+construction-editor-common-material-plastic = Plastic
+construction-editor-common-material-cardboard = Cardboard
+construction-editor-tool-wrench = Wrench
+construction-editor-tool-welder = Welder
+construction-editor-tool-screwdriver = Screwdriver
+construction-editor-tool-crowbar = Crowbar
+construction-editor-tool-wirecutter = Wirecutter
 construction-editor-material-notfound = Material "{ $material }" not found — pick a valid one.
 construction-editor-steps = Recipe steps
 construction-editor-material = Custom stack id (e.g. Steel)
@@ -105,7 +120,36 @@ gmod-construction-menu-items-editor = Construction Items Editor
 gmod-construction-menu-tiles-editor = Tiles Editor
 gmod-construction-menu-lathe-editor = Lathe Editor
 gmod-construction-menu-zlevel-toggles = Z-Level Toggles
+gmod-construction-menu-spawnlist-delete = Delete Spawnlist
 construction-menu-editor-not-admin = You are not an admin - the editor won't open.
+
+## Spawnlist Delete tool (Admin Tools → Delete Spawnlist)
+
+construction-spawnlist-delete-title = Delete Spawnlist
+construction-spawnlist-delete-pick = Spawnlist to delete (with its recipe count):
+construction-spawnlist-delete-option = { $spawnlist } ({ $count } recipes)
+construction-spawnlist-delete-none = No spawnlists with generated recipes.
+construction-spawnlist-delete-arm = Delete…
+construction-spawnlist-delete-confirm = CONFIRM DELETE
+construction-spawnlist-delete-warning = This deletes EVERY generated recipe in "{ $spawnlist }". Confirm unlocks shortly…
+construction-spawnlist-delete-ready = Ready - confirming deletes "{ $spawnlist }" and all its recipes.
+construction-menu-spawnlist-deleted = Deleted spawnlist "{ $spawnlist }" ({ $count } recipes removed).
+construction-spawnlist-delete-pick-category = Scope (delete one category, or the whole spawnlist):
+construction-spawnlist-delete-category-all = Whole spawnlist (every category)
+construction-spawnlist-delete-category-option = { $category } ({ $count } recipes)
+construction-spawnlist-delete-category-warning = This deletes EVERY generated recipe in category "{ $category }" of "{ $spawnlist }". Confirm unlocks shortly…
+construction-spawnlist-delete-category-ready = Ready - confirming deletes category "{ $category }" of "{ $spawnlist }" and all its recipes.
+construction-menu-spawnlist-category-deleted = Deleted category "{ $category }" of spawnlist "{ $spawnlist }" ({ $count } recipes removed).
+
+## DB save preview (human-in-the-loop confirm before any Save writes files/database rows)
+
+construction-db-preview-title = Confirm Save - Pending Changes
+construction-db-preview-summary = { $kind }: { $planned } write(s) planned, { $rejected } rejected. Review, then confirm.
+construction-db-preview-confirm = Confirm Save
+construction-db-preview-cancel = Cancel
+construction-db-preview-kind-entry = Construction entry
+construction-db-preview-kind-mass = Mass entities
+construction-db-preview-kind-mass-tiles = Mass tiles
 
 ## Utilities → INSFOR
 
@@ -140,6 +184,8 @@ construction-tile-editor-page-zlevel = Z-Level (Experimental)
 construction-tile-editor-page-spawnlists = Spawnlists
 construction-tile-editor-spawnlist = Spawnlist (Spawnlists page only)
 construction-tile-editor-category = Category
+construction-tile-editor-default-category = Flooring
+construction-menu-mass-invalid-tiles = invalid tiles
 construction-tile-editor-material = Material
 construction-tile-editor-amount = Cost (sheets)
 construction-tile-editor-selected = Selected tile: { $tile }
@@ -169,3 +215,70 @@ construction-menu-lathe-added = Added { $item } to the { $lathe }. Applies next 
 construction-menu-lathe-removed = Removed lathe recipe { $recipe }. Applies next restart.
 construction-lathe-editor-existing = Existing added recipes (click to remove)
 construction-lathe-editor-remove = Remove
+
+# Mass Entity Editor (Admin Tools): batch-add many entities under one recipe
+gmod-construction-menu-mass-editor = Mass Entity Editor
+construction-mass-selector-title = Mass Entity Editor - Select Entities
+construction-mass-selector-parent-search = Search parent prototypes...
+construction-mass-selector-parent-all = All parents
+construction-mass-selector-select-all = Select All Shown
+construction-mass-selector-clear = Clear
+construction-mass-selector-confirm = Continue
+construction-mass-selector-count = Selected: {$count}
+construction-menu-mass-item-name = {$count} selected entities
+construction-menu-mass-none = None of the selected entities are valid.
+construction-menu-mass-added = Added {$added} items to {$category} ({$recipe}).
+construction-menu-mass-partial = Added {$added} items, {$failed} failed ({$reason}).
+
+# Mass Entity Editor - Tiles mode
+construction-mass-selector-tiles = Tiles
+construction-mass-tiles-title = Mass Tile Recipe ({$count} tiles)
+construction-menu-mass-tiles-added = Added {$added} tiles to {$category}.
+
+# Z-Sync Lists (Admin Tools): which walls mirror across z-levels as map borders
+gmod-construction-menu-zsync-lists = Z-Sync Lists
+au-zsync-title = Z-Sync Lists - Multi-Level Border Reflection
+au-zsync-browser-header = All entities (select, then add to a list)
+au-zsync-lists-header = Current lists
+au-zsync-whitelist = Whitelist (reflected across z-levels)
+au-zsync-blacklist = Blacklist (never reflected, overrides whitelist)
+au-zsync-add-whitelist = Add to Whitelist
+au-zsync-add-blacklist = Add to Blacklist
+au-zsync-pick-whitelist = Pick Entity -> Whitelist
+au-zsync-pick-blacklist = Pick Entity -> Blacklist
+au-zsync-remove-selected = Remove Selected
+au-zsync-changed = Z-sync {$list} updated ({$count} changed).
+au-zsync-picked = Added {$proto} to z-sync {$list}.
+au-zsync-pick-instruction = Click an in-round entity to add its prototype to the selected z-sync list. Right-click to cancel.
+au-zsync-pick-no-entity = No entity under cursor.
+au-zsync-pick-cancelled = Z-sync entity pick cancelled.
+au-zsync-scope-button = Scope: {$scope}
+au-zsync-scope-global = Global (all maps)
+au-zsync-scope-maps = {$count} map(s)
+au-zsync-scope-header = Edit scope
+au-zsync-scope-global-button = Global
+au-zsync-scope-info = Editing z-sync for: {$scope}
+au-zsync-move-to-whitelist = Move Selected to Whitelist
+au-zsync-move-to-blacklist = Move Selected to Blacklist
+au-zsync-conflict-title = Already on the opposite list
+au-zsync-conflict-text = These entities are already on the {$list}. Confirm moves them over, Ignore adds only the others.
+au-zsync-confirm = Confirm
+au-zsync-ignore = Ignore
+
+# Tool Permissions (Admin Tools): Host-only per-ckey grants for the editor tools
+gmod-construction-menu-tool-permissions = Tool Permissions
+au14-toolperm-title = Tool Permissions - Editor Access by Ckey
+au14-toolperm-grant-header = Grant a tool (ckey works even if the player is offline)
+au14-toolperm-ckey-placeholder = ckey...
+au14-toolperm-grant = Grant
+au14-toolperm-users-header = Users with permissions (click a ckey to expand)
+au14-toolperm-none = Nobody has tool grants yet.
+au14-toolperm-remove = Remove
+au14-toolperm-tool-construction = Construction Items Editor
+au14-toolperm-tool-mass = Mass Entity Editor
+au14-toolperm-tool-tiles = Tiles Editor
+au14-toolperm-tool-lathe = Lathe Editor
+au14-toolperm-tool-zleveltoggles = Z-Level Toggles
+au14-toolperm-tool-zsync = Z-Sync Lists
+au14-toolperm-tool-insfor = INSFOR Editor
+au14-toolperm-tool-spawnlistdelete = Spawnlist Delete
