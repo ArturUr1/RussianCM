@@ -32,25 +32,25 @@ rank-AU14RankLACNEnsign = Энсин
   .prefix = Энсин
 
 rank-AU14RankLACNLieutenantJuniorGrade = Младший лейтенант флота
-  .prefix = Мл. Лейт.
+  .prefix = Мл. Лейт. фл.
 
 rank-AU14RankLACNLieutenant = Лейтенант флота
-  .prefix = Лейт.
+  .prefix = Лейт. фл.
 
-rank-AU14RankLACNLieutenantCommander = Лейтенант-коммодор флота
-  .prefix = Лейт.-ком.
+rank-AU14RankLACNLieutenantCommander = Лейтенант-командор флота
+  .prefix = Лейт.-ком. фл.
 
-rank-AU14RankLACNCommander = Коммодор флота
-  .prefix = Комм.
+rank-AU14RankLACNCommander = Командор флота
+  .prefix = Ком. фл.
 
 rank-AU14RankLACNCaptain = Капитан флота
-  .prefix = Кап.
+  .prefix = Кап. фл.
 
 rank-AU14RankLACNRearAdmiral = Контр-адмирал
-  .prefix = Контр-адм.
+  .prefix = Контр-адмирал
 
 rank-AU14RankLACNViceAdmiral = Вице-адмирал
-  .prefix = Вице-адм.
+  .prefix = Вице-адмирал
 
 rank-AU14RankLACNAdmiral = Адмирал
-  .prefix = Адм.
+  .prefix = Адмирал
