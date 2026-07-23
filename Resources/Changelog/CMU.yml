@@ -17002,5 +17002,33 @@
   id: 503
   time: '2026-07-21T15:18:49.0000000+00:00'
   url: https://github.com/flex5hybrid/RussianCM/pull/333
+- author: jok989372-lgtm
+  changes:
+  - message: "\u0414\u043E\u0431\u0430\u0432\u043B\u0435\u043D\u0430 \u0442\u044F\u0436\
+      \u0435\u043B\u0430\u044F \u0448\u0442\u0443\u0440\u043C\u043E\u0432\u0430\u044F\
+      \ \u0431\u0440\u043E\u043D\u044F \u042E\u041F\u041F \u043A\u0430\u043A \u0437\
+      \u0430\u043C\u0435\u043D\u0430 \u043A\u0435\u0440\u0430\u043C\u0438\u043A\u0435\
+      \ \u041A\u0410\u041D\u041A\u0443."
+    type: Add
+  id: 507
+  time: '2026-07-23T03:00:16.0000000+00:00'
+  url: https://github.com/flex5hybrid/RussianCM/pull/315
+- author: RomiGur
+  changes:
+  - message: "\u041C\u0430\u0447\u0435\u0442\u0435 \u0431\u043E\u043B\u044C\u0448\u0435\
+      \ \u043D\u0435\u043B\u044C\u0437\u044F \u043F\u043E\u043B\u043E\u0436\u0438\u0442\
+      \u044C \u0432 \u0448\u043B\u0435\u043C."
+    type: Fix
+  id: 506
+  time: '2026-07-23T03:00:23.0000000+00:00'
+  url: https://github.com/flex5hybrid/RussianCM/pull/336
+- author: EmperorStukov
+  changes:
+  - message: "\u0418\u0441\u043F\u0440\u0430\u0432\u043B\u0435\u043D\u0430 \u043B\u043E\
+      \u043A\u0430\u043B\u044C"
+    type: Fix
+  id: 508
+  time: '2026-07-23T03:00:30.0000000+00:00'
+  url: https://github.com/flex5hybrid/RussianCM/pull/338
 Name: CMU
 Order: -1
