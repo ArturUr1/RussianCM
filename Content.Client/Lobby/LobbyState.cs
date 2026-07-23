@@ -50,6 +50,7 @@ namespace Content.Client.Lobby
         private Robust.Client.UserInterface.Controls.Button? _joinGovforButton;
         private Robust.Client.UserInterface.Controls.Button? _joinOpforButton;
         private Robust.Client.UserInterface.Controls.Button? _joinOtherButton;
+        private LobbyTerminalMode? _terminalMode;
 
         protected override Type? LinkedScreenType { get; } = typeof(LobbyGui);
         public LobbyGui? Lobby;
@@ -62,6 +63,8 @@ namespace Content.Client.Lobby
             }
 
             Lobby = (LobbyGui) _userInterfaceManager.ActiveScreen;
+            _terminalMode = null;
+            Lobby.StartBootSequence();
 
             var chatController = _userInterfaceManager.GetUIController<ChatUIController>();
             _gameTicker = _entityManager.System<ClientGameTicker>();
@@ -79,13 +82,17 @@ namespace Content.Client.Lobby
             Lobby.ServerName.Text = string.IsNullOrEmpty(lobbyNameCvar)
                 ? Loc.GetString("ui-lobby-title", ("serverName", serverName))
                 : lobbyNameCvar;
+            Lobby.TerminalSource.Text = Loc.GetString(
+                "lobby-terminal-source",
+                ("serverName", string.IsNullOrWhiteSpace(serverName) ? "CMU-14" : serverName));
 
             var width = _cfg.GetCVar(CCVars.ServerLobbyRightPanelWidth);
-            Lobby.RightSide.SetWidth = width;
+            Lobby.SetRightPanelWidth(width);
 
             UpdateLobbyUi();
 
             Lobby.CharacterPreview.CharacterSetupButton.OnPressed += OnSetupPressed;
+            Lobby.CharacterSetupQuickButton.OnPressed += OnSetupPressed;
             Lobby.CharacterPreview.LinkAccountButtonControl.OnPressed += OnLinkAccountPressed;
             Lobby.CharacterPreview.PatronPerks.OnPressed += OnPatronPerksPressed;
             Lobby.CharacterPreview.PrevCharacterButton.OnPressed += OnPrevCharPressed;
@@ -104,14 +111,12 @@ namespace Content.Client.Lobby
             if (_joinGovforButton != null)
             {
                 _joinGovforButton.OnPressed += OnJoinGovforPressed;
-                _joinGovforButton.AddStyleClass("OpenRight");
             }
 
             _joinOpforButton = Lobby.FindControl<Robust.Client.UserInterface.Controls.Button>("JoinOpforButton");
             if (_joinOpforButton != null)
             {
                 _joinOpforButton.OnPressed += OnJoinOpforPressed;
-                _joinOpforButton.AddStyleClass("OpenRight");
             }
 
             // 'Other' opens ghost roles UI (all ghost roles)
@@ -119,7 +124,6 @@ namespace Content.Client.Lobby
             if (_joinOtherButton != null)
             {
                 _joinOtherButton.OnPressed += OnJoinOtherPressed;
-                _joinOtherButton.AddStyleClass("OpenRight");
             }
         }
 
@@ -135,6 +139,7 @@ namespace Content.Client.Lobby
             _voteManager.ClearPopupContainer();
 
             Lobby!.CharacterPreview.CharacterSetupButton.OnPressed -= OnSetupPressed;
+            Lobby.CharacterSetupQuickButton.OnPressed -= OnSetupPressed;
             Lobby.CharacterPreview.LinkAccountButtonControl.OnPressed -= OnLinkAccountPressed;
             Lobby.CharacterPreview.PatronPerks.OnPressed -= OnPatronPerksPressed;
             Lobby.CharacterPreview.PrevCharacterButton.OnPressed -= OnPrevCharPressed;
@@ -200,6 +205,8 @@ namespace Content.Client.Lobby
 
         public override void FrameUpdate(FrameEventArgs e)
         {
+            UpdateTerminalUi();
+
             if (_gameTicker.IsGameStarted)
             {
                 Lobby!.StartTime.Text = string.Empty;
@@ -264,7 +271,6 @@ namespace Content.Client.Lobby
                 Lobby!.ObserveButton.Disabled = false;
 
                 // RMC14
-                Lobby.ReadyButton.AddStyleClass("OpenLeft");
                 if (_joinGovforButton != null) _joinGovforButton.Visible = true;
                 if (_joinOpforButton != null) _joinOpforButton.Visible = true;
                 if (_joinOtherButton != null) _joinOtherButton.Visible = true;
@@ -279,7 +285,6 @@ namespace Content.Client.Lobby
                 Lobby!.ObserveButton.Disabled = true;
 
                 // RMC14
-                Lobby.ReadyButton.RemoveStyleClass("OpenLeft");
                 if (_joinGovforButton != null) _joinGovforButton.Visible = false;
                 if (_joinOpforButton != null) _joinOpforButton.Visible = false;
                 if (_joinOtherButton != null) _joinOtherButton.Visible = false;
@@ -309,6 +314,46 @@ namespace Content.Client.Lobby
             }
             else
                 Lobby!.PlaytimeComment.Visible = false;
+
+            UpdateTerminalUi();
+        }
+
+        private void UpdateTerminalUi()
+        {
+            if (Lobby == null)
+                return;
+
+            TimeSpan? remaining = null;
+            if (!_gameTicker.IsGameStarted)
+                remaining = _gameTicker.StartTime - _gameTiming.CurTime;
+
+            Lobby.TerminalBackground.SetLobbyState(
+                _gameTicker.IsGameStarted,
+                _gameTicker.Paused,
+                _gameTicker.AreWeReady,
+                remaining);
+
+            var mode = Lobby.TerminalBackground.Mode;
+            var accent = Lobby.TerminalBackground.AccentColor;
+            Lobby.TerminalStatus.FontColorOverride = accent;
+            Lobby.StartTime.FontColorOverride = accent;
+
+            if (_terminalMode == mode)
+                return;
+
+            _terminalMode = mode;
+
+            var statusKey = mode switch
+            {
+                LobbyTerminalMode.Ready => "lobby-terminal-status-ready",
+                LobbyTerminalMode.Countdown => "lobby-terminal-status-countdown",
+                LobbyTerminalMode.Imminent => "lobby-terminal-status-imminent",
+                LobbyTerminalMode.Paused => "lobby-terminal-status-paused",
+                LobbyTerminalMode.InProgress => "lobby-terminal-status-in-progress",
+                _ => "lobby-terminal-status-waiting",
+            };
+
+            Lobby.TerminalStatus.Text = Loc.GetString(statusKey);
         }
 
         private void UpdateLobbySoundtrackInfo(LobbySoundtrackChangedEvent ev)
@@ -342,6 +387,12 @@ namespace Content.Client.Lobby
 
         private void UpdateLobbyBackground()
         {
+            if (!Lobby!.Background.Visible)
+            {
+                Lobby.Background.Texture = null;
+                return;
+            }
+
             if (_gameTicker.LobbyBackground != null)
             {
                 Lobby!.Background.Texture = _resourceCache.GetResource<TextureResource>(_gameTicker.LobbyBackground );
