@@ -23,9 +23,9 @@
                 <BoxContainer Name="DefaultState" Orientation="Vertical"
                               VerticalExpand="True" HorizontalExpand="True">
                     <!-- Voting popups reserve space instead of covering primary actions. -->
-                    <BoxContainer Orientation="Vertical" SeparationOverride="4" Name="VoteContainer"
+                    <!-- <BoxContainer Orientation="Vertical" SeparationOverride="4" Name="VoteContainer"
                                   Access="Public" HorizontalAlignment="Left" VerticalAlignment="Top"
-                                  Margin="8 8 8 4" />
+                                  Margin="8 8 8 4" /> -->
 
                     <Control VerticalExpand="True" HorizontalExpand="True">
                         <!-- Camera channel labels, inspired by the compact CM-SS13 lobby composition. -->
@@ -38,7 +38,7 @@
 
                         <!-- Compact primary-action terminal. -->
                         <PanelContainer Name="TerminalCard" Access="Public" StyleClasses="CrtPanel"
-                                        HorizontalAlignment="Center" VerticalAlignment="Center"
+                                        HorizontalAlignment="Left" VerticalAlignment="Center"
                                         MinWidth="320" MaxWidth="440">
                             <BoxContainer Orientation="Vertical" Margin="12 10 12 12" SeparationOverride="5">
                                 <BoxContainer Name="TerminalHeader" Access="Public" Orientation="Vertical"
@@ -91,12 +91,30 @@
                                         Margin="0 75" StyleClasses="CrtPanel" MaxWidth="720">
                             <RichTextLabel Name="LobbyMessageLabel" Access="Public" Margin="5" />
                         </PanelContainer>
-                        <BoxContainer Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Bottom">
-                            <info:DevInfoBanner Name="DevInfoBanner" VerticalExpand="false" Margin="3 3 3 3" />
-                            <PanelContainer StyleClasses="CrtPanel">
-                                <RichTextLabel Name="LobbySong" Access="Public" HorizontalAlignment="Center" />
-                            </PanelContainer>
-                        </BoxContainer>
+                        <BoxContainer Orientation="Horizontal"
+              HorizontalAlignment="Left"
+              VerticalAlignment="Bottom">
+    <info:DevInfoBanner Name="DevInfoBanner"
+                        VerticalExpand="False"
+                        Margin="3 3 3 3" />
+
+    <PanelContainer StyleClasses="CrtPanel">
+        <RichTextLabel Name="LobbySong"
+                       Access="Public"
+                       HorizontalAlignment="Center" />
+    </PanelContainer>
+</BoxContainer>
+
+<!-- Голосования находятся внутри Control и не участвуют в разметке -->
+<BoxContainer Name="VoteContainer"
+              Access="Public"
+              Orientation="Vertical"
+              SeparationOverride="4"
+              HorizontalAlignment="Left"
+              VerticalAlignment="Top"
+              Margin="40 75 0 0"
+              MinWidth="340"
+              MaxWidth="1000" />
                     </Control>
                 </BoxContainer>
                 <!-- Character setup state -->
