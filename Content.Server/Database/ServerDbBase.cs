@@ -1022,11 +1022,12 @@ namespace Content.Server.Database
 
                 dbTimes[playerTimes.Key] = trackers;
             }
-            var dbTimes = (await db.DbContext.PlayTime
-                .Where(p => players.Contains(p.PlayerId))
-                .ToArrayAsync())
-                .GroupBy(p => p.PlayerId)
-                .ToDictionary(g => g.Key, g => g.ToDictionary(p => p.Tracker, p => p));
+            // Это пришло откуда-то из мерджа яутдж.
+            // var dbTimes = (await db.DbContext.PlayTime
+            //     .Where(p => players.Contains(p.PlayerId))
+            //     .ToArrayAsync())
+            //     .GroupBy(p => p.PlayerId)
+            //     .ToDictionary(g => g.Key, g => g.ToDictionary(p => p.Tracker, p => p));
 
             foreach (var (user, tracker, time) in updates)
             {

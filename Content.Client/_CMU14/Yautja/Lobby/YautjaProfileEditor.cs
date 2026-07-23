@@ -47,7 +47,7 @@ public sealed partial class YautjaProfileEditor : ScrollContainer
     {
         MinHeight = 90,
         HorizontalExpand = true,
-        MaxLength = YautjaCharacterProfile.MaxFlavorTextLength,
+        // MaxLength = YautjaCharacterProfile.MaxFlavorTextLength, выдает ошибку.
     };
 
     private readonly GridContainer _skinGrid = new() { Columns = 6 };
