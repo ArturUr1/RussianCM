@@ -1194,6 +1194,10 @@ namespace Content.Server.Database.Migrations.Sqlite
                         .HasDefaultValue("")
                         .HasColumnName("xeno_prefix");
 
+                    b.Property<string>("YautjaProfile")
+                        .HasColumnType("TEXT")
+                        .HasColumnName("yautja_profile");
+
                     b.HasKey("Id")
                         .HasName("PK_profile");
 

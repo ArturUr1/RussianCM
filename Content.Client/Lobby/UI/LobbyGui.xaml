@@ -80,6 +80,9 @@
                                     <Button Name="JoinOtherButton" Access="Public"
                                             Text="{Loc 'rmc-lobby-join-other'}"
                                             StyleClasses="ButtonBig" HorizontalExpand="True" Visible="False" />
+                                    <Button Name="JoinHuntButton" Access="Public"
+                                            Text="{Loc 'rmc-lobby-join-hunt'}"
+                                            StyleClasses="ButtonBig" MinWidth="137" Visible="False" />
                                 </BoxContainer>
                                 <RichTextLabel Name="PlaytimeComment" Visible="False" Access="Public"
                                                HorizontalAlignment="Center" />

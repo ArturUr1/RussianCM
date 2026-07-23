@@ -7,11 +7,13 @@ using Content.Client.LateJoin;
 using Content.Client.Lobby.UI;
 using Content.Client.Message;
 using Content.Client.Playtime;
+using Content.Client.Players.PlayTimeTracking;
 using Content.Client.UserInterface.Systems.Chat;
 using Content.Client.Voting;
 using Content.Shared.AU14.Allegiance;
 using Content.Shared.CCVar;
 using Content.Shared.Preferences;
+using Content.Shared.Roles;
 using Robust.Client;
 using Robust.Client.Console;
 using Robust.Client.ResourceManagement;
@@ -20,6 +22,7 @@ using Robust.Client.UserInterface;
 using Robust.Client.UserInterface.Controls;
 using Robust.Shared.Configuration;
 using Robust.Shared.Timing;
+using Robust.Shared.Prototypes;
 
 namespace Content.Client.Lobby
 {
@@ -38,6 +41,8 @@ namespace Content.Client.Lobby
         // RMC14
         [Dependency] private LinkAccountManager _linkAccount = default!;
         [Dependency] private IClientPreferencesManager _preferencesManager = default!;
+        [Dependency] private IPrototypeManager _prototypeManager = default!;
+        [Dependency] private JobRequirementsManager _jobRequirements = default!;
 
         /// <summary>
         /// Whether the player wants to ignore allegiance for spawning the current character.
@@ -51,6 +56,7 @@ namespace Content.Client.Lobby
         private Robust.Client.UserInterface.Controls.Button? _joinOpforButton;
         private Robust.Client.UserInterface.Controls.Button? _joinOtherButton;
         private LobbyTerminalMode? _terminalMode;
+        private Robust.Client.UserInterface.Controls.Button? _joinHuntButton;
 
         protected override Type? LinkedScreenType { get; } = typeof(LobbyGui);
         public LobbyGui? Lobby;
@@ -105,6 +111,7 @@ namespace Content.Client.Lobby
             _gameTicker.InfoBlobUpdated += UpdateLobbyUi;
             _gameTicker.LobbyStatusUpdated += LobbyStatusUpdated;
             _gameTicker.LobbyLateJoinStatusUpdated += LobbyLateJoinStatusUpdated;
+            _jobRequirements.Updated += JobRequirementsUpdated;
 
             // RMC14: look up join buttons from the loaded XAML and wire handlers
             _joinGovforButton = Lobby.FindControl<Robust.Client.UserInterface.Controls.Button>("JoinGovforButton");
@@ -125,6 +132,15 @@ namespace Content.Client.Lobby
             {
                 _joinOtherButton.OnPressed += OnJoinOtherPressed;
             }
+
+            _joinHuntButton = Lobby.FindControl<Robust.Client.UserInterface.Controls.Button>("JoinHuntButton");
+            if (_joinHuntButton != null)
+            {
+                _joinHuntButton.OnPressed += OnJoinHuntPressed;
+                _joinHuntButton.AddStyleClass("OpenRight");
+            }
+
+            UpdateLobbyUi();
         }
 
         protected override void Shutdown()
@@ -134,6 +150,7 @@ namespace Content.Client.Lobby
             _gameTicker.InfoBlobUpdated -= UpdateLobbyUi;
             _gameTicker.LobbyStatusUpdated -= LobbyStatusUpdated;
             _gameTicker.LobbyLateJoinStatusUpdated -= LobbyLateJoinStatusUpdated;
+            _jobRequirements.Updated -= JobRequirementsUpdated;
             _contentAudioSystem.LobbySoundtrackChanged -= UpdateLobbySoundtrackInfo;
 
             _voteManager.ClearPopupContainer();
@@ -156,6 +173,8 @@ namespace Content.Client.Lobby
                 _joinOpforButton.OnPressed -= OnJoinOpforPressed;
             if (_joinOtherButton != null)
                 _joinOtherButton.OnPressed -= OnJoinOtherPressed;
+            if (_joinHuntButton != null)
+                _joinHuntButton.OnPressed -= OnJoinHuntPressed;
 
             Lobby = null;
         }
@@ -274,6 +293,7 @@ namespace Content.Client.Lobby
                 if (_joinGovforButton != null) _joinGovforButton.Visible = true;
                 if (_joinOpforButton != null) _joinOpforButton.Visible = true;
                 if (_joinOtherButton != null) _joinOtherButton.Visible = true;
+                if (_joinHuntButton != null) _joinHuntButton.Visible = HasYautjaWhitelist();
             }
             else
             {
@@ -288,6 +308,7 @@ namespace Content.Client.Lobby
                 if (_joinGovforButton != null) _joinGovforButton.Visible = false;
                 if (_joinOpforButton != null) _joinOpforButton.Visible = false;
                 if (_joinOtherButton != null) _joinOtherButton.Visible = false;
+                if (_joinHuntButton != null) _joinHuntButton.Visible = false;
             }
 
             if (_gameTicker.ServerInfoBlob != null)
@@ -428,6 +449,24 @@ namespace Content.Client.Lobby
         {
              // Open the ghost roles UI (server-driven) to display all ghost roles
              _consoleHost.RemoteExecuteCommand(null, "ghostroles");
+        }
+
+        private void OnJoinHuntPressed(BaseButton.ButtonEventArgs args)
+        {
+            new LateJoinGui("hunt").OpenCentered();
+        }
+
+        private void JobRequirementsUpdated()
+        {
+            UpdateLobbyUi();
+        }
+
+        private bool HasYautjaWhitelist()
+        {
+            if (!_prototypeManager.TryIndex<JobPrototype>("CMUYautjaHunter", out var hunter))
+                return false;
+
+            return _jobRequirements.CheckWhitelist(hunter, out _);
         }
 
         private void OnPrevCharPressed(BaseButton.ButtonEventArgs args)
