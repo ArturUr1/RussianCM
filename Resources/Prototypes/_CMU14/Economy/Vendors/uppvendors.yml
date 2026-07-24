@@ -124,8 +124,8 @@
         amount: 25
       - id: RuMCUPPPouchFlareFill
         amount: 30
-      #- id: RMCPouchDocumentSmall #Зачем они были добавлены?
-      #  amount: 3
+      - id: RuMCUPPPouchDocument #ok
+        amount: 3
       - id: RuMCUPPPouchMagazine
         amount: 50
       - id: RuMCUPPPouchMagazineLarge
@@ -561,7 +561,7 @@
         name: Bayonet Sheath
       - id: RuMCUPPPouchFlareFill
         name: Flare Pouch (Full)
-      - id: RMCPouchDocumentSmall
+      - id: RuMCUPPPouchDocument
       - id: RuMCUPPPouchMagazine
       - id: RuMCUPPPouchGeneralLarge
       - id: RuMCUPPPouchPistolAlt
