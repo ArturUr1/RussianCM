@@ -48,6 +48,32 @@ public static class XenoBoxerRules
         return XenoBoxerUppercutStage.None;
     }
 
+    public static float GetUppercutDamage(float ko, float damagePerKo)
+    {
+        return GetUppercutStage(ko) >= XenoBoxerUppercutStage.Damage ? ko * damagePerKo : 0;
+    }
+
+    public static float GetUppercutKnockBackPower(float ko, float powerPerKo)
+    {
+        return GetUppercutStage(ko) >= XenoBoxerUppercutStage.KnockBack ? ko * powerPerKo : 0;
+    }
+
+    public static TimeSpan GetUppercutKnockDownDuration(float ko)
+    {
+        return GetUppercutStage(ko) >= XenoBoxerUppercutStage.KnockDown
+            ? TimeSpan.FromSeconds(ko * 0.25)
+            : TimeSpan.Zero;
+    }
+
+    public static float GetUppercutHealAmount(float ko, float maxHealth, float healPercentPerKo, float xenoMultiplier, bool targetIsXeno)
+    {
+        if (ko <= 0 || maxHealth <= 0 || healPercentPerKo <= 0)
+            return 0;
+
+        var multiplier = targetIsXeno ? xenoMultiplier : 1f;
+        return ko * healPercentPerKo * maxHealth * multiplier;
+    }
+
     public static bool TryConsumeClearHead(ref int charges, bool forced)
     {
         if (forced || charges <= 0)

@@ -51,6 +51,31 @@ public sealed class XenoBoxerRulesTest
     }
 
     [Test]
+    public void UppercutScalesDamageAndKnockbackByKo()
+    {
+        Assert.That(XenoBoxerRules.GetUppercutDamage(0, 15), Is.Zero);
+        Assert.That(XenoBoxerRules.GetUppercutDamage(2, 15), Is.EqualTo(30));
+        Assert.That(XenoBoxerRules.GetUppercutKnockBackPower(2.99f, 1), Is.Zero);
+        Assert.That(XenoBoxerRules.GetUppercutKnockBackPower(3, 1), Is.EqualTo(3));
+    }
+
+    [Test]
+    public void UppercutKnockdownUsesQuarterSecondPerKo()
+    {
+        Assert.That(XenoBoxerRules.GetUppercutKnockDownDuration(5.99f), Is.EqualTo(TimeSpan.Zero));
+        Assert.That(XenoBoxerRules.GetUppercutKnockDownDuration(6), Is.EqualTo(TimeSpan.FromSeconds(1.5)));
+        Assert.That(XenoBoxerRules.GetUppercutKnockDownDuration(9), Is.EqualTo(TimeSpan.FromSeconds(2.25)));
+    }
+
+    [Test]
+    public void UppercutHealUsesMaxHealthAndXenoMultiplier()
+    {
+        Assert.That(XenoBoxerRules.GetUppercutHealAmount(0, 600, 0.05f, 0.35f, false), Is.Zero);
+        Assert.That(XenoBoxerRules.GetUppercutHealAmount(2, 600, 0.05f, 0.35f, false), Is.EqualTo(60));
+        Assert.That(XenoBoxerRules.GetUppercutHealAmount(2, 600, 0.05f, 0.35f, true), Is.EqualTo(21));
+    }
+
+    [Test]
     public void ClearHeadConsumesOnlyForNonForcedEffects()
     {
         var charges = 1;

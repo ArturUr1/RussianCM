@@ -1,5 +1,4 @@
 using System;
-using Content.Shared.Damage;
 using Robust.Shared.GameObjects;
 using Robust.Shared.GameStates;
 using Robust.Shared.Prototypes;
@@ -26,6 +25,10 @@ public sealed partial class XenoBoxerComponent : Component
     [DataField(customTypeSerializer: typeof(TimeOffsetSerializer)), AutoNetworkedField]
     public TimeSpan NextClearHeadRegenAt;
 
+    // Clear Head can intercept several status effects during one action tick. This guard is local
+    // state so a single Jab cannot consume two charges.
+    public bool ClearHeadConsumedThisTick;
+
     [DataField]
     public float PunchRange = 2f;
 
@@ -39,6 +42,33 @@ public sealed partial class XenoBoxerComponent : Component
     public float PunchThrowSpeed = 10f;
 
     [DataField]
+    public float PunchKnockBackDistance = 1f;
+
+    [DataField]
+    public float PunchSecondKnockBackChance = 0.25f;
+
+    [DataField]
+    public TimeSpan PunchCooldown = TimeSpan.FromSeconds(4);
+
+    [DataField]
+    public float PunchDamageMin = 20f;
+
+    [DataField]
+    public float PunchDamageMax = 25f;
+
+    [DataField]
+    public float PunchYautjaDamageMin = 25f;
+
+    [DataField]
+    public float PunchYautjaDamageMax = 30f;
+
+    [DataField]
+    public float PunchSynthDamageMin = 30f;
+
+    [DataField]
+    public float PunchSynthDamageMax = 35f;
+
+    [DataField]
     public float JabSlowMultiplier = 0.5f;
 
     [DataField]
@@ -48,25 +78,19 @@ public sealed partial class XenoBoxerComponent : Component
     public TimeSpan JabSlowDuration = TimeSpan.FromSeconds(5);
 
     [DataField]
-    public DamageSpecifier PunchDamage = new()
-    {
-        DamageDict = { ["Blunt"] = 22.5 },
-    };
+    public TimeSpan JabCooldown = TimeSpan.FromSeconds(4);
 
     [DataField]
-    public DamageSpecifier UppercutDamage = new()
-    {
-        DamageDict = { ["Blunt"] = 15 },
-    };
+    public float UppercutDamagePerKo = 15f;
 
     [DataField]
-    public float UppercutKnockBackDistance = 1f;
+    public float UppercutKnockBackPowerPerKo = 1f;
 
     [DataField]
     public float UppercutKnockBackSpeed = 8f;
 
     [DataField]
-    public TimeSpan UppercutKnockDownDuration = TimeSpan.FromSeconds(1.5);
+    public TimeSpan UppercutCooldown = TimeSpan.FromSeconds(10);
 
     [DataField]
     public TimeSpan UppercutKnockOutDuration = TimeSpan.FromSeconds(11);
