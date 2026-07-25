@@ -172,6 +172,7 @@
   - type: RemoveComponents
     components:
     - type: RMCXenoDamageVisuals
+      prefix: boxer
     - type: XenoPunch
     - type: XenoLunge
     - type: XenoFling
