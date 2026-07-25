@@ -196,6 +196,8 @@
     description: rmc-xeno-boxer-description
     popup: rmc-xeno-boxer-popup
   - type: XenoBoxer
+  - type: XenoEvolution
+    strains: []
   - type: CMArmor
     xenoArmor: 25
     explosionArmor: 40

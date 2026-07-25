@@ -19,6 +19,8 @@ using Content.Shared.Popups;
 using Content.Shared.StatusEffectNew;
 using Content.Shared.Stunnable;
 using Content.Shared.Weapons.Melee.Events;
+using Robust.Shared.Audio;
+using Robust.Shared.Audio.Systems;
 using Robust.Shared.Network;
 using Robust.Shared.Player;
 using Robust.Shared.Random;
@@ -28,6 +30,8 @@ namespace Content.Shared._RMC14.Xenonids.Boxer;
 
 public sealed partial class XenoBoxerSystem : EntitySystem
 {
+    private static readonly SoundSpecifier PunchSound = new SoundCollectionSpecifier("Punch");
+
     private static readonly HashSet<string> ClearHeadStatuses = new()
     {
         "Dazed",
@@ -37,6 +41,7 @@ public sealed partial class XenoBoxerSystem : EntitySystem
     };
 
     [Dependency] private SharedActionsSystem _actions = default!;
+    [Dependency] private SharedAudioSystem _audio = default!;
     [Dependency] private SharedColorFlashEffectSystem _colorFlash = default!;
     [Dependency] private DamageableSystem _damageable = default!;
     [Dependency] private RMCObstacleSlammingSystem _obstacleSlamming = default!;
@@ -142,6 +147,7 @@ public sealed partial class XenoBoxerSystem : EntitySystem
             return;
 
         args.Handled = true;
+        PlayPunchSound(boxer);
         _rmcMelee.DoLunge(boxer.Owner, args.Target);
         _rmcPulling.TryStopAllPullsFromAndOn(args.Target);
         _obstacleSlamming.MakeImmune(args.Target);
@@ -197,6 +203,7 @@ public sealed partial class XenoBoxerSystem : EntitySystem
             return;
 
         args.Handled = true;
+        PlayPunchSound(boxer);
         _rmcMelee.DoLunge(boxer.Owner, args.Target);
         _daze.TryDaze(args.Target, boxer.Comp.JabDazeDuration, true);
         _stun.TrySlowdown(
@@ -230,6 +237,7 @@ public sealed partial class XenoBoxerSystem : EntitySystem
             return;
 
         args.Handled = true;
+        PlayPunchSound(boxer);
         SetCooldown<XenoBoxerPunchActionEvent>(boxer.Owner, boxer.Comp.PunchCooldown);
         SetCooldown<XenoBoxerJabActionEvent>(boxer.Owner, boxer.Comp.JabCooldown);
 
@@ -270,6 +278,12 @@ public sealed partial class XenoBoxerSystem : EntitySystem
         HealFromUppercut(boxer, ko, targetIsXeno);
         ResetKo(boxer);
         SpawnAttachedTo("CMEffectPunch", args.Target.ToCoordinates());
+    }
+
+    private void PlayPunchSound(Entity<XenoBoxerComponent> boxer)
+    {
+        if (_net.IsServer)
+            _audio.PlayPvs(PunchSound, boxer);
     }
 
     private void HealFromUppercut(Entity<XenoBoxerComponent> boxer, float ko, bool targetIsXeno)
