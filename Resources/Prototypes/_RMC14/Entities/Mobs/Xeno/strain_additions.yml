@@ -165,7 +165,7 @@
   suffix: Boxer
   components:
   - type: Sprite
-    sprite: _RMC14/Mobs/OldXenonids/Warrior/boxer_warrior.rsi
+    sprite: _CM13/Mobs/Xenos/Warrior/boxer_warrior.rsi
     layers:
     - map: [ "enum.XenoVisualLayers.Base" ]
       state: alive
