@@ -149,8 +149,8 @@ public sealed partial class YautjaItemSystem : EntitySystem
             _ => string.Empty,
         };
 
-        if (text.Length > 0)
-            args.PushMarkup(text);
+        if (!string.IsNullOrWhiteSpace(text))
+            args.PushMarkup(Loc.GetString(text));
     }
 
     private void OnRoundRestartCleanup(RoundRestartCleanupEvent ev)
@@ -445,11 +445,11 @@ public sealed partial class YautjaItemSystem : EntitySystem
         var rejectedEvent = new YautjaHivebreakerConsentRejectedEvent(GetNetEntity(args.User));
         var options = new List<DialogOption>
         {
-            new("Yes", new YautjaHivebreakerConsentAcceptedEvent(
+            new(Loc.GetString("cmu-yautja-self-destruct-confirm-yes"), new YautjaHivebreakerConsentAcceptedEvent(
                 GetNetEntity(args.User),
                 GetNetEntity(target),
                 GetNetEntity(hivebreaker.Owner))),
-            new("No", rejectedEvent),
+            new(Loc.GetString("cmu-yautja-self-destruct-confirm-no"), rejectedEvent),
         };
 
         _dialog.OpenOptions(
@@ -1202,7 +1202,7 @@ public sealed partial class YautjaItemSystem : EntitySystem
                 continue;
 
             var name = FormattedMessage.EscapeText(Name(item));
-            args.PushMarkup($"{name} is on their shoulder.");
+            args.PushMarkup(Loc.GetString("cmu-yautja-shoulder-gear-examine", ("item", name)));
         }
     }
 

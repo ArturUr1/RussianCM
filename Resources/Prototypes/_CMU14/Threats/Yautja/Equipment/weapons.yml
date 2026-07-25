@@ -906,10 +906,10 @@
   - type: YautjaTechItem
     shootDeniedPopup: cmu-yautja-spike-launcher-denied
   - type: YautjaPlasmaWeapon
-    nonYautjaExamineText: This thing looks like an alien rifle of some kind. Strange.
+    nonYautjaExamineText: cmu-yautja-plasma-rifle-nonyautja-examine
     minimumShootCharge: 7
-    lowPowerWarning: The rifle does not have enough power remaining!
-    maxChargePopup: plasma rifle hums as it achieves maximum charge.
+    lowPowerWarning: cmu-yautja-plasma-rifle-low-power
+    maxChargePopup: cmu-yautja-plasma-rifle-max-charge
     refundUnfiredProjectiles: true
   - type: Corrodible
     isCorrodible: false
@@ -981,11 +981,11 @@
     shootDeniedPopup: cmu-yautja-fancy-grip-safety-denied
   - type: YautjaPlasmaWeapon
     showFireMode: true
-    nonYautjaExamineText: This thing looks like a rifle, but there's no mag or proper barrel. What the hell is it?
-    primaryFireModeText: It is set to fire incendiary plasma bolts.
-    secondaryFireModeText: It is set to fire impact-explosive plasma bolts.
+    nonYautjaExamineText: cmu-yautja-plasma-carbine-nonyautja-examine
+    primaryFireModeText: cmu-yautja-plasma-carbine-primary-fire-mode
+    secondaryFireModeText: cmu-yautja-plasma-carbine-secondary-fire-mode
     minimumAmmoCharge: 1
-    maxChargePopup: plasma carbine hums as it achieves maximum charge.
+    maxChargePopup: cmu-yautja-plasma-carbine-max-charge
     refundUnfiredProjectiles: true
   - type: Corrodible
     isCorrodible: false
@@ -1073,7 +1073,7 @@
   - type: YautjaTechItem
     shootDeniedPopup: cmu-yautja-fancy-grip-safety-denied
   - type: YautjaPlasmaWeapon
-    nonYautjaExamineText: Looks like some massively fucked up alien flamethrower.
+    nonYautjaExamineText: cmu-yautja-defoliator-nonyautja-examine
   - type: Sprite
     sprite: _CMU14/Yautja/pred_guns.rsi
     layers:
@@ -1202,9 +1202,9 @@
     shootDeniedPopup: cmu-yautja-spike-launcher-denied
   - type: YautjaPlasmaWeapon
     showFireMode: true
-    nonYautjaExamineText: This thing looks like an alien gun of some kind. Strange.
+    nonYautjaExamineText: cmu-yautja-plasma-pistol-nonyautja-examine
     minimumAmmoCharge: 1
-    maxChargePopup: plasma pistol hums as it achieves maximum charge.
+    maxChargePopup: cmu-yautja-plasma-pistol-max-charge
     refundUnfiredProjectiles: true
   - type: Tag
     tags:

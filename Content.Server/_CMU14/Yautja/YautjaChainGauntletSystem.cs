@@ -114,10 +114,10 @@ public sealed partial class YautjaChainGauntletSystem : EntitySystem
         if (!HasComp<YautjaComponent>(args.Examiner))
             return;
 
-        args.PushMarkup("Stack up your combo meter by using [color=red]HARM[/color] intent, you can then use these combo stacks on different intents to do different finishers.");
-        args.PushMarkup("Finish your combo on [color=green]HELP[/color] intent to slam the target to the ground, incapacitating them for a few seconds, if the target is a humanoid you do extra damage as well.");
-        args.PushMarkup("Finish your combo on [color=blue]SHOVE[/color] intent to throw the target away from you, if you have some chains wrapped around the gauntlet, you'll pull them back towards you. If you are using the special ability, the throw range will be further.");
-        args.PushMarkup("Finish your combo on [color=orange]GRAB[/color] intent to do an execution that instantly kills your target, they must already be unconscious or in critical state.");
+        args.PushMarkup(Loc.GetString("cmu-yautja-chain-gauntlet-examine-combo"));
+        args.PushMarkup(Loc.GetString("cmu-yautja-chain-gauntlet-examine-help"));
+        args.PushMarkup(Loc.GetString("cmu-yautja-chain-gauntlet-examine-shove"));
+        args.PushMarkup(Loc.GetString("cmu-yautja-chain-gauntlet-examine-grab"));
     }
 
     private void OnInteractUsing(Entity<YautjaChainGauntletComponent> ent, ref InteractUsingEvent args)
@@ -610,7 +610,7 @@ public sealed partial class YautjaChainGauntletSystem : EntitySystem
         {
             _chat.TrySendInGameICMessage(
                 user,
-                gauntlet.ChainMessage,
+                Loc.GetString(gauntlet.ChainMessage),
                 InGameICChatType.Speak,
                 ChatTransmitRange.Normal,
                 hideLog: true,

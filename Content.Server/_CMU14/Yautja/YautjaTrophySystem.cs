@@ -625,7 +625,7 @@ public sealed partial class YautjaTrophySystem : EntitySystem
     public EntityUid SpawnRuntimeScalp(EntityUid scalpee, EntityUid hunter)
     {
         var scalp = Spawn("CMUYautjaScalp", Transform(hunter).Coordinates);
-        _meta.SetEntityName(scalp, $"{Name(scalpee)}'s scalp");
+        _meta.SetEntityName(scalp, Loc.GetString("cmu-yautja-scalp-name", ("name", Name(scalpee))));
         _meta.SetEntityDescription(scalp, string.Empty);
 
         var scalpComp = EnsureComp<YautjaScalpComponent>(scalp);
@@ -646,42 +646,55 @@ public sealed partial class YautjaTrophySystem : EntitySystem
 
         if (_marks.TryGetMarkOwner(scalpee, YautjaMarkKind.Thrall, out var thrallMaster))
         {
-            biography.Add($"enthralled by {Name(thrallMaster)} for '{_marks.GetMarkReason(scalpee, YautjaMarkKind.Thrall) ?? string.Empty}'");
+            biography.Add(Loc.GetString(
+                "cmu-yautja-scalp-biography-thrall",
+                ("master", Name(thrallMaster)),
+                ("reason", _marks.GetMarkReason(scalpee, YautjaMarkKind.Thrall) ?? string.Empty)));
             honorable = true;
         }
 
         if (_marks.TryGetMarkOwner(scalpee, YautjaMarkKind.Honored, out _))
         {
-            biography.Add($"honored for '{_marks.GetMarkReason(scalpee, YautjaMarkKind.Honored) ?? string.Empty}'");
+            biography.Add(Loc.GetString(
+                "cmu-yautja-scalp-biography-honored",
+                ("reason", _marks.GetMarkReason(scalpee, YautjaMarkKind.Honored) ?? string.Empty)));
             honorable = true;
         }
 
         if (_marks.TryGetMarkOwner(scalpee, YautjaMarkKind.Dishonored, out _))
         {
-            biography.Add($"marked as dishonorable for '{_marks.GetMarkReason(scalpee, YautjaMarkKind.Dishonored) ?? string.Empty}'");
+            biography.Add(Loc.GetString(
+                "cmu-yautja-scalp-biography-dishonored",
+                ("reason", _marks.GetMarkReason(scalpee, YautjaMarkKind.Dishonored) ?? string.Empty)));
             dishonorable = true;
         }
 
         if (_marks.TryGetMarkOwner(scalpee, YautjaMarkKind.GearCarrier, out var gearHunter))
         {
-            biography.Add($"killed after {Name(gearHunter)} marked {pronouns.Them} as a thief of Yautja equipment");
+            biography.Add(Loc.GetString(
+                "cmu-yautja-scalp-biography-gear-carrier",
+                ("hunter", Name(gearHunter)),
+                ("them", pronouns.Them)));
             dishonorable = true;
         }
 
         var (description, worth) = BuildScalpWorthDescription(scalpee, honorable, dishonorable, pronouns);
         if (biography.Count > 0)
-            description += $" {Name(scalpee)} was {FormatScalpBiography(biography)}.";
+            description += " " + Loc.GetString(
+                "cmu-yautja-scalp-biography-record",
+                ("name", Name(scalpee)),
+                ("biography", FormatScalpBiography(biography)));
 
         if (_marks.TryGetMarkOwner(scalpee, YautjaMarkKind.Prey, out var preyHunter) &&
             preyHunter == hunter)
         {
-            description += worth switch
+            description += "\n" + (worth switch
             {
-                -1 => $"\n{Name(hunter)} had the unpleasant duty of running {pronouns.Them} to ground.",
-                0 => $"\nAn honourable first trophy for a truly precocious child. {Name(hunter)}'s parents must be so proud.",
-                1 => $"\nThis trophy was taken by {Name(hunter)} after a successful hunt.",
-                _ => $"\nThis fine trophy was taken by {Name(hunter)} after a successful hunt.",
-            };
+                -1 => Loc.GetString("cmu-yautja-scalp-prey-unworthy", ("hunter", Name(hunter)), ("them", pronouns.Them)),
+                0 => Loc.GetString("cmu-yautja-scalp-prey-first", ("hunter", Name(hunter))),
+                1 => Loc.GetString("cmu-yautja-scalp-prey-success", ("hunter", Name(hunter))),
+                _ => Loc.GetString("cmu-yautja-scalp-prey-fine", ("hunter", Name(hunter))),
+            });
         }
 
         return description;
@@ -691,7 +704,9 @@ public sealed partial class YautjaTrophySystem : EntitySystem
     {
         if (HasComp<YautjaComponent>(args.Examiner) || HasComp<GhostComponent>(args.Examiner))
         {
-            args.PushMarkup(ent.Comp.TrueDescription);
+            args.PushMarkup(string.IsNullOrWhiteSpace(ent.Comp.TrueDescription)
+                ? Loc.GetString("cmu-yautja-scalp-worth-irrelevant")
+                : ent.Comp.TrueDescription);
             return;
         }
 
@@ -705,60 +720,81 @@ public sealed partial class YautjaTrophySystem : EntitySystem
         ScalpPronouns pronouns)
     {
         var lifeKills = CompOrNull<YautjaHonorWorthComponent>(scalpee)?.LifeKillsTotal ?? 0;
-        var description = "This is the scalp of a";
         var worth = 1;
 
         if (lifeKills <= 0)
         {
             if (dishonorable)
             {
-                return ($"{description} human who was even more shameful than usual.", -1);
+                return (Loc.GetString("cmu-yautja-scalp-worth-shameful"), -1);
             }
 
             if (honorable)
-                return ($"{description} human.", worth);
+                return (Loc.GetString("cmu-yautja-scalp-worth-honorable"), worth);
 
-            return ($"{description}n irrelevant human.", 0);
+            return (Loc.GetString("cmu-yautja-scalp-worth-irrelevant"), 0);
         }
 
         if (lifeKills <= 4)
         {
             if (dishonorable)
-                return ($"{description} human who could have been worthy, had {pronouns.They} not insisted on disgracing {pronouns.Themselves}.", -1);
+                return (Loc.GetString(
+                    "cmu-yautja-scalp-worth-dishonored",
+                    ("they", pronouns.They),
+                    ("themselves", pronouns.Themselves)), -1);
 
-            return ($"{description} respectable human with blood on {pronouns.Their} hands.", worth);
+            return (Loc.GetString("cmu-yautja-scalp-worth-respectable", ("their", pronouns.Their)), worth);
         }
 
         if (lifeKills <= 9)
         {
             worth = dishonorable ? worth : 2;
-            return ($"{description}n uncommonly destructive human.", worth);
+            return (Loc.GetString("cmu-yautja-scalp-worth-destructive"), worth);
         }
 
-        return ($"{description} truly worthy human, no doubt descended from many storied warriors. {Capitalize(pronouns.Their)} arms were soaked to the elbows with the life-blood of many.", 2);
+        return (Loc.GetString("cmu-yautja-scalp-worth-worthy", ("theirCapitalized", Capitalize(pronouns.Their))), 2);
     }
 
     private ScalpPronouns GetScalpPronouns(EntityUid scalpee)
     {
         if (!TryComp(scalpee, out HumanoidAppearanceComponent? humanoid))
-            return ScalpPronouns.TheyThem;
+            return new ScalpPronouns(
+                Loc.GetString("cmu-yautja-scalp-pronoun-neutral-they"),
+                Loc.GetString("cmu-yautja-scalp-pronoun-neutral-their"),
+                Loc.GetString("cmu-yautja-scalp-pronoun-neutral-them"),
+                Loc.GetString("cmu-yautja-scalp-pronoun-neutral-themselves"));
 
         return humanoid.Gender switch
         {
-            Gender.Male => new ScalpPronouns("he", "his", "him", "himself"),
-            Gender.Female => new ScalpPronouns("she", "her", "her", "herself"),
-            _ => ScalpPronouns.TheyThem,
+            Gender.Male => new ScalpPronouns(
+                Loc.GetString("cmu-yautja-scalp-pronoun-male-they"),
+                Loc.GetString("cmu-yautja-scalp-pronoun-male-their"),
+                Loc.GetString("cmu-yautja-scalp-pronoun-male-them"),
+                Loc.GetString("cmu-yautja-scalp-pronoun-male-themselves")),
+            Gender.Female => new ScalpPronouns(
+                Loc.GetString("cmu-yautja-scalp-pronoun-female-they"),
+                Loc.GetString("cmu-yautja-scalp-pronoun-female-their"),
+                Loc.GetString("cmu-yautja-scalp-pronoun-female-them"),
+                Loc.GetString("cmu-yautja-scalp-pronoun-female-themselves")),
+            _ => new ScalpPronouns(
+                Loc.GetString("cmu-yautja-scalp-pronoun-neutral-they"),
+                Loc.GetString("cmu-yautja-scalp-pronoun-neutral-their"),
+                Loc.GetString("cmu-yautja-scalp-pronoun-neutral-them"),
+                Loc.GetString("cmu-yautja-scalp-pronoun-neutral-themselves")),
         };
     }
 
-    private static string FormatScalpBiography(List<string> biography)
+    private string FormatScalpBiography(List<string> biography)
     {
         return biography.Count switch
         {
             0 => string.Empty,
             1 => biography[0],
-            2 => $"{biography[0]} and {biography[1]}",
-            _ => $"{string.Join(", ", biography.Take(biography.Count - 1))}, and {biography[^1]}",
+            2 => Loc.GetString("cmu-yautja-scalp-biography-two", ("first", biography[0]), ("second", biography[1])),
+            _ => Loc.GetString(
+                "cmu-yautja-scalp-biography-many",
+                ("entries", string.Join(", ", biography.Take(biography.Count - 1))),
+                ("last", biography[^1])),
         };
     }
 
@@ -771,7 +807,6 @@ public sealed partial class YautjaTrophySystem : EntitySystem
 
     private readonly record struct ScalpPronouns(string They, string Their, string Them, string Themselves)
     {
-        public static readonly ScalpPronouns TheyThem = new("they", "their", "them", "themselves");
     }
 
     private void SpawnButcherOutput(EntProtoId prototype, EntityCoordinates coordinates, int amount)
@@ -993,8 +1028,7 @@ public sealed partial class YautjaTrophySystem : EntitySystem
         Dirty(ent);
 
         var name = MetaData(ent).EntityName;
-        if (!name.StartsWith("polished ", StringComparison.OrdinalIgnoreCase))
-            _meta.SetEntityName(ent, $"polished {name}");
+        _meta.SetEntityName(ent, Loc.GetString("cmu-yautja-polished-name", ("name", name)));
 
         var record = EnsureComp<YautjaTrophyRecordComponent>(user);
         record.PolishedTrophies++;
