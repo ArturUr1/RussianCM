@@ -13,4 +13,5 @@ rmc-xeno-boxer-description = You trade Fling and Lunge for a close-combat boxing
   - Jab: daze and slow a target while building knockout power.
   - Uppercut: cash in knockout power for escalating damage, knockback, knockdown, and knockout.
   - Clear Head: resist ordinary dazes, stuns, and knockdowns with three regenerating charges.
+  - Once specialized, you cannot choose another strain.
 rmc-xeno-boxer-popup = Your fists tighten. Build the rhythm, then finish with an uppercut.
