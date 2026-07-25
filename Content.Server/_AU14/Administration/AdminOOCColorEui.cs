@@ -71,6 +71,12 @@ public sealed class AdminOOCColorEui : BaseEui
             return;
         }
 
+        if (!IsHost())
+        {
+            Close();
+            return;
+        }
+
         string? normalizedColor = null;
         if (!string.IsNullOrWhiteSpace(update.Color))
         {

@@ -121,7 +121,13 @@ public sealed class AdminOOCColorWindow : DefaultWindow
         save.OnPressed += _ =>
         {
             var value = input.Text.Trim();
-            if (value.Length == 0 || Color.TryFromHex(value) is not { } color)
+            if (value.Length == 0)
+            {
+                OnSetColor?.Invoke(rank.Id, null);
+                return;
+            }
+
+            if (Color.TryFromHex(value) is not { } color)
                 return;
 
             OnSetColor?.Invoke(rank.Id, color.ToHex());
