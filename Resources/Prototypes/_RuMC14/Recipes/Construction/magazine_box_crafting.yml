@@ -94,7 +94,7 @@
   parent: RMC
   name: Bullet box (7.62x25mm)
   id: RuMCBoxBulletsPistol762x25mm
-  graph: RuMCBoxBulletType64
+  graph: RuMCBoxBulletType19
   startNode: start
   targetNode: RuMCBoxBulletsPistol762x25mmEmpty
   category: construction-category-cm-box-magazine
@@ -109,7 +109,7 @@
   prototype: RuMCBoxBulletsPistol762x25mmEmpty
 
 - type: constructionGraph
-  id: RuMCBoxBulletType64
+  id: RuMCBoxBulletType19
   start: start
   graph:
   - node: start

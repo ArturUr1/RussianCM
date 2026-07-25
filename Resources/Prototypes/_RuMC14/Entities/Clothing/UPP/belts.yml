@@ -123,6 +123,7 @@
       - AU14MagazineSmartGunUPP
       - CMMagazinePistol
       - CMMagazineRifle
+      - RuMCMagazineAH12
       - RMCMagazineShotgun
       - CMMagazineSmg
       - CMMagazineSniper
@@ -138,6 +139,7 @@
       tags:
       - RMCMagazineLMGQYJ72
       - RuMCMagazineTachanka
+      - RuMCMagazineAH12
       - RuMCMagazineUTES-C
       - RuMCMagazineUTES-CTracter
   - type: ItemCamouflage

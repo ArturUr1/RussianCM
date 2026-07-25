@@ -122,6 +122,9 @@
   name: PM-27-Drum
   description: A heavy, reinforced pouch specifically designed to carry bulky drum magazines. Provides secure transport for large-capacity magazines, preventing them from clattering or catching on obstacles.
   components:
+  - type: Tag
+    tags:
+    - RuMCUPPPouchDrum
   - type: Sprite
     sprite: _RuMC14/Clothing/UPP/pouches/sgdrums_ammo.rsi
   - type: Storage
@@ -138,6 +141,7 @@
       - RuMCMagazineUTES-C
       - RuMCMagazineUTES-CTracter
       - AU14MagazineSmartGunUPP
+      - RuMCMagazineAH12
   - type: IgnoreContentsSize
     items:
       tags:
@@ -149,6 +153,7 @@
       - RuMCMagazineUTES-C
       - RuMCMagazineUTES-CTracter
       - AU14MagazineSmartGunUPP
+      - RuMCMagazineAH12
   - type: ItemCamouflage
     camouflageVariations: {}
 
@@ -301,3 +306,6 @@
   components:
   - type: Sprite
     sprite: _RuMC14/Clothing/UPP/pouches/document.rsi
+
+- type: Tag
+  id: RuMCUPPPouchDrum
