@@ -94,7 +94,7 @@
     - RMCMREWeYa
     - CMCanteen
     - CMU14TearGasGrenade
-    - RMCGrenadeFlashBang
+    # - RMCGrenadeFlashBang RuCMU change
 
 - type: entity
   parent: CMSpawnPointJobBase
