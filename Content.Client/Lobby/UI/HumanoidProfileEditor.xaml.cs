@@ -12,6 +12,7 @@ using Content.Client.Players.PlayTimeTracking;
 using Content.Client.Sprite;
 using Content.Client.Stylesheets;
 using Content.Client.UserInterface.Systems.Guidebook;
+using Content.Shared._CMU14.Roles;
 using Content.Shared._RMC14.CCVar;
 using Content.Shared._RMC14.LinkAccount;
 using Content.Shared._RMC14.Marines.Squads;
@@ -555,6 +556,8 @@ namespace Content.Client.Lobby.UI
             };
 
             #endregion SpawnPriority
+
+            RefreshSynthetic();
 
             #region ArmorPreference
 
@@ -1389,6 +1392,7 @@ namespace Content.Client.Lobby.UI
             RefreshThreatPreferences();
 
             RefreshAntags();
+            RefreshSynthetic();
             RefreshJobs();
             RefreshLoadouts();
             RefreshSpecies();
@@ -1558,6 +1562,13 @@ namespace Content.Client.Lobby.UI
             if (!_requirements.IsAllowed(job, (HumanoidCharacterProfile?)_preferencesManager.Preferences?.SelectedCharacter, out var reason))
             {
                 selector.LockRequirements(reason);
+            }
+            else if (Profile != null && job.IsSynthetic != Profile.Synthetic)
+            {
+                selector.LockRequirements(FormattedMessage.FromUnformatted(
+                    Loc.GetString(job.IsSynthetic
+                        ? "humanoid-profile-editor-synthetic-locked-job"
+                        : "humanoid-profile-editor-synthetic-locked-job-non-synthetic")));
             }
             else
             {
@@ -2164,6 +2175,61 @@ namespace Content.Client.Lobby.UI
         {
             Profile = Profile?.WithGamemodeThreatPreference(gamemode, new ProtoId<ThreatPrototype>(threat), pref);
             SetDirty();
+        }
+
+        /// <summary>
+        /// Refreshes the synthetic toggle. Locked (and forced to No) unless the player
+        /// holds the synthetic job whitelist.
+        /// </summary>
+        public void RefreshSynthetic()
+        {
+            SyntheticContainer.DisposeAllChildren();
+
+            var items = new[]
+            {
+                ("humanoid-profile-editor-synthetic-yes-button", 0),
+                ("humanoid-profile-editor-synthetic-no-button", 1)
+            };
+
+            var selector = new RequirementsSelector()
+            {
+                Margin = new Thickness(3f, 3f, 3f, 0f),
+            };
+
+            selector.Setup(
+                items,
+                Loc.GetString("humanoid-profile-editor-synthetic-title"),
+                250,
+                Loc.GetString("humanoid-profile-editor-synthetic-description"));
+            selector.Select(Profile?.Synthetic == true ? 0 : 1);
+
+            var whitelisted = _prototypeManager.TryIndex<JobPrototype>(CMUSyntheticRoles.SyntheticWhitelistJob, out var marker)
+                && _requirements.CheckWhitelist(marker, out _);
+
+            if (!whitelisted)
+            {
+                selector.LockRequirements(FormattedMessage.FromUnformatted(
+                    Loc.GetString("humanoid-profile-editor-synthetic-locked")));
+
+                if (Profile?.Synthetic == true)
+                {
+                    Profile = Profile?.WithSynthetic(false);
+                    SetDirty();
+                }
+            }
+            else
+            {
+                selector.UnlockRequirements();
+            }
+
+            selector.OnSelected += preference =>
+            {
+                Profile = Profile?.WithSynthetic(preference == 0);
+                SetDirty();
+                RefreshJobs();
+            };
+
+            SyntheticContainer.AddChild(selector);
         }
 
         /// <summary>

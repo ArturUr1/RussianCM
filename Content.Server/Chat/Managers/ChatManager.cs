@@ -394,7 +394,8 @@ internal sealed partial class ChatManager : IChatManager
     public void ChatMessageToOne(ChatChannel channel, string message, string wrappedMessage, EntityUid source, bool hideChat, INetChannel client, Color? colorOverride = null, bool recordReplay = false, string? audioPath = null, float audioVolume = 0, NetUserId? author = null, bool hidePopup = false,
         bool useEmoteSpeechBubble = false,
         string? languageIcon = null,
-        string? speechStyleClass = null)
+        string? speechStyleClass = null,
+        ChatDisplayMetadata? display = null)
     // RMC14
     {
         var user = author == null ? null : EnsurePlayer(author);
@@ -432,6 +433,7 @@ internal sealed partial class ChatManager : IChatManager
             useEmoteSpeechBubble,
             speechStyleClass: speechStyleClass,
             repeatCheckSender: repeatCheckSender,
+            display: display,
             languageIcon: languageIcon,
             ghostFollowEntity: ghostFollowEntity,
             xenoWatchEntity: xenoWatchEntity
@@ -458,6 +460,7 @@ internal sealed partial class ChatManager : IChatManager
                 hidePopup,
                 speechStyleClass: speechStyleClass,
                 repeatCheckSender: repeatCheckSender,
+                display: display,
                 languageIcon: languageIcon
             );
             _replay.RecordServerMessage(replayMsg);

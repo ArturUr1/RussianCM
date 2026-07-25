@@ -318,15 +318,9 @@ public sealed partial class GhostRoleSystem : EntitySystem
             if (!_jobWhitelist.IsAllowed(player, job))
                 return false;
 
-            var ev = new IsJobAllowedEvent(player, job);
-            RaiseLocalEvent(ref ev);
-            if (ev.Cancelled)
-                return false;
-        }
-
-        var attempt = new GhostRoleRequestAttemptEvent(player, role.Owner, role.Comp);
-        RaiseLocalEvent(role.Owner, ref attempt);
-        return !attempt.Cancelled;
+        var ev = new IsJobAllowedEvent(player, job);
+        RaiseLocalEvent(ref ev);
+        return !ev.Cancelled;
     }
 
     private bool TryTakeover(ICommonSession player, uint identifier)
