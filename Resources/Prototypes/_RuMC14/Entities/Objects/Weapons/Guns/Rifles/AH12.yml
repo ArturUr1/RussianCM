@@ -2,7 +2,7 @@
   parent: [ CMBaseWeaponRifle, RMCBaseWeaponMagazineVisuals ]
   name: AH-12
   id: RuMCRifleAH12
-  description: ----------------------
+  description: This is not just a machine gun. It is a tool for those who are used to ending conversations before they begin. Massive, rough, designed for the unique 12.7×55 cartridge, it does not require a queue. One shot breaks through a door. A second shot demolishes a wall.
   components:
   - type: Item
     size: Huge
@@ -104,7 +104,7 @@
   parent: CMMagazineRifleBase
   id: RuMCMagazineAH12
   name: AH-12 magazine (12.7x108mm)
-  description: -----------------------
+  description: Magazine with 12.7x108 mm cartridges.
   components:
   - type: Tag
     tags:
@@ -135,7 +135,7 @@
   parent: RuMCMagazineAH12
   id: RuMCMagazineAH12Large
   name: AH-12 large magazine (12.7x108mm)
-  description: -----------------------
+  description: Large magazine with 12.7x108 mm cartridges.
   components:
   - type: Tag
     tags:
@@ -166,7 +166,7 @@
   parent: RuMCMagazineAH12
   id: RuMCMagazineAH12AP
   name: AH-12 magazine (12.7x108mm AP)
-  description: -----------------------
+  description: Magazine with 12.7x108 mm (AP) cartridges.
   components:
   - type: Sprite
     sprite: _RuMC14/Objects/Weapons/Guns/Ammunition/Magazines/Rifles/AH12.rsi
@@ -192,7 +192,7 @@
   parent: RuMCMagazineAH12
   id: RuMCMagazineAH12Tracer
   name: AH-12 magazine (12.7x108mm Tracer)
-  description: -----------------------
+  description: Magazine with 12.7x108 mm (Tracer) cartridges.
   components:
   - type: Sprite
     sprite: _RuMC14/Objects/Weapons/Guns/Ammunition/Magazines/Rifles/AH12.rsi
@@ -218,7 +218,7 @@
   parent: RuMCMagazineAH12
   id: RuMCMagazineAH12JHP
   name: AH-12 magazine (12.7x108mm JHP)
-  description: -----------------------
+  description: Magazine with 12.7x108 mm (JHP) cartridges
   components:
   - type: Sprite
     sprite: _RuMC14/Objects/Weapons/Guns/Ammunition/Magazines/Rifles/AH12.rsi
@@ -297,12 +297,12 @@
     stuns:
     - whitelist:
         minMobSize: VerySmallXeno
-      maxRange: 5
+      maxRange: 4
       slowTime: 0.5
     - whitelist:
         components:
         - Marine
-      maxRange: 5
+      maxRange: 4
       slowTime: 2
 
 - type: entity
