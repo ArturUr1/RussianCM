@@ -228,9 +228,10 @@
     cooldownPopup: You need to wait before taking another flare!
     count: 16
     slot:
-      name: RuMCFlareWhite
+      name: Flare
       whitelist:
         tags:
+        - RuMCFlareRedCAS
         - RuMCFlareWhite
 
 - type: entity
@@ -241,14 +242,16 @@
   suffix: Filled
   components:
   - type: CMItemSlots
+    startingItem: RuMCFlareWhite
     cooldown: 1
     cooldownPopup: You need to wait before taking another flare!
     count: 16
     slot:
-      name: RuMCFlareRedCAS
+      name: Flare
       whitelist:
         tags:
         - RuMCFlareRedCAS
+        - RuMCFlareWhite
 
 - type: entity
   parent: AU14PouchPistolAlt
@@ -289,3 +292,12 @@
     - state: icon
     - state: closed
       map: [ "holstered" ]
+
+- type: entity
+  parent: RMCPouchDocument
+  id: RuMCUPPPouchDocument
+  name: PM-68-Document
+  description: It can contain papers, folders, disks, technical manuals, and clipboards.
+  components:
+  - type: Sprite
+    sprite: _RuMC14/Clothing/UPP/pouches/document.rsi

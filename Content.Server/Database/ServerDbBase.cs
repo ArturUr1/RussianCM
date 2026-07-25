@@ -10,6 +10,8 @@ using Content.Server._RMC14.LinkAccount;
 using Content.Server.Administration.Logs;
 using Content.Server.Administration.Managers;
 using Content.Server.IP;
+using Content.Shared._CMU14.BalanceRating;
+using Content.Shared._CMU14.Yautja;
 using Content.Shared._RMC14.NamedItems;
 using Content.Shared.Administration.Logs;
 using Content.Shared.AU14.Allegiance;
@@ -29,6 +31,7 @@ using Robust.Shared.Enums;
 using Robust.Shared.Network;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Utility;
+using Content.Shared.AU14.util;
 
 namespace Content.Server.Database
 {
@@ -240,10 +243,14 @@ namespace Content.Server.Database
             ProtoId<OriginPrototype>? origin = profile.Origin is { } originId
                 ? new ProtoId<OriginPrototype>(originId)
                 : (ProtoId<OriginPrototype>?)null;
+            ProtoId<PlatoonPrototype>? platoon = profile.Platoon is { } platoonId
+                ? new ProtoId<PlatoonPrototype>(platoonId)
+                : (ProtoId<PlatoonPrototype>?)null;
             var threatPreferences = ConvertThreatPreferences(profile.ThreatPreference);
             var gamemodeJobPriorities = ConvertGamemodeJobPriorities(profile.GamemodeJobPriorities);
             var gamemodeAntagPreferences = ConvertGamemodeAntagPreferences(profile.GamemodeAntagPreferences);
             var gamemodeThreatPreferences = ConvertGamemodeThreatPreferences(profile.GamemodeThreatPreferences);
+            var yautjaProfile = DeserializeYautjaProfile(profile.YautjaProfile);
 
             var gender = sex == Sex.Male ? Gender.Male : Gender.Female;
             if (Enum.TryParse<Gender>(profile.Gender, true, out var genderVal))
@@ -311,7 +318,11 @@ namespace Content.Server.Database
                     Color.FromHex(profile.FacialHairColor),
                     Color.FromHex(profile.EyeColor),
                     Color.FromHex(profile.SkinColor),
-                    markings
+                    markings,
+                    profile.RegulationHairName ?? HairStyles.DefaultHairStyle,
+                    profile.RegulationHairColor is { } regulationHairColor ? Color.FromHex(regulationHairColor) : Color.Black,
+                    profile.RegulationFacialHairName ?? HairStyles.DefaultFacialHairStyle,
+                    profile.RegulationFacialHairColor is { } regulationFacialHairColor ? Color.FromHex(regulationFacialHairColor) : Color.Black
                 ),
                 spawnPriority,
                 armorPreference,
@@ -334,11 +345,168 @@ namespace Content.Server.Database
                 profile.XenoPostfix,
                 allegiance,
                 origin,
+                platoon,
                 threatPreferences,
                 gamemodeJobPriorities,
                 gamemodeAntagPreferences,
-                gamemodeThreatPreferences
+                gamemodeThreatPreferences,
+                yautjaProfile
             );
+        }
+
+        private sealed class SerializedYautjaProfile
+        {
+            public string Name { get; set; } = string.Empty;
+            public int Age { get; set; }
+            public Sex Sex { get; set; }
+            public Gender Gender { get; set; }
+            public string HairStyleId { get; set; } = string.Empty;
+            public string HairColor { get; set; } = string.Empty;
+            public string FacialHairStyleId { get; set; } = string.Empty;
+            public string FacialHairColor { get; set; } = string.Empty;
+            public string EyeColor { get; set; } = string.Empty;
+            public string SkinColor { get; set; } = string.Empty;
+            public List<string> Markings { get; set; } = new();
+            public YautjaQuillStyle? QuillStyle { get; set; }
+            public YautjaSkinColor? SkinColorPreset { get; set; }
+            public YautjaGearMaterial ArmorMaterial { get; set; }
+            public int ArmorStyle { get; set; }
+            public YautjaGearMaterial MaskMaterial { get; set; }
+            public int MaskStyle { get; set; }
+            public int MaskAccessoryStyle { get; set; }
+            public YautjaGearMaterial GreavesMaterial { get; set; }
+            public int GreavesStyle { get; set; }
+            public YautjaBracerMaterial? BracerMaterial { get; set; }
+            public YautjaBracerMaterial? CasterMaterial { get; set; }
+            public YautjaTranslatorType? TranslatorType { get; set; }
+            public YautjaInvisibilitySound? InvisibilitySound { get; set; }
+            public YautjaLegacySet? Legacy { get; set; }
+            public YautjaUniqueSet? Unique { get; set; }
+            public YautjaCapeStyle? CapeStyle { get; set; }
+            public string CapeColor { get; set; } = string.Empty;
+            public string FlavorText { get; set; } = string.Empty;
+        }
+
+        private static YautjaCharacterProfile DeserializeYautjaProfile(string? serialized)
+        {
+            if (string.IsNullOrWhiteSpace(serialized))
+                return YautjaCharacterProfile.Default;
+
+            SerializedYautjaProfile? parsed;
+            try
+            {
+                parsed = JsonSerializer.Deserialize<SerializedYautjaProfile>(serialized);
+            }
+            catch (JsonException)
+            {
+                return YautjaCharacterProfile.Default;
+            }
+
+            if (parsed == null)
+                return YautjaCharacterProfile.Default;
+
+            var markings = new List<Marking>();
+            foreach (var marking in parsed.Markings)
+            {
+                var parsedMarking = Marking.ParseFromDbString(marking);
+                if (parsedMarking != null)
+                    markings.Add(parsedMarking);
+            }
+
+            var appearance = new HumanoidCharacterAppearance(
+                string.IsNullOrWhiteSpace(parsed.HairStyleId) ? HairStyles.DefaultHairStyle : parsed.HairStyleId,
+                ReadColor(parsed.HairColor, Color.Black),
+                string.IsNullOrWhiteSpace(parsed.FacialHairStyleId) ? HairStyles.DefaultFacialHairStyle : parsed.FacialHairStyleId,
+                ReadColor(parsed.FacialHairColor, Color.Black),
+                ReadColor(parsed.EyeColor, Color.Gold),
+                ReadColor(parsed.SkinColor, new Color((byte) 56, (byte) 90, (byte) 48)),
+                markings,
+                HairStyles.DefaultHairStyle,
+                Color.Black,
+                HairStyles.DefaultFacialHairStyle,
+                Color.Black);
+
+            var yautjaProfile = YautjaCharacterProfile.Default
+                .WithName(string.IsNullOrWhiteSpace(parsed.Name) ? YautjaCharacterProfile.Default.Name : parsed.Name)
+                .WithAge(parsed.Age)
+                .WithSex(parsed.Sex)
+                .WithGender(parsed.Gender)
+                .WithAppearance(appearance)
+                .WithArmor(parsed.ArmorMaterial, parsed.ArmorStyle)
+                .WithMask(parsed.MaskMaterial, parsed.MaskStyle)
+                .WithMaskAccessory(parsed.MaskAccessoryStyle)
+                .WithGreaves(parsed.GreavesMaterial, parsed.GreavesStyle)
+                .WithBracer(parsed.BracerMaterial ?? YautjaCharacterProfile.Default.BracerMaterial)
+                .WithCaster(parsed.CasterMaterial ?? YautjaCharacterProfile.Default.CasterMaterial)
+                .WithTranslatorType(parsed.TranslatorType ?? YautjaCharacterProfile.Default.TranslatorType)
+                .WithInvisibilitySound(parsed.InvisibilitySound ?? YautjaCharacterProfile.Default.InvisibilitySound)
+                .WithLegacy(parsed.Legacy ?? YautjaCharacterProfile.Default.Legacy)
+                .WithUnique(parsed.Unique ?? YautjaCharacterProfile.Default.Unique)
+                .WithCapeStyle(parsed.CapeStyle ?? YautjaCharacterProfile.Default.CapeStyle)
+                .WithCapeColor(ReadColor(parsed.CapeColor, YautjaCharacterProfile.Default.CapeColor))
+                .WithFlavorText(parsed.FlavorText ?? string.Empty);
+
+            if (parsed.SkinColorPreset is { } skinColor)
+                yautjaProfile = yautjaProfile.WithSkinColor(skinColor);
+
+            if (parsed.QuillStyle is { } quillStyle)
+                yautjaProfile = yautjaProfile.WithQuillStyle(quillStyle);
+
+            return yautjaProfile;
+        }
+
+        private static string SerializeYautjaProfile(YautjaCharacterProfile profile)
+        {
+            var appearance = profile.Appearance;
+            var serialized = new SerializedYautjaProfile
+            {
+                Name = profile.Name,
+                Age = profile.Age,
+                Sex = profile.Sex,
+                Gender = profile.Gender,
+                HairStyleId = appearance.HairStyleId,
+                HairColor = appearance.HairColor.ToHex(),
+                FacialHairStyleId = appearance.FacialHairStyleId,
+                FacialHairColor = appearance.FacialHairColor.ToHex(),
+                EyeColor = appearance.EyeColor.ToHex(),
+                SkinColor = appearance.SkinColor.ToHex(),
+                Markings = appearance.Markings.Select(marking => marking.ToString()).ToList(),
+                QuillStyle = profile.QuillStyle,
+                SkinColorPreset = profile.SkinColor,
+                ArmorMaterial = profile.ArmorMaterial,
+                ArmorStyle = profile.ArmorStyle,
+                MaskMaterial = profile.MaskMaterial,
+                MaskStyle = profile.MaskStyle,
+                MaskAccessoryStyle = profile.MaskAccessoryStyle,
+                GreavesMaterial = profile.GreavesMaterial,
+                GreavesStyle = profile.GreavesStyle,
+                BracerMaterial = profile.BracerMaterial,
+                CasterMaterial = profile.CasterMaterial,
+                TranslatorType = profile.TranslatorType,
+                InvisibilitySound = profile.InvisibilitySound,
+                Legacy = profile.Legacy,
+                Unique = profile.Unique,
+                CapeStyle = profile.CapeStyle,
+                CapeColor = profile.CapeColor.ToHex(),
+                FlavorText = profile.FlavorText,
+            };
+
+            return JsonSerializer.Serialize(serialized);
+        }
+
+        private static Color ReadColor(string value, Color fallback)
+        {
+            if (string.IsNullOrWhiteSpace(value))
+                return fallback;
+
+            try
+            {
+                return Color.FromHex(value);
+            }
+            catch (FormatException)
+            {
+                return fallback;
+            }
         }
 
         private static HashSet<ProtoId<ThreatPrototype>> ConvertThreatPreferences(string? raw)
@@ -532,6 +700,10 @@ namespace Content.Server.Database
             profile.HairColor = appearance.HairColor.ToHex();
             profile.FacialHairName = appearance.FacialHairStyleId;
             profile.FacialHairColor = appearance.FacialHairColor.ToHex();
+            profile.RegulationHairName = appearance.RegulationHairStyleId;
+            profile.RegulationHairColor = appearance.RegulationHairColor.ToHex();
+            profile.RegulationFacialHairName = appearance.RegulationFacialHairStyleId;
+            profile.RegulationFacialHairColor = appearance.RegulationFacialHairColor.ToHex();
             profile.EyeColor = appearance.EyeColor.ToHex();
             profile.SkinColor = appearance.SkinColor.ToHex();
             profile.SpawnPriority = (int) humanoid.SpawnPriority;
@@ -605,12 +777,14 @@ namespace Content.Server.Database
             profile.XenoPostfix = humanoid.XenoPostfix;
             profile.Allegiance = humanoid.Allegiance?.Id;
             profile.Origin = humanoid.Origin?.Id;
+            profile.Platoon = humanoid.Platoon?.Id;
             profile.ThreatPreference = humanoid.ThreatPreferences.Count == 0
                 ? null
                 : JsonSerializer.Serialize(humanoid.ThreatPreferences.Select(t => t.Id).OrderBy(id => id));
             profile.GamemodeJobPriorities = SerializeGamemodeJobPriorities(humanoid.GamemodeJobPriorities);
             profile.GamemodeAntagPreferences = SerializeGamemodeSetPreferences(humanoid.GamemodeAntagPreferences);
             profile.GamemodeThreatPreferences = SerializeGamemodeSetPreferences(humanoid.GamemodeThreatPreferences);
+            profile.YautjaProfile = SerializeYautjaProfile(humanoid.YautjaProfile);
 
             return profile;
         }
@@ -848,6 +1022,12 @@ namespace Content.Server.Database
 
                 dbTimes[playerTimes.Key] = trackers;
             }
+            // Это пришло откуда-то из мерджа яутдж.
+            // var dbTimes = (await db.DbContext.PlayTime
+            //     .Where(p => players.Contains(p.PlayerId))
+            //     .ToArrayAsync())
+            //     .GroupBy(p => p.PlayerId)
+            //     .ToDictionary(g => g.Key, g => g.ToDictionary(p => p.Tracker, p => p));
 
             foreach (var (user, tracker, time) in updates)
             {
@@ -1071,6 +1251,218 @@ namespace Content.Server.Database
 
             await db.DbContext.SaveChangesAsync(cancel);
         }
+
+        #region CMU Balance Rating
+
+        public async Task<long> CreateCMUBalanceRatingPoll(
+            int roundId,
+            CMUBalanceRatingTarget target,
+            string targetId,
+            CMUBalanceRatingMetric metric,
+            Guid? createdBy,
+            DateTime openedAt)
+        {
+            ArgumentOutOfRangeException.ThrowIfNegativeOrZero(roundId);
+
+            if (!Enum.IsDefined(target))
+                throw new ArgumentOutOfRangeException(nameof(target), target, "Unknown balance rating target type.");
+
+            if (!Enum.IsDefined(metric))
+                throw new ArgumentOutOfRangeException(nameof(metric), metric, "Unknown balance rating metric.");
+
+            if (target == CMUBalanceRatingTarget.Map && metric != CMUBalanceRatingMetric.Fun)
+                throw new ArgumentException("Map balance ratings only support the fun metric.", nameof(metric));
+
+            if (string.IsNullOrWhiteSpace(targetId))
+                throw new ArgumentException("A balance rating target ID is required.", nameof(targetId));
+
+            if (targetId.Length > CMUBalanceRatingPoll.TargetIdMaxLength)
+            {
+                throw new ArgumentException(
+                    $"A balance rating target ID cannot exceed {CMUBalanceRatingPoll.TargetIdMaxLength} characters.",
+                    nameof(targetId));
+            }
+
+            await using var db = await GetDb();
+
+            var poll = new CMUBalanceRatingPoll
+            {
+                RoundId = roundId,
+                Target = target.ToString(),
+                TargetId = targetId,
+                Metric = metric.ToString(),
+                CreatedById = createdBy,
+                OpenedAt = NormalizeInputTime(openedAt),
+            };
+
+            db.DbContext.CMUBalanceRatingPolls.Add(poll);
+            await db.DbContext.SaveChangesAsync();
+
+            return poll.Id;
+        }
+
+        public async Task AddCMUBalanceRatingResponse(
+            long pollId,
+            Guid playerId,
+            byte rating,
+            DateTime recordedAt)
+        {
+            ArgumentOutOfRangeException.ThrowIfNegativeOrZero(pollId);
+
+            if (rating is < 1 or > 5)
+                throw new ArgumentOutOfRangeException(nameof(rating), rating, "A balance rating must be from 1 to 5.");
+
+            await using var db = await GetDb();
+
+            var pollExists = await db.DbContext.CMUBalanceRatingPolls
+                .AsNoTracking()
+                .AnyAsync(poll => poll.Id == pollId);
+
+            if (!pollExists)
+                return;
+
+            var alreadyRecorded = await db.DbContext.CMUBalanceRatingResponses
+                .AsNoTracking()
+                .AnyAsync(response => response.PollId == pollId && response.PlayerId == playerId);
+
+            if (alreadyRecorded)
+                return;
+
+            db.DbContext.CMUBalanceRatingResponses.Add(new CMUBalanceRatingResponse
+            {
+                PollId = pollId,
+                PlayerId = playerId,
+                Rating = rating,
+                RecordedAt = NormalizeInputTime(recordedAt),
+            });
+
+            try
+            {
+                await db.DbContext.SaveChangesAsync();
+            }
+            catch (DbUpdateException)
+            {
+                var duplicate = await db.DbContext.CMUBalanceRatingResponses
+                    .AsNoTracking()
+                    .AnyAsync(response => response.PollId == pollId && response.PlayerId == playerId);
+
+                if (!duplicate)
+                    throw;
+            }
+        }
+
+        public async Task CloseCMUBalanceRatingPoll(long pollId, DateTime closedAt)
+        {
+            ArgumentOutOfRangeException.ThrowIfNegativeOrZero(pollId);
+
+            await using var db = await GetDb();
+
+            var poll = await db.DbContext.CMUBalanceRatingPolls
+                .SingleOrDefaultAsync(candidate => candidate.Id == pollId);
+
+            if (poll == null || poll.ClosedAt != null)
+                return;
+
+            var normalizedClosedAt = NormalizeInputTime(closedAt);
+            if (normalizedClosedAt < poll.OpenedAt)
+                throw new ArgumentException("A balance rating poll cannot close before it opened.", nameof(closedAt));
+
+            poll.ClosedAt = normalizedClosedAt;
+            await db.DbContext.SaveChangesAsync();
+        }
+
+        public async Task DeleteCMUBalanceRatingPoll(long pollId)
+        {
+            ArgumentOutOfRangeException.ThrowIfNegativeOrZero(pollId);
+
+            await using var db = await GetDb();
+
+            var poll = await db.DbContext.CMUBalanceRatingPolls
+                .SingleOrDefaultAsync(candidate => candidate.Id == pollId);
+
+            if (poll == null)
+                return;
+
+            db.DbContext.CMUBalanceRatingPolls.Remove(poll);
+            await db.DbContext.SaveChangesAsync();
+        }
+
+        public async Task<CMUBalanceRatingDashboard> GetCMUBalanceRatingDashboard(
+            CancellationToken cancel = default)
+        {
+            await using var db = await GetDb(cancel);
+
+            var pollGroups = await db.DbContext.CMUBalanceRatingPolls
+                .AsNoTracking()
+                .GroupBy(poll => new { poll.Target, poll.TargetId, poll.Metric })
+                .Select(group => new
+                {
+                    group.Key.Target,
+                    group.Key.TargetId,
+                    group.Key.Metric,
+                    Polls = group.Count(),
+                    LastPolledAt = group.Max(poll => poll.OpenedAt),
+                })
+                .ToListAsync(cancel);
+
+            var responseGroups = await db.DbContext.CMUBalanceRatingResponses
+                .AsNoTracking()
+                .GroupBy(response => new
+                {
+                    response.Poll.Target,
+                    response.Poll.TargetId,
+                    response.Poll.Metric,
+                })
+                .Select(group => new
+                {
+                    group.Key.Target,
+                    group.Key.TargetId,
+                    group.Key.Metric,
+                    Rating1 = group.Count(response => response.Rating == 1),
+                    Rating2 = group.Count(response => response.Rating == 2),
+                    Rating3 = group.Count(response => response.Rating == 3),
+                    Rating4 = group.Count(response => response.Rating == 4),
+                    Rating5 = group.Count(response => response.Rating == 5),
+                    LastRatedAt = group.Max(response => response.RecordedAt),
+                })
+                .OrderBy(group => group.Target)
+                .ThenBy(group => group.TargetId)
+                .ThenBy(group => group.Metric)
+                .ToListAsync(cancel);
+
+            var responsesByTarget = responseGroups.ToDictionary(
+                group => (group.Target, group.TargetId, group.Metric));
+
+            var entries = new List<CMUBalanceRatingStatisticsEntry>(pollGroups.Count);
+            foreach (var group in pollGroups
+                         .OrderBy(group => group.Target)
+                         .ThenBy(group => group.TargetId)
+                         .ThenBy(group => group.Metric))
+            {
+                responsesByTarget.TryGetValue(
+                    (group.Target, group.TargetId, group.Metric),
+                    out var responses);
+
+                entries.Add(new CMUBalanceRatingStatisticsEntry(
+                    Enum.Parse<CMUBalanceRatingTarget>(group.Target),
+                    Enum.Parse<CMUBalanceRatingMetric>(group.Metric),
+                    group.TargetId,
+                    group.TargetId,
+                    group.Polls,
+                    responses?.Rating1 ?? 0,
+                    responses?.Rating2 ?? 0,
+                    responses?.Rating3 ?? 0,
+                    responses?.Rating4 ?? 0,
+                    responses?.Rating5 ?? 0,
+                    NormalizeDatabaseTime(responses?.LastRatedAt ?? group.LastPolledAt)));
+            }
+
+            var totalResponses = entries.Sum(entry => entry.Responses);
+            var totalPolls = pollGroups.Sum(group => group.Polls);
+            return new CMUBalanceRatingDashboard(entries, totalPolls, totalResponses);
+        }
+
+        #endregion
 
         public async Task<int> AddNewRound(Server server, params Guid[] playerIds)
         {
@@ -3028,6 +3420,17 @@ INSERT INTO player_round (players_id, rounds_id) VALUES ({players[player]}, {id}
         #endregion
 
         public abstract Task SendNotification(DatabaseNotification notification);
+
+        private static DateTime NormalizeInputTime(DateTime time)
+        {
+            return time.Kind switch
+            {
+                DateTimeKind.Utc => time,
+                DateTimeKind.Local => time.ToUniversalTime(),
+                DateTimeKind.Unspecified => DateTime.SpecifyKind(time, DateTimeKind.Utc),
+                _ => throw new ArgumentOutOfRangeException(nameof(time)),
+            };
+        }
 
         // SQLite returns DateTime as Kind=Unspecified, Npgsql actually knows for sure it's Kind=Utc.
         // Normalize DateTimes here so they're always Utc. Thanks.

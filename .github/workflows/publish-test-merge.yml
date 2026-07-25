@@ -13,6 +13,10 @@ on:
         description: Pull request number(s) to merge-test and publish, separated by spaces, commas, or new lines.
         required: true
         type: string
+      use_changelog:
+        description: Update changelog using default settings? (don't overdo)
+        type: boolean
+        default: false
 permissions:
   contents: read
   issues: write
@@ -21,10 +25,20 @@ permissions:
 env:
   DOTNET_VERSION: 10.0.x
   CONFIGURATION: Release
+  AUDIO_REPO_TOKEN: ${{ secrets.AUDIO_REPO_TOKEN }}
 
 jobs:
+  changelog:
+    uses: ./.github/workflows/update-changelog.yml
+    if: inputs.use_changelog == true
+    secrets: inherit
+    permissions:
+      contents: write
+
   prepare:
     name: Resolve PR merges
+    needs: changelog
+    if: always() && (needs.changelog.result == 'success' || needs.changelog.result == 'skipped')
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -152,6 +166,7 @@ jobs:
 
   package:
     name: Package ${{ matrix.name }}
+    if: always() && needs.prepare.result == 'success'
     runs-on: ubuntu-latest
     needs: prepare
     strategy:
@@ -196,6 +211,22 @@ jobs:
           git config --global url."https://x-access-token:${{ github.token }}@github.com/".insteadOf "https://github.com/"
           git submodule update --init --recursive --depth=1
 
+      - name: Checkout ColonialMarinesAudio
+        if: ${{ matrix.name == 'client' && env.AUDIO_REPO_TOKEN != '' }}
+        uses: actions/checkout@v6.0.2
+        with:
+          repository: AU-14/ColonialMarinesAudio
+          token: ${{ env.AUDIO_REPO_TOKEN }}
+          path: __audio-overlay
+
+      - name: Rsync CMAudio into Resources
+        if: ${{ matrix.name == 'client' && env.AUDIO_REPO_TOKEN != '' }}
+        run: |
+          mkdir -p Resources/Audio/_CMU14/Private/
+          rsync -a --delete \
+            __audio-overlay/Resources/Audio/_CMU14/Private/ \
+            Resources/Audio/_CMU14/Private/
+
       - uses: actions/setup-dotnet@v5.2.0
         with:
           dotnet-version: ${{ env.DOTNET_VERSION }}
@@ -226,6 +257,7 @@ jobs:
 
   publish:
     name: Publish test merge version
+    if: always() && needs.prepare.result == 'success' && needs.package.result == 'success'
     runs-on: ubuntu-latest
     needs:
       - prepare

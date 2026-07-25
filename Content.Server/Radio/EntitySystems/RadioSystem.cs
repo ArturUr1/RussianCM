@@ -91,7 +91,7 @@ public sealed partial class RadioSystem : EntitySystem
             return;
 
         // CMU14
-        var msg = AddGhostFollowButton(args.ChatMsg, args.MessageSource, actor.PlayerSession.Channel);
+        var msg = AddChatActionButtons(args.ChatMsg, args.MessageSource, actor.PlayerSession.Channel);
         _netMan.ServerSendMessage(msg, actor.PlayerSession.Channel);
         // CMU14
     }
@@ -189,7 +189,17 @@ public sealed partial class RadioSystem : EntitySystem
             ("name", name),
             ("message", content));
 
-        var sendAttemptEv = new RadioSendAttemptEvent(channel, radioSource);
+        var sendAttemptChat = new ChatMessage(
+            ChatChannel.Radio,
+            message,
+            wrappedMessage,
+            GetNetEntity(messageSource),
+            _chatManager.EnsurePlayer(CompOrNull<ActorComponent>(messageSource)?.PlayerSession.UserId)?.Key,
+            languageIcon: languageIcon,
+            repeatCheckSender: !HasComp<ChatRepeatIgnoreSenderComponent>(radioSource),
+            display: CreateRadioDisplay(channel, name, verb));
+        var sendAttemptChatMsg = new MsgChatMessage { Message = sendAttemptChat };
+        var sendAttemptEv = new RadioSendAttemptEvent(channel, radioSource, messageSource, message, sendAttemptChatMsg);
         RaiseLocalEvent(ref sendAttemptEv);
         RaiseLocalEvent(radioSource, ref sendAttemptEv);
         var canSend = !sendAttemptEv.Cancelled;
@@ -237,7 +247,7 @@ public sealed partial class RadioSystem : EntitySystem
                 !_language.CanUnderstand(listenerEntity.Value, currentLanguage))
             {
                 actualName = _chat.GetSpeakerNameForListener(messageSource, listenerEntity, name);
-                actualMessage = _language.ObfuscateMessageForListener(listenerEntity.Value, message, currentLanguage);
+                actualMessage = _language.ObfuscateMessageForListener(listenerEntity.Value, message, currentLanguage, messageSource);
 
                 actualWrappedMessage = Loc.GetString(
                     speech.Bold ? "chat-radio-message-wrap-bold" : "chat-radio-message-wrap",
@@ -318,14 +328,18 @@ public sealed partial class RadioSystem : EntitySystem
     {
         foreach (var session in Filter.Empty().AddWhereAttachedEntity(HasComp<GhostHearingComponent>).Recipients)
         {
-            _netMan.ServerSendMessage(AddGhostFollowButton(chatMsg, messageSource, session.Channel), session.Channel);
+            _netMan.ServerSendMessage(AddChatActionButtons(chatMsg, messageSource, session.Channel), session.Channel);
         }
     }
 
-    private MsgChatMessage AddGhostFollowButton(MsgChatMessage chatMsg, EntityUid messageSource, INetChannel recipient)
+    private MsgChatMessage AddChatActionButtons(MsgChatMessage chatMsg, EntityUid messageSource, INetChannel recipient)
     {
-        var wrappedMessage = _chatManager.AddGhostFollowButton(
+        var ghostWrappedMessage = _chatManager.AddGhostFollowButton(
             chatMsg.Message.WrappedMessage,
+            messageSource,
+            recipient);
+        var wrappedMessage = _chatManager.AddXenoWatchButton(
+            ghostWrappedMessage,
             messageSource,
             recipient);
 
@@ -337,7 +351,12 @@ public sealed partial class RadioSystem : EntitySystem
             Message = new ChatMessage(chatMsg.Message)
             {
                 WrappedMessage = wrappedMessage,
-                GhostFollowEntity = GetNetEntity(messageSource),
+                GhostFollowEntity = ghostWrappedMessage != chatMsg.Message.WrappedMessage
+                    ? GetNetEntity(messageSource)
+                    : NetEntity.Invalid,
+                XenoWatchEntity = wrappedMessage != ghostWrappedMessage
+                    ? GetNetEntity(messageSource)
+                    : NetEntity.Invalid,
             },
         };
     }

@@ -1,5 +1,5 @@
 - type: job
-  parent: CMJobBase
+  parent: RMCJobRibbonBase # RuCM замена медалей на ленточки для колонистов
   id: AU14JobCivilianOrbitalSecurity
   roundSide: Civilian
   roundForce: ORBITAL
@@ -84,5 +84,8 @@
   - RecreationalRMC
   - CannedDrinksAU14
   - SmokablesRMC
+  - EyewearRMC
+  - MasksRMC
+  - HeadwearCLFAU14
 
 # ├──[ ambassadors ]─────────────────────────────────────────────────┤

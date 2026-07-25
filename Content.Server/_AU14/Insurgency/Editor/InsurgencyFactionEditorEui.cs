@@ -8,6 +8,7 @@ using Content.Server._AU14.Insurgency.Database;
 using Content.Shared._AU14.Insurgency;
 using Content.Shared._AU14.Insurgency.Editor;
 using Content.Shared.Eui;
+using Robust.Shared.Prototypes;
 
 namespace Content.Server._AU14.Insurgency.Editor;
 
@@ -25,6 +26,7 @@ public sealed class InsurgencyFactionEditorEui : BaseEui
     private readonly InsurgencyFactionDbSystem _db;
     private readonly InsurgencyFactionApplySystem _apply;
     private readonly PlatoonSpawnRuleSystem _platoons;
+    private readonly IPrototypeManager _prototypes;
     private readonly InsurgencyEditorScope _scope;
 
     private List<EditorFactionEntry> _factions = new();
@@ -34,12 +36,14 @@ public sealed class InsurgencyFactionEditorEui : BaseEui
         InsurgencyFactionDbSystem db,
         InsurgencyFactionApplySystem apply,
         PlatoonSpawnRuleSystem platoons,
+        IPrototypeManager prototypes,
         InsurgencyEditorScope scope = InsurgencyEditorScope.Default)
     {
         _admin = admin;
         _db = db;
         _apply = apply;
         _platoons = platoons;
+        _prototypes = prototypes;
         _scope = scope;
     }
 
@@ -117,12 +121,73 @@ public sealed class InsurgencyFactionEditorEui : BaseEui
             case InsurgencyFactionRefreshMessage:
                 Refresh();
                 break;
+            case InsurgencyExportSheetMessage export:
+                HandleExportSheet(export);
+                break;
+            case InsurgencyImportSheetMessage import:
+                HandleImportSheet(import);
+                break;
         }
+    }
+
+    // Builds a ready-to-fill faction spreadsheet and sends the .xlsx bytes back for the client to save.
+    // A null FactionId is a blank template to hand to a player; a set id pre-fills that stored faction.
+    private async void HandleExportSheet(InsurgencyExportSheetMessage msg)
+    {
+        FactionDefinition? existing = null;
+        if (msg.FactionId is { } id)
+        {
+            existing = await _db.GetFactionAsync(id);
+            // The Custom editor may only round-trip rows it can see (Custom ones).
+            if (_scope == InsurgencyEditorScope.Custom && await IsDefaultRow(id))
+                return;
+        }
+
+        var name = existing?.Metadata.Title;
+        if (string.IsNullOrWhiteSpace(name))
+            name = "INSFOR_Faction_Template";
+
+        var bytes = InsforSpreadsheet.Build(_prototypes, existing);
+        SendMessage(new InsurgencyExportSheetResultMessage(bytes, SanitizeFileName(name) + ".xlsx"));
+    }
+
+    // Imports a faction from a filled-in spreadsheet. Only cell values are read (no formulas/macros),
+    // then the result runs through the full untrusted-payload validator (caps + unknown prototype
+    // stripping) before it is stored - identical trust model to a Custom faction payload.
+    private async void HandleImportSheet(InsurgencyImportSheetMessage msg)
+    {
+        if (msg.Workbook.Length == 0 || msg.Workbook.Length > InsforSpreadsheet.MaxWorkbookBytes)
+            return;
+
+        FactionDefinition? parsed;
+        using (var stream = new System.IO.MemoryStream(msg.Workbook))
+            parsed = InsforSpreadsheet.Read(stream);
+
+        if (parsed == null)
+            return;
+
+        var def = InsurgencyFactionValidator.SanitizeCustom(parsed, _prototypes);
+
+        // An imported faction is a brand-new row. The host editor authors Default factions; the Custom
+        // editor authors Custom ones. Never carries a built-in override marker.
+        var isDefault = _scope == InsurgencyEditorScope.Default;
+        await _db.AddFactionAsync(def, isDefault);
+
+        Refresh();
+    }
+
+    private static string SanitizeFileName(string name)
+    {
+        foreach (var ch in System.IO.Path.GetInvalidFileNameChars())
+            name = name.Replace(ch, '_');
+        return name;
     }
 
     private async void HandleSave(InsurgencyFactionSaveMessage msg)
     {
-        var def = InsurgencyFactionValidator.Sanitize(msg.Definition);
+        var def = _scope == InsurgencyEditorScope.Custom
+            ? InsurgencyFactionValidator.SanitizeCustom(msg.Definition, _prototypes)
+            : InsurgencyFactionValidator.Sanitize(msg.Definition);
 
         // The Custom editor can only author Custom factions, whatever the client claims.
         var isDefault = _scope == InsurgencyEditorScope.Default && msg.IsDefault;
@@ -153,14 +218,11 @@ public sealed class InsurgencyFactionEditorEui : BaseEui
 
     private async void HandleDelete(InsurgencyFactionDeleteMessage msg)
     {
-        // The built-in vanilla CLF is code-defined and cannot be deleted.
-        if (msg.Id == InsurgencyBuiltinFactions.VanillaClfId)
-            return;
-
         // The Custom editor cannot delete host-authored Default factions.
         if (_scope == InsurgencyEditorScope.Custom && await IsDefaultRow(msg.Id))
             return;
 
+        // Storage enforces built-in ownership, so every deletion path is protected even if another caller is added.
         await _db.DeleteFactionAsync(msg.Id);
         Refresh();
     }

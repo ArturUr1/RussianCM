@@ -1,15 +1,20 @@
 - type: job
-  parent: CMJobBase
+  parent: RMCJobRibbonBase # RuCM замена медалей на ленточки для колонистов
   id: AU14JobCLFCellLeader
   roundSide: ThirdParty
   roundForce: CLF
   roundRole: CLFCellLeader
   roundComponents:
+  - type: AU14CallsignRole
+    suffix: "6"
+    commandElement: true
   - type: NpcFactionMember
     factions:
     - CLF
   - type: CLFMember
     statusIcon: CLFFactionLeader
+  - type: ANPRCRadioUser
+  - type: ANPRCCryptoAuthority
   - type: Skills
     skills:
       RMCSkillCqc: 2
@@ -83,6 +88,9 @@
   inhand:
   - AU14HeavyCellKit
   - AU14CLFHeadset
+  storage:
+    back:
+    - ANPRCFillCardCLF
 
 - type: entity
   parent: CMSpawnPointJobBase

@@ -3,6 +3,7 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 using Content.Shared._AU14.SavedBuilds;
 using Robust.Shared.ContentPack;
 using Robust.Shared.Serialization;
@@ -172,16 +173,27 @@ public sealed class SavedBuildListSystem : EntitySystem
         if (!TryReadRoot(path, out var root))
             return;
 
+        // Keep the author prefix if present so shared files keep their origin.
+        var sep = id.IndexOf("__", StringComparison.Ordinal);
+        var prefix = sep > 0 ? id[..sep] : "local";
+        var newId = $"{prefix}__{SanitizeFileName(newName)}.build.yml";
+        var newPath = dir / newId;
+
+        // User-data backends and host filesystems differ in case sensitivity. Compare the complete directory
+        // case-insensitively and reject any destination owned by a different build before opening it for write.
+        if (_resource.UserData.Exists(dir) && _resource.UserData.DirectoryEntries(dir).Any(entry =>
+                !string.Equals(entry, id, StringComparison.OrdinalIgnoreCase) &&
+                string.Equals(entry, newId, StringComparison.OrdinalIgnoreCase)))
+        {
+            Log.Warning($"Refusing to rename saved build '{id}' to existing build '{newId}'.");
+            return;
+        }
+
         if (root.TryGet<MappingDataNode>("meta", out var meta))
         {
             meta.Remove("name");
             meta.Add("name", new ValueDataNode(newName));
         }
-
-        // Keep the author prefix if present so shared files keep their origin.
-        var sep = id.IndexOf("__", StringComparison.Ordinal);
-        var prefix = sep > 0 ? id[..sep] : "local";
-        var newPath = dir / $"{prefix}__{SanitizeFileName(newName)}.build.yml";
 
         try
         {
@@ -240,11 +252,13 @@ public sealed class SavedBuildListSystem : EntitySystem
             Source = MetaString(meta, "source"),
             Author = MetaString(meta, "author"),
             EntityCount = count,
+            TileCount = MetaInt(meta, "tileCount"),
             RelMinX = MetaFloat(meta, "relMinX"),
             RelMinY = MetaFloat(meta, "relMinY"),
             RelMaxX = MetaFloat(meta, "relMaxX"),
             RelMaxY = MetaFloat(meta, "relMaxY"),
             Preview = ReadPreview(meta),
+            Tiles = ReadTiles(meta),
             SourceGrid = sourceGrid,
             AnchorX = MetaFloat(meta, "anchorX"),
             AnchorY = MetaFloat(meta, "anchorY"),
@@ -259,6 +273,12 @@ public sealed class SavedBuildListSystem : EntitySystem
     private static float MetaFloat(MappingDataNode meta, string key)
     {
         float.TryParse(MetaString(meta, key), NumberStyles.Float, CultureInfo.InvariantCulture, out var value);
+        return value;
+    }
+
+    private static int MetaInt(MappingDataNode meta, string key)
+    {
+        int.TryParse(MetaString(meta, key), NumberStyles.Integer, CultureInfo.InvariantCulture, out var value);
         return value;
     }
 
@@ -279,6 +299,30 @@ public sealed class SavedBuildListSystem : EntitySystem
                 X = MetaFloat(m, "x"),
                 Y = MetaFloat(m, "y"),
                 Rot = MetaFloat(m, "rot"),
+                Z = MetaInt(m, "z"),
+            });
+        }
+
+        return list;
+    }
+
+    private static List<BuildPreviewTile> ReadTiles(MappingDataNode meta)
+    {
+        var list = new List<BuildPreviewTile>();
+        if (!meta.TryGet<SequenceDataNode>("tiles", out var seq))
+            return list;
+
+        foreach (var node in seq)
+        {
+            if (node is not MappingDataNode m)
+                continue;
+
+            list.Add(new BuildPreviewTile
+            {
+                Tile = MetaString(m, "tile"),
+                X = MetaFloat(m, "x"),
+                Y = MetaFloat(m, "y"),
+                Z = MetaInt(m, "z"),
             });
         }
 

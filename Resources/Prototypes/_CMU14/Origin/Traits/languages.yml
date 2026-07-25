@@ -9,6 +9,15 @@
   - type: RemoveLanguage
     languages:
     - English
+    clearCurrentLanguage: true
+
+- type: trait
+  id: NoLanguageLearning
+  name: au14-trait-no-language-learning-name
+  description: au14-trait-no-language-learning-desc
+  category: LanguageTraits # RuMC edit
+  components:
+  - type: NoLanguageLearning
 
 - type: trait
   id: Polyglot

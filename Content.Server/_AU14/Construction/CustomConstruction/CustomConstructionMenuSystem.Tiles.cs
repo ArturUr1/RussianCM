@@ -4,6 +4,7 @@
 using System.IO;
 using System.Linq;
 using System.Text;
+using Content.Shared._AU14.Administration;
 using Content.Shared._AU14.Construction.CustomConstruction;
 using Content.Shared.Database;
 using Content.Shared.Maps;
@@ -36,7 +37,7 @@ public sealed partial class CustomConstructionMenuSystem
     private void OnRequestOpenTile(RequestOpenCustomTileEditorEvent msg, EntitySessionEventArgs args)
     {
         var session = args.SenderSession;
-        if (!CanEditConstructionMenu(session))
+        if (!CanUseTool(session, AU14ToolPermissions.Tiles))
             return;
 
         var tiles = _prototype.EnumeratePrototypes<ContentTileDefinition>()
@@ -55,7 +56,7 @@ public sealed partial class CustomConstructionMenuSystem
     private void OnSubmitTile(SubmitCustomTileEditorEvent msg, EntitySessionEventArgs args)
     {
         var session = args.SenderSession;
-        if (!CanEditConstructionMenu(session))
+        if (!CanUseTool(session, AU14ToolPermissions.Tiles))
             return;
 
         if (TilesDir == null)
@@ -88,6 +89,12 @@ public sealed partial class CustomConstructionMenuSystem
         {
             Directory.CreateDirectory(TilesDir);
             var yaml = BuildTileYaml(key, msg.TileId, material, amount, spawnlist, category, msg.ZLevelPage);
+            if (IsOversizedYaml(yaml, out var sizeReason))
+            {
+                PopupTo(session, Loc.GetString("construction-menu-verb-invalid", ("reason", sizeReason)), PopupType.MediumCaution);
+                return;
+            }
+
             File.WriteAllText(Path.Combine(TilesDir, $"{TileFilePrefix}{key}.yml"), yaml, Encoding.UTF8);
             DbUpsert(DbKindTiles, $"{TileFilePrefix}{key}", yaml);
 
@@ -134,9 +141,21 @@ public sealed partial class CustomConstructionMenuSystem
         sb.AppendLine("  components:");
         sb.AppendLine("  - type: Transform");
         sb.AppendLine("    anchored: true");
+        // Sprite: the applier is what the menu shows as the recipe icon, so it wears the ACTUAL tile's
+        // texture. Every tile used to render as the generic steel plating, which made a Tiles spawnlist
+        // impossible to read at a glance. ContentTileDefinition.Sprite is a direct texture path, so it goes
+        // in as a texture layer rather than an RSI state; tiles without one keep the old plating look.
         sb.AppendLine("  - type: Sprite");
-        sb.AppendLine("    sprite: Objects/Tiles/tile.rsi");
-        sb.AppendLine("    state: steel");
+        if (TryGetTileSprite(tileId, out var tileSprite))
+        {
+            sb.AppendLine("    layers:");
+            sb.AppendLine($"    - texture: {tileSprite}");
+        }
+        else
+        {
+            sb.AppendLine("    sprite: Objects/Tiles/tile.rsi");
+            sb.AppendLine("    state: steel");
+        }
         sb.AppendLine("  - type: TileApplier");
         sb.AppendLine($"    tile: {tileId}");
         sb.AppendLine("  - type: Construction");
@@ -182,10 +201,20 @@ public sealed partial class CustomConstructionMenuSystem
             sb.AppendLine("  conditions:");
             sb.AppendLine("  - !type:ZBuildAllowed");
         }
-        sb.AppendLine("  icon:");
-        sb.AppendLine("    sprite: Objects/Tiles/tile.rsi");
-        sb.AppendLine("    state: steel");
+        // NOTE: no "icon:" block - this fork's ConstructionPrototype has no icon field (the YAML Linter CI
+        // rejects it as an unknown field). The menu derives the recipe icon from the applier entity's sprite.
 
         return sb.ToString();
+    }
+
+    /// <summary>Texture path of a tile definition's own sprite, for use as the recipe icon.</summary>
+    private bool TryGetTileSprite(string tileId, out string texture)
+    {
+        texture = string.Empty;
+        if (_tileDefManager[tileId] is not ContentTileDefinition def || def.Sprite is not { } sprite)
+            return false;
+
+        texture = sprite.ToString();
+        return !string.IsNullOrWhiteSpace(texture);
     }
 }

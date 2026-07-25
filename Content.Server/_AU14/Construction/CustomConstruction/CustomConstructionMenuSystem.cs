@@ -19,6 +19,7 @@ using Content.Shared.Tools;
 using Content.Shared.Verbs;
 using Robust.Server.GameObjects;
 using Robust.Shared.Configuration;
+using Robust.Shared.Map;
 using Robust.Shared.Player;
 using Robust.Shared.Prototypes;
 
@@ -47,12 +48,13 @@ namespace Content.Server._AU14.Construction.CustomConstruction;
 public sealed partial class CustomConstructionMenuSystem : EntitySystem
 {
     [Dependency] private IAdminManager _adminManager = default!;
-    [Dependency] private JobWhitelistManager _jobWhitelist = default!;
+    [Dependency] private Administration.AU14ToolPermissionSystem _toolPerms = default!;
     [Dependency] private IConfigurationManager _cfg = default!;
     [Dependency] private SharedPopupSystem _popup = default!;
     [Dependency] private ISharedAdminLogManager _adminLogger = default!;
     [Dependency] private IPrototypeManager _prototype = default!;
     [Dependency] private IComponentFactory _componentFactory = default!;
+    [Dependency] private ITileDefinitionManager _tileDefManager = default!;
 
     /// <summary>
     /// The admin flag required to use the feature. Single permission extension point: swap this (or
@@ -62,12 +64,9 @@ public sealed partial class CustomConstructionMenuSystem : EntitySystem
     /// </summary>
     public const AdminFlags RequiredFlag = AdminFlags.Host;
 
-    /// <summary>
-    /// Whitelist-only "role" that also unlocks the editor tools, so a trusted non-admin can be granted
-    /// access with <c>jobwhitelistadd &lt;player&gt; JModEditor</c> (see JModEditor.yml) instead of a Host
-    /// admin rank. Checked in addition to <see cref="RequiredFlag"/>.
-    /// </summary>
-    public static readonly ProtoId<JobPrototype> EditorWhitelistJob = "JModEditor";
+    // AU14: the old JModEditor job-whitelist gate was replaced by per-tool ckey grants (see
+    // AU14ToolPermissionSystem) because jobwhitelistadd was reachable by lower admin ranks. Trusted
+    // non-admins are now granted per tool through the Tool Permissions window or the toolperm command.
 
     private const string GeneratedSubDir = "Prototypes/_AU14/CustomConstruction/Generated";
     private const string DefaultSpawnlist = "AU14";
@@ -117,12 +116,22 @@ public sealed partial class CustomConstructionMenuSystem : EntitySystem
         SubscribeNetworkEvent<RemoveCustomConstructionGroupEvent>(OnRemoveGroup);
         SubscribeNetworkEvent<HideConstructionRecipeEvent>(OnHideRecipe);
 
+        // The "Mass Entity Editor" batch tool (see the .Mass.cs partial).
+        InitializeMass();
+
+        // The "Spawnlist Delete" tool (see the .SpawnlistDelete.cs partial).
+        InitializeSpawnlistDelete();
+
         // The "Tiles" and "Lathe" sibling editors (see the .Tiles.cs / .Lathe.cs partials).
         SubscribeNetworkEvent<RequestOpenCustomTileEditorEvent>(OnRequestOpenTile);
         SubscribeNetworkEvent<SubmitCustomTileEditorEvent>(OnSubmitTile);
         SubscribeNetworkEvent<RequestOpenCustomLatheEditorEvent>(OnRequestOpenLathe);
         SubscribeNetworkEvent<SubmitCustomLatheEditorEvent>(OnSubmitLathe);
         SubscribeNetworkEvent<RemoveCustomLatheRecipeEvent>(OnRemoveLatheRecipe);
+
+        // These packs are referenced by static lathe prototypes. Keep empty fallbacks available even
+        // when Generated/ is intentionally not part of the repo and the DB has no custom recipes.
+        EnsureLathePackFallbacks();
 
         // The database is the durable store (the Docker filesystem is wiped on redeploy): put back
         // any stored entry whose generated file is gone, and hot-load its prototypes for this boot.
@@ -143,8 +152,14 @@ public sealed partial class CustomConstructionMenuSystem : EntitySystem
     /// </summary>
     public bool CanEditConstructionMenu(ICommonSession session)
     {
-        return _adminManager.HasAdminFlag(session, RequiredFlag)
-            || _jobWhitelist.IsWhitelisted(session.UserId, EditorWhitelistJob);
+        return CanUseTool(session, Content.Shared._AU14.Administration.AU14ToolPermissions.Construction);
+    }
+
+    /// <summary>Per-tool gate: a Host-flagged admin, or a ckey granted this specific tool through the
+    /// Tool Permissions system (see <see cref="Administration.AU14ToolPermissionSystem"/>).</summary>
+    public bool CanUseTool(ICommonSession session, string tool)
+    {
+        return _adminManager.HasAdminFlag(session, RequiredFlag) || _toolPerms.HasGrant(session, tool);
     }
 
     // -------------------------------------------------------------------------
@@ -264,6 +279,11 @@ public sealed partial class CustomConstructionMenuSystem : EntitySystem
         if (!_prototype.TryIndex<EntityPrototype>(msg.ProtoId, out var proto))
             return;
 
+        // The chooser displays the generated child that is actually built. Recipe files, however, are keyed to
+        // the original prototype recorded in their header. Resolve that child before looking up or editing its
+        // recipe; otherwise submitting "Change Recipe" is rejected by the generated-entity nesting safeguard.
+        proto = ResolveOriginalProto(proto);
+
         // Editing a specific existing entry (Change Recipe from the chooser): straight into the editor.
         if (!string.IsNullOrEmpty(msg.EntryKey))
         {
@@ -295,6 +315,7 @@ public sealed partial class CustomConstructionMenuSystem : EntitySystem
         if (string.IsNullOrEmpty(msg.EntryKey) || !_prototype.TryIndex<EntityPrototype>(msg.ProtoId, out var proto))
             return;
 
+        proto = ResolveOriginalProto(proto);
         RemoveEntry(session, user, proto, msg.EntryKey);
     }
 
@@ -424,15 +445,32 @@ public sealed partial class CustomConstructionMenuSystem : EntitySystem
     /// </summary>
     private void UnhideRecipeId(string recipeId)
     {
+        if (UnhideRecipeIdsPersist(new[] { recipeId }) is { } overridesYaml)
+            PublishYaml(overridesYaml, "menu overrides");
+    }
+
+    /// <summary>
+    /// Batch unhide WITHOUT publishing: removes every id from the hidden-overrides list and persists the
+    /// result (file + DB) in one write. Returns the updated overrides YAML so the caller can fold it into
+    /// its own single publish, or null when nothing changed. Publishing is the expensive part (it reloads
+    /// every localization on server and clients), so batch save paths must do it exactly once - calling
+    /// the per-id publish in a loop is what made big mass-editor saves hang the server mid-round.
+    /// </summary>
+    private string? UnhideRecipeIdsPersist(IEnumerable<string> recipeIds)
+    {
         if (_generatedDir == null)
-            return;
+            return null;
 
         var dir = Path.Combine(_generatedDir, OverridesSubDir);
         var path = Path.Combine(dir, OverridesFileName);
 
         var hidden = ReadHiddenRecipes(path);
-        if (!hidden.Remove(recipeId))
-            return;
+        var changed = false;
+        foreach (var recipeId in recipeIds)
+            changed |= hidden.Remove(recipeId);
+
+        if (!changed)
+            return null;
 
         try
         {
@@ -440,11 +478,12 @@ public sealed partial class CustomConstructionMenuSystem : EntitySystem
             var overridesYaml = BuildOverridesYaml(hidden);
             File.WriteAllText(path, overridesYaml, Encoding.UTF8);
             DbUpsert(DbKindOverrides, Path.GetFileNameWithoutExtension(OverridesFileName), overridesYaml);
-            PublishYaml(overridesYaml, "menu overrides");
+            return overridesYaml;
         }
         catch (Exception e)
         {
-            Log.Warning($"Failed to unhide recipe id {recipeId}: {e}");
+            Log.Warning($"Failed to unhide recipe ids: {e}");
+            return null;
         }
     }
 
@@ -548,6 +587,13 @@ public sealed partial class CustomConstructionMenuSystem : EntitySystem
         if (!_prototype.TryIndex<EntityPrototype>(msg.ProtoId, out var proto))
             return;
 
+        if (IsGeneratedCustomEntityId(proto.ID))
+        {
+            PopupTo(session, Loc.GetString("construction-menu-verb-invalid",
+                ("reason", "that is already a generated custom construction entity")), PopupType.MediumCaution);
+            return;
+        }
+
         var steps = msg.Steps ?? new();
         if (steps.Count == 0)
         {
@@ -579,25 +625,76 @@ public sealed partial class CustomConstructionMenuSystem : EntitySystem
         var category = SanitizeName(msg.Category, DefaultCategory);
 
         // An entry is keyed by entity + spawnlist + category. Editing and changing the spawnlist/category
-        // moves the entry, so we delete the old file first; same key just overwrites in place.
+        // moves the entry; the old version remains authoritative until the replacement publishes successfully.
         var newKey = MakeEntryKey(proto.ID, spawnlist, category);
         var isChange = !string.IsNullOrEmpty(msg.EntryKey);
 
         try
         {
+            var yaml = BuildGeneratedYaml(proto, newKey, spawnlist, category, steps, deconstructSteps, msg.Health);
+            if (IsUnsafeGeneratedEntryYaml(yaml, out var reason) || IsOversizedYaml(yaml, out reason))
+            {
+                Log.Error($"Refusing to write unsafe custom construction entry for {proto.ID} (key {newKey}): {reason}");
+                PopupTo(session, Loc.GetString("construction-menu-verb-invalid", ("reason", reason)), PopupType.MediumCaution);
+                return;
+            }
+
+            // Dry run: report exactly what WOULD be written and stop. The client shows the scrollable
+            // confirmation window and re-sends with Preview = false.
+            if (msg.Preview)
+            {
+                var preview = new OpenDbSavePreviewEvent { Kind = "construction-db-preview-kind-entry", Planned = 1 };
+                if (isChange && !string.Equals(msg.EntryKey, newKey, StringComparison.Ordinal))
+                {
+                    preview.Lines.Add($"DELETE file {FilePrefix}{msg.EntryKey}.yml + DB row (entries/{FilePrefix}{msg.EntryKey}) - entry moved");
+                }
+                preview.Lines.Add($"WRITE file {FilePrefix}{newKey}.yml ({Encoding.UTF8.GetByteCount(yaml)} bytes)");
+                preview.Lines.Add($"UPSERT DB row (entries/{FilePrefix}{newKey}) - {proto.ID}, spawnlist '{spawnlist}', category '{category}'");
+                RaiseNetworkEvent(preview, session);
+                return;
+            }
+
             Directory.CreateDirectory(_generatedDir);
 
-            if (isChange && !string.Equals(msg.EntryKey, newKey, StringComparison.Ordinal))
-                RetireEntryFile(FilePathForKey(msg.EntryKey));
-
-            var yaml = BuildGeneratedYaml(proto, newKey, spawnlist, category, steps, deconstructSteps, msg.Health);
-            File.WriteAllText(FilePathForKey(newKey), yaml, Encoding.UTF8);
-            DbUpsert(DbKindEntries, $"{FilePrefix}{newKey}", yaml);
+            var newPath = FilePathForKey(newKey);
+            var oldPath = isChange ? FilePathForKey(msg.EntryKey) : null;
+            var oldYaml = oldPath != null && File.Exists(oldPath) ? File.ReadAllText(oldPath) : null;
+            var stagedPath = $"{newPath}.{Guid.NewGuid():N}.pending";
+            File.WriteAllText(stagedPath, yaml, Encoding.UTF8);
 
             // Apply live: load on the server (overwrite) and push to every client, so the new/changed
-            // recipe shows up this round instead of "after the next restart".
-            PublishYaml(yaml, $"entry {newKey}");
-            UnhideRecipeId($"{FilePrefix}{newKey}");
+            // recipe shows up this round instead of "after the next restart". Publishing reloads every
+            // localization, so the entry and its overrides unhide share ONE publish.
+            var overridesYaml = UnhideRecipeIdsPersist(new[] { $"{FilePrefix}{newKey}" });
+            var publishYaml = overridesYaml == null ? yaml : yaml + "\n" + overridesYaml;
+            if (!PublishYaml(publishYaml, $"entry {newKey}"))
+            {
+                File.Delete(stagedPath);
+                if (oldYaml != null)
+                    PublishYaml(oldYaml, $"rollback entry {msg.EntryKey}");
+                PopupTo(session, Loc.GetString("construction-menu-verb-add-failed"), PopupType.MediumCaution);
+                return;
+            }
+
+            try
+            {
+                File.Move(stagedPath, newPath, overwrite: true);
+                DbUpsert(DbKindEntries, $"{FilePrefix}{newKey}", yaml);
+            }
+            catch
+            {
+                if (File.Exists(stagedPath))
+                    File.Delete(stagedPath);
+
+                if (oldYaml != null)
+                    PublishYaml(oldYaml, $"rollback entry {msg.EntryKey}");
+                else
+                    UnloadYaml(yaml, $"rollback entry {newKey}");
+                throw;
+            }
+
+            if (oldPath != null && !string.Equals(msg.EntryKey, newKey, StringComparison.Ordinal))
+                RetireEntryFile(oldPath);
         }
         catch (Exception e)
         {
@@ -687,10 +784,57 @@ public sealed partial class CustomConstructionMenuSystem : EntitySystem
 
     /// <summary>Prefix of the generated buildable child entity id (see <see cref="BuildGeneratedYaml"/>).</summary>
     private const string ChildEntityPrefix = "AU14CustomEntity_";
+    private const string MidEntityPrefix = "AU14CustomEntityMid_";
 
     /// <summary>An entry is uniquely identified by entity + spawnlist + category.</summary>
     private string MakeEntryKey(string entityId, string spawnlist, string category) =>
         $"{Sanitize(entityId)}__{Sanitize(spawnlist)}__{Sanitize(category)}";
+
+    private static bool IsGeneratedCustomEntityId(string id)
+    {
+        return id.StartsWith(ChildEntityPrefix, StringComparison.Ordinal) ||
+               id.StartsWith(MidEntityPrefix, StringComparison.Ordinal);
+    }
+
+    private static bool IsUnsafeGeneratedEntryYaml(string yaml, out string reason)
+    {
+        reason = string.Empty;
+
+        string? currentEntity = null;
+        foreach (var raw in yaml.Split('\n'))
+        {
+            var trimmed = raw.Trim();
+            if (trimmed.StartsWith(HeaderEntity, StringComparison.Ordinal))
+            {
+                var original = trimmed[HeaderEntity.Length..].Trim();
+                if (IsGeneratedCustomEntityId(original))
+                {
+                    reason = $"generated entries cannot target generated custom entity '{original}'";
+                    return true;
+                }
+
+                continue;
+            }
+
+            if (trimmed.StartsWith("id:", StringComparison.Ordinal))
+            {
+                currentEntity = trimmed["id:".Length..].Trim();
+                continue;
+            }
+
+            if (!trimmed.StartsWith("parent:", StringComparison.Ordinal))
+                continue;
+
+            var parent = trimmed["parent:".Length..].Trim();
+            if (!IsGeneratedCustomEntityId(parent))
+                continue;
+
+            reason = $"generated entity '{currentEntity ?? "<unknown>"}' inherits from generated custom entity '{parent}'";
+            return true;
+        }
+
+        return false;
+    }
 
     private string FilePathForKey(string entryKey) => Path.Combine(_generatedDir!, $"{FilePrefix}{entryKey}.yml");
 
@@ -797,6 +941,25 @@ public sealed partial class CustomConstructionMenuSystem : EntitySystem
         }
 
         return byList.ToDictionary(kv => kv.Key, kv => kv.Value.ToList());
+    }
+
+    /// <summary>
+    /// Stack type of an entity prototype, when it is stackable at all (barbed wire, sheets, rods...).
+    /// Recipe amounts for these mean UNITS of the stack, not that many separate items.
+    /// </summary>
+    private bool TryGetStackType(string protoId, out string stackType)
+    {
+        stackType = string.Empty;
+
+        if (!_prototype.TryIndex<EntityPrototype>(protoId, out var proto) ||
+            !proto.TryGetComponent<StackComponent>(out var stack, _componentFactory))
+            return false;
+
+        if (string.IsNullOrWhiteSpace(stack.StackTypeId))
+            return false;
+
+        stackType = stack.StackTypeId;
+        return true;
     }
 
     private sealed record EntryInfo(string Entity, string Spawnlist, string Category, List<CustomConstructionStepData> Steps, List<CustomConstructionStepData> DeconstructSteps, int Health);
@@ -1124,7 +1287,19 @@ public sealed partial class CustomConstructionMenuSystem : EntitySystem
             switch (step.Kind)
             {
                 case CustomConstructionStepKind.EntityMaterial:
-                    // Require `amount` separate copies of the entity (each insert consumes one).
+                    // A STACKABLE entity means N units of that stack, not N separate one-unit entities.
+                    // Picking BarbedWire1 with an amount of 2 used to emit two entityId steps, so the recipe
+                    // demanded two separate single-wire items and a stack of 2 would not satisfy it. Emit a
+                    // material step against the stack type instead, which counts units the way players expect.
+                    if (TryGetStackType(step.Value, out var stackType))
+                    {
+                        sb.AppendLine($"      - material: {stackType}");
+                        sb.AppendLine($"        amount: {amount}");
+                        sb.AppendLine($"        doAfter: {doAfter}");
+                        break;
+                    }
+
+                    // Non-stackable: require `amount` separate copies of the entity (each insert consumes one).
                     for (var i = 0; i < amount; i++)
                     {
                         sb.AppendLine($"      - entityId: {step.Value}");
@@ -1347,6 +1522,28 @@ public sealed partial class CustomConstructionMenuSystem : EntitySystem
     private const int MaxStepAmount = 30;
     /// <summary>Max per-step build time in seconds.</summary>
     private const int MaxStepSeconds = 300;
+
+    /// <summary>
+    /// Max size of ONE generated YAML document (file + DB row), in bytes. Generated entries are normally
+    /// a few KB; anything approaching this is corrupt or hostile. Checked on every write AND on every DB
+    /// restore, so an oversized row can never be written, restored, or broadcast to clients.
+    /// </summary>
+    private const int MaxGeneratedYamlBytes = 128 * 1024;
+
+    /// <summary>Single guard every tool's save path runs before persisting generated YAML.</summary>
+    private static bool IsOversizedYaml(string yaml, out string reason)
+    {
+        // UTF-8 length ≈ char count for our generated ASCII yaml; Encoding count is exact and cheap.
+        var bytes = Encoding.UTF8.GetByteCount(yaml);
+        if (bytes <= MaxGeneratedYamlBytes)
+        {
+            reason = string.Empty;
+            return false;
+        }
+
+        reason = $"generated YAML is {bytes / 1024} KiB (max {MaxGeneratedYamlBytes / 1024} KiB)";
+        return true;
+    }
 
     /// <summary>
     /// Whitelists a client-sent spawnlist/category name before it is embedded in generated YAML: letters,
