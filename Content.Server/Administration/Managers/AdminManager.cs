@@ -493,6 +493,7 @@ namespace Content.Server.Administration.Managers
                 {
                     Flags = flags,
                     Active = !dbData.Deadminned,
+                    OOCColor = dbData.AdminRank?.OOCColor,
                 };
 
                 if (dbData.Title != null  && _cfg.GetCVar(CCVars.AdminUseCustomNamesAdminRank))

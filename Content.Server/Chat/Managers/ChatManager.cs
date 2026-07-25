@@ -15,6 +15,7 @@ using Content.Server.Players.RateLimiting;
 using Content.Server.Preferences.Managers;
 using Content.Shared._RMC14.CCVar;
 using Content.Shared._RMC14.Chat;
+using Content.Shared._AU14.Administration;
 using Content.Shared.Administration;
 using Content.Shared.CCVar;
 using Content.Shared.Chat;
@@ -302,11 +303,11 @@ internal sealed partial class ChatManager : IChatManager
 
         Color? colorOverride = null;
         var wrappedMessage = Loc.GetString("chat-manager-send-ooc-wrap-message", ("playerName",player.Name), ("message", FormattedMessage.EscapeText(message)));
-        if (_adminManager.HasAdminFlag(player, AdminFlags.NameColor))
-        {
-            var prefs = _preferencesManager.GetPreferences(player.UserId);
-            colorOverride = prefs.AdminOOCColor;
-        }
+        var adminData = _adminManager.GetAdminData(player);
+        var prefs = adminData?.HasFlag(AdminFlags.NameColor) == true
+            ? _preferencesManager.GetPreferences(player.UserId)
+            : null;
+        colorOverride = AdminOOCColorResolver.Resolve(adminData, prefs);
         if (_netConfigManager.GetClientCVar(player.Channel, CCVars.ShowOocPatronColor) &&
             _linkAccount.GetConnectedPatron(player)?.Tier != null)
         {

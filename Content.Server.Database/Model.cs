@@ -913,6 +913,8 @@ namespace Content.Server.Database
     {
         public int Id { get; set; }
         public string Name { get; set; } = default!;
+        [Column("ooc_color")]
+        public string? OOCColor { get; set; }
 
         public List<Admin> Admins { get; set; } = default!;
         public List<AdminRankFlag> Flags { get; set; } = default!;

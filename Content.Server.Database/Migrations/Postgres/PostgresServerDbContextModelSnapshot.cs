@@ -434,10 +434,14 @@ namespace Content.Server.Database.Migrations.Postgres
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("name");
+                      b.Property<string>("Name")
+                          .IsRequired()
+                          .HasColumnType("text")
+                          .HasColumnName("name");
+
+                      b.Property<string>("OOCColor")
+                          .HasColumnType("text")
+                          .HasColumnName("ooc_color");
 
                     b.HasKey("Id")
                         .HasName("PK_admin_rank");

@@ -1906,10 +1906,11 @@ INSERT INTO player_round (players_id, rounds_id) VALUES ({players[player]}, {id}
                 .Include(r => r.Flags)
                 .SingleAsync(a => a.Id == rank.Id, cancel);
 
-            existing.Flags = rank.Flags;
-            existing.Name = rank.Name;
+              existing.Flags = rank.Flags;
+              existing.Name = rank.Name;
+              existing.OOCColor = rank.OOCColor;
 
-            await db.DbContext.SaveChangesAsync(cancel);
+              await db.DbContext.SaveChangesAsync(cancel);
         }
         #endregion
 
