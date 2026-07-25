@@ -55,7 +55,7 @@
   components:
   - type: Storage
     grid:
-    - 0,0,13,3
+    - 0,0,13,5
     whitelist:
       tags:
       - RuMCRifleAH12
@@ -67,6 +67,24 @@
     - id: RuMCRifleAH12
     - id: RuMCUPPNavalInfantryBeltMachinegunner
     - id: RuMCUPPPouchDrum
+    - id: RuMCMagazineAH12
+    - id: RuMCMagazineAH12
+    - id: RuMCMagazineAH12
+    - id: RuMCMagazineAH12
+    - id: RuMCMagazineAH12
+    - id: RuMCMagazineAH12
+    - id: RuMCMagazineAH12
+    - id: RuMCMagazineAH12
+    - id: RuMCMagazineAH12
+    - id: RuMCMagazineAH12
+    - id: RuMCMagazineAH12Large
+    - id: RuMCMagazineAH12AP
+    - id: RuMCMagazineAH12AP
+    - id: RuMCMagazineAH12Tracer
+    - id: RuMCMagazineAH12Tracer
+    - id: RuMCMagazineAH12Tracer
+    - id: RuMCMagazineAH12Tracer
+    - id: RuMCMagazineAH12JHP
 
 #- type: entity
 #  parent: RMCGunCaseBase
