@@ -408,10 +408,14 @@ namespace Content.Server.Database.Migrations.Sqlite
                         .HasColumnType("INTEGER")
                         .HasColumnName("admin_rank_id");
 
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("TEXT")
-                        .HasColumnName("name");
+                      b.Property<string>("Name")
+                          .IsRequired()
+                          .HasColumnType("TEXT")
+                          .HasColumnName("name");
+
+                      b.Property<string>("OOCColor")
+                          .HasColumnType("TEXT")
+                          .HasColumnName("ooc_color");
 
                     b.HasKey("Id")
                         .HasName("PK_admin_rank");
