@@ -11,6 +11,7 @@ using Content.Shared.UserInterface;
 using Robust.Shared.Containers;
 using Robust.Shared.Map;
 using Robust.Shared.Timing;
+using Robust.Shared.Utility;
 
 namespace Content.Server._CMU14.Yautja;
 
@@ -21,7 +22,7 @@ public sealed partial class YautjaBracerMenuSystem : EntitySystem
     private const float TrackerGroupPrecision = 1f;
     private const float FullCircle = MathF.PI * 2f;
     private const int MaxClosestSignatureDistance = 900;
-    private const string DeadYautjaBioSignatureName = "deceased Yautja bio signature";
+    private const string DeadYautjaBioSignatureName = "cmu-yautja-tracker-dead-signature";
     private static readonly TimeSpan TrackerRefreshEvery = TimeSpan.FromSeconds(1);
 
     [Dependency] private AreaSystem _areas = default!;
@@ -226,7 +227,7 @@ public sealed partial class YautjaBracerMenuSystem : EntitySystem
                 readout.AddDead(GetTrackerLevelBucket(uid, xform, coords, origin));
                 if (coords.MapId == origin.MapId)
                 {
-                    AddTrackerSignal(groups, origin, coords, DeadYautjaBioSignatureName, readout, null);
+                    AddTrackerSignal(groups, origin, coords, Loc.GetString(DeadYautjaBioSignatureName), readout, null);
                 }
 
                 continue;

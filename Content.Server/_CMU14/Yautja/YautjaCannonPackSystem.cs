@@ -64,7 +64,10 @@ public sealed partial class YautjaCannonPackSystem : EntitySystem
 
     private void OnExamined(Entity<YautjaCannonPackComponent> ent, ref ExaminedEvent args)
     {
-        args.PushMarkup($"It currently has <bold>{(int) ent.Comp.Charge}/{(int) ent.Comp.MaxCharge}</bold> charge.");
+        args.PushMarkup(Loc.GetString(
+            "cmu-yautja-cannon-pack-examine-charge",
+            ("charge", (int) ent.Comp.Charge),
+            ("max", (int) ent.Comp.MaxCharge)));
     }
 
     private void OnEquipped(Entity<YautjaCannonPackComponent> ent, ref GotEquippedEvent args)

@@ -581,7 +581,7 @@ public sealed partial class YautjaProfileEditor : ScrollContainer
 
             rows.AddChild(new Label
             {
-                Text = section.Title,
+                Text = Loc.GetString(section.Title),
                 FontColorOverride = Color.FromHex("#d6bf94"),
             });
             rows.AddChild(grid);
@@ -1044,7 +1044,7 @@ public sealed partial class YautjaProfileEditor : ScrollContainer
             RebuildCasterSelector(_profile.YautjaProfile);
     }
 
-    private static BoxContainer BuildMaterialFilterSelector(
+    private BoxContainer BuildMaterialFilterSelector(
         YautjaBracerMaterial? selected,
         IReadOnlyCollection<YautjaBracerMaterial> materials,
         Action<YautjaBracerMaterial?> onSelected)
@@ -1052,9 +1052,9 @@ public sealed partial class YautjaProfileEditor : ScrollContainer
         var selector = new OptionButton
         {
             MinWidth = 180,
-            ToolTip = "Filter",
+            ToolTip = Loc.GetString("cmu-yautja-lobby-filter"),
         };
-        selector.AddItem("ALL", -1);
+        selector.AddItem(Loc.GetString("cmu-yautja-lobby-filter-all"), -1);
         foreach (var material in materials)
             selector.AddItem(YautjaCharacterProfile.GetBracerMaterialDisplayName(material), (int) material);
 
@@ -1075,7 +1075,7 @@ public sealed partial class YautjaProfileEditor : ScrollContainer
             {
                 new Label
                 {
-                    Text = "Filter",
+                    Text = Loc.GetString("cmu-yautja-lobby-filter"),
                     MinWidth = 52,
                     VerticalAlignment = VAlignment.Center,
                     FontColorOverride = Color.FromHex("#d6bf94"),
@@ -1091,17 +1091,17 @@ public sealed partial class YautjaProfileEditor : ScrollContainer
     {
         return
         [
-            ("RETRO / EBONY / SILVER", [
+            ("cmu-yautja-lobby-bracer-section-core", [
                 YautjaBracerMaterial.Retro,
                 YautjaBracerMaterial.Ebony,
                 YautjaBracerMaterial.Silver,
             ]),
-            ("BRONZE / CRIMSON / BONE", [
+            ("cmu-yautja-lobby-bracer-section-premium", [
                 YautjaBracerMaterial.Bronze,
                 YautjaBracerMaterial.Crimson,
                 YautjaBracerMaterial.Bone,
             ]),
-            ("LEGACY", [
+            ("cmu-yautja-lobby-bracer-section-legacy", [
                 YautjaBracerMaterial.Dragon,
                 YautjaBracerMaterial.Swamp,
                 YautjaBracerMaterial.Enforcer,

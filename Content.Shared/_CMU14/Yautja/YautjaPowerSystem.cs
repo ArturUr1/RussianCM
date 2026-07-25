@@ -57,14 +57,14 @@ public sealed partial class YautjaPowerSystem : EntitySystem
         PushHunterBracerExamine(ent, ref args);
     }
 
-    private static void OnThrallBracerExamined(Entity<YautjaThrallBracerComponent> ent, ref ExaminedEvent args)
+    private void OnThrallBracerExamined(Entity<YautjaThrallBracerComponent> ent, ref ExaminedEvent args)
     {
         PushChargeExamine(ref args, ent.Comp.Charge, ent.Comp.MaxCharge);
     }
 
-    private static void PushChargeExamine(ref ExaminedEvent args, FixedPoint2 charge, FixedPoint2 maxCharge)
+    private void PushChargeExamine(ref ExaminedEvent args, FixedPoint2 charge, FixedPoint2 maxCharge)
     {
-        args.PushMarkup($"They currently have <bold>{(int) charge}/{(int) maxCharge}</bold> charge.");
+        args.PushMarkup(Loc.GetString("cmu-yautja-power-examine-charge", ("charge", (int) charge), ("max", (int) maxCharge)));
     }
 
     private void PushHunterBracerExamine(Entity<YautjaBracerComponent> ent, ref ExaminedEvent args)
@@ -72,14 +72,18 @@ public sealed partial class YautjaPowerSystem : EntitySystem
         if (TryComp(ent, out YautjaGearContainerComponent? gear))
         {
             if (TryGetBracerAttachmentExamineEntity(gear.Gear, gear.InstalledGear, out var left))
-                args.PushMarkup($"The left bracer attachment is {FormattedMessage.EscapeText(Name(left))}.");
+                args.PushMarkup(Loc.GetString(
+                    "cmu-yautja-power-examine-left-attachment",
+                    ("item", FormattedMessage.EscapeText(Name(left)))));
 
             if (TryGetBracerAttachmentExamineEntity(gear.SecondaryGear, gear.InstalledGear, out var right))
-                args.PushMarkup($"The right bracer attachment is {FormattedMessage.EscapeText(Name(right))}.");
+                args.PushMarkup(Loc.GetString(
+                    "cmu-yautja-power-examine-right-attachment",
+                    ("item", FormattedMessage.EscapeText(Name(right)))));
         }
 
         if (ent.Comp.BadBlood && HasComp<YautjaTechAuthorizedComponent>(args.Examiner))
-            args.PushMarkup("This belongs to a bad-blood!");
+            args.PushMarkup(Loc.GetString("cmu-yautja-power-examine-badblood"));
     }
 
     private bool TryGetBracerAttachmentExamineEntity(

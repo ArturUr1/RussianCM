@@ -1427,7 +1427,7 @@ public sealed partial class YautjaScalableRepairComponent : Component
     public string DamagedText = string.Empty;
 
     [DataField]
-    public string ReinforcedText = "It has been reinforced to be more protective.";
+    public string ReinforcedText = "cmu-yautja-repair-reinforced";
 }
 
 [Serializable, NetSerializable]
@@ -1506,10 +1506,10 @@ public sealed partial class YautjaHivebreakerComponent : Component
     public TimeSpan ConsentTimeout = TimeSpan.FromSeconds(10);
 
     [DataField]
-    public string ConsentTitle = "Submit?";
+    public string ConsentTitle = "cmu-yautja-hivebreaker-consent-title";
 
     [DataField]
-    public string ConsentMessage = "Do you wish to be Enthralled by the Bad Blood?";
+    public string ConsentMessage = "cmu-yautja-hivebreaker-consent-message";
 
     [DataField]
     public List<ProtoId<JobPrototype>> BannedXenoRoles = new()
@@ -1763,13 +1763,13 @@ public sealed partial class YautjaHuntConsoleComponent : Component
             new()
             {
                 Id = "jungle_moon",
-                DisplayName = "Jungle Moon",
+                DisplayName = "cmu-yautja-hunting-ground-jungle-moon",
                 MapPath = "/Maps/_CMU14/HuntingGrounds/jungle_moon.yml",
             },
             new()
             {
                 Id = "desert_moon",
-                DisplayName = "Desert Moon",
+                DisplayName = "cmu-yautja-hunting-ground-desert-moon",
                 MapPath = "/Maps/_CMU14/HuntingGrounds/desert_moon_caves.yml",
             },
         };
@@ -1779,17 +1779,17 @@ public sealed partial class YautjaHuntConsoleComponent : Component
     {
         return new List<YautjaHuntCallOption>
         {
-            HuntCall("mixed_small", "Multi Faction (small)", 4, 1.25f, MixedPrey()),
-            HuntCall("mixed_group", "Multi Faction (group)", 6, 1.4f, MixedPrey()),
-            HuntCall("mixed_large", "Multi Faction (large)", 8, 1.6f, MixedPrey()),
-            HuntCall("mixed_larger", "Multi Faction (larger)", 12, 1.8f, MixedPrey()),
-            HuntCall("serpents_small", "Serpents (small)", 4, 1f, SerpentPrey()),
-            HuntCall("serpents_group", "Serpents (group)", 6, 1.2f, SerpentPrey()),
-            HuntCall("serpents_large", "Serpents (large)", 8, 1.4f, SerpentPrey()),
-            HuntCall("elite_mixed_small", "Elite Multi Faction (small)", 4, 1.5f, ElitePrey()),
-            HuntCall("elite_mixed_group", "Elite Multi Faction (group)", 6, 2f, ElitePrey()),
-            HuntCall("elite_mixed_large", "Elite Multi Faction (large)", 8, 2.5f, ElitePrey()),
-            HuntCall("elite_mixed_larger", "Elite Multi Faction (larger)", 12, 3f, ElitePrey()),
+            HuntCall("mixed_small", "cmu-yautja-hunt-call-mixed-small", 4, 1.25f, MixedPrey()),
+            HuntCall("mixed_group", "cmu-yautja-hunt-call-mixed-group", 6, 1.4f, MixedPrey()),
+            HuntCall("mixed_large", "cmu-yautja-hunt-call-mixed-large", 8, 1.6f, MixedPrey()),
+            HuntCall("mixed_larger", "cmu-yautja-hunt-call-mixed-larger", 12, 1.8f, MixedPrey()),
+            HuntCall("serpents_small", "cmu-yautja-hunt-call-serpents-small", 4, 1f, SerpentPrey()),
+            HuntCall("serpents_group", "cmu-yautja-hunt-call-serpents-group", 6, 1.2f, SerpentPrey()),
+            HuntCall("serpents_large", "cmu-yautja-hunt-call-serpents-large", 8, 1.4f, SerpentPrey()),
+            HuntCall("elite_mixed_small", "cmu-yautja-hunt-call-elite-mixed-small", 4, 1.5f, ElitePrey()),
+            HuntCall("elite_mixed_group", "cmu-yautja-hunt-call-elite-mixed-group", 6, 2f, ElitePrey()),
+            HuntCall("elite_mixed_large", "cmu-yautja-hunt-call-elite-mixed-large", 8, 2.5f, ElitePrey()),
+            HuntCall("elite_mixed_larger", "cmu-yautja-hunt-call-elite-mixed-larger", 12, 3f, ElitePrey()),
         };
     }
 
@@ -1802,13 +1802,13 @@ public sealed partial class YautjaHuntConsoleComponent : Component
 
         return new List<YautjaHuntCallOption>
         {
-            YoungbloodCall("youngblood_solo", "Solo Youngblood (One member)", 1, 1, 0, 0, 5, youngblood),
-            YoungbloodCall("youngblood_solo_experienced", "Solo Youngblood (One member - Experienced)", 1, 1, 7, 5, 5, youngblood),
-            YoungbloodCall("youngblood_three_inexperienced", "Inexperienced Youngblood Party (Three members)", 2, 3, 2, 0, 5, youngblood),
-            YoungbloodCall("youngblood_three_intermediate", "Intermediate Youngblood Party (Three members)", 2, 3, 5, 2, 10, youngblood),
-            YoungbloodCall("youngblood_three_experienced", "Experienced Youngblood Party (Three members)", 2, 3, 10, 3, 20, youngblood),
-            YoungbloodCall("youngblood_three_mixed", "Mixed experience Youngblood Party (Three members)", 2, 3, 10, 0, 5, youngblood),
-            YoungbloodCall("youngblood_pack", "Youngblood Hunting Pack (Six members)", 4, 6, 10, 0, 5, youngblood),
+            YoungbloodCall("youngblood_solo", "cmu-yautja-blooding-call-solo", 1, 1, 0, 0, 5, youngblood),
+            YoungbloodCall("youngblood_solo_experienced", "cmu-yautja-blooding-call-solo-experienced", 1, 1, 7, 5, 5, youngblood),
+            YoungbloodCall("youngblood_three_inexperienced", "cmu-yautja-blooding-call-three-inexperienced", 2, 3, 2, 0, 5, youngblood),
+            YoungbloodCall("youngblood_three_intermediate", "cmu-yautja-blooding-call-three-intermediate", 2, 3, 5, 2, 10, youngblood),
+            YoungbloodCall("youngblood_three_experienced", "cmu-yautja-blooding-call-three-experienced", 2, 3, 10, 3, 20, youngblood),
+            YoungbloodCall("youngblood_three_mixed", "cmu-yautja-blooding-call-three-mixed", 2, 3, 10, 0, 5, youngblood),
+            YoungbloodCall("youngblood_pack", "cmu-yautja-blooding-call-pack", 4, 6, 10, 0, 5, youngblood),
         };
     }
 
@@ -2102,7 +2102,7 @@ public sealed partial class YautjaHoundPadComponent : Component
 public sealed partial class YautjaScalpComponent : Component
 {
     [DataField, AutoNetworkedField]
-    public string TrueDescription = "This is the scalp of an irrelevant human.";
+    public string TrueDescription = string.Empty;
 
     [DataField, AutoNetworkedField]
     public Color HairColor = Color.White;
@@ -2908,7 +2908,7 @@ public sealed partial class YautjaChainGauntletComponent : Component
     public float ChainHookProjectileSpeed = 10f;
 
     [DataField]
-    public string ChainMessage = "GET OVER HERE!";
+    public string ChainMessage = "cmu-yautja-chain-gauntlet-chain-message";
 
     [DataField]
     public string ChainMessageSpeechStyleClass = "yautjaChainSpeech";
@@ -3205,10 +3205,10 @@ public sealed partial class YautjaPlasmaWeaponComponent : Component
     public bool ShowFireMode;
 
     [DataField]
-    public string PrimaryFireModeText = "It is set to fire plasma bolts.";
+    public string PrimaryFireModeText = "cmu-yautja-plasma-carbine-primary-fire-mode";
 
     [DataField]
-    public string SecondaryFireModeText = "It is set to fire incendiary plasma bolts.";
+    public string SecondaryFireModeText = "cmu-yautja-plasma-carbine-secondary-fire-mode";
 
     [DataField]
     public string NonYautjaExamineText = string.Empty;
