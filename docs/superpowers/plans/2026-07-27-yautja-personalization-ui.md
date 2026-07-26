@@ -175,7 +175,27 @@ git commit -m "test: define Yautja profile editor layout catalog"
 - Consumes `YautjaProfileEditorLayout.Categories` from Task 1.
 - Produces `AddCategory(YautjaProfileEditorCategory category, Control content)`, `SelectCategory(YautjaProfileEditorCategory category)`, and a stable active-category state used by the constructor.
 
-- [ ] **Step 1: Replace the `TabContainer` field with navigation/page hosts**
+- [ ] **Step 1: Write the failing active-page visibility test**
+
+Extend `YautjaProfileEditorLayoutTest` before changing the editor layout:
+
+```csharp
+[TestCase(YautjaProfileEditorCategory.Appearance, YautjaProfileEditorCategory.Appearance, true)]
+[TestCase(YautjaProfileEditorCategory.Appearance, YautjaProfileEditorCategory.Equipment, false)]
+public void OnlyTheActiveCategoryPageIsVisible(
+    YautjaProfileEditorCategory active,
+    YautjaProfileEditorCategory candidate,
+    bool expected)
+{
+    Assert.That(YautjaProfileEditorLayout.IsCategoryActive(active, candidate), Is.EqualTo(expected));
+}
+```
+
+Run: `dotnet test Content.Tests/Content.Tests.csproj --no-restore --filter FullyQualifiedName~YautjaProfileEditorLayoutTest -m:1`
+
+Expected: FAIL because `IsCategoryActive` does not exist yet. If the environment cannot build for the same OOM/disk reason recorded in Task 1, capture that exact output and continue with the code change; do not alter the test to hide the missing API.
+
+- [ ] **Step 2: Replace the `TabContainer` field with navigation/page hosts**
 
 Add these fields and remove `_categoryTabs`:
 
@@ -197,7 +217,18 @@ private readonly Dictionary<YautjaProfileEditorCategory, Button> _categoryButton
 private YautjaProfileEditorCategory _activeCategory = YautjaProfileEditorCategory.Appearance;
 ```
 
-- [ ] **Step 2: Add the category registration and selection methods**
+- [ ] **Step 3: Implement the minimal active-category predicate and registration/selection methods**
+
+Add this pure helper to `YautjaProfileEditorLayout` and make `SelectCategory` use it when assigning `page.Visible`:
+
+```csharp
+public static bool IsCategoryActive(
+    YautjaProfileEditorCategory active,
+    YautjaProfileEditorCategory candidate)
+{
+    return active == candidate;
+}
+```
 
 Replace `AddTab` with methods that keep every page alive, but make only the active `ScrollContainer` visible:
 
@@ -227,16 +258,16 @@ private void SelectCategory(YautjaProfileEditorCategory category)
 {
     _activeCategory = category;
     foreach (var (id, page) in _categoryPageControls)
-        page.Visible = id == category;
+        page.Visible = YautjaProfileEditorLayout.IsCategoryActive(category, id);
 
     foreach (var (id, button) in _categoryButtons)
-        button.Pressed = id == category;
+        button.Pressed = YautjaProfileEditorLayout.IsCategoryActive(category, id);
 }
 ```
 
-Use `CategoryScroll` for each page so only the right content area scrolls.
+Use `CategoryScroll` for each page so only the right content area scrolls. Run the focused test again and expect GREEN (subject to the documented environment resource limit).
 
-- [ ] **Step 3: Build the right-side workspace and register all five categories**
+- [ ] **Step 4: Build the right-side workspace and register all five categories**
 
 Replace the existing `workArea.AddChild(_categoryTabs)` and `AddTab` calls with a horizontal workspace containing a fixed navigation panel and a content panel:
 
@@ -286,7 +317,7 @@ private Control BuildSetsPage();
 private Control BuildTechnologyPage();
 ```
 
-- [ ] **Step 4: Run the focused catalog test and compile the client project**
+- [ ] **Step 5: Run the focused catalog test and compile the client project**
 
 Run: `dotnet test Content.Tests/Content.Tests.csproj --no-restore --filter FullyQualifiedName~YautjaProfileEditorLayoutTest`
 
@@ -294,7 +325,7 @@ Then run: `dotnet build Content.Client/Content.Client.csproj --no-restore`
 
 Expected: the catalog test remains green and the client project compiles without references to the removed `_categoryTabs` or `AddTab`.
 
-- [ ] **Step 5: Commit the workbench navigation change**
+- [ ] **Step 6: Commit the workbench navigation change**
 
 ```powershell
 git add -- Content.Client/_CMU14/Yautja/Lobby/YautjaProfileEditor.cs
