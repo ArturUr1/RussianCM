@@ -30,6 +30,7 @@ using Content.Shared.Humanoid;
 using Content.Shared.Inventory;
 using Content.Shared.Inventory.Events;
 using Content.Shared.Interaction;
+using Content.Shared.Interaction.Components;
 using Content.Shared.Interaction.Events;
 using Content.Shared.Item;
 using Content.Shared.Movement.Components;
@@ -81,6 +82,7 @@ public sealed partial class YautjaItemSystem : EntitySystem
     [Dependency] private InventorySystem _inventory = default!;
     [Dependency] private IGameTiming _timing = default!;
     [Dependency] private MobStateSystem _mobState = default!;
+    [Dependency] private SharedInteractionSystem _interaction = default!;
     [Dependency] private SharedMoverController _mover = default!;
     [Dependency] private IPrototypeManager _prototype = default!;
     [Dependency] private IRobustRandom _random = default!;
@@ -1258,6 +1260,8 @@ public sealed partial class YautjaItemSystem : EntitySystem
         _transform.AttachToGridOrMap(deployed);
         EnsureComp<InputMoverComponent>(deployed);
         _mover.SetRelay(user, deployed);
+        var interactionRelay = EnsureComp<InteractionRelayComponent>(user);
+        _interaction.SetRelay(user, deployed, interactionRelay);
         if (eye != null && TryComp(user, out ActorComponent? actor) && actor.PlayerSession != null)
             _eye.SetTarget(user, deployed, eye);
         _audio.PlayPvs(drone.Comp.DeploySound, deployed);
@@ -1353,6 +1357,13 @@ public sealed partial class YautjaItemSystem : EntitySystem
 
         if (restoreEye && TryComp(controller, out EyeComponent? eye))
             RestoreFalconEye(controller, controlling.PreviousEyeTarget, eye);
+
+        if (TryComp(controller, out InteractionRelayComponent? interactionRelay) &&
+            interactionRelay.RelayEntity == drone)
+        {
+            _interaction.SetRelay(controller, null, interactionRelay);
+            RemCompDeferred<InteractionRelayComponent>(controller);
+        }
 
         RemComp<RelayInputMoverComponent>(controller);
         _actions.RemoveAction(controller, controlling.RecallAction);
