@@ -85,6 +85,20 @@ public static class YautjaRankMetadata
             _ => new YautjaRankInfo("cmu-yautja-rank-blooded", "blooded", SecureAccess, false, false),
         };
     }
+
+    public static ProtoId<AccessLevelPrototype>[] GetAccessTags(YautjaRank rank)
+    {
+        return For(rank).AccessTags;
+    }
+
+    public static ProtoId<AccessLevelPrototype>[] GetRackAccessTags(YautjaRank rank)
+    {
+        return rank switch
+        {
+            YautjaRank.Elder => ["CMUAccessYautjaElder", "CMUAccessYautjaAncient"],
+            _ => ["CMUAccessYautjaSecure"],
+        };
+    }
 }
 
 public static class YautjaRankResolver
@@ -122,5 +136,15 @@ public static class YautjaRankResolver
             YautjaRank.Ancient => YautjaBracerOwnerRank.Admin,
             _ => YautjaBracerOwnerRank.Unblooded,
         };
+    }
+
+    public static bool CanUseUnique(YautjaRank rank)
+    {
+        return YautjaRankMetadata.For(rank).UniqueSetsAllowed;
+    }
+
+    public static bool CanUseUnique(YautjaCharacterProfile? profile)
+    {
+        return CanUseUnique(ResolveForHunter(profile));
     }
 }

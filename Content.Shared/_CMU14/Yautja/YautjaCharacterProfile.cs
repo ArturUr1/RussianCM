@@ -534,11 +534,23 @@ public sealed partial class YautjaCharacterProfile
 
     public YautjaCharacterProfile WithClanRank(YautjaRank rank)
     {
-        return new(this)
+        return WithRank(rank);
+    }
+
+    public YautjaCharacterProfile WithRank(YautjaRank rank)
+    {
+        if (!Enum.IsDefined(rank))
+            rank = YautjaRank.Blooded;
+
+        var profile = new YautjaCharacterProfile(this)
         {
             ClanRank = rank,
             OwnerRank = YautjaRankResolver.ToOwnerRank(rank),
         };
+
+        return YautjaRankResolver.CanUseUnique(rank)
+            ? profile
+            : profile.WithUnique(YautjaUniqueSet.None);
     }
 
     public YautjaCharacterProfile WithOwnerRank(YautjaBracerOwnerRank ownerRank)

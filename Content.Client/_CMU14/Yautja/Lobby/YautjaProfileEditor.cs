@@ -397,6 +397,9 @@ public sealed partial class YautjaProfileEditor : ScrollContainer
 
         foreach (var unique in YautjaCharacterProfile.UniqueOrder)
         {
+            if (unique != YautjaUniqueSet.None && !YautjaRankResolver.CanUseUnique(yautja))
+                continue;
+
             var selected = yautja.Unique == unique;
             if (unique == YautjaUniqueSet.None)
             {
