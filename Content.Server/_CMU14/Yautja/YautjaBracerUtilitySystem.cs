@@ -1178,11 +1178,7 @@ public sealed partial class YautjaBracerUtilitySystem : EntitySystem
 
     private bool IsTrackedItem(EntityUid item)
     {
-        if (HasComp<YautjaTrackedItemComponent>(item))
-            return true;
-
-        return HasComp<YautjaTechItemComponent>(item) &&
-               !HasComp<YautjaUntrackedItemComponent>(item);
+        return HasComp<YautjaTrackedItemComponent>(item);
     }
 
     private bool ToggleIdChip(Entity<YautjaBracerComponent> bracer, EntityUid user)
