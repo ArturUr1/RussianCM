@@ -7,6 +7,7 @@ using Content.Shared.Interaction.Events;
 using Content.Shared.Inventory;
 using Robust.Shared.GameObjects;
 using Robust.Shared.IoC;
+using Robust.Shared.Log;
 using Robust.Shared.Map;
 using NUnit.Framework;
 
@@ -19,6 +20,9 @@ public sealed class YautjaFalconClimbingTest
     public async Task FalconCanClimbStandardClimbableThroughInteractionRelay()
     {
         var (server, _) = await PoolManager.GenerateServer(new PoolSettings(), TestContext.Out);
+
+        // The test server has no TTS token and probes the voice catalog unconditionally.
+        server.ResolveDependency<ILogManager>().GetSawmill("tts").Level = LogLevel.Fatal;
 
         EntityUid hunter = default;
         EntityUid bracer = default;
