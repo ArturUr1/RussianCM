@@ -468,6 +468,8 @@ git commit -m "feat: show Yautja loadout summary beside preview"
 **Files:**
 - Modify: `Content.Client/_CMU14/Yautja/Lobby/YautjaProfileEditor.cs:421-450` for unique-set rendering.
 - Modify: `Content.Client/_CMU14/Yautja/Lobby/YautjaProfileEditor.cs:774-865` for selector labels and disabled state.
+- Modify: `Resources/Locale/en-US/_CMU14/yautja/yautja.ftl` for `cmu-yautja-lobby-locked-rank`.
+- Modify: `Resources/Locale/ru-RU/_CMU14/yautja/yautja.ftl` for `cmu-yautja-lobby-locked-rank`.
 
 **Interfaces:**
 - Consumes `YautjaProfileEditorLayout.IsUniqueSetLocked` from Task 1.
@@ -531,7 +533,7 @@ Expected: PASS, with all unique options present in the rendered grid and locked 
 - [ ] **Step 5: Commit card labels and locked-state rendering**
 
 ```powershell
-git add -- Content.Client/_CMU14/Yautja/Lobby/YautjaProfileEditor.cs
+git add -- Content.Client/_CMU14/Yautja/Lobby/YautjaProfileEditor.cs Resources/Locale/en-US/_CMU14/yautja/yautja.ftl Resources/Locale/ru-RU/_CMU14/yautja/yautja.ftl
 git diff --cached --check
 git diff --cached --stat
 git commit -m "feat: clarify Yautja selector cards and rank locks"
@@ -539,27 +541,15 @@ git commit -m "feat: clarify Yautja selector cards and rank locks"
 
 ---
 
-### Task 5: Add the remaining English and Russian localization
+### Task 5: Verify complete English and Russian localization
 
 **Files:**
-- Modify: `Resources/Locale/en-US/_CMU14/yautja/yautja.ftl`
-- Modify: `Resources/Locale/ru-RU/_CMU14/yautja/yautja.ftl`
+- Inspect: `Resources/Locale/en-US/_CMU14/yautja/yautja.ftl`
+- Inspect: `Resources/Locale/ru-RU/_CMU14/yautja/yautja.ftl`
 
-- [ ] **Step 1: Add the remaining locked-state key to both locale files**
+- [ ] **Step 1: Verify the complete key set without adding duplicates**
 
-Task 1 already added the five `cmu-yautja-lobby-category-*` keys required by the catalog, and Task 3 already added the eight `cmu-yautja-lobby-summary-*` keys required by the live summary. Do not duplicate those existing entries. Add the locked-state key below once in each locale file:
-
-Add these English keys:
-
-```ftl
-cmu-yautja-lobby-locked-rank = Requires rank: {$rank}
-```
-
-Add the Russian equivalents with the same identifiers and variables:
-
-```ftl
-cmu-yautja-lobby-locked-rank = Требуется ранг: {$rank}
-```
+Task 1 added the five category keys, Task 3 added the eight summary keys, and Task 4 adds `cmu-yautja-lobby-locked-rank`. Do not modify the locale files in this task.
 
 - [ ] **Step 2: Verify key parity and localization compilation**
 
@@ -568,15 +558,6 @@ Run: `rg -n "cmu-yautja-lobby-(category|summary|locked-rank)" Resources/Locale/e
 Expected: all five category keys, all eight summary keys, and the locked-rank key appear once in each locale with the same variable names.
 
 Then run: `dotnet build Content.Client/Content.Client.csproj --no-restore`
-
-- [ ] **Step 3: Commit localization separately**
-
-```powershell
-git add -- Resources/Locale/en-US/_CMU14/yautja/yautja.ftl Resources/Locale/ru-RU/_CMU14/yautja/yautja.ftl
-git diff --cached --check
-git diff --cached --stat
-git commit -m "loc: add Yautja personalization UI labels"
-```
 
 ---
 
