@@ -732,7 +732,11 @@ namespace Content.Server.GameTicking
 
             _playTimeTrackings.PlayerRolesChanged(player);
 
-            EntityUid? mobMaybe = _stationSpawning.SpawnPlayerCharacterOnStation(station, jobId, character);
+            EntityUid? mobMaybe = _stationSpawning.SpawnPlayerCharacterOnStation(
+                station,
+                jobId,
+                character,
+                player: player);
             DebugTools.AssertNotNull(mobMaybe);
             EntityUid mob = mobMaybe.Value;
 

@@ -1,3 +1,4 @@
+using System.Linq;
 using Content.Server.GameTicking;
 using Content.Server.GameTicking.Rules;
 using Content.Server.Maps;
@@ -16,9 +17,19 @@ using Robust.Shared.Configuration;
 using Robust.Shared.EntitySerialization;
 using Robust.Shared.EntitySerialization.Systems;
 using Robust.Shared.Log;
+using Robust.Shared.Player;
 using Robust.Shared.Random;
 
 namespace Content.Server._CMU14.Yautja;
+
+public enum YautjaSpawnKind : byte
+{
+    HunterShipClan,
+    HuntingGroundsYoungblood,
+    SurvivorBase,
+}
+
+public readonly record struct YautjaRankSpawnPolicy(YautjaSpawnKind SpawnKind, bool BypassSlotCap);
 
 public sealed partial class YautjaPredatorRoundSystem : GameRuleSystem<YautjaPredatorRoundComponent>
 {
@@ -28,6 +39,7 @@ public sealed partial class YautjaPredatorRoundSystem : GameRuleSystem<YautjaPre
     [Dependency] private StationJobsSystem _stationJobs = default!;
     [Dependency] private StationSystem _station = default!;
     [Dependency] private StationSpawningSystem _stationSpawning = default!;
+    [Dependency] private YautjaRankManager _rankManager = default!;
     [Dependency] private IRobustRandom _random = default!;
 
     private readonly ISawmill _sawmill = Logger.GetSawmill("cmu.yautja.round");
@@ -44,12 +56,30 @@ public sealed partial class YautjaPredatorRoundSystem : GameRuleSystem<YautjaPre
     public int RandomRoundsRemaining => _randomEnabled ? _randomSchedule.RoundsRemaining : 0;
     public int ConfiguredHunterSlots => _configuredHunterSlots;
 
+    public static YautjaRankSpawnPolicy GetRankSpawnPolicy(YautjaRank rank)
+    {
+        if (!Enum.IsDefined(rank))
+            rank = YautjaRank.Blooded;
+
+        return rank == YautjaRank.YoungBlood
+            ? new YautjaRankSpawnPolicy(YautjaSpawnKind.HuntingGroundsYoungblood, false)
+            : new YautjaRankSpawnPolicy(
+                YautjaSpawnKind.HunterShipClan,
+                YautjaRankMetadata.For(rank).BypassesPredatorSlotCap);
+    }
+
+    public YautjaRank ResolveRankForSession(ICommonSession session, bool youngbloodRole = false)
+    {
+        return _rankManager.ResolveCached(session.UserId, youngbloodRole);
+    }
+
     public override void Initialize()
     {
         base.Initialize();
 
         SubscribeLocalEvent<RulePlayerSpawningEvent>(OnRulePlayerSpawning);
         SubscribeLocalEvent<PlayerSpawningEvent>(OnPlayerSpawning, before: [typeof(SpawnPointSystem)]);
+        SubscribeLocalEvent<PlayerJoinedLobbyEvent>(OnPlayerJoinedLobby);
         SubscribeLocalEvent<GameRunLevelChangedEvent>(OnGameRunLevelChanged);
 
         Subs.CVar(_configuration,
@@ -117,7 +147,7 @@ public sealed partial class YautjaPredatorRoundSystem : GameRuleSystem<YautjaPre
             component.MinSlots = slots;
             component.MaxSlots = slots;
             component.Slots = slots;
-            SetSlots(component.PredatorJob, slots, component.HunterShipMap);
+            SetSlots(component.PredatorJob, slots + component.RankBypassSlots, component.HunterShipMap);
             applied = true;
         }
 
@@ -169,6 +199,25 @@ public sealed partial class YautjaPredatorRoundSystem : GameRuleSystem<YautjaPre
                 continue;
 
             EnsurePredatorRound((uid, comp));
+
+            if (!comp.ModePredator)
+                continue;
+
+            comp.RankBypassSlots = ev.PlayerPool.Count(session =>
+                GetRankSpawnPolicy(ResolveRankForSession(session)).BypassSlotCap);
+            SetSlots(comp.PredatorJob, comp.Slots + comp.RankBypassSlots, comp.HunterShipMap);
+        }
+    }
+
+    private async void OnPlayerJoinedLobby(PlayerJoinedLobbyEvent ev)
+    {
+        try
+        {
+            await _rankManager.Prime(ev.PlayerSession.UserId);
+        }
+        catch (Exception exception)
+        {
+            _sawmill.Warning($"Failed to prime Yautja rank for {ev.PlayerSession.UserId}: {exception.Message}");
         }
     }
 
@@ -191,11 +240,16 @@ public sealed partial class YautjaPredatorRoundSystem : GameRuleSystem<YautjaPre
             if (GetRandomPredatorSpawn(comp.PredatorJob) is not { } coordinates)
                 return;
 
+            var rank = ev.PlayerSession is { } session
+                ? ResolveRankForSession(session)
+                : YautjaRank.Blooded;
+
             ev.SpawnResult = _stationSpawning.SpawnPlayerMob(
                 coordinates,
                 ev.Job,
                 ev.HumanoidCharacterProfile,
-                ev.Station);
+                ev.Station,
+                authoritativeYautjaRank: rank);
             return;
         }
     }

@@ -134,12 +134,17 @@ public sealed partial class StationSpawningSystem : SharedStationSpawningSystem
     /// <remarks>
     /// This only spawns the character, and does none of the mind-related setup you'd need for it to be playable.
     /// </remarks>
-    public EntityUid? SpawnPlayerCharacterOnStation(EntityUid? station, ProtoId<JobPrototype>? job, HumanoidCharacterProfile? profile, StationSpawningComponent? stationSpawning = null)
+    public EntityUid? SpawnPlayerCharacterOnStation(
+        EntityUid? station,
+        ProtoId<JobPrototype>? job,
+        HumanoidCharacterProfile? profile,
+        StationSpawningComponent? stationSpawning = null,
+        ICommonSession? player = null)
     {
         if (station != null && !Resolve(station.Value, ref stationSpawning))
             throw new ArgumentException("Tried to use a non-station entity as a station!", nameof(station));
 
-        var ev = new PlayerSpawningEvent(job, profile, station);
+        var ev = new PlayerSpawningEvent(job, profile, station, player);
 
         RaiseLocalEvent(ev);
         DebugTools.Assert(ev.SpawnResult is { Valid: true } or null);
@@ -165,7 +170,8 @@ public sealed partial class StationSpawningSystem : SharedStationSpawningSystem
         ProtoId<JobPrototype>? job,
         HumanoidCharacterProfile? profile,
         EntityUid? station,
-        EntityUid? entity = null)
+        EntityUid? entity = null,
+        YautjaRank? authoritativeYautjaRank = null)
     {
         // --- Platoon job override logic start ---
         string? jobId = job?.ToString();
@@ -259,7 +265,7 @@ public sealed partial class StationSpawningSystem : SharedStationSpawningSystem
                 !IsBadBloodFactionMember(jobEntity))
             {
                 if (profile != null)
-                    _yautjaProfile.ApplyProfile(jobEntity, profile.YautjaProfile);
+                    _yautjaProfile.ApplyProfile(jobEntity, profile.YautjaProfile, authoritativeYautjaRank);
             }
 
             // Use originalPrototype for access, ID, and faction
@@ -895,11 +901,17 @@ public sealed partial class PlayerSpawningEvent : EntityEventArgs
     /// The target station, if any.
     /// </summary>
     public readonly EntityUid? Station;
+    public readonly ICommonSession? PlayerSession;
 
-    public PlayerSpawningEvent(ProtoId<JobPrototype>? job, HumanoidCharacterProfile? humanoidCharacterProfile, EntityUid? station)
+    public PlayerSpawningEvent(
+        ProtoId<JobPrototype>? job,
+        HumanoidCharacterProfile? humanoidCharacterProfile,
+        EntityUid? station,
+        ICommonSession? playerSession = null)
     {
         Job = job;
         HumanoidCharacterProfile = humanoidCharacterProfile;
         Station = station;
+        PlayerSession = playerSession;
     }
 }
