@@ -385,6 +385,7 @@
         - MobMask
         layer:
         - MobLayer
+  - type: Climbing
   - type: ActiveInputMover
   - type: Tag
     tags:
