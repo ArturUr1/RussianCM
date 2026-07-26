@@ -74,3 +74,52 @@
   icon:
     sprite: /Textures/_CMU14/HunterShip/obj/items/hunter/pred_gear.rsi
     state: falcon_drone_badblood_active
+
+- type: healthIcon
+  parent: CMUYautjaIconBase
+  id: CMUYautjaRankIconUnblooded
+  icon:
+    sprite: /Textures/_CMU14/Yautja/rank_icons.rsi
+    state: unblooded
+
+- type: healthIcon
+  parent: CMUYautjaIconBase
+  id: CMUYautjaRankIconYoungBlood
+  icon:
+    sprite: /Textures/_CMU14/Yautja/rank_icons.rsi
+    state: youngblood
+
+- type: healthIcon
+  parent: CMUYautjaIconBase
+  id: CMUYautjaRankIconBlooded
+  icon:
+    sprite: /Textures/_CMU14/Yautja/rank_icons.rsi
+    state: blooded
+
+- type: healthIcon
+  parent: CMUYautjaIconBase
+  id: CMUYautjaRankIconElite
+  icon:
+    sprite: /Textures/_CMU14/Yautja/rank_icons.rsi
+    state: elite
+
+- type: healthIcon
+  parent: CMUYautjaIconBase
+  id: CMUYautjaRankIconElder
+  icon:
+    sprite: /Textures/_CMU14/Yautja/rank_icons.rsi
+    state: elder
+
+- type: healthIcon
+  parent: CMUYautjaIconBase
+  id: CMUYautjaRankIconLeader
+  icon:
+    sprite: /Textures/_CMU14/Yautja/rank_icons.rsi
+    state: leader
+
+- type: healthIcon
+  parent: CMUYautjaIconBase
+  id: CMUYautjaRankIconAncient
+  icon:
+    sprite: /Textures/_CMU14/Yautja/rank_icons.rsi
+    state: ancient
