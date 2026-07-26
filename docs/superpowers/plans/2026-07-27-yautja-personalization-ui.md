@@ -451,22 +451,19 @@ git commit -m "feat: clarify Yautja selector cards and rank locks"
 
 ---
 
-### Task 5: Add complete English and Russian localization
+### Task 5: Add the remaining English and Russian localization
 
 **Files:**
 - Modify: `Resources/Locale/en-US/_CMU14/yautja/yautja.ftl`
 - Modify: `Resources/Locale/ru-RU/_CMU14/yautja/yautja.ftl`
 
-- [ ] **Step 1: Add the same key set to both locale files**
+- [ ] **Step 1: Add the remaining summary and locked-state keys to both locale files**
+
+Task 1 already added the five `cmu-yautja-lobby-category-*` keys required by the catalog. Do not duplicate those existing entries. Add the remaining keys below once in each locale file:
 
 Add these English keys:
 
 ```ftl
-cmu-yautja-lobby-category-appearance = Appearance
-cmu-yautja-lobby-category-equipment = Equipment
-cmu-yautja-lobby-category-sets = Sets
-cmu-yautja-lobby-category-technology = Technology
-cmu-yautja-lobby-category-description = Description
 cmu-yautja-lobby-summary-set = Set: {$value}
 cmu-yautja-lobby-summary-custom = Custom
 cmu-yautja-lobby-summary-armor = Armor: {$value}
@@ -481,11 +478,6 @@ cmu-yautja-lobby-locked-rank = Requires rank: {$rank}
 Add the Russian equivalents with the same identifiers and variables:
 
 ```ftl
-cmu-yautja-lobby-category-appearance = Внешность
-cmu-yautja-lobby-category-equipment = Снаряжение
-cmu-yautja-lobby-category-sets = Наборы
-cmu-yautja-lobby-category-technology = Технологии
-cmu-yautja-lobby-category-description = Описание
 cmu-yautja-lobby-summary-set = Набор: {$value}
 cmu-yautja-lobby-summary-custom = Настроенный комплект
 cmu-yautja-lobby-summary-armor = Броня: {$value}
