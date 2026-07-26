@@ -74,3 +74,5 @@ Commit/staging notes:
 - Left the pre-existing butcher and torso hunks unstaged.
 
 Standalone mark-panel assertion was added to the predator-role action-bar coverage.
+
+Fix-round note: the worn tracker action expectation was corrected to assert `CMUActionYautjaTrackGear` is absent while leaving the add/remove tracker assertions intact.
