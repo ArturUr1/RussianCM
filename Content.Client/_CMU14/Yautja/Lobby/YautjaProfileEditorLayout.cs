@@ -31,4 +31,11 @@ public static class YautjaProfileEditorLayout
     {
         return unique != YautjaUniqueSet.None && !YautjaRankResolver.CanUseUnique(profile);
     }
+
+    public static bool IsCategoryActive(
+        YautjaProfileEditorCategory active,
+        YautjaProfileEditorCategory candidate)
+    {
+        return active == candidate;
+    }
 }
