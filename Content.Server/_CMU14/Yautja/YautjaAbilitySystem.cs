@@ -32,14 +32,12 @@ public sealed partial class YautjaAbilitySystem : EntitySystem
         SubscribeLocalEvent<YautjaComponent, YautjaLeapDoAfterEvent>(OnLeapDoAfter);
         SubscribeLocalEvent<YautjaComponent, YautjaButcherActionEvent>(OnButcher);
         SubscribeLocalEvent<YautjaComponent, YautjaMarkForHuntActionEvent>(OnMarkForHunt);
-        SubscribeLocalEvent<YautjaComponent, YautjaOpenMarkPanelActionEvent>(OnOpenMarkPanel);
     }
 
     public void GrantActions(Entity<YautjaComponent> ent)
     {
         _actions.AddAction(ent.Owner, ref ent.Comp.LeapAction, ent.Comp.LeapActionId);
         _actions.AddAction(ent.Owner, ref ent.Comp.MarkForHuntAction, ent.Comp.MarkForHuntActionId);
-        _actions.AddAction(ent.Owner, ref ent.Comp.OpenMarkPanelAction, ent.Comp.OpenMarkPanelActionId);
         _actions.AddAction(ent.Owner, ref ent.Comp.ButcherAction, ent.Comp.ButcherActionId);
     }
 
@@ -47,7 +45,6 @@ public sealed partial class YautjaAbilitySystem : EntitySystem
     {
         _actions.RemoveAction(ent.Owner, ent.Comp.LeapAction);
         _actions.RemoveAction(ent.Owner, ent.Comp.MarkForHuntAction);
-        _actions.RemoveAction(ent.Owner, ent.Comp.OpenMarkPanelAction);
         _actions.RemoveAction(ent.Owner, ent.Comp.ButcherAction);
     }
 
@@ -177,16 +174,5 @@ public sealed partial class YautjaAbilitySystem : EntitySystem
         }
 
         args.Handled = _marks.TryMark(bracer, ent.Owner, args.Target, YautjaMarkKind.Prey, null);
-    }
-
-    private void OnOpenMarkPanel(Entity<YautjaComponent> ent, ref YautjaOpenMarkPanelActionEvent args)
-    {
-        if (args.Handled || args.Performer != ent.Owner)
-            return;
-
-        if (!_power.TryGetWornBracer(ent.Owner, out var bracer))
-            return;
-
-        args.Handled = _marks.TryOpenMarkPanel(bracer, ent.Owner);
     }
 }
