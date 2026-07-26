@@ -545,35 +545,19 @@ git commit -m "feat: clarify Yautja selector cards and rank locks"
 - Modify: `Resources/Locale/en-US/_CMU14/yautja/yautja.ftl`
 - Modify: `Resources/Locale/ru-RU/_CMU14/yautja/yautja.ftl`
 
-- [ ] **Step 1: Add the remaining summary and locked-state keys to both locale files**
+- [ ] **Step 1: Add the remaining locked-state key to both locale files**
 
-Task 1 already added the five `cmu-yautja-lobby-category-*` keys required by the catalog. Do not duplicate those existing entries. Add the remaining keys below once in each locale file:
+Task 1 already added the five `cmu-yautja-lobby-category-*` keys required by the catalog, and Task 3 already added the eight `cmu-yautja-lobby-summary-*` keys required by the live summary. Do not duplicate those existing entries. Add the locked-state key below once in each locale file:
 
 Add these English keys:
 
 ```ftl
-cmu-yautja-lobby-summary-set = Set: {$value}
-cmu-yautja-lobby-summary-custom = Custom
-cmu-yautja-lobby-summary-armor = Armor: {$value}
-cmu-yautja-lobby-summary-mask = Mask: {$value}
-cmu-yautja-lobby-summary-greaves = Greaves: {$value}
-cmu-yautja-lobby-summary-cape = Cape: {$value}
-cmu-yautja-lobby-summary-bracer = Bracer: {$value}
-cmu-yautja-lobby-summary-caster = Caster: {$value}
 cmu-yautja-lobby-locked-rank = Requires rank: {$rank}
 ```
 
 Add the Russian equivalents with the same identifiers and variables:
 
 ```ftl
-cmu-yautja-lobby-summary-set = Набор: {$value}
-cmu-yautja-lobby-summary-custom = Настроенный комплект
-cmu-yautja-lobby-summary-armor = Броня: {$value}
-cmu-yautja-lobby-summary-mask = Маска: {$value}
-cmu-yautja-lobby-summary-greaves = Поножи: {$value}
-cmu-yautja-lobby-summary-cape = Плащ: {$value}
-cmu-yautja-lobby-summary-bracer = Браслет: {$value}
-cmu-yautja-lobby-summary-caster = Кастер: {$value}
 cmu-yautja-lobby-locked-rank = Требуется ранг: {$rank}
 ```
 
@@ -581,7 +565,7 @@ cmu-yautja-lobby-locked-rank = Требуется ранг: {$rank}
 
 Run: `rg -n "cmu-yautja-lobby-(category|summary|locked-rank)" Resources/Locale/en-US/_CMU14/yautja/yautja.ftl Resources/Locale/ru-RU/_CMU14/yautja/yautja.ftl`
 
-Expected: every key listed above appears once in each locale with the same variable names.
+Expected: all five category keys, all eight summary keys, and the locked-rank key appear once in each locale with the same variable names.
 
 Then run: `dotnet build Content.Client/Content.Client.csproj --no-restore`
 
