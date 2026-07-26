@@ -34,6 +34,14 @@ public sealed class YautjaRankParityTest
     }
 
     [Test]
+    public void RackAccessKeepsCmss13ElderOrAncientGate()
+    {
+        Assert.That(
+            YautjaRankMetadata.GetRackAccessTags(YautjaRank.Elder).Select(tag => tag.Id),
+            Is.EqualTo(new[] { "CMUAccessYautjaElder", "CMUAccessYautjaAncient" }));
+    }
+
+    [Test]
     public void MissingHunterRankFallsBackToBlooded()
     {
         Assert.Multiple(() =>
