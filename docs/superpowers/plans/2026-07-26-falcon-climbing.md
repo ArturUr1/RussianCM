@@ -23,12 +23,12 @@
 - Create: `Content.IntegrationTests/_CMU14/Yautja/YautjaFalconClimbingTest.cs`
 
 **Interfaces:**
-- Consumes: `CMUYautjaFalconDrone`, `CMUYautjaBracer`, `CMMobHuman`, `Table`, `YautjaItemSystem` Falcon deployment, and `SharedInteractionSystem.UserInteraction`.
+- Consumes: `CMUYautjaFalconDrone`, `CMUYautjaBracer`, `CMMobHuman`, `Table`, `YautjaItemSystem` Falcon deployment, `PoolManager.GenerateServer`, and `SharedInteractionSystem.UserInteraction`.
 - Produces: A regression test proving that a controller's Alt interaction is relayed to Falcon, starts the standard climb DoAfter, and cleans up the relay on recall.
 
 - [ ] **Step 1: Write the failing test**
 
-Create a focused NUnit fixture with one test. Spawn a human, bracer, Falcon item, and a table on the same test map. Attach the session to the human, mark the human as Yautja, equip the bracer, and raise `UseInHandEvent` on the Falcon item to deploy it. Resolve the deployed entity from `YautjaFalconControllerComponent`.
+Create a focused server-only NUnit fixture with one test. Use `PoolManager.GenerateServer(new PoolSettings(), TestContext.Out)` so the regression test does not depend on unrelated client-side RSI resources. Create a map/grid with plating, spawn a human, bracer, Falcon item, and a table on the same grid. Mark the human as Yautja, equip the bracer, and raise `UseInHandEvent` on the Falcon item to deploy it. Resolve the deployed entity from `YautjaFalconControllerComponent`.
 
 Use these assertions and interaction call in the test body:
 
@@ -44,13 +44,13 @@ var tableCoordinates = entMan.GetComponent<TransformComponent>(table).Coordinate
 interaction.UserInteraction(hunter, tableCoordinates, table, altInteract: true);
 ```
 
-After the interaction, advance the pool by `pair.SecondsToTicks(2f)` and assert:
+After the interaction, advance the server by 120 ticks (the standard 1.5 second climb delay plus margin) and assert:
 
 ```csharp
 Assert.That(entMan.GetComponent<ClimbingComponent>(drone).IsClimbing, Is.True);
 ```
 
-Recall the Falcon by resolving its `RecallAction`, creating `YautjaFalconRecallActionEvent` with `Performer = hunter` and `Action = (action, actionComp)`, then raising it on the hunter. After the recall completes, assert that the hunter no longer has `InteractionRelayComponent` and that the controller component is gone. Restore the previous attached entity and delete spawned entities in `finally`.
+Delete the deployed Falcon to exercise the existing termination cleanup path. After two more server ticks, assert that the hunter no longer has `InteractionRelayComponent` and that the controller component is gone. Dispose the server in `finally`.
 
 - [ ] **Step 2: Run the focused test to verify it fails**
 
@@ -60,7 +60,7 @@ Run:
 dotnet test Content.IntegrationTests/Content.IntegrationTests.csproj --filter FullyQualifiedName~YautjaFalconClimbingTest --no-restore
 ```
 
-Expected: FAIL before the implementation because deployed Falcon has no `ClimbingComponent` and Falcon control does not install an `InteractionRelayComponent`.
+Expected: FAIL before the implementation at the `ClimbingComponent` assertion because deployed Falcon has no climbing component and Falcon control does not install an interaction relay.
 
 - [ ] **Step 3: Commit the failing test**
 
