@@ -3,6 +3,14 @@ cmu-yautja-lobby-category-equipment = Снаряжение
 cmu-yautja-lobby-category-sets = Комплекты
 cmu-yautja-lobby-category-technology = Технологии
 cmu-yautja-lobby-category-description = Описание
+cmu-yautja-lobby-summary-set = Комплект: { $value }
+cmu-yautja-lobby-summary-custom = Свой
+cmu-yautja-lobby-summary-armor = Броня: { $value }
+cmu-yautja-lobby-summary-mask = Биомаска: { $value }
+cmu-yautja-lobby-summary-greaves = Поножи: { $value }
+cmu-yautja-lobby-summary-cape = Плащ: { $value }
+cmu-yautja-lobby-summary-bracer = Наруч: { $value }
+cmu-yautja-lobby-summary-caster = Плечевая пушка: { $value }
 
 cmu-yautja-rank-hunter = Охотник
 cmu-yautja-rank-blooded = Окровавленный
