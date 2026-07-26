@@ -6,6 +6,7 @@ using System.Text.Json;
 using Content.Server.Database;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using NpgsqlTypes;
@@ -15,9 +16,11 @@ using NpgsqlTypes;
 namespace Content.Server.Database.Migrations.Postgres
 {
     [DbContext(typeof(PostgresServerDbContext))]
-    partial class PostgresServerDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260726000001_YautjaRank")]
+    partial class YautjaRank
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -25,6 +28,50 @@ namespace Content.Server.Database.Migrations.Postgres
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
+
+            modelBuilder.Entity("Content.Server.Database.AU14CustomConstructionEntry", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("au14_custom_construction_entries_id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at");
+
+                    b.Property<string>("EntryKey")
+                        .IsRequired()
+                        .HasMaxLength(256)
+                        .HasColumnType("character varying(256)")
+                        .HasColumnName("entry_key");
+
+                    b.Property<string>("Kind")
+                        .IsRequired()
+                        .HasMaxLength(32)
+                        .HasColumnType("character varying(32)")
+                        .HasColumnName("kind");
+
+                    b.Property<DateTime>("LastEditedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("last_edited_at");
+
+                    b.Property<string>("Yaml")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("yaml");
+
+                    b.HasKey("Id")
+                        .HasName("PK_au14_custom_construction_entries");
+
+                    b.HasIndex("Kind", "EntryKey")
+                        .IsUnique()
+                        .HasDatabaseName("IX_au14_custom_construction_entries_kind_entry_key");
+
+                    b.ToTable("au14_custom_construction_entries", (string)null);
+                });
 
             modelBuilder.Entity("Content.Server.Database.AU14FactionDefinition", b =>
                 {
@@ -69,50 +116,6 @@ namespace Content.Server.Database.Migrations.Postgres
                         .HasDatabaseName("IX_au14_faction_definitions_title");
 
                     b.ToTable("au14_faction_definitions", (string)null);
-                });
-
-            modelBuilder.Entity("Content.Server.Database.AU14CustomConstructionEntry", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasColumnName("au14_custom_construction_entries_id");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("created_at");
-
-                    b.Property<string>("EntryKey")
-                        .IsRequired()
-                        .HasMaxLength(256)
-                        .HasColumnType("character varying(256)")
-                        .HasColumnName("entry_key");
-
-                    b.Property<string>("Kind")
-                        .IsRequired()
-                        .HasMaxLength(32)
-                        .HasColumnType("character varying(32)")
-                        .HasColumnName("kind");
-
-                    b.Property<DateTime>("LastEditedAt")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("last_edited_at");
-
-                    b.Property<string>("Yaml")
-                        .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("yaml");
-
-                    b.HasKey("Id")
-                        .HasName("PK_au14_custom_construction_entries");
-
-                    b.HasIndex("Kind", "EntryKey")
-                        .IsUnique()
-                        .HasDatabaseName("IX_au14_custom_construction_entries_kind_entry_key");
-
-                    b.ToTable("au14_custom_construction_entries", (string)null);
                 });
 
             modelBuilder.Entity("Content.Server.Database.Admin", b =>
@@ -1230,14 +1233,14 @@ namespace Content.Server.Database.Migrations.Postgres
                         .HasColumnType("text")
                         .HasColumnName("species");
 
+                    b.Property<string>("ThreatPreference")
+                        .HasColumnType("text")
+                        .HasColumnName("threat_preference");
+
                     b.Property<string>("Voice")
                         .IsRequired()
                         .HasColumnType("text")
                         .HasColumnName("voice");
-
-                    b.Property<string>("ThreatPreference")
-                        .HasColumnType("text")
-                        .HasColumnName("threat_preference");
 
                     b.Property<string>("XenoPostfix")
                         .IsRequired()
