@@ -13,13 +13,26 @@ public sealed partial class YautjaHudSystem : EntitySystem
     [Dependency] private IPrototypeManager _prototypes = default!;
 
     private readonly Dictionary<YautjaMarkKind, StatusIconData> _icons = new();
+    private readonly Dictionary<YautjaRank, StatusIconData> _rankIcons = new();
     private StatusIconData? _bloodedThrallIcon;
     private bool _cached;
 
     public override void Initialize()
     {
         SubscribeLocalEvent<YautjaMarkComponent, GetStatusIconsEvent>(OnGetStatusIcons);
+        SubscribeLocalEvent<YautjaComponent, GetStatusIconsEvent>(OnGetRankStatusIcons);
         SubscribeLocalEvent<YautjaFalconHudIconComponent, GetStatusIconsEvent>(OnFalconGetStatusIcons);
+    }
+
+    private void OnGetRankStatusIcons(Entity<YautjaComponent> ent, ref GetStatusIconsEvent args)
+    {
+        if (!HasYautjaHudViewer())
+            return;
+
+        EnsureCached();
+        var rank = Enum.IsDefined(ent.Comp.ClanRank) ? ent.Comp.ClanRank : YautjaRank.Blooded;
+        if (_rankIcons.TryGetValue(rank, out var icon))
+            args.StatusIcons.Add(icon);
     }
 
     private void OnGetStatusIcons(Entity<YautjaMarkComponent> ent, ref GetStatusIconsEvent args)
@@ -85,6 +98,13 @@ public sealed partial class YautjaHudSystem : EntitySystem
         Cache(YautjaMarkKind.Thrall, "CMUYautjaIconThrall");
         Cache(YautjaMarkKind.Student, "CMUYautjaIconStudent");
         Cache(YautjaMarkKind.Blooded, "CMUYautjaIconBlooded");
+
+        foreach (var rank in YautjaRankMetadata.Order)
+        {
+            var id = new ProtoId<HealthIconPrototype>($"CMUYautjaRankIcon{rank}");
+            if (_prototypes.TryIndex(id, out var icon))
+                _rankIcons[rank] = icon;
+        }
 
         var bloodedThrallId = new ProtoId<HealthIconPrototype>("CMUYautjaIconBloodedThrall");
         if (_prototypes.TryIndex(bloodedThrallId, out var bloodedThrall))

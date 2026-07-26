@@ -34,9 +34,12 @@ public sealed partial class YautjaProfileEditor : ScrollContainer
     private static readonly SoundPathSpecifier ModernCloakPreviewSound = new("/Audio/_CMU14/Yautja/pred_cloakon_modern.ogg");
     private static readonly SoundPathSpecifier RetroCloakPreviewSound = new("/Audio/_CMU14/Yautja/Equipment/pred_cloakon.wav");
     private static readonly ResPath BracerRsi = new("/Textures/_CMU14/Yautja/bracer.rsi");
+    private static readonly ResPath RankRsi = new("/Textures/_CMU14/Yautja/rank_icons.rsi");
 
     private readonly LineEdit _name = new();
     private readonly LineEdit _age = new();
+    private readonly AnimatedTextureRect _rankIcon = new();
+    private readonly Label _rankName = new();
     private readonly CheckBox _previewWithoutGear = new();
     private readonly OptionButton _translatorType = new();
     private readonly OptionButton _invisibilitySound = new();
@@ -121,6 +124,27 @@ public sealed partial class YautjaProfileEditor : ScrollContainer
         root.AddChild(identity);
         identity.AddChild(Row("cmu-yautja-lobby-name", _name));
         identity.AddChild(Row("cmu-yautja-lobby-age", _age));
+
+        _rankIcon.MinSize = new Vector2(32, 32);
+        _rankIcon.DisplayRect.MinSize = new Vector2(32, 32);
+        _rankIcon.DisplayRect.Stretch = TextureRect.StretchMode.Scale;
+        root.AddChild(new BoxContainer
+        {
+            Orientation = BoxContainer.LayoutOrientation.Horizontal,
+            SeparationOverride = 8,
+            Margin = new Thickness(0, 0, 0, 6),
+            Children =
+            {
+                new Label
+                {
+                    Text = Loc.GetString("cmu-yautja-rank"),
+                    MinWidth = 110,
+                    VerticalAlignment = VAlignment.Center,
+                },
+                _rankIcon,
+                _rankName,
+            },
+        });
 
         var colors = new BoxContainer
         {
@@ -234,8 +258,12 @@ public sealed partial class YautjaProfileEditor : ScrollContainer
         _updating = true;
 
         var yautja = profile?.YautjaProfile ?? YautjaCharacterProfile.Default;
+        var rank = YautjaRankResolver.ResolveForHunter(yautja);
+        var rankInfo = YautjaRankMetadata.For(rank);
         _name.Text = yautja.Name;
         _age.Text = yautja.Age.ToString();
+        _rankName.Text = Loc.GetString(rankInfo.LocalizedName);
+        _rankIcon.SetFromSpriteSpecifier(new SpriteSpecifier.Rsi(RankRsi, rankInfo.IconState));
         _flavorText.TextRope = new Rope.Leaf(yautja.FlavorText);
         UpdateFlavorLimit(yautja.FlavorText.Length);
         _translatorType.SelectId((int) yautja.TranslatorType);
