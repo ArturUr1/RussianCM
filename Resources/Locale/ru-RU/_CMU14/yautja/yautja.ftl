@@ -11,6 +11,7 @@ cmu-yautja-lobby-summary-greaves = Поножи: { $value }
 cmu-yautja-lobby-summary-cape = Плащ: { $value }
 cmu-yautja-lobby-summary-bracer = Наруч: { $value }
 cmu-yautja-lobby-summary-caster = Плечевая пушка: { $value }
+cmu-yautja-lobby-locked-rank = Требуется ранг: { $rank }
 
 cmu-yautja-rank-hunter = Охотник
 cmu-yautja-rank-blooded = Окровавленный
