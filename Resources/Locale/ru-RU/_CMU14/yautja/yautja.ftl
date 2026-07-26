@@ -1,3 +1,9 @@
+cmu-yautja-lobby-category-appearance = Внешность
+cmu-yautja-lobby-category-equipment = Снаряжение
+cmu-yautja-lobby-category-sets = Комплекты
+cmu-yautja-lobby-category-technology = Технологии
+cmu-yautja-lobby-category-description = Описание
+
 cmu-yautja-rank-hunter = Охотник
 cmu-yautja-rank-blooded = Окровавленный
 cmu-yautja-rank-elite = Элита
