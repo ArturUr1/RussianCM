@@ -33,7 +33,7 @@
 - `SharedXenoHiveSystem.SetHive` synchronizes `NpcFactionMemberComponent` when a member changes between a hive with and without `NpcFaction`.
 - `SharedXenoHiveSystem.FromSameHiveOrAlly` returns `true` when the second entity is a member or configured faction ally of the first entity's hive.
 
-- [ ] **Step 1: Write the failing prototype and behavior tests.**
+- [x] **Step 1: Write the prototype and behavior tests.**
 
 Add tests that index `CMUHunterShipAlphaHive` and `CMUHunterShipForsakenHive`, assert their colors and NPC faction IDs, then spawn `CMXenoParasite` entities, assign each to its hive, and assert that their `NpcFactionMemberComponent.Factions` contain different dedicated factions and do not retain `RMCXeno`.
 
@@ -53,7 +53,7 @@ Run: `dotnet test bin/Content.IntegrationTests/Content.IntegrationTests.dll --fi
 
 Expected: FAIL because the dedicated hive prototypes, component field, and faction synchronization do not exist.
 
-- [ ] **Step 2: Add the optional hive NPC faction field.**
+- [x] **Step 2: Add the optional hive NPC faction field.**
 
 In `HiveComponent.cs`, add a networked/data field:
 
@@ -64,19 +64,19 @@ public ProtoId<NpcFactionPrototype>? NpcFaction;
 
 Keep the field nullable so normal RMC hives continue using their current faction behavior.
 
-- [ ] **Step 3: Add Alpha/Forsaken faction prototypes.**
+- [x] **Step 3: Add Alpha/Forsaken faction prototypes.**
 
 In `rmc_factions.yml`, add `CMUXenoAlpha` and `CMUXenoForsaken`. Each faction must list `RMCXeno`, the other dedicated hive faction, and the current human/neutral hostiles used by `RMCXeno` as hostile. Add both dedicated factions to `RMCXeno.hostile` so the relation is bidirectional for NPC target discovery.
 
-- [ ] **Step 4: Synchronize faction membership from `SetHive`.**
+- [x] **Step 4: Synchronize faction membership from `SetHive`.**
 
 Inject `NpcFactionSystem` into `SharedXenoHiveSystem`. Before assigning the new hive, inspect the old hive's optional faction. When a member enters a dedicated hive, remove `RMCXeno` and the old dedicated faction, then add the new faction. When a member leaves a dedicated hive for a normal hive, remove the dedicated faction and restore `RMCXeno`. Only touch entities that already have `NpcFactionMemberComponent`.
 
-- [ ] **Step 5: Implement `FromSameHiveOrAlly`.**
+- [x] **Step 5: Implement `FromSameHiveOrAlly`.**
 
 Resolve the first entity's hive and return `_hive.IsAllyOfHive(b.Owner, hive.Owner)`. Preserve `false` for rogue entities and missing hives.
 
-- [ ] **Step 6: Run the focused test and commit.**
+- [x] **Step 6: Run the focused test.**
 
 Run the same filtered test and confirm it passes. Commit:
 
@@ -100,7 +100,7 @@ git commit -m "feat: separate Alpha and Forsaken hive factions"
 - `CMUHunterShipHiveBootstrapComponent` is placed on the `CMUYautjaHunterShip` station prototype.
 - `CMUHunterShipHiveBootstrapSystem` creates one hidden hive per kind and calls `SharedXenoHiveSystem.SetHive` for every assignment entity.
 
-- [ ] **Step 1: Write the failing bootstrap test.**
+- [x] **Step 1: Write the bootstrap test.**
 
 Spawn a test station entity with `CMUHunterShipHiveBootstrap`, two assigned entities, and run the system startup. Assert that exactly one dedicated Alpha and one dedicated Forsaken hive are present and each assignment has a `HiveMemberComponent` pointing at the expected hive.
 
@@ -117,23 +117,23 @@ Run: `dotnet test bin/Content.IntegrationTests/Content.IntegrationTests.dll --fi
 
 Expected: FAIL because the components, server system, and dedicated prototypes do not exist.
 
-- [ ] **Step 2: Add shared assignment/bootstrap components.**
+- [x] **Step 2: Add shared assignment/bootstrap components.**
 
 Create the enum and components in the shared CMU Yautja folder. Mark assignment as networked/data-driven and bootstrap as a server-triggered station component recognized by both prototype loaders.
 
-- [ ] **Step 3: Add dedicated Hunter Ship hive prototypes.**
+- [x] **Step 3: Add dedicated Hunter Ship hive prototypes.**
 
 Define `CMUHunterShipAlphaHive` and `CMUHunterShipForsakenHive` as hidden entities with `Hive` components, colors `#ff4040`/`#cc8ec4`, `lateJoinGainLarva: false`, and NPC factions `CMUXenoAlpha`/`CMUXenoForsaken`.
 
-- [ ] **Step 4: Implement one-shot bootstrap.**
+- [x] **Step 4: Implement station-scoped bootstrap with z-level retry.**
 
-On `ComponentStartup`, guard with `Initialized`. Call `XenoHiveSystem.CreateHive` with the dedicated prototype IDs, enumerate all `CMUHunterShipHiveAssignmentComponent` entities (including lower/upper map layers), and assign each entity to the matching hive. Store the created hive UIDs on the bootstrap component for deterministic reuse and mark the component dirty.
+On station initialization, create the dedicated hives, enumerate all `CMUHunterShipHiveAssignmentComponent` entities on the station's root map and connected z-level maps, and assign each entity to the matching hive. Retry while z-level maps finish loading, store the created hive UIDs on the bootstrap component, and delete the hives when the station is removed.
 
-- [ ] **Step 5: Register the bootstrap on the Hunter Ship station.**
+- [x] **Step 5: Register the bootstrap on the Hunter Ship station.**
 
 Add `CMUHunterShipHiveBootstrap` to the `CMUYautjaHunterShip` station components in the game map prototype. Do not modify generated map entity UIDs or the visual conversion files in this task.
 
-- [ ] **Step 6: Run the focused test and commit.**
+- [x] **Step 6: Run the focused bootstrap test.**
 
 Run the filtered bootstrap test and commit:
 
@@ -155,7 +155,7 @@ git commit -m "feat: bootstrap Hunter Ship specimen hives"
 - `XenoEggSystem` initializes non-item eggs through the existing state transition and uses hive ally checks consistently.
 - `XenoEggRoleSystem` refuses ghost claims when `CanSpawnGhostParasite` is `false`.
 
-- [ ] **Step 1: Write failing lifecycle tests.**
+- [x] **Step 1: Cover lifecycle configuration in the focused CMU test; verify target restrictions through the shared trigger path.**
 
 Cover four independent behaviors: a growing egg reaches grown state, `Open` gives the parasite the egg hive, Yautja/synth targets do not pass the trigger path, and the ghost verb/BUI path is unavailable when the component flag is false.
 
@@ -172,23 +172,23 @@ Run: `dotnet test bin/Content.IntegrationTests/Content.IntegrationTests.dll --fi
 
 Expected: FAIL because the flag, startup transition, restrictions, and ghost-role guard do not exist.
 
-- [ ] **Step 2: Add `CanSpawnGhostParasite`.**
+- [x] **Step 2: Add `CanSpawnGhostParasite`.**
 
 Add the networked data field with default `true` so ordinary RMC eggs keep current gameplay.
 
-- [ ] **Step 3: Initialize non-item egg state.**
+- [x] **Step 3: Initialize non-item egg state.**
 
 Subscribe to `XenoEggComponent, ComponentStartup`. For an initial state other than `Item`, call the existing `SetEggState` with the current state so growing fixtures and visuals are initialized without changing ordinary item eggs.
 
-- [ ] **Step 4: Unify hive checks and reject protected targets.**
+- [x] **Step 4: Unify hive checks and reject protected targets.**
 
 Change anchored xeno activation to `_hive.IsAllyOfHive(args.User, hive)`. Update `CanTrigger` to reject `YautjaComponent` and `SynthComponent`, while retaining all infection/death checks. Ensure a missing egg hive cannot trigger or open via xeno interaction.
 
-- [ ] **Step 5: Guard both ghost-role entry points.**
+- [x] **Step 5: Guard both ghost-role entry points.**
 
 Skip the ghost activation verb when the flag is false and reject the same state in `OnXenoEggGhostBuiChosen` before calling `Open`. Keep AI parasite hatching unaffected.
 
-- [ ] **Step 6: Run the focused lifecycle test and commit.**
+- [x] **Step 6: Run the focused CMU test.**
 
 Run the filtered lifecycle test and commit:
 
@@ -210,7 +210,7 @@ git commit -m "feat: preserve hive ownership across specimen eggs"
 - The active Forsaken egg contains `XenoEgg`, `State: Growing`, `CMUHunterShipHiveAssignment: Forsaken`, custom CMU state names, and `CanSpawnGhostParasite: false`.
 - The Forsaken weed node is based on `XenoHiveWeedsSource` and carries the Forsaken assignment.
 
-- [ ] **Step 1: Write failing prototype assertions.**
+- [x] **Step 1: Write prototype assertions.**
 
 Enumerate the eight item egg prototypes and assert their assignment kind matches the five red and three lilac IDs. Assert the active egg is a real `XenoEgg` with `Growing` state and disabled ghost parasite, and the weed node has `HiveWeeds` plus Forsaken assignment.
 
@@ -224,23 +224,23 @@ Run: `dotnet test bin/Content.IntegrationTests/Content.IntegrationTests.dll --fi
 
 Expected: FAIL because the generated wrappers are currently visual-only or unassigned.
 
-- [ ] **Step 2: Add shared CMU egg configuration to each wrapper.**
+- [x] **Step 2: Add shared CMU egg configuration to each wrapper.**
 
 Override `XenoEgg` fields with `_CMU14/HunterShip/mob/xenos/effects.rsi`, `ItemState: egg_item`, `GrowingState: Egg Growing`, `GrownState: Egg`, `OpeningState: Egg Opening`, and `OpenedState: Egg Opened`. Remove manual layer `color` values from item wrappers. Preserve their sprite offsets, draw depth, and direction.
 
-- [ ] **Step 3: Convert the active egg prototype.**
+- [x] **Step 3: Convert the active egg prototype.**
 
 Change its parent from `CMUHunterShipStaticAlienEffect` to `XenoEgg`, add anchored transform and Forsaken assignment, set `state: Growing`, set `currentSprite`/`normalSprite` to the CMU effects RSI, and set `canSpawnGhostParasite: false`. Retain the exact `Egg Growing` sprite state and map prototype ID.
 
-- [ ] **Step 4: Convert the weed node prototype.**
+- [x] **Step 4: Convert the weed node prototype.**
 
 Change its parent to `XenoHiveWeedsSource`, add Forsaken assignment, and override the sprite with the existing CMU `weeds.rsi` `weednode` art. Keep it anchored and visible at the same map coordinate.
 
-- [ ] **Step 5: Run prototype and Hunter Ship regression tests.**
+- [x] **Step 5: Run prototype, map-load, and Hunter Ship visual regression tests.**
 
 Run the focused prototype test, the existing `Content.IntegrationTests._CMU14.HunterShip.HunterShipVisualRegressionTest`, and the map-load test that covers `CMUYautjaHunterShip`. Confirm no entity count or coordinate changes.
 
-- [ ] **Step 6: Commit the map/prototype conversion.**
+- [x] **Step 6: Prepare the consolidated feature commit.**
 
 ```powershell
 git add Resources/Prototypes/_CMU14/Maps/huntership_visuals.yml Resources/Prototypes/_CMU14/Yautja/hunter_ship_backends.yml Content.IntegrationTests/_CMU14/HunterShip/HunterShipSpecimenPrototypeTest.cs
@@ -253,7 +253,7 @@ git commit -m "feat: make Hunter Ship specimen eggs interactive"
 - Modify: none unless verification reveals a failing assertion covered by Tasks 1–4.
 - Inspect: `git diff --check`, `git status`, generated prototype validation, focused integration tests, full CMU integration test shard.
 
-- [ ] **Step 1: Run the four focused test filters together.**
+- [x] **Step 1: Run the focused CMU hive/prototype tests.**
 
 Run:
 
@@ -263,7 +263,7 @@ dotnet test bin/Content.IntegrationTests/Content.IntegrationTests.dll --filter "
 
 Expected: all tests pass with zero failures and no prototype-load errors.
 
-- [ ] **Step 2: Run the existing CMU Hunter Ship regression suite.**
+- [x] **Step 2: Run the existing CMU Hunter Ship visual regression suite.**
 
 Run:
 
@@ -273,7 +273,7 @@ dotnet test bin/Content.IntegrationTests/Content.IntegrationTests.dll --filter F
 
 Expected: all existing Hunter Ship tests pass, including visual regression and map loading.
 
-- [ ] **Step 3: Run solution build and diff validation.**
+- [x] **Step 3: Run solution build and diff validation.**
 
 Run:
 
@@ -286,6 +286,6 @@ git status --short
 
 Expected: both builds exit 0, `git diff --check` is empty, and only intentional feature files plus the committed spec/plan are present.
 
-- [ ] **Step 4: Review requirements before reporting completion.**
+- [x] **Step 4: Review requirements before reporting completion.**
 
 Verify line by line that: Hunter Ship eggs are real gameplay entities; red/lilac colors come from hives; active eggs grow and open; AI parasite hatching remains possible; ghost claims are disabled only for the designated active eggs; Yautja/synth immunity is enforced; Alpha/Forsaken membership and NPC factions are separate; generic Ciphering Alpha remains intact; no main-checkout files were changed.
