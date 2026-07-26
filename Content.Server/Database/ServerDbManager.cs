@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Content.Server._RMC14.LinkAccount;
 using Content.Server.Administration.Logs;
 using Content.Shared._CMU14.BalanceRating;
+using Content.Shared._CMU14.Yautja;
 using Content.Shared.Administration.Logs;
 using Content.Shared._CMU14.RoundStatistics;
 using Content.Shared.CCVar;
@@ -202,6 +203,8 @@ namespace Content.Server.Database
             ImmutableTypedHwid? hwId);
         Task<PlayerRecord?> GetPlayerRecordByUserName(string userName, CancellationToken cancel = default);
         Task<PlayerRecord?> GetPlayerRecordByUserId(NetUserId userId, CancellationToken cancel = default);
+        Task<YautjaRank?> GetYautjaRank(Guid userId);
+        Task SetYautjaRank(Guid userId, YautjaRank rank);
         #endregion
 
         #region Connection Logs
@@ -780,6 +783,18 @@ namespace Content.Server.Database
         {
             DbReadOpsMetric.Inc();
             return RunDbCommand(() => _db.GetPlayerRecordByUserId(userId, cancel));
+        }
+
+        public Task<YautjaRank?> GetYautjaRank(Guid userId)
+        {
+            DbReadOpsMetric.Inc();
+            return RunDbCommand(() => _db.GetYautjaRank(userId));
+        }
+
+        public Task SetYautjaRank(Guid userId, YautjaRank rank)
+        {
+            DbWriteOpsMetric.Inc();
+            return RunDbCommand(() => _db.SetYautjaRank(userId, rank));
         }
 
         public Task<int> AddConnectionLogAsync(

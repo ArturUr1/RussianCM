@@ -823,6 +823,9 @@ namespace Content.Server.Database
         public IPAddress LastSeenAddress { get; set; } = null!;
         public TypedHwid? LastSeenHWId { get; set; }
 
+        // CMU14: nullable keeps existing players on the Blooded compatibility default.
+        public int? YautjaRank { get; set; }
+
         // Data that changes with each round
         public List<Round> Rounds { get; set; } = null!;
         public List<AdminLogPlayer> AdminLogs { get; set; } = null!;
