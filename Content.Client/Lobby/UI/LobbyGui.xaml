@@ -37,7 +37,7 @@
                         </BoxContainer>
 
                         <!-- Compact primary-action terminal. -->
-                        <PanelContainer Name="TerminalCard" Access="Public" StyleClasses="CrtPanel"
+                        <PanelContainer Name="TerminalCard" Access="Public" StyleClasses="CrtEmbeddedPanel"
                                         HorizontalAlignment="Left" VerticalAlignment="Center"
                                         MinWidth="320" MaxWidth="440">
                             <BoxContainer Orientation="Vertical" Margin="12 10 12 12" SeparationOverride="5">
@@ -91,7 +91,7 @@
 
                         <!-- Left Bot Panel -->
                         <PanelContainer VerticalAlignment="Bottom" HorizontalAlignment="Left"
-                                        Margin="0 75" StyleClasses="CrtPanel" MaxWidth="720">
+                                        Margin="0 75" StyleClasses="CrtEmbeddedPanel" MaxWidth="720">
                             <RichTextLabel Name="LobbyMessageLabel" Access="Public" Margin="5" />
                         </PanelContainer>
                         <BoxContainer Orientation="Horizontal"
@@ -101,7 +101,7 @@
                         VerticalExpand="False"
                         Margin="3 3 3 3" />
 
-    <PanelContainer StyleClasses="CrtPanel">
+    <PanelContainer StyleClasses="CrtEmbeddedPanel">
         <RichTextLabel Name="LobbySong"
                        Access="Public"
                        HorizontalAlignment="Center" />
@@ -125,7 +125,7 @@
                 <Control Access="Public" Visible="False" Name="CharacterSetupState" VerticalExpand="True" />
             </BoxContainer>
             <!-- Right Panel -->
-            <PanelContainer Name="RightSide" Access="Public" StyleClasses="CrtPanel" HorizontalAlignment="Right" VerticalExpand="True"
+            <PanelContainer Name="RightSide" Access="Public" StyleClasses="CrtEmbeddedPanel" HorizontalAlignment="Right" VerticalExpand="True"
                             VerticalAlignment="Stretch">
                 <BoxContainer Orientation="Vertical" HorizontalExpand="True">
                     <!-- Top row -->
@@ -173,7 +173,7 @@
             </PanelContainer>
         </SplitContainer>
         <PanelContainer Name="ExpandPanel"
-                        StyleClasses="CrtPanel"
+                        StyleClasses="CrtEmbeddedPanel"
                         HorizontalAlignment="Right"
                         VerticalAlignment="Top"
                         Margin="0 2 2 0"
