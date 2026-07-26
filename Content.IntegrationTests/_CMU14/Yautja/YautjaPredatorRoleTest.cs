@@ -4385,7 +4385,9 @@ public sealed class YautjaPredatorRoleTest
                 {
                     Assert.That(actionPrototypeIds, Does.Contain("CMUActionYautjaLeap"));
                     Assert.That(actionPrototypeIds, Does.Contain("CMUActionYautjaMarkForHunt"));
+                    Assert.That(actionPrototypeIds, Does.Contain("CMUActionYautjaButcher"));
                     Assert.That(actionPrototypeIds, Does.Contain("CMUActionYautjaAudioPanel"));
+                    Assert.That(actionPrototypeIds, Does.Not.Contain("CMUActionYautjaOpenMarkPanel"));
                     Assert.That(actionPrototypeIds.Any(id => id.StartsWith("CMUActionYautjaVoice")), Is.False);
 
                     var speech = entMan.GetComponent<SpeechComponent>(hunter);
