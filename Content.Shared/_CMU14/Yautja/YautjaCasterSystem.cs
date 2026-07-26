@@ -57,7 +57,16 @@ public sealed partial class YautjaCasterSystem : EntitySystem
             return;
         }
 
-        SetMode(ent, mode.Value);
+        var cost = (ent.Comp.CurrentMode, mode.Value) switch
+        {
+            (0, 1) => (FixedPoint2) 150,
+            (1, 0) => (FixedPoint2) 30,
+            (2, 3) => (FixedPoint2) 1000,
+            (3, 2) => (FixedPoint2) 500,
+            _ => ent.Comp.PowerCost,
+        };
+
+        SetMode(ent, mode.Value, cost);
         PopupMode(ent, args.User, "cmu-yautja-caster-mode-set");
     }
 
@@ -74,7 +83,9 @@ public sealed partial class YautjaCasterSystem : EntitySystem
             return;
         }
 
-        var mode = IsLethalMode(ent.Comp) ? 0 : 2;
+        var isLethal = IsLethalMode(ent.Comp);
+        var mode = isLethal ? 0 : 2;
+        var cost = isLethal ? (FixedPoint2) 30 : 100;
 
         if (_net.IsClient)
         {
@@ -82,7 +93,7 @@ public sealed partial class YautjaCasterSystem : EntitySystem
             return;
         }
 
-        SetMode(ent, mode);
+        SetMode(ent, mode, cost);
         PopupMode(ent, args.UserUid, "cmu-yautja-caster-mode-set");
     }
 
@@ -191,9 +202,10 @@ public sealed partial class YautjaCasterSystem : EntitySystem
         _power.RegenPower((ent.Comp.Bracer, bracer), ent.Comp.ChargeCost);
     }
 
-    private void SetMode(Entity<YautjaCasterComponent> ent, int mode)
+    private void SetMode(Entity<YautjaCasterComponent> ent, int mode, FixedPoint2 powerCost)
     {
         ent.Comp.CurrentMode = mode;
+        ent.Comp.PowerCost = powerCost;
         Dirty(ent);
         ApplyMode(ent);
     }
@@ -235,7 +247,7 @@ public sealed partial class YautjaCasterSystem : EntitySystem
 
     private static FixedPoint2 GetPowerCost(YautjaCasterComponent component)
     {
-        return GetMode(component)?.PowerCost ?? component.PowerCost;
+        return component.PowerCost;
     }
 
     private static Robust.Shared.Audio.SoundSpecifier GetFireSound(YautjaCasterComponent component)

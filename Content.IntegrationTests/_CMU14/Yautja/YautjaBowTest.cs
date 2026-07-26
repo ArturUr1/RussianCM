@@ -12847,26 +12847,24 @@ public sealed class YautjaBowTest
                         "CMSS13 plasma caster uses use_unique_action() to toggle stun/lethal mode.");
                     Assert.That(casterComp.Modes, Has.Count.EqualTo(4));
                     Assert.That(casterComp.CurrentMode, Is.EqualTo(0));
+                    Assert.That(casterComp.PowerCost, Is.EqualTo((FixedPoint2) 100),
+                        "CMSS13 plasma caster starts with charge_cost = 100 before any attack_self transition.");
 
                     AssertCasterMode(casterComp.Modes[0],
                         "cmu-yautja-caster-mode-stun",
                         "CMUYautjaCasterStunBolt",
-                        30,
                         "/Audio/_CMU14/Yautja/Weapons/Plasma/pred_plasmacaster_fire.wav");
                     AssertCasterMode(casterComp.Modes[1],
                         "cmu-yautja-caster-mode-immobilizer",
                         "CMUYautjaCasterImmobilizerBolt",
-                        150,
                         "/Audio/_CMU14/Yautja/Weapons/Plasma/pulse.wav");
                     AssertCasterMode(casterComp.Modes[2],
                         "cmu-yautja-caster-mode-lethal",
                         "CMUYautjaCasterLethalBolt",
-                        100,
                         "/Audio/_CMU14/Yautja/Weapons/Plasma/pred_lasercannon.wav");
                     AssertCasterMode(casterComp.Modes[3],
                         "cmu-yautja-caster-mode-eradicator",
                         "CMUYautjaCasterEradicatorBolt",
-                        1000,
                         "/Audio/_CMU14/Yautja/Weapons/Plasma/pulse.wav");
                 });
             }
@@ -12910,6 +12908,7 @@ public sealed class YautjaBowTest
                 {
                     Assert.That(strengthenStun.Handled, Is.True);
                     AssertCasterState(casterComp, ammo, 1, "CMUYautjaCasterImmobilizerBolt");
+                    Assert.That(casterComp.PowerCost, Is.EqualTo((FixedPoint2) 150));
                     Assert.That(gun.FireRate, Is.EqualTo(10f / 80f).Within(0.0001f),
                         "CMSS13 plasma immobilizers set fire_delay = FIRE_DELAY_TIER_2 * 8.");
                 });
@@ -12920,6 +12919,7 @@ public sealed class YautjaBowTest
                 {
                     Assert.That(weakenStun.Handled, Is.True);
                     AssertCasterState(casterComp, ammo, 0, "CMUYautjaCasterStunBolt");
+                    Assert.That(casterComp.PowerCost, Is.EqualTo((FixedPoint2) 30));
                     Assert.That(gun.FireRate, Is.EqualTo(10f / 6f).Within(0.0001f));
                 });
 
@@ -12929,6 +12929,7 @@ public sealed class YautjaBowTest
                 {
                     Assert.That(lethalMode.Handled, Is.True);
                     AssertCasterState(casterComp, ammo, 2, "CMUYautjaCasterLethalBolt");
+                    Assert.That(casterComp.PowerCost, Is.EqualTo((FixedPoint2) 100));
                     Assert.That(gun.FireRate, Is.EqualTo(10f / 18f).Within(0.0001f),
                         "CMSS13 plasma bolt sets fire_delay = FIRE_DELAY_TIER_6 * 3.");
                 });
@@ -12939,6 +12940,7 @@ public sealed class YautjaBowTest
                 {
                     Assert.That(strengthenLethal.Handled, Is.True);
                     AssertCasterState(casterComp, ammo, 3, "CMUYautjaCasterEradicatorBolt");
+                    Assert.That(casterComp.PowerCost, Is.EqualTo((FixedPoint2) 1000));
                     Assert.That(gun.FireRate, Is.EqualTo(10f / 120f).Within(0.0001f),
                         "CMSS13 plasma eradicator sets fire_delay = FIRE_DELAY_TIER_2 * 12.");
                 });
@@ -12949,6 +12951,7 @@ public sealed class YautjaBowTest
                 {
                     Assert.That(weakenLethal.Handled, Is.True);
                     AssertCasterState(casterComp, ammo, 2, "CMUYautjaCasterLethalBolt");
+                    Assert.That(casterComp.PowerCost, Is.EqualTo((FixedPoint2) 500));
                     Assert.That(gun.FireRate, Is.EqualTo(10f / 18f).Within(0.0001f));
                 });
 
@@ -12958,6 +12961,7 @@ public sealed class YautjaBowTest
                 {
                     Assert.That(stunMode.Handled, Is.True);
                     AssertCasterState(casterComp, ammo, 0, "CMUYautjaCasterStunBolt");
+                    Assert.That(casterComp.PowerCost, Is.EqualTo((FixedPoint2) 30));
                     Assert.That(gun.FireRate, Is.EqualTo(10f / 6f).Within(0.0001f));
                 });
             }
@@ -15328,14 +15332,12 @@ public sealed class YautjaBowTest
         YautjaCasterMode mode,
         string name,
         string projectile,
-        int powerCost,
         string fireSound)
     {
         Assert.Multiple(() =>
         {
             Assert.That(mode.Name.Id, Is.EqualTo(name));
             Assert.That(mode.Projectile.Id, Is.EqualTo(projectile));
-            Assert.That(mode.PowerCost, Is.EqualTo((FixedPoint2) powerCost));
             AssertSoundPath(mode.FireSound, fireSound);
         });
     }
