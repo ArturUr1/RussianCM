@@ -344,58 +344,115 @@ git commit -m "feat: add Yautja profile workbench navigation"
 
 **Interfaces:**
 - Consumes the existing `YautjaCharacterProfile` display-name helpers and rank metadata.
-- Produces `UpdateSelectionSummary(YautjaCharacterProfile yautja)` called after `SetProfile` and after every successful `Mutate`.
+- Produces `YautjaProfileEditorLayout.BuildSummary(YautjaCharacterProfile profile)` and `UpdateSelectionSummary(YautjaCharacterProfile yautja)` called after `SetProfile` and after every successful `Mutate`.
 
-- [ ] **Step 1: Add summary labels and move the identity/rank controls into the preview column**
+- [ ] **Step 1: Write the failing summary test**
+
+Extend `YautjaProfileEditorLayoutTest` before adding the summary implementation:
+
+```csharp
+[Test]
+public void BuildSummaryUsesUniqueSetAndCurrentGearNames()
+{
+    var profile = YautjaCharacterProfile.Default
+        .WithRank(YautjaRank.Elite)
+        .WithUnique(YautjaUniqueSet.Anubys)
+        .WithArmor(YautjaGearMaterial.Silver, 2)
+        .WithMask(YautjaGearMaterial.Bronze, 3)
+        .WithGreaves(YautjaGearMaterial.Bone, 1)
+        .WithCapeStyle(YautjaCapeStyle.Full)
+        .WithBracer(YautjaBracerMaterial.Crimson)
+        .WithCaster(YautjaBracerMaterial.Silver);
+
+    var summary = YautjaProfileEditorLayout.BuildSummary(profile);
+
+    Assert.That(summary.Set, Is.EqualTo(YautjaCharacterProfile.GetUniqueDisplayName(YautjaUniqueSet.Anubys)));
+    Assert.That(summary.Armor, Is.EqualTo(YautjaCharacterProfile.GetArmorStyleDisplayName(YautjaGearMaterial.Silver, 2)));
+    Assert.That(summary.Mask, Is.EqualTo(YautjaCharacterProfile.GetMaskStyleDisplayName(YautjaGearMaterial.Bronze, 3)));
+    Assert.That(summary.Greaves, Is.EqualTo(YautjaCharacterProfile.GetGreavesStyleDisplayName(YautjaGearMaterial.Bone, 1)));
+    Assert.That(summary.Cape, Is.EqualTo(YautjaCharacterProfile.GetCapeDisplayName(YautjaCapeStyle.Full)));
+    Assert.That(summary.Bracer, Is.EqualTo(YautjaCharacterProfile.GetBracerDisplayName(YautjaBracerMaterial.Crimson)));
+    Assert.That(summary.Caster, Is.EqualTo(YautjaCharacterProfile.GetCasterDisplayName(YautjaBracerMaterial.Silver)));
+}
+```
+
+Run: `dotnet test Content.Tests/Content.Tests.csproj --no-restore --filter FullyQualifiedName~YautjaProfileEditorLayoutTest -m:1`
+
+Expected: FAIL because `YautjaProfileEditorLayout.BuildSummary` and its return type do not exist yet.
+
+- [ ] **Step 2: Implement the pure summary helper and make the test green**
+
+Add a `YautjaProfileEditorSummary` record with `Set`, `Armor`, `Mask`, `Greaves`, `Cape`, `Bracer`, and `Caster` string properties in `YautjaProfileEditorLayout.cs`. Add:
+
+```csharp
+public static YautjaProfileEditorSummary BuildSummary(YautjaCharacterProfile profile)
+{
+    var set = profile.Unique != YautjaUniqueSet.None
+        ? YautjaCharacterProfile.GetUniqueDisplayName(profile.Unique)
+        : profile.Legacy != YautjaLegacySet.None
+            ? YautjaCharacterProfile.GetLegacyDisplayName(profile.Legacy)
+            : "—";
+
+    return new YautjaProfileEditorSummary(
+        set,
+        YautjaCharacterProfile.GetArmorStyleDisplayName(profile.ArmorMaterial, profile.ArmorStyle),
+        YautjaCharacterProfile.GetMaskStyleDisplayName(profile.MaskMaterial, profile.MaskStyle),
+        YautjaCharacterProfile.GetGreavesStyleDisplayName(profile.GreavesMaterial, profile.GreavesStyle),
+        YautjaCharacterProfile.GetCapeDisplayName(profile.CapeStyle),
+        YautjaCharacterProfile.GetBracerDisplayName(profile.BracerMaterial),
+        YautjaCharacterProfile.GetCasterDisplayName(profile.CasterMaterial));
+}
+```
+
+Run the same focused test command and expect GREEN (subject to the documented environment resource limit).
+
+- [ ] **Step 3: Add summary labels and move the identity/rank controls into the preview column**
 
 Add labels for set, armor, mask, greaves, cape, bracer, and caster. Build the preview column as a vertical container with the existing preview panel, name/age rows, rank row, rotation controls, `_previewWithoutGear`, and a compact summary panel. Remove the old top-level identity, rank, and color rows; keep `_skinGrid` and `_eyeGrid` in the Appearance page from Task 2.
 
-- [ ] **Step 2: Implement the summary binding with existing profile display names**
+- [ ] **Step 4: Implement the summary binding with the pure helper and existing profile display names**
 
 Use the existing helpers rather than duplicating display-name logic:
 
 ```csharp
 private void UpdateSelectionSummary(YautjaCharacterProfile yautja)
 {
-    _summarySet.Text = Loc.GetString(
-        "cmu-yautja-lobby-summary-set",
-        ("value", yautja.Unique != YautjaUniqueSet.None
-            ? YautjaCharacterProfile.GetUniqueDisplayName(yautja.Unique)
-            : yautja.Legacy != YautjaLegacySet.None
-                ? YautjaCharacterProfile.GetLegacyDisplayName(yautja.Legacy)
-                : Loc.GetString("cmu-yautja-lobby-summary-custom")));
+    var summary = YautjaProfileEditorLayout.BuildSummary(yautja);
+    _summarySet.Text = Loc.GetString("cmu-yautja-lobby-summary-set", ("value", summary.Set == "—"
+        ? Loc.GetString("cmu-yautja-lobby-summary-custom")
+        : summary.Set));
     _summaryArmor.Text = Loc.GetString(
         "cmu-yautja-lobby-summary-armor",
-        ("value", YautjaCharacterProfile.GetArmorStyleDisplayName(yautja.ArmorMaterial, yautja.ArmorStyle)));
+        ("value", summary.Armor));
     _summaryMask.Text = Loc.GetString(
         "cmu-yautja-lobby-summary-mask",
-        ("value", YautjaCharacterProfile.GetMaskStyleDisplayName(yautja.MaskMaterial, yautja.MaskStyle)));
+        ("value", summary.Mask));
     _summaryGreaves.Text = Loc.GetString(
         "cmu-yautja-lobby-summary-greaves",
-        ("value", YautjaCharacterProfile.GetGreavesStyleDisplayName(yautja.GreavesMaterial, yautja.GreavesStyle)));
+        ("value", summary.Greaves));
     _summaryCape.Text = Loc.GetString(
         "cmu-yautja-lobby-summary-cape",
-        ("value", YautjaCharacterProfile.GetCapeDisplayName(yautja.CapeStyle)));
+        ("value", summary.Cape));
     _summaryBracer.Text = Loc.GetString(
         "cmu-yautja-lobby-summary-bracer",
-        ("value", YautjaCharacterProfile.GetBracerDisplayName(yautja.BracerMaterial)));
+        ("value", summary.Bracer));
     _summaryCaster.Text = Loc.GetString(
         "cmu-yautja-lobby-summary-caster",
-        ("value", YautjaCharacterProfile.GetCasterDisplayName(yautja.CasterMaterial)));
+        ("value", summary.Caster));
 }
 ```
 
-- [ ] **Step 3: Update summary from both profile entry points**
+- [ ] **Step 5: Update summary from both profile entry points**
 
 Call `UpdateSelectionSummary(yautja)` in `SetProfile` after `RebuildVisualSelectors(yautja)` and in `Mutate` after `_profile` receives the updated profile. Do not create a second profile-change event and do not change `ReloadPreview`.
 
-- [ ] **Step 4: Build the client and verify the summary binding compiles**
+- [ ] **Step 6: Build the client and verify the summary binding compiles**
 
 Run: `dotnet build Content.Client/Content.Client.csproj --no-restore`
 
 Expected: PASS, with all existing `Mutate` callbacks still compiling and the preview column containing the identity controls.
 
-- [ ] **Step 5: Commit preview column and summary**
+- [ ] **Step 7: Commit preview column and summary**
 
 ```powershell
 git add -- Content.Client/_CMU14/Yautja/Lobby/YautjaProfileEditor.cs
