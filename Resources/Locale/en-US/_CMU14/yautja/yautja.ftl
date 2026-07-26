@@ -893,6 +893,7 @@ cmu-yautja-lobby-summary-greaves = Greaves: { $value }
 cmu-yautja-lobby-summary-cape = Cape: { $value }
 cmu-yautja-lobby-summary-bracer = Bracer: { $value }
 cmu-yautja-lobby-summary-caster = Shoulder caster: { $value }
+cmu-yautja-lobby-locked-rank = Requires rank: { $rank }
 cmu-yautja-lobby-bracer-material = Bracer style
 cmu-yautja-lobby-armor-material = Armor material
 cmu-yautja-lobby-armor-style = Armor style

@@ -469,9 +469,6 @@ public sealed partial class YautjaProfileEditor : ScrollContainer
 
         foreach (var unique in YautjaCharacterProfile.UniqueOrder)
         {
-            if (unique != YautjaUniqueSet.None && !YautjaRankResolver.CanUseUnique(yautja))
-                continue;
-
             var selected = yautja.Unique == unique;
             if (unique == YautjaUniqueSet.None)
             {
@@ -484,12 +481,20 @@ public sealed partial class YautjaProfileEditor : ScrollContainer
             }
 
             var preview = YautjaCharacterProfile.Default.WithUnique(unique).ArmorPrototype;
+            var locked = YautjaProfileEditorLayout.IsUniqueSetLocked(yautja, unique);
+            var tooltip = locked
+                ? Loc.GetString(
+                    "cmu-yautja-lobby-locked-rank",
+                    ("rank", Loc.GetString(YautjaRankMetadata.For(YautjaRank.Elite).LocalizedName)))
+                : YautjaCharacterProfile.GetUniqueDisplayName(unique);
             AddEntitySelector(_uniqueGrid,
                 group,
                 preview,
                 selected,
+                tooltip,
+                () => Mutate(profile => profile.WithUnique(unique).WithLegacy(YautjaLegacySet.None), true),
                 YautjaCharacterProfile.GetUniqueDisplayName(unique),
-                () => Mutate(profile => profile.WithUnique(unique).WithLegacy(YautjaLegacySet.None), true));
+                locked);
         }
     }
 
@@ -822,17 +827,20 @@ public sealed partial class YautjaProfileEditor : ScrollContainer
         bool selected,
         string tooltip,
         Action onPressed,
-        string? label = null)
+        string? label = null,
+        bool disabled = false)
     {
         if (!_prototypeManager.TryIndex<EntityPrototype>(prototype, out var entityPrototype))
             return;
 
+        label ??= tooltip;
         var labeled = label != null;
         var button = BuildSelectorButton(
             tooltip,
             selected,
             group,
             labeled ? new Vector2(LabeledVisualButtonSize, LabeledVisualButtonSize) : null);
+        button.Disabled = disabled;
         button.OnPressed += _ => onPressed();
         var view = new EntityPrototypeView
         {
