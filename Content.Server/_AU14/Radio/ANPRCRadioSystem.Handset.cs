@@ -86,15 +86,45 @@ public sealed partial class ANPRCRadioSystem
     {
         _container.EnsureContainer<ContainerSlot>(ent, ANPRCRadioComponent.HandsetContainerId);
 
+        SeedDefaultSlots(ent);
+
         // whatever antenna state exists at init; the antenna-insert event corrects
         // it if the starting whip lands in the slot after this runs
         UpdatePackVisuals(ent);
+
+        if (ent.Comp.RelayOnly)
+            return;
 
         if (!TrySpawnInContainer(ent.Comp.HandsetId, ent, ANPRCRadioComponent.HandsetContainerId, out var handset))
             return;
 
         ent.Comp.Handset = handset;
         Comp<ANPRCHandsetComponent>(handset.Value).Radio = ent;
+        Dirty(ent);
+    }
+
+    private void SeedDefaultSlots(Entity<ANPRCRadioComponent> ent)
+    {
+        // only ever seeds a virgin set, so a mapper-placed or already-tuned station
+        // does not get its slots stamped over on init
+        if (ent.Comp.DefaultSlots.Count == 0 || ent.Comp.SlotLabels.Count > 0)
+            return;
+
+        var slot = 0;
+
+        foreach (var preset in ent.Comp.DefaultSlots)
+        {
+            if (slot >= ANPRCRadioComponent.MaxSlots)
+                break;
+
+            ent.Comp.SlotLabels[slot] = preset.Label;
+            ent.Comp.Presets[slot] = preset.Channel;
+            slot++;
+        }
+
+        if (slot > 0 && ent.Comp.ActiveSlot < 0)
+            ent.Comp.ActiveSlot = 0;
+
         Dirty(ent);
     }
 
