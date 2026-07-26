@@ -65,12 +65,21 @@ public sealed partial class YautjaProfileEditor : ScrollContainer
     private readonly BoxContainer _bracerSections = EquipmentSectionContainer();
     private readonly BoxContainer _casterSections = EquipmentSectionContainer();
     private readonly GridContainer _capeGrid = new() { Columns = 4 };
-    private readonly TabContainer _categoryTabs = new()
+    private readonly ButtonGroup _categoryButtonGroup = new();
+    private readonly BoxContainer _categoryNavigation = new()
     {
+        Orientation = BoxContainer.LayoutOrientation.Vertical,
+        SeparationOverride = 4,
+    };
+    private readonly BoxContainer _categoryPages = new()
+    {
+        Orientation = BoxContainer.LayoutOrientation.Vertical,
         HorizontalExpand = true,
         VerticalExpand = true,
-        MinSize = new Vector2(720, 440),
     };
+    private readonly Dictionary<YautjaProfileEditorCategory, Control> _categoryPageControls = new();
+    private readonly Dictionary<YautjaProfileEditorCategory, Button> _categoryButtons = new();
+    private YautjaProfileEditorCategory _activeCategory = YautjaProfileEditorCategory.Appearance;
 
     private readonly SpriteView _preview = new()
     {
@@ -146,17 +155,6 @@ public sealed partial class YautjaProfileEditor : ScrollContainer
             },
         });
 
-        var colors = new BoxContainer
-        {
-            Orientation = BoxContainer.LayoutOrientation.Horizontal,
-            HorizontalExpand = true,
-            SeparationOverride = 12,
-            Margin = new Thickness(0, 0, 0, 4),
-        };
-        root.AddChild(colors);
-        colors.AddChild(VisualBlock("cmu-yautja-lobby-skin-color", _skinGrid));
-        colors.AddChild(VisualBlock("cmu-yautja-lobby-eyes", _eyeGrid));
-
         var workArea = new BoxContainer
         {
             Orientation = BoxContainer.LayoutOrientation.Horizontal,
@@ -182,45 +180,42 @@ public sealed partial class YautjaProfileEditor : ScrollContainer
             },
         });
 
-        workArea.AddChild(_categoryTabs);
+        var categoryWorkspace = new BoxContainer
+        {
+            Orientation = BoxContainer.LayoutOrientation.Horizontal,
+            HorizontalExpand = true,
+            VerticalExpand = true,
+            SeparationOverride = 8,
+        };
+        categoryWorkspace.AddChild(new PanelContainer
+        {
+            MinWidth = 176,
+            Children = { _categoryNavigation },
+        });
+        categoryWorkspace.AddChild(new PanelContainer
+        {
+            HorizontalExpand = true,
+            VerticalExpand = true,
+            Children = { _categoryPages },
+        });
+        workArea.AddChild(categoryWorkspace);
 
-        AddTab("cmu-yautja-lobby-quills", CategoryScroll(_quillGrid));
-        AddTab("cmu-yautja-lobby-armor", CategoryScroll(_armorSections));
-        AddTab("cmu-yautja-lobby-mask", CategoryScroll(_maskSections));
-        AddTab("cmu-yautja-lobby-mask-accessory", CategoryScroll(_maskAccessoryGrid));
-        AddTab("cmu-yautja-lobby-greaves", CategoryScroll(_greavesSections));
-        AddTab("cmu-yautja-lobby-bracer", CategoryScroll(_bracerSections));
-        AddTab("cmu-yautja-lobby-caster", CategoryScroll(_casterSections));
-        AddTab("cmu-yautja-lobby-cape", CategoryScroll(_capeGrid));
-        AddTab("cmu-yautja-lobby-sets", CategoryScroll(new BoxContainer
+        AddCategory(YautjaProfileEditorCategory.Appearance, new BoxContainer
         {
             Orientation = BoxContainer.LayoutOrientation.Vertical,
             HorizontalExpand = true,
             Children =
             {
-                VisualBlock("cmu-yautja-lobby-legacy", _legacyGrid),
-                VisualBlock("cmu-yautja-lobby-unique", _uniqueGrid),
+                VisualBlock("cmu-yautja-lobby-skin-color", _skinGrid),
+                VisualBlock("cmu-yautja-lobby-eyes", _eyeGrid),
+                VisualBlock("cmu-yautja-lobby-quills", _quillGrid),
             },
-        }));
-        AddTab("cmu-yautja-lobby-tech", CategoryScroll(new BoxContainer
-        {
-            Orientation = BoxContainer.LayoutOrientation.Vertical,
-            HorizontalExpand = true,
-            Children =
-            {
-                TechOptionBlock(
-                    "cmu-yautja-lobby-translator-type",
-                    _translatorType,
-                    _translatorHelp,
-                    null),
-                TechOptionBlock(
-                    "cmu-yautja-lobby-invisibility-sound",
-                    _invisibilitySound,
-                    _invisibilityHelp,
-                    () => PlayPreviewSound(GetInvisibilityPreviewSound(_invisibilitySound.SelectedId))),
-            },
-        }));
-        AddTab("cmu-yautja-lobby-flavor", CategoryScroll(FlavorBlock()));
+        });
+        AddCategory(YautjaProfileEditorCategory.Equipment, BuildEquipmentPage());
+        AddCategory(YautjaProfileEditorCategory.Sets, BuildSetsPage());
+        AddCategory(YautjaProfileEditorCategory.Technology, BuildTechnologyPage());
+        AddCategory(YautjaProfileEditorCategory.Description, FlavorBlock());
+        SelectCategory(_activeCategory);
 
         AddTranslatorTypeOptions(_translatorType);
         AddInvisibilitySoundOptions(_invisibilitySound);
@@ -1141,10 +1136,90 @@ public sealed partial class YautjaProfileEditor : ScrollContainer
         ];
     }
 
-    private void AddTab(string label, Control control)
+    private void AddCategory(YautjaProfileEditorCategory category, Control content)
     {
-        _categoryTabs.AddChild(control);
-        TabContainer.SetTabTitle(control, Loc.GetString(label));
+        var page = CategoryScroll(content);
+        page.Visible = _categoryPageControls.Count == 0;
+        _categoryPages.AddChild(page);
+        _categoryPageControls[category] = page;
+
+        var definition = YautjaProfileEditorLayout.Categories.Single(info => info.Id == category);
+        var button = new Button
+        {
+            Text = Loc.GetString(definition.LocalizationKey),
+            ToggleMode = true,
+            Group = _categoryButtonGroup,
+            HorizontalExpand = true,
+            Pressed = _categoryPageControls.Count == 1,
+        };
+        button.OnPressed += _ => SelectCategory(category);
+        _categoryNavigation.AddChild(button);
+        _categoryButtons[category] = button;
+    }
+
+    private void SelectCategory(YautjaProfileEditorCategory category)
+    {
+        _activeCategory = category;
+        foreach (var (id, page) in _categoryPageControls)
+            page.Visible = YautjaProfileEditorLayout.IsCategoryActive(category, id);
+
+        foreach (var (id, button) in _categoryButtons)
+            button.Pressed = YautjaProfileEditorLayout.IsCategoryActive(category, id);
+    }
+
+    private Control BuildEquipmentPage()
+    {
+        return new BoxContainer
+        {
+            Orientation = BoxContainer.LayoutOrientation.Vertical,
+            HorizontalExpand = true,
+            Children =
+            {
+                VisualBlock("cmu-yautja-lobby-armor", _armorSections),
+                VisualBlock("cmu-yautja-lobby-mask", _maskSections),
+                VisualBlock("cmu-yautja-lobby-mask-accessory", _maskAccessoryGrid),
+                VisualBlock("cmu-yautja-lobby-greaves", _greavesSections),
+                VisualBlock("cmu-yautja-lobby-bracer", _bracerSections),
+                VisualBlock("cmu-yautja-lobby-caster", _casterSections),
+                VisualBlock("cmu-yautja-lobby-cape", _capeGrid),
+            },
+        };
+    }
+
+    private Control BuildSetsPage()
+    {
+        return new BoxContainer
+        {
+            Orientation = BoxContainer.LayoutOrientation.Vertical,
+            HorizontalExpand = true,
+            Children =
+            {
+                VisualBlock("cmu-yautja-lobby-legacy", _legacyGrid),
+                VisualBlock("cmu-yautja-lobby-unique", _uniqueGrid),
+            },
+        };
+    }
+
+    private Control BuildTechnologyPage()
+    {
+        return new BoxContainer
+        {
+            Orientation = BoxContainer.LayoutOrientation.Vertical,
+            HorizontalExpand = true,
+            Children =
+            {
+                TechOptionBlock(
+                    "cmu-yautja-lobby-translator-type",
+                    _translatorType,
+                    _translatorHelp,
+                    null),
+                TechOptionBlock(
+                    "cmu-yautja-lobby-invisibility-sound",
+                    _invisibilitySound,
+                    _invisibilityHelp,
+                    () => PlayPreviewSound(GetInvisibilityPreviewSound(_invisibilitySound.SelectedId))),
+            },
+        };
     }
 
     private static Control CategoryScroll(Control control)

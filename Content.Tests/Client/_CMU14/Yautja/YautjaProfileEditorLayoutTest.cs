@@ -26,6 +26,16 @@ public sealed class YautjaProfileEditorLayoutTest
             }));
     }
 
+    [TestCase(YautjaProfileEditorCategory.Appearance, YautjaProfileEditorCategory.Appearance, true)]
+    [TestCase(YautjaProfileEditorCategory.Appearance, YautjaProfileEditorCategory.Equipment, false)]
+    public void OnlyTheActiveCategoryPageIsVisible(
+        YautjaProfileEditorCategory active,
+        YautjaProfileEditorCategory candidate,
+        bool expected)
+    {
+        Assert.That(YautjaProfileEditorLayout.IsCategoryActive(active, candidate), Is.EqualTo(expected));
+    }
+
     [TestCase(YautjaRank.Unblooded, true)]
     [TestCase(YautjaRank.YoungBlood, true)]
     [TestCase(YautjaRank.Blooded, true)]
