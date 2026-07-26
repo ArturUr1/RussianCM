@@ -95,7 +95,6 @@ public sealed partial class YautjaItemSystem : EntitySystem
     [Dependency] private SharedXenoAcidSystem _acid = default!;
     [Dependency] private SharedXenoHiveSystem _hive = default!;
     [Dependency] private YautjaPowerSystem _power = default!;
-    [Dependency] private YautjaCloakSystem _cloak = default!;
     [Dependency] private YautjaTeleportSystem _teleport = default!;
     [Dependency] private YautjaThrallSystem _thralls = default!;
 
@@ -846,7 +845,6 @@ public sealed partial class YautjaItemSystem : EntitySystem
             Loc.GetString("cmu-yautja-relay-beacon-disappear", ("user", Name(args.User))),
             args.User,
             PopupType.MediumCaution);
-        _cloak.ForceDecloak(args.User);
         if (TryComp(args.User, out PullerComponent? puller) &&
             puller.Pulling is { } pulled &&
             HasComp<MobStateComponent>(pulled))
@@ -855,7 +853,6 @@ public sealed partial class YautjaItemSystem : EntitySystem
                 Loc.GetString("cmu-yautja-relay-beacon-disappear", ("user", Name(pulled))),
                 pulled,
                 PopupType.MediumCaution);
-            _cloak.ForceDecloak(pulled);
         }
 
         _teleport.TeleportTrain(args.User, _transform.ToMapCoordinates(coordinates));
