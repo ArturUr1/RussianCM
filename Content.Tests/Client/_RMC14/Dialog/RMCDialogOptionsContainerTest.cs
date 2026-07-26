@@ -22,6 +22,7 @@ public sealed class RMCDialogOptionsContainerTest
         Assert.That(scroll?.Name.LocalName, Is.EqualTo("ScrollContainer"));
         Assert.That(scroll?.Attribute("HScrollEnabled")?.Value, Is.EqualTo("False"));
         Assert.That(scroll?.Attribute("VScrollEnabled")?.Value, Is.EqualTo("True"));
+        Assert.That(scroll?.Attribute("ReturnMeasure")?.Value, Is.EqualTo("True"));
         Assert.That(
             float.Parse(scroll?.Attribute("MaxHeight")?.Value ?? "0", CultureInfo.InvariantCulture),
             Is.EqualTo(300));
