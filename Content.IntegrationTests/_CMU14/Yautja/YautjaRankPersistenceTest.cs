@@ -17,6 +17,19 @@ public sealed class YautjaRankPersistenceTest
         Assert.That(YautjaRankManager.Sanitize(stored), Is.EqualTo(expected));
     }
 
+    [TestCase(0, 0, true)]
+    [TestCase(1, 1, true)]
+    [TestCase(1, 2, false)]
+    public void StaleDatabaseResultsCannotUpdateNewerCacheVersion(
+        long requestVersion,
+        long currentVersion,
+        bool expectedCurrent)
+    {
+        Assert.That(
+            YautjaRankManager.IsCacheVersionCurrent(requestVersion, currentVersion),
+            Is.EqualTo(expectedCurrent));
+    }
+
     [Test]
     public async Task RankRoundTripsThroughSqlite()
     {
@@ -27,6 +40,20 @@ public sealed class YautjaRankPersistenceTest
         await db.SetYautjaRank(userId, YautjaRank.Elder);
 
         Assert.That(await db.GetYautjaRank(userId), Is.EqualTo(YautjaRank.Elder));
+        await pair.CleanReturnAsync();
+    }
+
+    [Test]
+    public async Task ResolveCachedLoadsAuthoritativeRankOnCacheMiss()
+    {
+        await using var pair = await PoolManager.GetServerClient();
+        var db = pair.Server.ResolveDependency<IServerDbManager>();
+        var manager = pair.Server.ResolveDependency<YautjaRankManager>();
+        var userId = pair.Player!.UserId;
+
+        await db.SetYautjaRank(userId.UserId, YautjaRank.Elder);
+
+        Assert.That(manager.ResolveCached(userId), Is.EqualTo(YautjaRank.Elder));
         await pair.CleanReturnAsync();
     }
 }
