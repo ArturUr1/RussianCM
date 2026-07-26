@@ -61,4 +61,28 @@ public sealed class YautjaProfileEditorLayoutTest
             YautjaProfileEditorLayout.IsUniqueSetLocked(profile, YautjaUniqueSet.None),
             Is.False);
     }
+
+    [Test]
+    public void BuildSummaryUsesUniqueSetAndCurrentGearNames()
+    {
+        var profile = YautjaCharacterProfile.Default
+            .WithRank(YautjaRank.Elite)
+            .WithUnique(YautjaUniqueSet.Anubys)
+            .WithArmor(YautjaGearMaterial.Silver, 2)
+            .WithMask(YautjaGearMaterial.Bronze, 3)
+            .WithGreaves(YautjaGearMaterial.Bone, 1)
+            .WithCapeStyle(YautjaCapeStyle.Full)
+            .WithBracer(YautjaBracerMaterial.Crimson)
+            .WithCaster(YautjaBracerMaterial.Silver);
+
+        var summary = YautjaProfileEditorLayout.BuildSummary(profile);
+
+        Assert.That(summary.Set, Is.EqualTo(YautjaCharacterProfile.GetUniqueDisplayName(YautjaUniqueSet.Anubys)));
+        Assert.That(summary.Armor, Is.EqualTo(YautjaCharacterProfile.GetArmorStyleDisplayName(YautjaGearMaterial.Silver, 2)));
+        Assert.That(summary.Mask, Is.EqualTo(YautjaCharacterProfile.GetMaskStyleDisplayName(YautjaGearMaterial.Bronze, 3)));
+        Assert.That(summary.Greaves, Is.EqualTo(YautjaCharacterProfile.GetGreavesStyleDisplayName(YautjaGearMaterial.Bone, 1)));
+        Assert.That(summary.Cape, Is.EqualTo(YautjaCharacterProfile.GetCapeDisplayName(YautjaCapeStyle.Full)));
+        Assert.That(summary.Bracer, Is.EqualTo(YautjaCharacterProfile.GetBracerDisplayName(YautjaBracerMaterial.Crimson)));
+        Assert.That(summary.Caster, Is.EqualTo(YautjaCharacterProfile.GetCasterDisplayName(YautjaBracerMaterial.Silver)));
+    }
 }

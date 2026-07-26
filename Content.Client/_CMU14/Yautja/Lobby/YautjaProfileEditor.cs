@@ -41,6 +41,13 @@ public sealed partial class YautjaProfileEditor : ScrollContainer
     private readonly AnimatedTextureRect _rankIcon = new();
     private readonly Label _rankName = new();
     private readonly CheckBox _previewWithoutGear = new();
+    private readonly Label _summarySet = new();
+    private readonly Label _summaryArmor = new();
+    private readonly Label _summaryMask = new();
+    private readonly Label _summaryGreaves = new();
+    private readonly Label _summaryCape = new();
+    private readonly Label _summaryBracer = new();
+    private readonly Label _summaryCaster = new();
     private readonly OptionButton _translatorType = new();
     private readonly OptionButton _invisibilitySound = new();
     private readonly Label _translatorHelp = new();
@@ -124,36 +131,9 @@ public sealed partial class YautjaProfileEditor : ScrollContainer
         };
         AddChild(root);
 
-        var identity = new BoxContainer
-        {
-            Orientation = BoxContainer.LayoutOrientation.Horizontal,
-            HorizontalExpand = true,
-            SeparationOverride = 6,
-        };
-        root.AddChild(identity);
-        identity.AddChild(Row("cmu-yautja-lobby-name", _name));
-        identity.AddChild(Row("cmu-yautja-lobby-age", _age));
-
         _rankIcon.MinSize = new Vector2(32, 32);
         _rankIcon.DisplayRect.MinSize = new Vector2(32, 32);
         _rankIcon.DisplayRect.Stretch = TextureRect.StretchMode.Scale;
-        root.AddChild(new BoxContainer
-        {
-            Orientation = BoxContainer.LayoutOrientation.Horizontal,
-            SeparationOverride = 8,
-            Margin = new Thickness(0, 0, 0, 6),
-            Children =
-            {
-                new Label
-                {
-                    Text = Loc.GetString("cmu-yautja-rank"),
-                    MinWidth = 110,
-                    VerticalAlignment = VAlignment.Center,
-                },
-                _rankIcon,
-                _rankName,
-            },
-        });
 
         var workArea = new BoxContainer
         {
@@ -164,7 +144,7 @@ public sealed partial class YautjaProfileEditor : ScrollContainer
         };
         root.AddChild(workArea);
 
-        workArea.AddChild(new BoxContainer
+        var previewColumn = new BoxContainer
         {
             Orientation = BoxContainer.LayoutOrientation.Vertical,
             MinWidth = 210,
@@ -175,10 +155,51 @@ public sealed partial class YautjaProfileEditor : ScrollContainer
                     MinSize = new Vector2(210, 250),
                     Children = { _preview },
                 },
+                Row("cmu-yautja-lobby-name", _name),
+                Row("cmu-yautja-lobby-age", _age),
+                new BoxContainer
+                {
+                    Orientation = BoxContainer.LayoutOrientation.Horizontal,
+                    SeparationOverride = 8,
+                    Margin = new Thickness(0, 0, 0, 6),
+                    Children =
+                    {
+                        new Label
+                        {
+                            Text = Loc.GetString("cmu-yautja-rank"),
+                            MinWidth = 110,
+                            VerticalAlignment = VAlignment.Center,
+                        },
+                        _rankIcon,
+                        _rankName,
+                    },
+                },
                 PreviewRotationControls(),
                 _previewWithoutGear,
+                new PanelContainer
+                {
+                    Children =
+                    {
+                        new BoxContainer
+                        {
+                            Orientation = BoxContainer.LayoutOrientation.Vertical,
+                            Margin = new Thickness(6),
+                            Children =
+                            {
+                                _summarySet,
+                                _summaryArmor,
+                                _summaryMask,
+                                _summaryGreaves,
+                                _summaryCape,
+                                _summaryBracer,
+                                _summaryCaster,
+                            },
+                        },
+                    },
+                },
             },
-        });
+        };
+        workArea.AddChild(previewColumn);
 
         var categoryWorkspace = new BoxContainer
         {
@@ -265,6 +286,7 @@ public sealed partial class YautjaProfileEditor : ScrollContainer
         _invisibilitySound.SelectId((int) yautja.InvisibilitySound);
         UpdateTechHelp(yautja.TranslatorType, yautja.InvisibilitySound);
         RebuildVisualSelectors(yautja);
+        UpdateSelectionSummary(yautja);
 
         _updating = false;
         ReloadPreview(yautja);
@@ -277,12 +299,39 @@ public sealed partial class YautjaProfileEditor : ScrollContainer
 
         var profile = _profile.WithYautjaProfile(update(_profile.YautjaProfile));
         _profile = profile;
+        UpdateSelectionSummary(profile.YautjaProfile);
 
         if (rebuildSelectors)
             RebuildVisualSelectors(profile.YautjaProfile);
 
         ReloadPreview(profile.YautjaProfile);
         OnProfileChanged?.Invoke(profile);
+    }
+
+    private void UpdateSelectionSummary(YautjaCharacterProfile yautja)
+    {
+        var summary = YautjaProfileEditorLayout.BuildSummary(yautja);
+        _summarySet.Text = Loc.GetString("cmu-yautja-lobby-summary-set", ("value", summary.Set == "—"
+            ? Loc.GetString("cmu-yautja-lobby-summary-custom")
+            : summary.Set));
+        _summaryArmor.Text = Loc.GetString(
+            "cmu-yautja-lobby-summary-armor",
+            ("value", summary.Armor));
+        _summaryMask.Text = Loc.GetString(
+            "cmu-yautja-lobby-summary-mask",
+            ("value", summary.Mask));
+        _summaryGreaves.Text = Loc.GetString(
+            "cmu-yautja-lobby-summary-greaves",
+            ("value", summary.Greaves));
+        _summaryCape.Text = Loc.GetString(
+            "cmu-yautja-lobby-summary-cape",
+            ("value", summary.Cape));
+        _summaryBracer.Text = Loc.GetString(
+            "cmu-yautja-lobby-summary-bracer",
+            ("value", summary.Bracer));
+        _summaryCaster.Text = Loc.GetString(
+            "cmu-yautja-lobby-summary-caster",
+            ("value", summary.Caster));
     }
 
     private void RebuildVisualSelectors(YautjaCharacterProfile yautja)
