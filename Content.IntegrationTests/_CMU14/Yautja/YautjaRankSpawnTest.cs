@@ -46,4 +46,59 @@ public sealed class YautjaRankSpawnTest
             Assert.That(policy.BypassSlotCap, Is.False);
         });
     }
+
+    [TestCase(3, 2, false)]
+    [TestCase(2, 2, true)]
+    [TestCase(0, 2, true)]
+    [TestCase(2, 0, false)]
+    public void OrdinaryRanksCannotConsumeSeniorReservations(int available, int bypassSlotsRemaining, bool expectedReserved)
+    {
+        Assert.That(
+            YautjaPredatorRoundSystem.IsHunterSlotReservedForOrdinaryRank(available, bypassSlotsRemaining),
+            Is.EqualTo(expectedReserved));
+    }
+
+    [Test]
+    public void UnlimitedHunterSlotsAreNeverReserved()
+    {
+        Assert.That(
+            YautjaPredatorRoundSystem.IsHunterSlotReservedForOrdinaryRank(null, 2),
+            Is.False);
+    }
+
+    [TestCase(YautjaRank.Blooded, 2, 2, true)]
+    [TestCase(YautjaRank.Elder, 2, 2, true)]
+    [TestCase(YautjaRank.Leader, 2, 2, false)]
+    [TestCase(YautjaRank.Blooded, 3, 2, false)]
+    public void RoundStartCandidateFilterProtectsSeniorReservations(
+        YautjaRank rank,
+        int available,
+        int bypassSlotsRemaining,
+        bool expectedExcluded)
+    {
+        Assert.That(
+            YautjaPredatorRoundSystem.ShouldExcludeOrdinaryRankFromHunterCandidates(
+                rank,
+                available,
+                bypassSlotsRemaining),
+            Is.EqualTo(expectedExcluded));
+    }
+
+    [TestCase(YautjaRank.Blooded, 2, 2, true)]
+    [TestCase(YautjaRank.Elder, 2, 2, true)]
+    [TestCase(YautjaRank.Leader, 0, 2, false)]
+    [TestCase(YautjaRank.Blooded, 3, 2, false)]
+    public void ExplicitHunterJobIsClearedOnlyForOrdinaryReservedRanks(
+        YautjaRank rank,
+        int available,
+        int bypassSlotsRemaining,
+        bool expectedCleared)
+    {
+        Assert.That(
+            YautjaPredatorRoundSystem.ShouldClearExplicitHunterJob(
+                rank,
+                available,
+                bypassSlotsRemaining),
+            Is.EqualTo(expectedCleared));
+    }
 }

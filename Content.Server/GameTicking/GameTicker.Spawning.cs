@@ -689,6 +689,8 @@ namespace Content.Server.GameTicking
                 return;
             }
 
+            jobId = bev.JobId;
+
             // Figure out job restrictions
             var restrictedRoles = new HashSet<ProtoId<JobPrototype>>();
             var ev = new GetDisallowedJobsEvent(player, restrictedRoles);

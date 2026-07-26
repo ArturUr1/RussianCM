@@ -1,10 +1,12 @@
 using System.Linq;
 using Content.Server.GameTicking;
+using Content.Server.GameTicking.Events;
 using Content.Server.GameTicking.Rules;
 using Content.Server.Maps;
 using Content.Server.Spawners.Components;
 using Content.Server.Spawners.EntitySystems;
 using Content.Server.Station.Components;
+using Content.Server.Station.Events;
 using Content.Server.Station.Systems;
 using Content.Shared.Mobs.Systems;
 using Content.Shared.GameTicking;
@@ -68,6 +70,28 @@ public sealed partial class YautjaPredatorRoundSystem : GameRuleSystem<YautjaPre
                 YautjaRankMetadata.For(rank).BypassesPredatorSlotCap);
     }
 
+    public static bool IsHunterSlotReservedForOrdinaryRank(int? available, int bypassSlotsRemaining)
+    {
+        return bypassSlotsRemaining > 0 && available is { } slots && slots <= bypassSlotsRemaining;
+    }
+
+    public static bool ShouldExcludeOrdinaryRankFromHunterCandidates(
+        YautjaRank rank,
+        int? available,
+        int bypassSlotsRemaining)
+    {
+        return !GetRankSpawnPolicy(rank).BypassSlotCap &&
+            IsHunterSlotReservedForOrdinaryRank(available, bypassSlotsRemaining);
+    }
+
+    public static bool ShouldClearExplicitHunterJob(
+        YautjaRank rank,
+        int? available,
+        int bypassSlotsRemaining)
+    {
+        return ShouldExcludeOrdinaryRankFromHunterCandidates(rank, available, bypassSlotsRemaining);
+    }
+
     public YautjaRank ResolveRankForSession(ICommonSession session, bool youngbloodRole = false)
     {
         return _rankManager.ResolveCached(session.UserId, youngbloodRole);
@@ -78,6 +102,10 @@ public sealed partial class YautjaPredatorRoundSystem : GameRuleSystem<YautjaPre
         base.Initialize();
 
         SubscribeLocalEvent<RulePlayerSpawningEvent>(OnRulePlayerSpawning);
+        SubscribeLocalEvent<StationJobsGetCandidatesEvent>(OnStationJobsGetCandidates);
+        SubscribeLocalEvent<StationJobsRoundStartPlayerAssignedEvent>(OnStationJobsRoundStartPlayerAssigned);
+        SubscribeLocalEvent<PlayerBeforeSpawnEvent>(OnPlayerBeforeSpawn);
+        SubscribeLocalEvent<GetDisallowedJobsEvent>(OnGetDisallowedJobs);
         SubscribeLocalEvent<PlayerSpawningEvent>(OnPlayerSpawning, before: [typeof(SpawnPointSystem)]);
         SubscribeLocalEvent<PlayerJoinedLobbyEvent>(OnPlayerJoinedLobby);
         SubscribeLocalEvent<GameRunLevelChangedEvent>(OnGameRunLevelChanged);
@@ -147,7 +175,7 @@ public sealed partial class YautjaPredatorRoundSystem : GameRuleSystem<YautjaPre
             component.MinSlots = slots;
             component.MaxSlots = slots;
             component.Slots = slots;
-            SetSlots(component.PredatorJob, slots + component.RankBypassSlots, component.HunterShipMap);
+            SetSlots(component.PredatorJob, slots + component.RankBypassSlotsRemaining, component.HunterShipMap);
             applied = true;
         }
 
@@ -203,10 +231,97 @@ public sealed partial class YautjaPredatorRoundSystem : GameRuleSystem<YautjaPre
             if (!comp.ModePredator)
                 continue;
 
-            comp.RankBypassSlots = ev.PlayerPool.Count(session =>
+            comp.RankBypassSlotsRemaining = ev.PlayerPool.Count(session =>
                 GetRankSpawnPolicy(ResolveRankForSession(session)).BypassSlotCap);
-            SetSlots(comp.PredatorJob, comp.Slots + comp.RankBypassSlots, comp.HunterShipMap);
+            comp.RoundStartBypassSlotsRemaining = comp.RankBypassSlotsRemaining;
+            comp.RoundStartHunterSlotsRemaining = comp.Slots + comp.RankBypassSlotsRemaining;
+            SetSlots(comp.PredatorJob, comp.Slots + comp.RankBypassSlotsRemaining, comp.HunterShipMap);
         }
+    }
+
+    private void OnStationJobsGetCandidates(ref StationJobsGetCandidatesEvent ev)
+    {
+        if (!TryGetActivePredatorRule(out var rule) ||
+            !rule.Comp.ModePredator ||
+            !ev.Jobs.Contains(rule.Comp.PredatorJob) ||
+            !IsHunterSlotReservedForOrdinaryRank(
+                rule.Comp.RoundStartHunterSlotsRemaining,
+                rule.Comp.RoundStartBypassSlotsRemaining))
+        {
+            return;
+        }
+
+        if (ShouldExcludeOrdinaryRankFromHunterCandidates(
+                _rankManager.ResolveCached(ev.Player),
+                rule.Comp.RoundStartHunterSlotsRemaining,
+                rule.Comp.RoundStartBypassSlotsRemaining))
+        {
+            ev.Jobs.Remove(rule.Comp.PredatorJob);
+        }
+    }
+
+    private void OnStationJobsRoundStartPlayerAssigned(StationJobsRoundStartPlayerAssignedEvent ev)
+    {
+        if (!TryGetActivePredatorRule(out var rule) ||
+            !rule.Comp.ModePredator ||
+            ev.Job != rule.Comp.PredatorJob)
+        {
+            return;
+        }
+
+        if (rule.Comp.RoundStartHunterSlotsRemaining > 0)
+            rule.Comp.RoundStartHunterSlotsRemaining--;
+
+        if (GetRankSpawnPolicy(_rankManager.ResolveCached(ev.Player)).BypassSlotCap &&
+            rule.Comp.RoundStartBypassSlotsRemaining > 0)
+        {
+            rule.Comp.RoundStartBypassSlotsRemaining--;
+        }
+    }
+
+    private void OnPlayerBeforeSpawn(PlayerBeforeSpawnEvent ev)
+    {
+        if (!TryGetActivePredatorRule(out var rule) || ev.JobId != rule.Comp.PredatorJob.Id)
+        {
+            return;
+        }
+
+        var rank = ResolveRankForSession(ev.Player);
+        if (GetRankSpawnPolicy(rank).BypassSlotCap)
+        {
+            EnsureHunterSlot(rule.Comp.PredatorJob, rule.Comp.HunterShipMap);
+            return;
+        }
+
+        if (TryGetHunterSlots(rule.Comp.PredatorJob, rule.Comp.HunterShipMap, out var available) &&
+            ShouldClearExplicitHunterJob(rank, available, rule.Comp.RankBypassSlotsRemaining))
+        {
+            ev.JobId = null;
+        }
+    }
+
+    private void OnGetDisallowedJobs(ref GetDisallowedJobsEvent ev)
+    {
+        if (!TryGetActivePredatorRule(out var rule))
+            return;
+
+        var rank = ResolveRankForSession(ev.Player);
+        if (GetRankSpawnPolicy(rank).BypassSlotCap)
+        {
+            // A late-joining senior rank must be able to select the Hunter job
+            // even after the ordinary pool has reached zero.
+            EnsureHunterSlot(rule.Comp.PredatorJob, rule.Comp.HunterShipMap);
+            return;
+        }
+
+        if (!TryGetHunterSlots(rule.Comp.PredatorJob, rule.Comp.HunterShipMap, out var available) ||
+            !IsHunterSlotReservedForOrdinaryRank(available, rule.Comp.RankBypassSlotsRemaining))
+        {
+            return;
+        }
+
+        // Keep the remaining senior reservations out of the ordinary picker.
+        ev.Jobs.Add(rule.Comp.PredatorJob);
     }
 
     private async void OnPlayerJoinedLobby(PlayerJoinedLobbyEvent ev)
@@ -244,6 +359,9 @@ public sealed partial class YautjaPredatorRoundSystem : GameRuleSystem<YautjaPre
                 ? ResolveRankForSession(session)
                 : YautjaRank.Blooded;
 
+            if (GetRankSpawnPolicy(rank).BypassSlotCap && comp.RankBypassSlotsRemaining > 0)
+                comp.RankBypassSlotsRemaining--;
+
             ev.SpawnResult = _stationSpawning.SpawnPlayerMob(
                 coordinates,
                 ev.Job,
@@ -252,6 +370,34 @@ public sealed partial class YautjaPredatorRoundSystem : GameRuleSystem<YautjaPre
                 authoritativeYautjaRank: rank);
             return;
         }
+    }
+
+    private void EnsureHunterSlot(ProtoId<JobPrototype> job, ProtoId<GameMapPrototype> map)
+    {
+        if (TryGetHunterSlots(job, map, out var available) &&
+            (available is null || available.Value > 0))
+            return;
+
+        foreach (var station in GetPredatorStations(job, map))
+        {
+            _stationJobs.TryAdjustJobSlot(station, job.Id, 1, true);
+            break;
+        }
+    }
+
+    private bool TryGetHunterSlots(
+        ProtoId<JobPrototype> job,
+        ProtoId<GameMapPrototype> map,
+        out int? available)
+    {
+        foreach (var station in GetPredatorStations(job, map))
+        {
+            if (_stationJobs.TryGetJobSlot(station, job.Id, out available))
+                return true;
+        }
+
+        available = null;
+        return false;
     }
 
     private void OnGameRunLevelChanged(GameRunLevelChangedEvent ev)
