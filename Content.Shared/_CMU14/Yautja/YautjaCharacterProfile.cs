@@ -301,6 +301,9 @@ public sealed partial class YautjaCharacterProfile
     public YautjaBracerMaterial CasterMaterial { get; private set; } = YautjaBracerMaterial.Ebony;
 
     [DataField]
+    public YautjaRank? ClanRank { get; private set; }
+
+    [DataField]
     public YautjaBracerOwnerRank OwnerRank { get; private set; } = YautjaBracerOwnerRank.Unblooded;
 
     [DataField]
@@ -430,6 +433,7 @@ public sealed partial class YautjaCharacterProfile
         GreavesStyle = other.GreavesStyle;
         BracerMaterial = other.BracerMaterial;
         CasterMaterial = other.CasterMaterial;
+        ClanRank = other.ClanRank;
         OwnerRank = other.OwnerRank;
         CapeStyle = other.CapeStyle;
         CapeColor = other.CapeColor;
@@ -528,9 +532,22 @@ public sealed partial class YautjaCharacterProfile
         return new(this) { CasterMaterial = material };
     }
 
+    public YautjaCharacterProfile WithClanRank(YautjaRank rank)
+    {
+        return new(this)
+        {
+            ClanRank = rank,
+            OwnerRank = YautjaRankResolver.ToOwnerRank(rank),
+        };
+    }
+
     public YautjaCharacterProfile WithOwnerRank(YautjaBracerOwnerRank ownerRank)
     {
-        return new(this) { OwnerRank = ownerRank };
+        return new(this)
+        {
+            ClanRank = null,
+            OwnerRank = ownerRank,
+        };
     }
 
     public YautjaCharacterProfile WithCapeStyle(YautjaCapeStyle style)

@@ -24,11 +24,14 @@ using Robust.Shared.Serialization;
 
 namespace Content.Shared._CMU14.Yautja;
 
-[RegisterComponent, NetworkedComponent]
+[RegisterComponent, NetworkedComponent, AutoGenerateComponentState(true)]
 public sealed partial class YautjaComponent : Component
 {
     [DataField]
     public LocId RankName = "cmu-yautja-rank-hunter";
+
+    [DataField, AutoNetworkedField]
+    public YautjaRank ClanRank = YautjaRank.Blooded;
 
     [DataField]
     public float BaseWalkSpeed = 4.4f;
