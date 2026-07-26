@@ -85,4 +85,14 @@ public sealed class YautjaProfileEditorLayoutTest
         Assert.That(summary.Bracer, Is.EqualTo(YautjaCharacterProfile.GetBracerDisplayName(YautjaBracerMaterial.Crimson)));
         Assert.That(summary.Caster, Is.EqualTo(YautjaCharacterProfile.GetCasterDisplayName(YautjaBracerMaterial.Silver)));
     }
+
+    [TestCase(760, 6, 6)]
+    [TestCase(340, 6, 3)]
+    [TestCase(220, 4, 1)]
+    public void ResponsiveColumnsFitTheAvailableWidth(float availableWidth, int preferredColumns, int expected)
+    {
+        Assert.That(
+            YautjaProfileEditorLayout.GetResponsiveColumnCount(availableWidth, preferredColumns),
+            Is.EqualTo(expected));
+    }
 }

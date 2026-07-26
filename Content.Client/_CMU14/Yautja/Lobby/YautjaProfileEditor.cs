@@ -86,6 +86,7 @@ public sealed partial class YautjaProfileEditor : ScrollContainer
     };
     private readonly Dictionary<YautjaProfileEditorCategory, Control> _categoryPageControls = new();
     private readonly Dictionary<YautjaProfileEditorCategory, Button> _categoryButtons = new();
+    private readonly Dictionary<GridContainer, int> _responsiveGrids = new();
     private YautjaProfileEditorCategory _activeCategory = YautjaProfileEditorCategory.Appearance;
 
     private readonly SpriteView _preview = new()
@@ -237,6 +238,7 @@ public sealed partial class YautjaProfileEditor : ScrollContainer
         AddCategory(YautjaProfileEditorCategory.Technology, BuildTechnologyPage());
         AddCategory(YautjaProfileEditorCategory.Description, FlavorBlock());
         SelectCategory(_activeCategory);
+        _categoryPages.OnResized += UpdateResponsiveGridColumns;
 
         AddTranslatorTypeOptions(_translatorType);
         AddInvisibilitySoundOptions(_invisibilitySound);
@@ -337,6 +339,7 @@ public sealed partial class YautjaProfileEditor : ScrollContainer
     private void RebuildVisualSelectors(YautjaCharacterProfile yautja)
     {
         DisposeSelectorDummies();
+        ResetResponsiveGrids();
 
         RebuildSkinSelector(yautja);
         RebuildEyeSelector(yautja);
@@ -350,6 +353,7 @@ public sealed partial class YautjaProfileEditor : ScrollContainer
         RebuildBracerSelector(yautja);
         RebuildCasterSelector(yautja);
         RebuildCapeSelector(yautja);
+        UpdateResponsiveGridColumns();
     }
 
     private void RebuildSkinSelector(YautjaCharacterProfile yautja)
@@ -1052,13 +1056,13 @@ public sealed partial class YautjaProfileEditor : ScrollContainer
         };
     }
 
-    private static GridContainer EquipmentGrid(int columns = 4, bool horizontalExpand = true)
+    private GridContainer EquipmentGrid(int columns = 4, bool horizontalExpand = true)
     {
-        return new GridContainer
+        return RegisterResponsiveGrid(new GridContainer
         {
             Columns = Math.Clamp(columns, 1, 4),
             HorizontalExpand = horizontalExpand,
-        };
+        }, columns);
     }
 
     private static void PadEquipmentGrid(GridContainer grid, int itemCount, int columns = 4)
@@ -1214,6 +1218,34 @@ public sealed partial class YautjaProfileEditor : ScrollContainer
         _categoryButtons[category] = button;
     }
 
+    private void ResetResponsiveGrids()
+    {
+        _responsiveGrids.Clear();
+        RegisterResponsiveGrid(_skinGrid, 6);
+        RegisterResponsiveGrid(_eyeGrid, 7);
+        RegisterResponsiveGrid(_quillGrid, 6);
+        RegisterResponsiveGrid(_legacyGrid, 4);
+        RegisterResponsiveGrid(_uniqueGrid, 4);
+        RegisterResponsiveGrid(_maskAccessoryGrid, 4);
+        RegisterResponsiveGrid(_capeGrid, 4);
+    }
+
+    private GridContainer RegisterResponsiveGrid(GridContainer grid, int preferredColumns)
+    {
+        grid.HSeparationOverride = 8;
+        _responsiveGrids[grid] = preferredColumns;
+        return grid;
+    }
+
+    private void UpdateResponsiveGridColumns()
+    {
+        var availableWidth = MathF.Max(0, _categoryPages.Width - 16);
+        foreach (var (grid, preferredColumns) in _responsiveGrids)
+        {
+            grid.Columns = YautjaProfileEditorLayout.GetResponsiveColumnCount(availableWidth, preferredColumns);
+        }
+    }
+
     private void SelectCategory(YautjaProfileEditorCategory category)
     {
         _activeCategory = category;
@@ -1286,7 +1318,8 @@ public sealed partial class YautjaProfileEditor : ScrollContainer
         {
             HorizontalExpand = true,
             VerticalExpand = true,
-            MinSize = new Vector2(720, 440),
+            MinSize = new Vector2(0, 440),
+            HScrollEnabled = false,
             Children = { control },
         };
     }

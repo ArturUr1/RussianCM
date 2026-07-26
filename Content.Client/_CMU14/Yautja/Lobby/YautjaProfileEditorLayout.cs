@@ -65,4 +65,16 @@ public static class YautjaProfileEditorLayout
     {
         return active == candidate;
     }
+
+    public static int GetResponsiveColumnCount(float availableWidth, int preferredColumns)
+    {
+        const float cardWidth = 108;
+        const float separation = 8;
+
+        if (preferredColumns <= 0 || availableWidth <= 0)
+            return 1;
+
+        var columns = (int) MathF.Floor((availableWidth + separation) / (cardWidth + separation));
+        return Math.Clamp(columns, 1, preferredColumns);
+    }
 }
