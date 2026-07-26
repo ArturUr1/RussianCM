@@ -9,6 +9,7 @@ using Content.Server.Power.Components;
 using Content.Server.Power.EntitySystems;
 using Content.Shared._CMU14.Yautja;
 using Content.Shared._RMC14.Stealth;
+using Content.Shared._RMC14.Vehicle;
 using Content.Shared._RMC14.Weapons.Common;
 using Content.Shared._RMC14.Weapons.Ranged;
 using Content.Shared.Damage;
@@ -20,6 +21,7 @@ using Content.Shared.Projectiles;
 using Content.Shared.StatusEffect;
 using Content.Shared.Temperature;
 using Content.Shared.Temperature.Components;
+using Content.Shared.Vehicle.Components;
 using Content.Shared.Weapons.Ranged;
 using Content.Shared.Weapons.Ranged.Components;
 using Content.Shared.Weapons.Ranged.Events;
@@ -632,7 +634,7 @@ public sealed class YautjaPlasmaWeaponTest
                     $"SourceQueued={entMan.IsQueuedForDeletion(bracer)}, " +
                     $"SourceCharge={sourceBracer.Charge}, " +
                     $"Mode={casterComp.CurrentMode}, " +
-                    $"ModeCost={casterComp.Modes[casterComp.CurrentMode].PowerCost}.");
+                    $"ModeCost={casterComp.PowerCost}.");
 
                 stored.Bracer = null;
 
@@ -799,7 +801,7 @@ public sealed class YautjaPlasmaWeaponTest
                 var bracerComp = entMan.GetComponent<YautjaBracerComponent>(bracer);
                 bracerComp.Charge = 3000;
                 var casterComp = entMan.GetComponent<YautjaCasterComponent>(caster);
-                var sourceCost = casterComp.Modes[casterComp.CurrentMode].PowerCost;
+                var sourceCost = casterComp.PowerCost;
                 var coordinates = entMan.GetComponent<TransformComponent>(caster).Coordinates;
 
                 var takeAmmo = new TakeAmmoEvent(
@@ -1017,7 +1019,83 @@ public sealed class YautjaPlasmaWeaponTest
         await pair.CleanReturnAsync();
     }
 
-    private static void RaiseProjectileHit(IEntityManager entMan, EntityUid projectile, EntityUid target, EntityUid shooter)
+    [Test]
+    public async Task PlasmaCasterEradicatorTriggersAtCmss13MaxRange()
+    {
+        await using var pair = await PoolManager.GetServerClient();
+        var server = pair.Server;
+        var map = await pair.CreateTestMap();
+
+        await server.WaitAssertion(() =>
+        {
+            var entMan = server.EntMan;
+            var projectile = entMan.SpawnEntity("CMUYautjaCasterEradicatorBolt", map.GridCoords);
+
+            try
+            {
+                Assert.That(entMan.HasComponent<YautjaCasterEradicatorProjectileComponent>(projectile), Is.True,
+                    "CMSS13 plasma eradicator has its own max-range/vehicle impact behavior.");
+
+                var maxRange = new ProjectileFixedDistanceStopEvent();
+                entMan.EventBus.RaiseLocalEvent(projectile, ref maxRange);
+
+                Assert.That(entMan.IsQueuedForDeletion(projectile) || entMan.Deleted(projectile), Is.True,
+                    "CMSS13 plasma eradicator do_at_max_range() detonates the projectile at max_range = 8.");
+            }
+            finally
+            {
+                if (!entMan.Deleted(projectile))
+                    entMan.DeleteEntity(projectile);
+            }
+        });
+
+        await pair.CleanReturnAsync();
+    }
+
+    [Test]
+    public async Task PlasmaCasterEradicatorAppliesCmss13MultitileVehicleImpact()
+    {
+        await using var pair = await PoolManager.GetServerClient();
+        var server = pair.Server;
+        var map = await pair.CreateTestMap();
+
+        await server.WaitAssertion(() =>
+        {
+            var entMan = server.EntMan;
+            var projectile = entMan.SpawnEntity("CMUYautjaCasterEradicatorBolt", map.GridCoords);
+            var vehicle = entMan.SpawnEntity("VehicleTank", map.GridCoords);
+
+            try
+            {
+                var mover = entMan.GetComponent<GridVehicleMoverComponent>(vehicle);
+                var frame = entMan.GetComponent<HardpointIntegrityComponent>(vehicle);
+                var before = frame.Integrity;
+
+                RaiseProjectileHit(entMan, projectile, vehicle, null);
+
+                Assert.Multiple(() =>
+                {
+                    Assert.That(mover.ImmobileUntil - server.Timing.CurTime,
+                        Is.EqualTo(TimeSpan.FromSeconds(5)).Within(TimeSpan.FromMilliseconds(50)),
+                        "CMSS13 plasma eradicator locks a multitile vehicle for vehicle_slowdown_time = 5 seconds.");
+                    Assert.That(frame.Integrity, Is.LessThan(before),
+                        "CMSS13 plasma eradicator applies ex_act(150, ..., 100) to a multitile vehicle.");
+                });
+            }
+            finally
+            {
+                foreach (var uid in new[] { projectile, vehicle })
+                {
+                    if (!entMan.Deleted(uid))
+                        entMan.DeleteEntity(uid);
+                }
+            }
+        });
+
+        await pair.CleanReturnAsync();
+    }
+
+    private static void RaiseProjectileHit(IEntityManager entMan, EntityUid projectile, EntityUid target, EntityUid? shooter)
     {
         var projectileComp = entMan.GetComponent<ProjectileComponent>(projectile);
         var damage = new DamageSpecifier(projectileComp.Damage);
