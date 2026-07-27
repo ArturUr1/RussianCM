@@ -11365,7 +11365,7 @@ public sealed class YautjaSmokeTest
     }
 
     [Test]
-    public async Task YautjaButcherActionStartsButcheringAdjacentDeadTargetLikeCmss13()
+    public async Task YautjaButcherActionOpensAdjacentDeadTargetSelectionLikeCmss13()
     {
         await using var pair = await PoolManager.GetServerClient();
         var server = pair.Server;
@@ -11397,19 +11397,47 @@ public sealed class YautjaSmokeTest
                 entMan.EventBus.RaiseLocalEvent(hunter, ev);
 
                 Assert.That(ev.Handled, Is.True);
-                var doAfter = entMan.GetComponent<DoAfterComponent>(hunter);
-                var activeButcher = doAfter.DoAfters.Values.Single(active =>
-                    !active.Cancelled &&
-                    !active.Completed &&
-                    active.Args.Event is YautjaButcherDoAfterEvent);
+                var dialog = entMan.GetComponent<DialogComponent>(hunter);
 
                 Assert.Multiple(() =>
                 {
-                    Assert.That(activeButcher.Args.Target, Is.EqualTo(target));
-                    Assert.That(activeButcher.Args.Target, Is.Not.EqualTo(farTarget));
-                    Assert.That(activeButcher.Args.Delay, Is.EqualTo(TimeSpan.FromSeconds(7)));
+                    Assert.That(dialog.DialogType, Is.EqualTo(DialogType.Options));
+                    Assert.That(dialog.Options, Has.Count.EqualTo(1),
+                        "Only the adjacent dead target is offered; the farther corpse is not.");
+                    Assert.That(dialog.Options[0].Text, Is.EqualTo(entMan.GetComponent<MetaDataComponent>(target).EntityName));
+                    Assert.That(dialog.Options[0].Event, Is.TypeOf<YautjaButcherTargetSelectedEvent>());
+                    Assert.That(entMan.TryGetComponent<DoAfterComponent>(hunter, out var doAfter), Is.True);
+                    Assert.That(doAfter.DoAfters.Values.Any(active =>
+                        !active.Cancelled && !active.Completed && active.Args.Event is YautjaButcherDoAfterEvent), Is.False,
+                        "Selecting a target is a separate step in CMSS13; the action must not start butchering yet.");
                     Assert.That(entMan.GetComponent<YautjaTrophySourceComponent>(target).ButcheryProgress, Is.Zero);
                     Assert.That(entMan.GetComponent<YautjaTrophySourceComponent>(farTarget).ButcheryProgress, Is.Zero);
+                });
+
+                var targetSelected = (YautjaButcherTargetSelectedEvent) dialog.Options[0].Event!;
+                entMan.EventBus.RaiseLocalEvent(hunter, targetSelected);
+
+                var procedureDialog = entMan.GetComponent<DialogComponent>(hunter);
+                Assert.Multiple(() =>
+                {
+                    Assert.That(procedureDialog.Options, Has.Count.EqualTo(10),
+                        "A human victim exposes Skin plus the nine CMSS13 delimb choices.");
+                    Assert.That(procedureDialog.Options.All(option => option.Event is YautjaButcherProcedureSelectedEvent), Is.True);
+                    Assert.That(procedureDialog.Options.Select(option =>
+                        ((YautjaButcherProcedureSelectedEvent) option.Event!).Procedure),
+                        Is.EqualTo(new[]
+                        {
+                            YautjaButcherProcedure.Skin,
+                            YautjaButcherProcedure.Head,
+                            YautjaButcherProcedure.RightHand,
+                            YautjaButcherProcedure.LeftHand,
+                            YautjaButcherProcedure.RightArm,
+                            YautjaButcherProcedure.LeftArm,
+                            YautjaButcherProcedure.RightFoot,
+                            YautjaButcherProcedure.LeftFoot,
+                            YautjaButcherProcedure.RightLeg,
+                            YautjaButcherProcedure.LeftLeg,
+                        }));
                 });
             }
             finally

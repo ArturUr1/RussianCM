@@ -2679,6 +2679,21 @@ public enum YautjaButcherKind : byte
 }
 
 [Serializable, NetSerializable]
+public enum YautjaButcherProcedure : byte
+{
+    Skin,
+    Head,
+    RightHand,
+    LeftHand,
+    RightArm,
+    LeftArm,
+    RightFoot,
+    LeftFoot,
+    RightLeg,
+    LeftLeg,
+}
+
+[Serializable, NetSerializable]
 public enum YautjaTechMisuseKind : byte
 {
     Pickup,

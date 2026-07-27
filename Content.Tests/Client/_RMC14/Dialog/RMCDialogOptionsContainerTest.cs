@@ -25,7 +25,7 @@ public sealed class RMCDialogOptionsContainerTest
         Assert.That(scroll?.Attribute("ReturnMeasure")?.Value, Is.EqualTo("True"));
         Assert.That(
             float.Parse(scroll?.Attribute("MaxHeight")?.Value ?? "0", CultureInfo.InvariantCulture),
-            Is.EqualTo(300));
+            Is.EqualTo(250));
     }
 
     private static string FindRepositoryFile(params string[] path)
