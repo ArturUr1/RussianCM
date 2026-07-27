@@ -189,6 +189,7 @@
   name: Yautja Bad Blood
   suffix: Yautja, Bad Blood, Event
   components:
+  - type: YautjaBadBlood
   - type: NpcFactionMember
     factions:
     - CMUYautjaBadBlood

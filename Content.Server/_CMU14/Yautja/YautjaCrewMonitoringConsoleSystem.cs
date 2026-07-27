@@ -95,9 +95,13 @@ public sealed partial class YautjaCrewMonitoringConsoleSystem : EntitySystem
             ? areaPrototype.Name
             : Loc.GetString("cmu-yautja-crew-monitor-area-unknown");
 
+        var rank = yautja.ClanRank;
+        if (TryComp<YautjaYoungbloodComponent>(target, out var youngblood) && !youngblood.Blooded)
+            rank = YautjaRank.YoungBlood;
+
         var rankName = HasComp<YautjaBadBloodComponent>(target)
             ? Loc.GetString("cmu-yautja-rank-badblood")
-            : Loc.GetString(YautjaRankMetadata.For(yautja.ClanRank).LocalizedName);
+            : Loc.GetString(YautjaRankMetadata.For(rank).LocalizedName);
 
         var jobDepartments = new List<string> { area };
         status = new SuitSensorStatus(
