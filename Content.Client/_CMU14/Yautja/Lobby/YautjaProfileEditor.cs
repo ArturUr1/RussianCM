@@ -87,6 +87,8 @@ public sealed partial class YautjaProfileEditor : ScrollContainer
     private readonly Dictionary<YautjaProfileEditorCategory, Control> _categoryPageControls = new();
     private readonly Dictionary<YautjaProfileEditorCategory, Button> _categoryButtons = new();
     private readonly Dictionary<GridContainer, int> _responsiveGrids = new();
+    private readonly List<GridContainer> _bracerResponsiveGrids = new();
+    private readonly List<GridContainer> _casterResponsiveGrids = new();
     private YautjaProfileEditorCategory _activeCategory = YautjaProfileEditorCategory.Appearance;
 
     private readonly SpriteView _preview = new()
@@ -625,6 +627,7 @@ public sealed partial class YautjaProfileEditor : ScrollContainer
 
     private void RebuildBracerSelector(YautjaCharacterProfile yautja)
     {
+        UnregisterResponsiveGrids(_bracerResponsiveGrids);
         _bracerSections.RemoveAllChildren();
         var group = new ButtonGroup();
         _bracerSections.AddChild(BuildMaterialFilterSelector(
@@ -641,7 +644,7 @@ public sealed partial class YautjaProfileEditor : ScrollContainer
 
         foreach (var section in BracerSections())
         {
-            var grid = EquipmentGrid(horizontalExpand: false);
+            var grid = RegisterSectionResponsiveGrid(_bracerResponsiveGrids, EquipmentGrid(horizontalExpand: false));
             var materials = section.Materials
                 .Where(material => _bracerFilter == null || material == _bracerFilter)
                 .ToArray();
@@ -679,9 +682,10 @@ public sealed partial class YautjaProfileEditor : ScrollContainer
 
     private void RebuildCasterSelector(YautjaCharacterProfile yautja)
     {
+        UnregisterResponsiveGrids(_casterResponsiveGrids);
         _casterSections.RemoveAllChildren();
         var group = new ButtonGroup();
-        var grid = EquipmentGrid();
+        var grid = RegisterSectionResponsiveGrid(_casterResponsiveGrids, EquipmentGrid());
 
         _casterSections.AddChild(BuildMaterialFilterSelector(
             _casterFilter,
@@ -1121,14 +1125,20 @@ public sealed partial class YautjaProfileEditor : ScrollContainer
     {
         _bracerFilter = material;
         if (_profile != null)
+        {
             RebuildBracerSelector(_profile.YautjaProfile);
+            UpdateResponsiveGridColumns();
+        }
     }
 
     private void SetCasterFilter(YautjaBracerMaterial? material)
     {
         _casterFilter = material;
         if (_profile != null)
+        {
             RebuildCasterSelector(_profile.YautjaProfile);
+            UpdateResponsiveGridColumns();
+        }
     }
 
     private static BoxContainer BuildMaterialFilterSelector(
@@ -1221,6 +1231,8 @@ public sealed partial class YautjaProfileEditor : ScrollContainer
     private void ResetResponsiveGrids()
     {
         _responsiveGrids.Clear();
+        _bracerResponsiveGrids.Clear();
+        _casterResponsiveGrids.Clear();
         RegisterResponsiveGrid(_skinGrid, 6);
         RegisterResponsiveGrid(_eyeGrid, 7);
         RegisterResponsiveGrid(_quillGrid, 6);
@@ -1235,6 +1247,20 @@ public sealed partial class YautjaProfileEditor : ScrollContainer
         grid.HSeparationOverride = 8;
         _responsiveGrids[grid] = preferredColumns;
         return grid;
+    }
+
+    private static GridContainer RegisterSectionResponsiveGrid(List<GridContainer> sectionGrids, GridContainer grid)
+    {
+        sectionGrids.Add(grid);
+        return grid;
+    }
+
+    private void UnregisterResponsiveGrids(List<GridContainer> grids)
+    {
+        foreach (var grid in grids)
+            _responsiveGrids.Remove(grid);
+
+        grids.Clear();
     }
 
     private void UpdateResponsiveGridColumns()
