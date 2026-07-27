@@ -4967,6 +4967,10 @@
       sprite: _CMU14/Yautja/Structures/yautja_machines.rsi
       state: "console_shuttle"
     - type: YautjaShuttleConsole
+    - type: WhitelistedShuttle
+      faction: yautja
+      ShuttleType: Dropship
+      autoReturn: false
     - type: DropshipNavigationComputer
       hijackable: false
       canTacticalLand: true

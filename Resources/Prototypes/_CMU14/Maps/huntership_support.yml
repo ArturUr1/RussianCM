@@ -189,7 +189,7 @@
   components:
   - type: FTLBeacon
   - type: DropshipDestination
-    FactionControlling: thirdparty
+    FactionControlling: yautja
   - type: FTLSmashImmune
   - type: NoFTL
 
@@ -202,7 +202,7 @@
   components:
   - type: FTLBeacon
   - type: DropshipDestination
-    FactionControlling: thirdparty
+    FactionControlling: yautja
   - type: FTLSmashImmune
   - type: NoFTL
 
@@ -215,7 +215,7 @@
   components:
   - type: FTLBeacon
   - type: DropshipDestination
-    FactionControlling: thirdparty
+    FactionControlling: yautja
   - type: FTLSmashImmune
   - type: NoFTL
 
