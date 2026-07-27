@@ -63,14 +63,14 @@ The existing map files and five generated Hunter Ship wrapper prototypes should 
 - [ ] **Step 1: Write failing metadata tests for every CMSS13 rank mapping.**
 
 ```csharp
-[TestCase(YautjaRank.Ancient, false, "cmu-yautja-crew-monitor-rank-ancient")]
-[TestCase(YautjaRank.Leader, false, "cmu-yautja-crew-monitor-rank-leader")]
-[TestCase(YautjaRank.Elder, false, "cmu-yautja-crew-monitor-rank-elder")]
-[TestCase(YautjaRank.Elite, false, "cmu-yautja-crew-monitor-rank-elite")]
-[TestCase(YautjaRank.Blooded, false, "cmu-yautja-crew-monitor-rank-blooded")]
-[TestCase(YautjaRank.YoungBlood, false, "cmu-yautja-crew-monitor-rank-youngblood")]
-[TestCase(YautjaRank.Unblooded, false, "cmu-yautja-crew-monitor-rank-unblooded")]
-[TestCase(YautjaRank.Blooded, true, "cmu-yautja-crew-monitor-rank-badblood")]
+[TestCase(YautjaRank.Ancient, false, "cmu-yautja-rank-ancient")]
+[TestCase(YautjaRank.Leader, false, "cmu-yautja-rank-leader")]
+[TestCase(YautjaRank.Elder, false, "cmu-yautja-rank-elder")]
+[TestCase(YautjaRank.Elite, false, "cmu-yautja-rank-elite")]
+[TestCase(YautjaRank.Blooded, false, "cmu-yautja-rank-blooded")]
+[TestCase(YautjaRank.YoungBlood, false, "cmu-yautja-rank-youngblood")]
+[TestCase(YautjaRank.Unblooded, false, "cmu-yautja-rank-unblooded")]
+[TestCase(YautjaRank.Blooded, true, "cmu-yautja-rank-badblood")]
 public void AssignmentUsesAuthoritativeRankOrBadBloodMarker(YautjaRank rank, bool isBadBlood, string expected)
 {
     Assert.That(YautjaCrewMonitoringMetadata.GetAssignment(rank, isBadBlood).ToString(), Is.EqualTo(expected));
