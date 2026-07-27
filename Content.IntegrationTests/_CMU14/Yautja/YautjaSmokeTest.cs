@@ -5491,12 +5491,25 @@ public sealed class YautjaSmokeTest
 
                 Assert.Multiple(() =>
                 {
+                    var migratedActionIds = new[]
+                    {
+                        "CMUActionYautjaChangeExplosionType",
+                        "CMUActionYautjaRemoveBracerAttachments",
+                        "CMUActionYautjaCreateHealingCapsule",
+                        "CMUActionYautjaAddTrackedItem",
+                        "CMUActionYautjaRemoveTrackedItem",
+                        "CMUActionYautjaToggleBracerName",
+                        "CMUActionYautjaToggleBracerNotificationSound",
+                    };
+
                     Assert.That(actionIds, Does.Contain("CMUActionYautjaOpenBracerMenu"));
+                    Assert.That(actionIds, Does.Contain("CMUActionYautjaToggleCloak"));
+                    Assert.That(actionIds, Does.Contain("CMUActionYautjaRecall"));
+                    Assert.That(actionIds, Does.Contain("CMUActionYautjaCallDisc"));
                     Assert.That(actionIds, Does.Not.Contain("CMUActionYautjaTrackGear"),
                         "The worn bracer should keep the tracker action off the action bar.");
-                    Assert.That(actionIds, Does.Contain("CMUActionYautjaAddTrackedItem"));
-                    Assert.That(actionIds, Does.Contain("CMUActionYautjaRemoveTrackedItem"));
-                    Assert.That(actionIds, Does.Contain("CMUActionYautjaCreateHealingCapsule"));
+                    foreach (var migratedActionId in migratedActionIds)
+                        Assert.That(actionIds, Does.Not.Contain(migratedActionId), $"{migratedActionId} belongs to the bracer menu.");
                     Assert.That(actionIds, Does.Not.Contain("CMUActionYautjaOpenMarkPanel"));
                     Assert.That(actionIds, Does.Not.Contain("CMUActionYautjaSelfDestruct"));
                     Assert.That(actionIds, Does.Not.Contain("CMUActionYautjaTranslator"));
@@ -6607,6 +6620,7 @@ public sealed class YautjaSmokeTest
                 {
                     Assert.That(wornActionIds, Does.Not.Contain("CMUActionYautjaToggleBracerIdChip"));
                     Assert.That(heldActionIds, Does.Contain("CMUActionYautjaToggleBracerIdChip"));
+                    Assert.That(heldActionIds, Does.Not.Contain("CMUActionYautjaChangeExplosionType"));
                 });
             }
             finally
@@ -6826,6 +6840,7 @@ public sealed class YautjaSmokeTest
                 {
                     Assert.That(wornActionIds, Does.Not.Contain("CMUActionYautjaLinkThrallBracer"));
                     Assert.That(heldActionIds, Does.Contain("CMUActionYautjaLinkThrallBracer"));
+                    Assert.That(heldActionIds, Does.Not.Contain("CMUActionYautjaChangeExplosionType"));
                 });
             }
             finally

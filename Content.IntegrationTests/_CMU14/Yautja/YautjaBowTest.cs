@@ -4742,6 +4742,15 @@ public sealed class YautjaBowTest
                 var holderStored = entMan.GetComponent<YautjaStoredGearComponent>(holder);
                 Assert.That(install.Handled, Is.True);
                 Assert.That(gearComp.Container, Is.Not.Null);
+                var gearActions = new GetItemActionsEvent(entMan.System<ActionContainerSystem>(), hunter, bracer, SlotFlags.GLOVES);
+                entMan.EventBus.RaiseLocalEvent(bracer, gearActions);
+                var gearActionIds = ActionPrototypeIds(entMan, gearActions.Actions);
+                Assert.Multiple(() =>
+                {
+                    Assert.That(gearActionIds, Does.Not.Contain("CMUActionYautjaRemoveBracerAttachments"));
+                    Assert.That(gearActionIds, Does.Contain("CMUActionYautjaToggleScimitar"),
+                        "Installed gear deployment actions remain available on the worn bracer.");
+                });
                 Assert.That(gearComp.Container!.Contains(holder), Is.True,
                     "CMSS13 bracer attachment holder remains the installed item in the bracer.");
                 Assert.That(gearComp.InstalledGear, Does.Contain(holder));
