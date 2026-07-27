@@ -228,6 +228,13 @@ public enum YautjaBracerPanelCommand : byte
     CreateHuntingTrap,
     ToggleSelfDestruct,
     RefreshTracker,
+    ChangeExplosionType,
+    RemoveBracerAttachments,
+    CreateHealingCapsule,
+    AddTrackedItem,
+    RemoveTrackedItem,
+    ToggleBracerName,
+    ToggleBracerNotificationSound,
 }
 
 [Serializable, NetSerializable]
