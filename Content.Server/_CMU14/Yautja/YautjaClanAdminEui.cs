@@ -173,14 +173,20 @@ public sealed class YautjaClanAdminEui : BaseEui
 
     private async Task CreateClan(YautjaClanAdminCreateClanMessage message)
     {
-        if (string.IsNullOrWhiteSpace(message.Name) || string.IsNullOrWhiteSpace(message.Description))
+        if (!YautjaClanAdminValidation.TryNormalize(
+                message.Name,
+                message.Description,
+                message.Color,
+                out var fields,
+                out var error))
         {
-            _statusMessage = Loc.GetString("cmu-yautja-clan-admin-invalid-clan");
+            _statusMessage = error == YautjaClanAdminValidationError.InvalidColor
+                ? Loc.GetString("cmu-yautja-clan-admin-invalid-color")
+                : Loc.GetString("cmu-yautja-clan-admin-invalid-clan");
             return;
         }
 
-        var color = string.IsNullOrWhiteSpace(message.Color) ? "#ffffff" : message.Color.Trim();
-        var id = await _db.CreateYautjaClanAsync(message.Name.Trim(), message.Description.Trim(), 0, color);
+        var id = await _db.CreateYautjaClanAsync(fields.Name, fields.Description, 0, fields.Color);
         _statusMessage = Loc.GetString("cmu-yautja-clan-admin-created", ("id", id));
         _adminLog.Add(LogType.AdminCommands, LogImpact.Medium,
             $"{Player.Name} created Yautja clan {id} ({message.Name}).");
