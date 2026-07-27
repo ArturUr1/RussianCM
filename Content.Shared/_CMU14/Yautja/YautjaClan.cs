@@ -19,6 +19,15 @@ public enum YautjaClanPermission : byte
     All = AdminAncient | AdminManager,
 }
 
+[Flags]
+public enum YautjaWhitelistFlags : byte
+{
+    None = 0,
+    Yautja = 1 << 0,
+    Council = 1 << 1,
+    Leader = 1 << 2,
+}
+
 public sealed record YautjaClanMemberSnapshot(
     NetUserId PlayerId,
     int? ClanId,

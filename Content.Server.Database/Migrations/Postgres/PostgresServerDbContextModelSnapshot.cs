@@ -26,6 +26,50 @@ namespace Content.Server.Database.Migrations.Postgres
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
+            modelBuilder.Entity("Content.Server.Database.AU14CustomConstructionEntry", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("au14_custom_construction_entries_id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at");
+
+                    b.Property<string>("EntryKey")
+                        .IsRequired()
+                        .HasMaxLength(256)
+                        .HasColumnType("character varying(256)")
+                        .HasColumnName("entry_key");
+
+                    b.Property<string>("Kind")
+                        .IsRequired()
+                        .HasMaxLength(32)
+                        .HasColumnType("character varying(32)")
+                        .HasColumnName("kind");
+
+                    b.Property<DateTime>("LastEditedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("last_edited_at");
+
+                    b.Property<string>("Yaml")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("yaml");
+
+                    b.HasKey("Id")
+                        .HasName("PK_au14_custom_construction_entries");
+
+                    b.HasIndex("Kind", "EntryKey")
+                        .IsUnique()
+                        .HasDatabaseName("IX_au14_custom_construction_entries_kind_entry_key");
+
+                    b.ToTable("au14_custom_construction_entries", (string)null);
+                });
+
             modelBuilder.Entity("Content.Server.Database.AU14FactionDefinition", b =>
                 {
                     b.Property<int>("Id")
@@ -69,50 +113,6 @@ namespace Content.Server.Database.Migrations.Postgres
                         .HasDatabaseName("IX_au14_faction_definitions_title");
 
                     b.ToTable("au14_faction_definitions", (string)null);
-                });
-
-            modelBuilder.Entity("Content.Server.Database.AU14CustomConstructionEntry", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasColumnName("au14_custom_construction_entries_id");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("created_at");
-
-                    b.Property<string>("EntryKey")
-                        .IsRequired()
-                        .HasMaxLength(256)
-                        .HasColumnType("character varying(256)")
-                        .HasColumnName("entry_key");
-
-                    b.Property<string>("Kind")
-                        .IsRequired()
-                        .HasMaxLength(32)
-                        .HasColumnType("character varying(32)")
-                        .HasColumnName("kind");
-
-                    b.Property<DateTime>("LastEditedAt")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("last_edited_at");
-
-                    b.Property<string>("Yaml")
-                        .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("yaml");
-
-                    b.HasKey("Id")
-                        .HasName("PK_au14_custom_construction_entries");
-
-                    b.HasIndex("Kind", "EntryKey")
-                        .IsUnique()
-                        .HasDatabaseName("IX_au14_custom_construction_entries_kind_entry_key");
-
-                    b.ToTable("au14_custom_construction_entries", (string)null);
                 });
 
             modelBuilder.Entity("Content.Server.Database.Admin", b =>
@@ -1038,6 +1038,10 @@ namespace Content.Server.Database.Migrations.Postgres
                         .HasColumnType("integer")
                         .HasColumnName("yautja_rank");
 
+                    b.Property<int>("YautjaWhitelistFlags")
+                        .HasColumnType("integer")
+                        .HasColumnName("yautja_whitelist_flags");
+
                     b.HasKey("Id")
                         .HasName("PK_player");
 
@@ -1230,14 +1234,14 @@ namespace Content.Server.Database.Migrations.Postgres
                         .HasColumnType("text")
                         .HasColumnName("species");
 
+                    b.Property<string>("ThreatPreference")
+                        .HasColumnType("text")
+                        .HasColumnName("threat_preference");
+
                     b.Property<string>("Voice")
                         .IsRequired()
                         .HasColumnType("text")
                         .HasColumnName("voice");
-
-                    b.Property<string>("ThreatPreference")
-                        .HasColumnType("text")
-                        .HasColumnName("threat_preference");
 
                     b.Property<string>("XenoPostfix")
                         .IsRequired()
@@ -2253,6 +2257,89 @@ namespace Content.Server.Database.Migrations.Postgres
                     b.ToTable("whitelist", (string)null);
                 });
 
+            modelBuilder.Entity("Content.Server.Database.YautjaClan", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("yautja_clan_id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<bool>("Active")
+                        .HasColumnType("boolean")
+                        .HasColumnName("active");
+
+                    b.Property<string>("Color")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("color");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("description");
+
+                    b.Property<int>("Honor")
+                        .HasColumnType("integer")
+                        .HasColumnName("honor");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("name");
+
+                    b.HasKey("Id")
+                        .HasName("PK_yautja_clan");
+
+                    b.ToTable("yautja_clan", (string)null);
+                });
+
+            modelBuilder.Entity("Content.Server.Database.YautjaClanMember", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("yautja_clan_member_id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<int?>("ClanId")
+                        .HasColumnType("integer")
+                        .HasColumnName("clan_id");
+
+                    b.Property<int>("Honor")
+                        .HasColumnType("integer")
+                        .HasColumnName("honor");
+
+                    b.Property<bool>("IsLegacy")
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_legacy");
+
+                    b.Property<int>("Permissions")
+                        .HasColumnType("integer")
+                        .HasColumnName("permissions");
+
+                    b.Property<Guid>("PlayerUserId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("player_user_id");
+
+                    b.Property<int>("Rank")
+                        .HasColumnType("integer")
+                        .HasColumnName("rank");
+
+                    b.HasKey("Id")
+                        .HasName("PK_yautja_clan_member");
+
+                    b.HasIndex("ClanId")
+                        .HasDatabaseName("IX_yautja_clan_member_clan_id");
+
+                    b.HasIndex("PlayerUserId")
+                        .IsUnique();
+
+                    b.ToTable("yautja_clan_member", (string)null);
+                });
+
             modelBuilder.Entity("PlayerRound", b =>
                 {
                     b.Property<int>("PlayersId")
@@ -3165,6 +3252,27 @@ namespace Content.Server.Database.Migrations.Postgres
                     b.Navigation("Profile");
                 });
 
+            modelBuilder.Entity("Content.Server.Database.YautjaClanMember", b =>
+                {
+                    b.HasOne("Content.Server.Database.YautjaClan", "Clan")
+                        .WithMany("Members")
+                        .HasForeignKey("ClanId")
+                        .OnDelete(DeleteBehavior.SetNull)
+                        .HasConstraintName("FK_yautja_clan_member_yautja_clan_clan_id");
+
+                    b.HasOne("Content.Server.Database.Player", "Player")
+                        .WithOne("YautjaClanMembership")
+                        .HasForeignKey("Content.Server.Database.YautjaClanMember", "PlayerUserId")
+                        .HasPrincipalKey("Content.Server.Database.Player", "UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("FK_yautja_clan_member_player_player_user_id");
+
+                    b.Navigation("Clan");
+
+                    b.Navigation("Player");
+                });
+
             modelBuilder.Entity("PlayerRound", b =>
                 {
                     b.HasOne("Content.Server.Database.Player", null)
@@ -3275,6 +3383,8 @@ namespace Content.Server.Database.Migrations.Postgres
 
                     b.Navigation("Stats")
                         .IsRequired();
+
+                    b.Navigation("YautjaClanMembership");
                 });
 
             modelBuilder.Entity("Content.Server.Database.Preference", b =>
@@ -3353,6 +3463,11 @@ namespace Content.Server.Database.Migrations.Postgres
             modelBuilder.Entity("Content.Server.Database.ServerRoleBan", b =>
                 {
                     b.Navigation("Unban");
+                });
+
+            modelBuilder.Entity("Content.Server.Database.YautjaClan", b =>
+                {
+                    b.Navigation("Members");
                 });
 #pragma warning restore 612, 618
         }
