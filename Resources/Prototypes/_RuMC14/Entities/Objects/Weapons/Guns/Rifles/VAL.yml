@@ -44,12 +44,17 @@
     scatterUnwielded: 9
     baseFireRate: 6
     burstScatterMult: 1
+    modifiers:
+      FullAuto:
+        maxScatterModifier: 10
+        unwieldedScatterMultiplier: 2
+        shotsToMaxScatter: 5
   - type: MeleeWeapon
     damage:
       types:
         Blunt: 13
   - type: RMCWeaponAccuracy
-    accuracyMultiplier: 1.45
+    accuracyMultiplier: 1.35
     accuracyMultiplierUnwielded: 0.55
   - type: ItemSlots
     slots:
@@ -67,14 +72,11 @@
   - type: AttachableHolder
     slots:
       rmc-aslot-barrel:
-        #startingAttachable: RMCAttachmentExtendedCompensator
+        locked: true
+        startingAttachable: RuMCAttachmentSuppressorVAL
         whitelist:
           tags:
-          - RMCAttachmentBarrelCharger
-          - RMCAttachmentExtendedBarrel
-          - RMCAttachmentExtendedCompensator
-          - RMCAttachmentSuppressor
-          - RMCM5Bayonet
+          - RuMCAttachmentSuppressorVAL
       rmc-aslot-rail:
         whitelist:
           tags:
@@ -95,7 +97,7 @@
     offsets:
       rmc-aslot-rail: -0.05, 0.154
       rmc-aslot-underbarrel: 0.42, -0.21
-      rmc-aslot-barrel: 0.84, 0
+      rmc-aslot-barrel: 0.5, 0.0945931415
       rmc-aslot-stock: 0.2, -0.2
   - type: ItemCamouflage
     camouflageVariations: { }
@@ -138,6 +140,34 @@
     capacity: 35
     deleteWhenEmpty: false
 
+- type: entity
+  parent: CMMagazineSniperM96S
+  id: RuMCMagazineVALAP
+  name: "TOPS VAL-S magazine (10x24mm AP)"
+  description: A 25-round magazine of 10x24mm (AP) cartridges.
+  components:
+  - type: Sprite
+    sprite: _RuMC14/Objects/Weapons/Guns/Ammunition/Magazines/Rifles/VAL.rsi
+    layers:
+    - state: base
+      map: ["enum.GunVisualLayers.Base"]
+    - state: mag-1
+      map: ["enum.GunVisualLayers.Mag"]
+    - state: ammo_band
+      color: "#212121"
+  - type: Tag
+    tags:
+    - RuMCMagazineVAL
+  - type: BallisticAmmoProvider
+    whitelist:
+      tags:
+      - CMCartridgeRifle10x24mmAP
+    proto: CMCartridgeRifle10x24mmAP
+    capacity: 35
+    deleteWhenEmpty: false
+
+#CMCartridgeRifle10x24mmAP
+
 # Tags
 
 - type: Tag
@@ -145,3 +175,6 @@
 
 - type: Tag
   id: RuMCMagazineVAL
+
+
+#RuMCAttachmentSuppressorVAL
