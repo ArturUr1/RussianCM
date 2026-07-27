@@ -16642,6 +16642,14 @@ public sealed class YautjaBowTest
             Cmss13ButcherOutputKind.SkeletonLimb);
 
         yield return new Cmss13ButcherOutputRow(
+            "CMUYautjaHumanTorso",
+            "ribcage",
+            "A bone that appears to be of human origin.",
+            yautjaItems,
+            "torso",
+            Cmss13ButcherOutputKind.SkeletonLimb);
+
+        yield return new Cmss13ButcherOutputRow(
             "CMUYautjaHumanButcheredRemains",
             "",
             "",

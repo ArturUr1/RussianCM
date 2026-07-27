@@ -14,11 +14,8 @@ namespace Content.Server._CMU14.Yautja;
 
 public sealed partial class YautjaAbilitySystem : EntitySystem
 {
-    private const float ButcherSearchRange = 1.5f;
-
     [Dependency] private SharedActionsSystem _actions = default!;
     [Dependency] private SharedDoAfterSystem _doAfter = default!;
-    [Dependency] private EntityLookupSystem _lookup = default!;
     [Dependency] private MobStateSystem _mob = default!;
     [Dependency] private ThrowingSystem _throwing = default!;
     [Dependency] private SharedTransformSystem _transform = default!;
@@ -131,32 +128,7 @@ public sealed partial class YautjaAbilitySystem : EntitySystem
         if (args.Handled || args.Performer != ent.Owner || _mob.IsIncapacitated(ent.Owner))
             return;
 
-        if (!TryFindButcherTarget(ent.Owner, out var target))
-            return;
-
-        args.Handled = _trophies.TryStartButcher(ent.Owner, target);
-    }
-
-    private bool TryFindButcherTarget(EntityUid hunter, out EntityUid target)
-    {
-        target = default;
-        var coords = _transform.GetMapCoordinates(hunter);
-
-        foreach (var candidate in _lookup.GetEntitiesInRange<MobStateComponent>(coords, ButcherSearchRange))
-        {
-            if (candidate.Owner == hunter ||
-                !_mob.IsDead(candidate.Owner, candidate.Comp) ||
-                HasComp<YautjaComponent>(candidate.Owner) ||
-                !HasComp<XenoComponent>(candidate.Owner) && !HasComp<HumanoidAppearanceComponent>(candidate.Owner))
-            {
-                continue;
-            }
-
-            target = candidate.Owner;
-            return true;
-        }
-
-        return false;
+        args.Handled = _trophies.TryOpenButcherDialog(ent.Owner);
     }
 
     private void OnMarkForHunt(Entity<YautjaComponent> ent, ref YautjaMarkForHuntActionEvent args)
