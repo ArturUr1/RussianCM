@@ -2,6 +2,7 @@ using Content.Shared._RMC14.Actions;
 using Content.Shared._RMC14.Dropship;
 using Content.Shared._RMC14.Hands;
 using Content.Shared._RMC14.Marines;
+using Content.Shared._RMC14.Synth;
 using Content.Shared._RMC14.Xenonids.Construction;
 using Content.Shared._RMC14.Xenonids.Construction.Tunnel;
 using Content.Shared._RMC14.Xenonids.Egg.EggRetriever;
@@ -9,6 +10,7 @@ using Content.Shared._RMC14.Xenonids.Hive;
 using Content.Shared._RMC14.Xenonids.Parasite;
 using Content.Shared._RMC14.Xenonids.Plasma;
 using Content.Shared._RMC14.Xenonids.Weeds;
+using Content.Shared._CMU14.Yautja;
 using Content.Shared.Actions;
 using Content.Shared.Buckle.Components;
 using Content.Shared.Coordinates;
@@ -103,6 +105,7 @@ public sealed partial class XenoEggSystem : EntitySystem
         SubscribeLocalEvent<XenoAttachedOvipositorComponent, XenoConstructionRangeEvent>(OnXenoConstructionRange);
 
         SubscribeLocalEvent<XenoEggComponent, AfterAutoHandleStateEvent>(OnXenoEggAfterState);
+        SubscribeLocalEvent<XenoEggComponent, MapInitEvent>(OnXenoEggMapInit);
         SubscribeLocalEvent<XenoEggComponent, GettingPickedUpAttemptEvent>(OnXenoEggPickedUpAttempt);
         SubscribeLocalEvent<XenoEggComponent, UseInHandEvent>(OnXenoEggUseInHand);
         SubscribeLocalEvent<XenoEggComponent, InteractUsingEvent>(OnXenoEggInteractUsing);
@@ -122,6 +125,14 @@ public sealed partial class XenoEggSystem : EntitySystem
 
         SubscribeLocalEvent<XenoEggSustainerComponent, EntityTerminatingEvent>(OnEggSustainerDelete);
         SubscribeLocalEvent<XenoEggSustainerComponent, MobStateChangedEvent>(OnEggSustainerDeath);
+    }
+
+    private void OnXenoEggMapInit(Entity<XenoEggComponent> egg, ref MapInitEvent args)
+    {
+        if (egg.Comp.State == XenoEggState.Item)
+            return;
+
+        SetEggState(egg, egg.Comp.State);
     }
 
     private void OnDropshipHijackStart(ref DropshipHijackStartEvent ev)
@@ -444,6 +455,9 @@ public sealed partial class XenoEggSystem : EntitySystem
         if (ent.Comp.State != XenoEggState.Grown)
             return;
 
+        if (!ent.Comp.CanSpawnGhostParasite)
+            return;
+
         if (TryComp<XenoFragileEggComponent>(ent, out var fragile) && fragile.SustainedBy != null)
             return;
 
@@ -467,6 +481,8 @@ public sealed partial class XenoEggSystem : EntitySystem
                && !infected.BeingInfected
                && !_mobState.IsDead(user)
                && !HasComp<VictimInfectedComponent>(user)
+               && !HasComp<YautjaComponent>(user)
+               && !HasComp<SynthComponent>(user)
                && !_hive.IsAllyOfHive(user, hive);
     }
 

@@ -301,6 +301,9 @@ public sealed partial class TTSSystem : EntitySystem
 
     private Task<bool> EnsureReferenceVoiceCatalogLoaded()
     {
+        if (!_isEnabled)
+            return Task.FromResult(false);
+
         if (_catalogLoaded)
             return Task.FromResult(true);
 
