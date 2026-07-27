@@ -6214,7 +6214,7 @@ public sealed class YautjaSmokeTest
     }
 
     [Test]
-    public async Task BracerNotificationSoundToggleMatchesCmss13State()
+    public async Task BracerNotificationSoundToggleIsMenuOnlyWhileHandlerRemainsAvailable()
     {
         await using var pair = await PoolManager.GetServerClient();
         var server = pair.Server;
@@ -6239,7 +6239,7 @@ public sealed class YautjaSmokeTest
                 var actionIds = ev.Actions
                     .Select(actionUid => entMan.GetComponent<MetaDataComponent>(actionUid).EntityPrototype?.ID)
                     .ToArray();
-                Assert.That(actionIds, Does.Contain("CMUActionYautjaToggleBracerNotificationSound"));
+                Assert.That(actionIds, Does.Not.Contain("CMUActionYautjaToggleBracerNotificationSound"));
 
                 var bracerComp = entMan.GetComponent<YautjaBracerComponent>(bracer);
                 Assert.That(bracerComp.NotificationSound, Is.True);
@@ -6286,7 +6286,7 @@ public sealed class YautjaSmokeTest
     }
 
     [Test]
-    public async Task BracerNameToggleControlsYautjaIdentityForYautjaViewer()
+    public async Task BracerNameToggleIsMenuOnlyWhileHandlerControlsYautjaIdentity()
     {
         await using var pair = await PoolManager.GetServerClient();
         var server = pair.Server;
@@ -6316,7 +6316,7 @@ public sealed class YautjaSmokeTest
                 var actionIds = ev.Actions
                     .Select(actionUid => entMan.GetComponent<MetaDataComponent>(actionUid).EntityPrototype?.ID)
                     .ToArray();
-                Assert.That(actionIds, Does.Contain("CMUActionYautjaToggleBracerName"));
+                Assert.That(actionIds, Does.Not.Contain("CMUActionYautjaToggleBracerName"));
 
                 Assert.That(Identity.Name(hunter, entMan, viewer).Name, Is.EqualTo("A'ke Ret"));
                 Assert.That(Identity.Name(hunter, entMan, nonYautja).Name, Is.EqualTo(Loc.GetString("cmu-yautja-identity-unknown")));
@@ -7058,7 +7058,7 @@ public sealed class YautjaSmokeTest
     }
 
     [Test]
-    public async Task BracerChangeExplosionTypeActionIsGrantedToWornAndHeldHunterBracerLikeCmss13Keybind()
+    public async Task BracerChangeExplosionTypeIsMenuOnlyForWornAndHeldHunterBracer()
     {
         await using var pair = await PoolManager.GetServerClient();
         var server = pair.Server;
@@ -7095,8 +7095,8 @@ public sealed class YautjaSmokeTest
 
                 Assert.Multiple(() =>
                 {
-                    Assert.That(wornActionIds, Does.Contain("CMUActionYautjaChangeExplosionType"));
-                    Assert.That(heldActionIds, Does.Contain("CMUActionYautjaChangeExplosionType"));
+                    Assert.That(wornActionIds, Does.Not.Contain("CMUActionYautjaChangeExplosionType"));
+                    Assert.That(heldActionIds, Does.Not.Contain("CMUActionYautjaChangeExplosionType"));
                 });
             }
             finally
@@ -7244,7 +7244,7 @@ public sealed class YautjaSmokeTest
     }
 
     [Test]
-    public async Task BracerCapsuleActionIsGrantedToWornHunterBracerLikeCmss13SignalAction()
+    public async Task BracerCapsuleActionIsMenuOnlyForWornHunterBracer()
     {
         await using var pair = await PoolManager.GetServerClient();
         var server = pair.Server;
@@ -7269,8 +7269,7 @@ public sealed class YautjaSmokeTest
                     .Select(actionUid => entMan.GetComponent<MetaDataComponent>(actionUid).EntityPrototype?.ID)
                     .ToArray();
 
-                Assert.That(actionIds, Does.Contain("CMUActionYautjaCreateHealingCapsule"),
-                    "CMSS13 /datum/action/predator_action/bracer/capsule listens to COMSIG_KB_YAUTJA_CAPSULE and is part of hunter bracer_actions.");
+                Assert.That(actionIds, Does.Not.Contain("CMUActionYautjaCreateHealingCapsule"));
             }
             finally
             {
