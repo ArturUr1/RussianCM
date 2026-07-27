@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using Content.Server.GameTicking;
 using Content.Server.Maps;
+using Content.Server._RMC14.Admin;
 using Content.Server._RMC14.Xenonids.Hive;
 using Content.Shared._CMU14.Xenonids.Hive;
 using Content.Shared._RMC14.Xenonids.Egg;
@@ -153,6 +154,41 @@ public sealed class CMUIndependentXenoHiveTest
                 Assert.That(assignment!.Hive, Is.EqualTo(prototypeId.Contains("Variant02")
                     ? CMUHunterShipHiveKind.Forsaken
                     : CMUHunterShipHiveKind.Alpha), prototypeId);
+            }
+        });
+
+        await pair.CleanReturnAsync();
+    }
+
+    [Test]
+    public async Task HunterShipHatchedXenosAreIncludedInAdminCount()
+    {
+        await using var pair = await PoolManager.GetServerClient();
+        var server = pair.Server;
+
+        await server.WaitAssertion(() =>
+        {
+            var entMan = server.EntMan;
+            var hives = entMan.System<XenoHiveSystem>();
+            var alphaHive = hives.CreateHive("Hunter Ship Alpha Hive", "CMUHunterShipAlphaHive");
+            var forsakenHive = hives.CreateHive("Hunter Ship Forsaken Hive", "CMUHunterShipForsakenHive");
+            var alphaXeno = entMan.SpawnEntity("CMXenoParasite", MapCoordinates.Nullspace);
+            var forsakenXeno = entMan.SpawnEntity("CMXenoParasite", MapCoordinates.Nullspace);
+
+            try
+            {
+                hives.SetHive(alphaXeno, alphaHive);
+                hives.SetHive(forsakenXeno, forsakenHive);
+
+                var state = RMCAdminEui.CreateState(entMan, default);
+                Assert.That(state.Xenos.Count, Is.EqualTo(2));
+            }
+            finally
+            {
+                entMan.DeleteEntity(alphaXeno);
+                entMan.DeleteEntity(forsakenXeno);
+                entMan.DeleteEntity(alphaHive);
+                entMan.DeleteEntity(forsakenHive);
             }
         });
 
