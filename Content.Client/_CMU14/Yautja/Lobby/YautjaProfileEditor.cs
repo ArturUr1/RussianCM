@@ -644,12 +644,13 @@ public sealed partial class YautjaProfileEditor : ScrollContainer
 
         foreach (var section in BracerSections())
         {
-            var grid = RegisterSectionResponsiveGrid(_bracerResponsiveGrids, EquipmentGrid(horizontalExpand: false));
             var materials = section.Materials
                 .Where(material => _bracerFilter == null || material == _bracerFilter)
                 .ToArray();
             if (materials.Length == 0)
                 continue;
+
+            var grid = RegisterSectionResponsiveGrid(_bracerResponsiveGrids, EquipmentGrid(horizontalExpand: false));
 
             foreach (var material in materials)
             {
