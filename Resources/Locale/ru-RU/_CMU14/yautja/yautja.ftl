@@ -18,6 +18,9 @@ cmu-yautja-rank-blooded = Окровавленный
 cmu-yautja-rank-elite = Элита
 cmu-yautja-rank-elder = Старейшина
 
+cmu-yautja-rank-badblood = Отступник
+cmu-yautja-crew-monitor-area-unknown = Неизвестная зона
+
 cmu-yautja-job-name-hunter = Охотник яутжа
 cmu-yautja-job-description-hunter = Инопланетный охотник, появляющийся по событию.
 cmu-yautja-ghost-name-hunter = Охотник яутжа

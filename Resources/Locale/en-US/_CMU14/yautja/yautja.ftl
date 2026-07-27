@@ -22,6 +22,8 @@ cmu-yautja-arrow-dynamic-invalid = There was an error with the warhead. Arrow re
 cmu-yautja-rank-blooded = Blooded
 cmu-yautja-rank-elite = Elite
 cmu-yautja-rank-elder = Elder
+cmu-yautja-rank-badblood = Bad Blood
+cmu-yautja-crew-monitor-area-unknown = Unknown area
 
 cmu-yautja-job-name-hunter = Yautja Hunter
 cmu-yautja-job-description-hunter = A whitelisted alien hunter who joins from the Hunter Ship.
