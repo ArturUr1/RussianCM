@@ -210,6 +210,8 @@ namespace Content.Server.Database
         Task<YautjaClanMemberRecord?> GetYautjaClanMemberAsync(Guid userId);
         Task<List<YautjaClanMemberRecord>> GetYautjaClanMembersAsync(int? clanId = null);
         Task<int> CreateYautjaClanAsync(string name, string description, int honor, string color, bool active = true);
+        Task<bool> UpdateYautjaClanAsync(int clanId, string name, string description, string color);
+        Task<YautjaClanDeleteResult> DeactivateYautjaClanAsync(int clanId);
         Task UpsertYautjaClanMemberAsync(YautjaClanMemberRecord member);
         Task<int> GetYautjaWhitelistFlagsAsync(Guid userId);
         Task SetYautjaWhitelistFlagsAsync(Guid userId, int flags);
@@ -833,6 +835,22 @@ namespace Content.Server.Database
         {
             DbWriteOpsMetric.Inc();
             return RunDbCommand(() => _db.CreateYautjaClanAsync(name, description, honor, color, active));
+        }
+
+        public Task<bool> UpdateYautjaClanAsync(
+            int clanId,
+            string name,
+            string description,
+            string color)
+        {
+            DbWriteOpsMetric.Inc();
+            return RunDbCommand(() => _db.UpdateYautjaClanAsync(clanId, name, description, color));
+        }
+
+        public Task<YautjaClanDeleteResult> DeactivateYautjaClanAsync(int clanId)
+        {
+            DbWriteOpsMetric.Inc();
+            return RunDbCommand(() => _db.DeactivateYautjaClanAsync(clanId));
         }
 
         public Task UpsertYautjaClanMemberAsync(YautjaClanMemberRecord member)

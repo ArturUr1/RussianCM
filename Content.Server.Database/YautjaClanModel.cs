@@ -66,3 +66,7 @@ public sealed record YautjaClanMemberRecord(
     int Permissions,
     int Honor,
     bool IsLegacy);
+
+public sealed record YautjaClanDeleteResult(
+    bool Succeeded,
+    List<Guid> DetachedPlayers);

@@ -65,6 +65,51 @@ public abstract partial class ServerDbBase
         return clan.Id;
     }
 
+    public async Task<bool> UpdateYautjaClanAsync(
+        int clanId,
+        string name,
+        string description,
+        string color)
+    {
+        await using var db = await GetDb();
+        var clan = await db.DbContext.YautjaClans
+            .SingleOrDefaultAsync(entry => entry.Id == clanId && entry.Active);
+        if (clan == null)
+            return false;
+
+        clan.Name = name;
+        clan.Description = description;
+        clan.Color = color;
+        await db.DbContext.SaveChangesAsync();
+        return true;
+    }
+
+    public async Task<YautjaClanDeleteResult> DeactivateYautjaClanAsync(int clanId)
+    {
+        await using var db = await GetDb();
+        await using var transaction = await db.DbContext.Database.BeginTransactionAsync();
+
+        var clan = await db.DbContext.YautjaClans
+            .SingleOrDefaultAsync(entry => entry.Id == clanId && entry.Active);
+        if (clan == null)
+            return new(false, []);
+
+        var members = await db.DbContext.YautjaClanMembers
+            .Where(entry => entry.ClanId == clanId)
+            .ToListAsync();
+        var detachedPlayers = members
+            .Select(entry => entry.PlayerUserId)
+            .ToList();
+
+        clan.Active = false;
+        foreach (var member in members)
+            member.ClanId = null;
+
+        await db.DbContext.SaveChangesAsync();
+        await transaction.CommitAsync();
+        return new(true, detachedPlayers);
+    }
+
     public async Task UpsertYautjaClanMemberAsync(YautjaClanMemberRecord member)
     {
         await using var db = await GetDb();
