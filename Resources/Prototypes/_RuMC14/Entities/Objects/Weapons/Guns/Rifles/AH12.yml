@@ -80,11 +80,19 @@
           - RMCAttachmentS6ReflexSight
           - RMCAttachmentS84xTelescopicScope
           - RMCAttachmentS42xTelescopicMiniscope
+      rmc-aslot-underbarrel:
+        whitelist:
+          tags:
+          - RMCAttachmentAngledGrip
+          - RMCAttachmentGyroscopicStabilizer
+          - RMCAttachmentLaserSight
+          - RMCAttachmentVerticalGrip
   - type: AttachableHolderVisuals
     offsets:
       rmc-aslot-rail: 0, 0.1
-      rmc-aslot-underbarrel: 0.35, -0.3
+      rmc-aslot-underbarrel: 0.28, -0.3
       rmc-aslot-barrel: 0.84, 0
+      rmc-aslot-stock: 0.2, -0.2
   - type: ItemCamouflage
     camouflageVariations: { }
   - type: Tag
