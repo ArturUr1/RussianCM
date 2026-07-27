@@ -72,16 +72,13 @@ public abstract partial class ServerDbBase
         string color)
     {
         await using var db = await GetDb();
-        var clan = await db.DbContext.YautjaClans
-            .SingleOrDefaultAsync(entry => entry.Id == clanId && entry.Active);
-        if (clan == null)
-            return false;
-
-        clan.Name = name;
-        clan.Description = description;
-        clan.Color = color;
-        await db.DbContext.SaveChangesAsync();
-        return true;
+        var updated = await db.DbContext.YautjaClans
+            .Where(entry => entry.Id == clanId && entry.Active)
+            .ExecuteUpdateAsync(setters => setters
+                .SetProperty(entry => entry.Name, name)
+                .SetProperty(entry => entry.Description, description)
+                .SetProperty(entry => entry.Color, color));
+        return updated == 1;
     }
 
     public async Task<YautjaClanDeleteResult> DeactivateYautjaClanAsync(int clanId)
@@ -89,9 +86,11 @@ public abstract partial class ServerDbBase
         await using var db = await GetDb();
         await using var transaction = await db.DbContext.Database.BeginTransactionAsync();
 
-        var clan = await db.DbContext.YautjaClans
-            .SingleOrDefaultAsync(entry => entry.Id == clanId && entry.Active);
-        if (clan == null)
+        var deactivated = await db.DbContext.YautjaClans
+            .Where(entry => entry.Id == clanId && entry.Active)
+            .ExecuteUpdateAsync(setters => setters
+                .SetProperty(entry => entry.Active, false));
+        if (deactivated != 1)
             return new(false, []);
 
         var members = await db.DbContext.YautjaClanMembers
@@ -101,7 +100,6 @@ public abstract partial class ServerDbBase
             .Select(entry => entry.PlayerUserId)
             .ToList();
 
-        clan.Active = false;
         foreach (var member in members)
             member.ClanId = null;
 
