@@ -1,3 +1,4 @@
+using System.Numerics;
 using Content.Server.Chat.Systems;
 using Content.Server.Radio.Components;
 using Content.Shared._AU14.Callsigns;
@@ -165,8 +166,10 @@ public sealed partial class ANPRCRadioSystem
                 TryComp(wearing.Radio, out ANPRCRadioComponent? logRadio) &&
                 logRadio.Enabled)
             {
-                // log headset traffic under what actually went on air
-                var logName = TryComp(ent.Owner, out AU14CallsignComponent? ownCallsign) &&
+                // log headset traffic under what actually went on air: the callsign
+                // on a callsign-faction net, the plain name on an open channel
+                var logName = AU14Callsigns.IsCallsignChannel(args.Channel) &&
+                              TryComp(ent.Owner, out AU14CallsignComponent? ownCallsign) &&
                               !string.IsNullOrEmpty(ownCallsign.Callsign)
                     ? ownCallsign.Callsign
                     : Name(ent.Owner);
@@ -211,6 +214,14 @@ public sealed partial class ANPRCRadioSystem
     {
         var radio = pack.Comp;
 
+        // the set cannot search and talk at once. stay silent or stop sweeping
+        if (radio.SweepEnabled)
+        {
+            args.Channel = null;
+            _cmChat.ChatMessageToOne(Loc.GetString("anprc-sweep-tx-blocked"), speaker);
+            return;
+        }
+
         // callsign goes out as the speaker name, message body carries no prefix
         var outMessage = args.Message;
 
@@ -240,6 +251,14 @@ public sealed partial class ANPRCRadioSystem
 
         _powerCell.TryUseCharge(pack.Owner, GetTransmitCost(radio));
 
+        // callsigns are procedure on the callsign factions' nets only. a pack tuned
+        // to an open channel - colony, WEYU, CMB - puts the speaker on air under
+        // their own name and rank, and the log records what actually went out
+        var callsignNet = _commsEnabled && AU14Callsigns.IsCallsignChannel(channel);
+
+        if (!callsignNet)
+            senderName = Name(speaker);
+
         var unsecured = !string.IsNullOrEmpty(channel.Faction) &&
                         radio.Mode != RadioMode.PlainText &&
                         !_crypto.HasMatchingCrypto(pack.Owner, channel);
@@ -264,16 +283,17 @@ public sealed partial class ANPRCRadioSystem
             EnsureComp<TelecomExemptComponent>(pack.Owner);
 
         // strip the job prefix for the duration of the send so the radio line is just
-        // the callsign, no name no role. with the overhaul disabled this goes out unmasked
+        // the callsign, no name no role. with the overhaul disabled, or on an open
+        // channel where the callsign does not apply, this goes out unmasked
         JobPrefixComponent? jobPrefix = null;
-        var hadJobPrefix = _commsEnabled && TryComp(speaker, out jobPrefix);
+        var hadJobPrefix = callsignNet && TryComp(speaker, out jobPrefix);
         var savedPrefix = jobPrefix?.Prefix ?? default;
         var savedAdditionalPrefix = jobPrefix?.AdditionalPrefix;
 
         if (hadJobPrefix)
             RemComp<JobPrefixComponent>(speaker);
 
-        radio.NameMaskActive = _commsEnabled;
+        radio.NameMaskActive = callsignNet;
 
         try
         {
@@ -409,6 +429,11 @@ public sealed partial class ANPRCRadioSystem
         var clear = new List<string>();
         var degraded = new List<string>();
 
+        // gated nets carry traffic wherever any anchor covers, not just around this
+        // pack. the check has to grade stations the same way the traffic gate does or
+        // it reports dead air to a platoon that can hear the operator fine
+        var gated = channel.AnchorGated;
+
         var query = EntityQueryEnumerator<ANPRCRadioComponent, TransformComponent>();
 
         while (query.MoveNext(out var otherUid, out var other, out var otherXform))
@@ -422,9 +447,8 @@ public sealed partial class ANPRCRadioSystem
             if (!HasPreset(other, channelId.Id))
                 continue;
 
-            var distance = (senderPos - _transform.GetWorldPosition(otherXform)).Length();
-
-            AddByRange(distance, fullRange, partialRange, GetOnAirName((otherUid, other)), clear, degraded);
+            AddStation(ent.Owner, otherUid, gated, channelId.Id, senderPos, fullRange, partialRange,
+                GetOnAirName((otherUid, other)), clear, degraded);
         }
 
         var headsetQuery = EntityQueryEnumerator<WearingHeadsetComponent, TransformComponent>();
@@ -443,14 +467,13 @@ public sealed partial class ANPRCRadioSystem
                 continue;
             }
 
-            var distance = (senderPos - _transform.GetWorldPosition(wearerXform)).Length();
-
             var label = TryComp(wearerUid, out AU14CallsignComponent? wearerCallsign) &&
                         !string.IsNullOrEmpty(wearerCallsign.Callsign)
                 ? wearerCallsign.Callsign
                 : Name(wearerUid);
 
-            AddByRange(distance, fullRange, partialRange, label, clear, degraded);
+            AddStation(ent.Owner, wearerUid, gated, channelId.Id, senderPos, fullRange, partialRange,
+                label, clear, degraded);
         }
 
         var nothingHeard = Loc.GetString("anprc-radio-check-nothing-heard");
@@ -487,14 +510,37 @@ public sealed partial class ANPRCRadioSystem
         };
     }
 
-    private static void AddByRange(
-        float distance,
+    private void AddStation(
+        EntityUid pack,
+        EntityUid station,
+        bool gated,
+        string channelId,
+        Vector2 senderPos,
         float fullRange,
         float partialRange,
         string label,
         List<string> clear,
         List<string> degraded)
     {
+        if (gated)
+        {
+            // the worn pack is itself an anchor for its presets, so stations standing
+            // next to the operator still grade through this path
+            switch (_range.GetRangeTier(station, channelId, out _))
+            {
+                case ANPRCRangeTier.Full:
+                    clear.Add(label);
+                    return;
+                case ANPRCRangeTier.Partial:
+                    degraded.Add(label);
+                    return;
+                default:
+                    return;
+            }
+        }
+
+        var distance = (senderPos - _transform.GetWorldPosition(station)).Length();
+
         if (distance <= fullRange)
             clear.Add(label);
         else if (distance <= partialRange)

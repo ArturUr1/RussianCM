@@ -85,7 +85,7 @@
 - type: entity
   parent: MobStatusEffectBase
   id: StatusEffectCMUTachycardia
-  name: tachycardia
+  name: status-effect-cmu-tachycardia # RuMC edit
   categories: [ HideSpawnMenu ]
   components:
   - type: Tachycardia
@@ -95,7 +95,7 @@
 - type: entity
   parent: MobStatusEffectBase
   id: StatusEffectCMUArrhythmia
-  name: arrhythmia
+  name: status-effect-cmu-arrhythmia # RuMC edit
   categories: [ HideSpawnMenu ]
   components:
   - type: Arrhythmia
@@ -105,7 +105,7 @@
 - type: entity
   parent: MobStatusEffectBase
   id: StatusEffectCMUCardiacArrest
-  name: cardiac arrest
+  name: status-effect-cmu-cardiac-arrest # RuMC edit
   categories: [ HideSpawnMenu ]
   components:
   - type: CardiacArrest
@@ -289,7 +289,7 @@
 - type: entity
   parent: MobStatusEffectBase
   id: StatusEffectCMUPainSuppression
-  name: pain suppression
+  name: status-effect-cmu-pain-suppression # RuMC edit
   categories: [ HideSpawnMenu ]
 
 - type: entity
@@ -297,6 +297,34 @@
   id: StatusEffectCMUBoneRegenBoost
   name: accelerated bone regen
   categories: [ HideSpawnMenu ]
+
+- type: entity
+  parent: MobStatusEffectBase
+  id: StatusEffectCMUOxycodoneHaze
+  name: status-effect-cmu-opioid-haze # RuMC edit
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: RMCDazed
+    visionReduction: 0.0125
+    outerFadeStart: 0.85
+    outerFadeEnd: 1.0
+    alpha: 0.0625
+    innerAlpha: 0
+    color: "#000000"
+
+- type: entity
+  parent: MobStatusEffectBase
+  id: StatusEffectCMUFentanylHaze
+  name: status-effect-cmu-fentanyl-haze # RuMC edit
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: RMCDazed
+    visionReduction: 0.05
+    outerFadeStart: 0.85
+    outerFadeEnd: 1.0
+    alpha: 0.25
+    innerAlpha: 0
+    color: "#000000"
 
 # ----- Pain shock ---------------------------------------------------------
 

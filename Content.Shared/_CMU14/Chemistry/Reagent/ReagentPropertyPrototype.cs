@@ -6,6 +6,7 @@ using Content.Shared._RMC14.Prototypes;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Serialization.TypeSerializers.Implementations.Custom.Prototype.Array;
 using Content.Shared._RMC14.Chemistry.Effects;
+using Content.Shared.FixedPoint;
 
 namespace Content.Shared._CMU14.Chemistry.Reagent;
 
@@ -61,10 +62,18 @@ public partial class ReagentPropertyPrototype : IPrototype, IInheritingPrototype
     public bool GenerationDisabled = false;
 
     [ViewVariables(VVAccess.ReadOnly), DataField]
-    public bool Starter = false;
+    public string EffectName;
 
     [ViewVariables(VVAccess.ReadOnly), DataField]
-    public string Code = "000";
+    public bool Starter = false;
+
+    // RuMC edit start
+    [ViewVariables(VVAccess.ReadOnly), DataField]
+    public LocId Code = "cmu-reagent-property-code-unknown";
+
+    [ViewVariables(VVAccess.ReadOnly)]
+    public string LocalizedCode => Loc.GetString(Code);
+    // RuMC edit end
 
     [ParentDataField(typeof(AbstractPrototypeIdArraySerializer<ReagentPropertyPrototype>))]
     public string[]? Parents { get; private set; }
@@ -86,6 +95,34 @@ public partial class ReagentPropertyPrototype : IPrototype, IInheritingPrototype
 
     [ViewVariables(VVAccess.ReadOnly), DataField]
     public bool CostPenalty = true;
+
+    [ViewVariables(VVAccess.ReadOnly), DataField]
+    public int MaxLevel = 999;
+
+    [ViewVariables(VVAccess.ReadOnly), DataField]
+    public bool Volatile = false;
+
+    [ViewVariables(VVAccess.ReadOnly), DataField]
+    public bool UpdatesStats = false;
+
+    [ViewVariables(VVAccess.ReadOnly), DataField]
+    public FixedPoint2 IntensityModPerLevel = 0f;
+
+    [ViewVariables(VVAccess.ReadOnly), DataField]
+    public FixedPoint2 RadiusModPerLevel = 0f;
+
+    [ViewVariables(VVAccess.ReadOnly), DataField]
+    public FixedPoint2 DurationModPerLevel = 0f;
+
+    [ViewVariables(VVAccess.ReadOnly), DataField]
+    public FixedPoint2 IntensityPerLevel = 0f;
+
+    [ViewVariables(VVAccess.ReadOnly), DataField]
+    public FixedPoint2 RangePerLevel = 0f;
+
+    [ViewVariables(VVAccess.ReadOnly), DataField]
+    public FixedPoint2 DurationPerLevel = 0f;
+
 
     [NeverPushInheritance]
     [AbstractDataField]

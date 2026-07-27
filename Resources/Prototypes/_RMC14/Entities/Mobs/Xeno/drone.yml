@@ -16,7 +16,7 @@
     voice: TWITCH
     faction: Xeno
   - type: GhostRole
-    name: cm-job-name-xeno-drone
+    name: cmu-job-name-xeno-unknown
   - type: MobState
     allowedStates:
     - Alive
@@ -31,6 +31,25 @@
     tags:
     - DoorBumpOpener
     - RMCSynthGrabbable
+  - type: DrawableSolution
+    solution: blood
+  - type: SolutionContainerManager
+    solutions:
+      blood:
+        maxVol: 600
+        reagents:
+        - ReagentId: CMUXenoBlood
+          Quantity: 300
+        - ReagentId: CMUXenoPlasmaPurple
+          Quantity: 300
+  - type: SolutionRegeneration
+    solution: blood
+    generated:
+      reagents:
+      - ReagentId: CMUXenoBlood
+        Quantity: 1
+      - ReagentId: CMUXenoPlasmaPurple
+        Quantity: 1
   - type: MeleeWeapon
     damage:
       groups:
@@ -110,7 +129,7 @@
   - type: IntelRecoverCorpseObjectiveOnDeath
     value: 0.1
   - type: FixedIdentity
-    name: cm-job-name-xeno-drone
+    name: cmu-job-name-xeno-unknown
   - type: RMCSurgeryXenoHeart
     item: RMCOrganXenoHeartT1
   - type: CMUXenoZJump
@@ -154,6 +173,7 @@
     - DoorXenoResin
     - XenoStickyResin
     - XenoFastResin
+    - XenoCollapseResin
     - XenoResinSpikes
   - type: VentCrawler
     ventCrawlIcon: drone

@@ -434,10 +434,14 @@ namespace Content.Server.Database.Migrations.Postgres
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("name");
+                      b.Property<string>("Name")
+                          .IsRequired()
+                          .HasColumnType("text")
+                          .HasColumnName("name");
+
+                      b.Property<string>("OOCColor")
+                          .HasColumnType("text")
+                          .HasColumnName("ooc_color");
 
                     b.HasKey("Id")
                         .HasName("PK_admin_rank");
@@ -1231,6 +1235,10 @@ namespace Content.Server.Database.Migrations.Postgres
                         .HasColumnType("text")
                         .HasColumnName("voice");
 
+                    b.Property<bool>("Synthetic")
+                        .HasColumnType("boolean")
+                        .HasColumnName("synthetic");
+
                     b.Property<string>("ThreatPreference")
                         .HasColumnType("text")
                         .HasColumnName("threat_preference");
@@ -1248,6 +1256,10 @@ namespace Content.Server.Database.Migrations.Postgres
                         .HasColumnType("text")
                         .HasDefaultValue("")
                         .HasColumnName("xeno_prefix");
+
+                    b.Property<string>("YautjaProfile")
+                        .HasColumnType("text")
+                        .HasColumnName("yautja_profile");
 
                     b.HasKey("Id")
                         .HasName("PK_profile");
@@ -1506,22 +1518,6 @@ namespace Content.Server.Database.Migrations.Postgres
                         .HasName("PK_rmc_discord_accounts");
 
                     b.ToTable("rmc_discord_accounts", (string)null);
-                });
-
-            modelBuilder.Entity("Content.Server.Database.RMCLarvaPoolOptOut", b =>
-                {
-                    b.Property<Guid>("PlayerId")
-                        .HasColumnType("uuid")
-                        .HasColumnName("player_id");
-
-                    b.Property<string>("HiveId")
-                        .HasColumnType("text")
-                        .HasColumnName("hive_id");
-
-                    b.HasKey("PlayerId", "HiveId")
-                        .HasName("PK_rmc_larva_pool_opt_out");
-
-                    b.ToTable("rmc_larva_pool_opt_out", (string)null);
                 });
 
             modelBuilder.Entity("Content.Server.Database.RMCLinkedAccount", b =>
@@ -2801,19 +2797,6 @@ namespace Content.Server.Database.Migrations.Postgres
                     b.Navigation("Round");
                 });
 
-            modelBuilder.Entity("Content.Server.Database.RMCLarvaPoolOptOut", b =>
-                {
-                    b.HasOne("Content.Server.Database.Player", "Player")
-                        .WithMany("LarvaPoolOptOuts")
-                        .HasForeignKey("PlayerId")
-                        .HasPrincipalKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
-                        .HasConstraintName("FK_rmc_larva_pool_opt_out_player_player_id");
-
-                    b.Navigation("Player");
-                });
-
             modelBuilder.Entity("Content.Server.Database.RMCLinkedAccount", b =>
                 {
                     b.HasOne("Content.Server.Database.RMCDiscordAccount", "Discord")
@@ -3283,8 +3266,6 @@ namespace Content.Server.Database.Migrations.Postgres
                     b.Navigation("CommendationsReceived");
 
                     b.Navigation("JobWhitelists");
-
-                    b.Navigation("LarvaPoolOptOuts");
 
                     b.Navigation("LinkedAccount");
 

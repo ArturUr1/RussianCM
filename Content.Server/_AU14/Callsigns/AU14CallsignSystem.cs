@@ -29,8 +29,6 @@ public sealed partial class AU14CallsignSystem : EntitySystem
     [Dependency] private IGameTiming _timing = default!;
     [Dependency] private IConfigurationManager _config = default!;
 
-    private static readonly HashSet<string> CallsignFactions = ["govfor", "opfor", "clf"];
-
     private static readonly Dictionary<string, string> DefaultCommandWords = new()
     {
         ["govfor"] = "HAVOC",
@@ -48,9 +46,11 @@ public sealed partial class AU14CallsignSystem : EntitySystem
     private static readonly Dictionary<string, string> DefaultCategoryWords = new(StringComparer.OrdinalIgnoreCase)
     {
         ["AIR"] = "TALON",
+        ["ARMOR"] = "DRAGOON",
         ["MP"] = "WARDEN",
         ["MEDICAL"] = "DUSTOFF",
         ["INTEL"] = "PROPHET",
+        ["SYNTH"] = "APOLLO",
     };
 
     private readonly Dictionary<(string Faction, string Category), string> _categoryWords = new();
@@ -181,7 +181,7 @@ public sealed partial class AU14CallsignSystem : EntitySystem
 
     private void TryAssignSwept(EntityUid mob, string? faction)
     {
-        if (faction == null || !CallsignFactions.Contains(faction))
+        if (faction == null || !AU14Callsigns.Factions.Contains(faction))
             return;
 
         if (TryComp(mob, out AU14CallsignComponent? existing) &&
@@ -206,7 +206,7 @@ public sealed partial class AU14CallsignSystem : EntitySystem
             ? "clf"
             : CompOrNull<MarineComponent>(ev.Mob)?.Faction;
 
-        if (faction == null || !CallsignFactions.Contains(faction))
+        if (faction == null || !AU14Callsigns.Factions.Contains(faction))
             return;
 
         var callsign = EnsureComp<AU14CallsignComponent>(ev.Mob);
@@ -287,7 +287,6 @@ public sealed partial class AU14CallsignSystem : EntitySystem
         var word = GetElementWord(callsign);
 
         callsign.Callsign = $"{word} {callsign.Suffix}";
-        Dirty(uid, callsign);
 
         PushConsoleStates(callsign.Faction);
     }
@@ -330,6 +329,11 @@ public sealed partial class AU14CallsignSystem : EntitySystem
     {
         if (_squadWords.TryGetValue(squad, out var word))
             return word;
+
+        // squads carry a color word (RED, YELLOW, PURPLE) so callsigns never collide
+        // with the phonetic alphabet used for everything else on the net
+        if (CompOrNull<AU14SquadCallsignComponent>(squad)?.Word is { Length: > 0 } squadWord)
+            return squadWord.ToUpperInvariant();
 
         return Name(squad).ToUpperInvariant();
     }
@@ -398,6 +402,14 @@ public sealed partial class AU14CallsignSystem : EntitySystem
     private void OnCallsignSpeak(Entity<AU14CallsignComponent> ent, ref EntitySpokeEvent args)
     {
         if (!_commsEnabled || args.Channel == null || string.IsNullOrEmpty(ent.Comp.Callsign))
+            return;
+
+        // the callsign only holds on the callsign factions' nets. on an open named
+        // channel - colony, WEYU, CMB - the speaker goes out under their own name
+        // and rank like anyone else. frequency 0 is a sentinel channel (ANPRC or
+        // tunable raw-frequency path), which stays masked: the real audience there
+        // is whoever tuned in, not the public
+        if (args.Channel.Frequency > 0 && !AU14Callsigns.IsCallsignChannel(args.Channel))
             return;
 
         ent.Comp.RadioMaskTick = _timing.CurTick;
