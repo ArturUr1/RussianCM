@@ -1,0 +1,19 @@
+
+
+
+- type: entity
+  parent: RMCMarineHelmetBase
+  id: RuMCBEARInfantryHelmet
+  name: bb
+  description: bb
+  components:
+  - type: IdentityBlocker
+  - type: Sprite
+    sprite: _RuMC14/Clothing/BEAR/helmets/helmet.rsi
+  - type: Clothing
+    sprite: _RuMC14/Clothing/BEAR/helmets/helmet.rsi
+  - type: CMArmor
+    melee: 25
+    bullet: 25
+    bio: 20
+    explosionArmor: 12

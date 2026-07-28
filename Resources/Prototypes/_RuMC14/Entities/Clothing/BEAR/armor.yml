@@ -1,0 +1,41 @@
+- type: entity
+  parent: AU14BaseArmor
+  id: RuMCArmorBEAR_alt
+  name: bb
+  description: bb
+  components:
+  - type: Sprite
+    sprite: _RuMC14/Clothing/BEAR/armor/bear_armor.rsi
+  - type: ClothingRequireEquipped
+    autoUnequip: true
+    denyReason: rmc-armor-not-spp-jumpsuit
+    whitelist:
+      tags:
+      - RuMCUniformBEAR
+
+- type: entity
+  parent: AU14BaseArmor
+  id: RuMCArmorBEAR_Heavy
+  name: bb
+  description: bb
+  components:
+  - type: Sprite
+    sprite: _RuMC14/Clothing/BEAR/armor/bear_large_armor.rsi
+
+- type: entity
+  parent: AU14BaseArmor
+  id: RuMCArmorBEAR
+  name: bb
+  description: bb
+  components:
+  - type: Sprite
+    sprite: _RuMC14/Clothing/BEAR/armor/bear_standard_armor.rsi
+
+- type: entity
+  parent: AU14BaseArmorLight
+  id: RuMCArmorBEAR_Light
+  name: bb
+  description: bb
+  components:
+  - type: Sprite
+    sprite: _RuMC14/Clothing/BEAR/armor/bear_light_armor.rsi
