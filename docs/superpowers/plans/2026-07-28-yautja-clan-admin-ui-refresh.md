@@ -30,50 +30,29 @@
 
 - [ ] **Step 1: Write the failing test**
 
-Add a recursive control collector and a test like:
+Add a focused tooltip helper test like:
 
 ```csharp
 [Test]
-public void WindowProvidesContextualTooltips()
+public void ContextualTooltipIsAppliedToControl()
 {
-    var window = new YautjaClanAdminWindow();
-    var controls = CollectControls(window.Contents).ToList();
-    var tooltips = controls
-        .Select(control => control.ToolTip)
-        .Where(tooltip => !string.IsNullOrWhiteSpace(tooltip))
-        .ToList();
-
-    Assert.Multiple(() =>
-    {
-        Assert.That(tooltips, Does.Contain(Loc.GetString("cmu-yautja-clan-admin-name-tooltip")));
-        Assert.That(tooltips, Does.Contain(Loc.GetString("cmu-yautja-clan-admin-color-tooltip")));
-        Assert.That(tooltips, Does.Contain(Loc.GetString("cmu-yautja-clan-admin-delete-tooltip")));
-        Assert.That(tooltips.Count, Is.GreaterThanOrEqualTo(10));
-    });
-}
-
-private static IEnumerable<Control> CollectControls(Control control)
-{
-    yield return control;
-    foreach (var child in control.Children)
-    {
-        foreach (var nested in CollectControls(child))
-            yield return nested;
-    }
+    var field = new LineEdit();
+    YautjaClanAdminWindow.ApplyTooltip(field, "cmu-yautja-clan-admin-name-tooltip");
+    Assert.That(field.ToolTip, Is.EqualTo(Loc.GetString("cmu-yautja-clan-admin-name-tooltip")));
 }
 ```
 
-Add the required `System.Collections.Generic`, `System.Linq`, `Robust.Client.UserInterface`, and `Robust.Shared.Localization` imports if they are not already present.
+Add the required `Robust.Client.UserInterface`, `Robust.Client.UserInterface.Controls`, and `Robust.Shared.Localization` imports if they are not already present.
 
 - [ ] **Step 2: Run the test to verify RED**
 
 Run:
 
 ```powershell
-dotnet test Content.Tests/Content.Tests.csproj --no-restore --filter "FullyQualifiedName~YautjaClanAdminWindowTest.WindowProvidesContextualTooltips"
+dotnet test Content.Tests/Content.Tests.csproj --no-restore --filter "FullyQualifiedName~YautjaClanAdminWindowTest.ContextualTooltipIsAppliedToControl"
 ```
 
-Expected result: the test fails because the current window has no matching contextual tooltips.
+Expected result: compilation fails because `YautjaClanAdminWindow.ApplyTooltip` is not implemented yet.
 
 - [ ] **Step 3: Commit the failing test**
 
