@@ -11,6 +11,8 @@ namespace Content.Client._CMU14.Yautja;
 
 public sealed class YautjaClanAdminWindow : DefaultWindow
 {
+    public static readonly Vector2 DefaultWindowSize = new(760, 560);
+
     private readonly LineEdit _clanName;
     private readonly LineEdit _clanDescription;
     private readonly LineEdit _clanColor;
@@ -44,25 +46,45 @@ public sealed class YautjaClanAdminWindow : DefaultWindow
     {
         Title = Loc.GetString("cmu-yautja-clan-admin-title");
         Resizable = true;
-        SetSize = new Vector2(900, 760);
-        MinSize = new Vector2(820, 700);
+        SetSize = DefaultWindowSize;
+        MinSize = new Vector2(680, 500);
 
         var root = new BoxContainer
         {
-            Orientation = BoxContainer.LayoutOrientation.Vertical,
-            SeparationOverride = 8,
-            Margin = new Thickness(8),
+            Orientation = BoxContainer.LayoutOrientation.Horizontal,
+            SeparationOverride = 6,
+            Margin = new Thickness(6),
             HorizontalExpand = true,
             VerticalExpand = true,
         };
         Contents.AddChild(root);
+
+        var leftPane = new BoxContainer
+        {
+            Orientation = BoxContainer.LayoutOrientation.Vertical,
+            SeparationOverride = 6,
+            MinWidth = 340,
+            HorizontalExpand = true,
+            VerticalExpand = true,
+        };
+        root.AddChild(leftPane);
+
+        var rightPane = new BoxContainer
+        {
+            Orientation = BoxContainer.LayoutOrientation.Vertical,
+            SeparationOverride = 6,
+            MinWidth = 340,
+            HorizontalExpand = true,
+            VerticalExpand = true,
+        };
+        root.AddChild(rightPane);
 
         var clanSection = YautjaBracerUiStyle.Section(
             Loc.GetString("cmu-yautja-clan-admin-section-clan"),
             out var clanBody,
             YautjaBracerUiStyle.HotRed);
         clanSection.VerticalExpand = false;
-        clanBody.AddChild(CreateHint("cmu-yautja-clan-admin-clan-section-hint"));
+        clanBody.Margin = new Thickness(7);
         _clanFormHeader = CreateHeader("cmu-yautja-clan-admin-create-header");
         clanBody.AddChild(_clanFormHeader);
         _clanName = CreateLineEdit(
@@ -100,7 +122,7 @@ public sealed class YautjaClanAdminWindow : DefaultWindow
         };
         clanActions.AddChild(_cancelClan);
         clanBody.AddChild(clanActions);
-        root.AddChild(clanSection);
+        leftPane.AddChild(clanSection);
         SyncEditorControls();
 
         var playerSection = YautjaBracerUiStyle.Section(
@@ -108,7 +130,7 @@ public sealed class YautjaClanAdminWindow : DefaultWindow
             out var playerBody,
             YautjaBracerUiStyle.Amber);
         playerSection.VerticalExpand = false;
-        playerBody.AddChild(CreateHint("cmu-yautja-clan-admin-player-section-hint"));
+        playerBody.Margin = new Thickness(7);
         _player = CreateLineEdit(
             "cmu-yautja-clan-admin-player",
             "cmu-yautja-clan-admin-player-tooltip");
@@ -129,7 +151,7 @@ public sealed class YautjaClanAdminWindow : DefaultWindow
         var setMembership = CreateButton(
             "cmu-yautja-clan-admin-set-membership",
             "cmu-yautja-clan-admin-set-membership-tooltip");
-        setMembership.MinWidth = 180;
+        setMembership.MinWidth = 135;
         setMembership.OnPressed += _ => OnSetMembership?.Invoke(
             _player.Text,
             string.IsNullOrWhiteSpace(_clanId.Text) ? "none" : _clanId.Text,
@@ -148,7 +170,7 @@ public sealed class YautjaClanAdminWindow : DefaultWindow
         var setRank = CreateButton(
             "cmu-yautja-clan-admin-set-rank",
             "cmu-yautja-clan-admin-set-rank-tooltip");
-        setRank.MinWidth = 150;
+        setRank.MinWidth = 125;
         setRank.OnPressed += _ => OnSetRank?.Invoke(_player.Text, (YautjaRank) _rank.SelectedId);
         rankRow.AddChild(setRank);
         playerBody.AddChild(rankRow);
@@ -165,7 +187,7 @@ public sealed class YautjaClanAdminWindow : DefaultWindow
         var setWhitelist = CreateButton(
             "cmu-yautja-clan-admin-set-whitelist",
             "cmu-yautja-clan-admin-set-whitelist-tooltip");
-        setWhitelist.MinWidth = 150;
+        setWhitelist.MinWidth = 125;
         setWhitelist.OnPressed += _ => OnSetWhitelist?.Invoke(_player.Text, (YautjaWhitelistFlags) _whitelist.SelectedId);
         whitelistRow.AddChild(setWhitelist);
         playerBody.AddChild(whitelistRow);
@@ -185,15 +207,15 @@ public sealed class YautjaClanAdminWindow : DefaultWindow
             _inspection,
             YautjaBracerUiStyle.DeepCard,
             YautjaBracerUiStyle.MutedBorder,
-            new Thickness(7, 5)));
-        root.AddChild(playerSection);
+            new Thickness(5, 3)));
+        leftPane.AddChild(playerSection);
 
         var clansSection = YautjaBracerUiStyle.Section(
             Loc.GetString("cmu-yautja-clan-admin-section-existing"),
             out var clansBody,
             YautjaBracerUiStyle.HotRed);
         clansSection.VerticalExpand = true;
-        clansBody.AddChild(CreateHint("cmu-yautja-clan-admin-existing-section-hint"));
+        clansBody.Margin = new Thickness(7);
         var scroll = new ScrollContainer
         {
             VerticalExpand = true,
@@ -224,7 +246,7 @@ public sealed class YautjaClanAdminWindow : DefaultWindow
         refresh.OnPressed += _ => OnRefresh?.Invoke();
         bottom.AddChild(refresh);
         clansBody.AddChild(bottom);
-        root.AddChild(clansSection);
+        rightPane.AddChild(clansSection);
     }
 
     public void UpdateState(YautjaClanAdminEuiState state)
@@ -420,7 +442,7 @@ public sealed class YautjaClanAdminWindow : DefaultWindow
         {
             Text = Loc.GetString(localization),
             HorizontalExpand = true,
-            MinHeight = 32,
+            MinHeight = 28,
         };
         ApplyTooltip(button, tooltipLocalization);
         return button;
