@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Content.Shared.Eui;
+using Robust.Shared.Network;
 using Robust.Shared.Serialization;
 
 namespace Content.Shared._CMU14.Yautja;
@@ -44,14 +45,16 @@ public sealed class YautjaClanAdminClanState
         string description,
         int honor,
         string color,
-        int members)
+        int memberCount,
+        List<YautjaClanAdminMemberState>? members = null)
     {
         Id = id;
         Name = name;
         Description = description;
         Honor = honor;
         Color = color;
-        Members = members;
+        MemberCount = memberCount;
+        Members = members ?? [];
     }
 
     public int Id { get; }
@@ -59,7 +62,25 @@ public sealed class YautjaClanAdminClanState
     public string Description { get; }
     public int Honor { get; }
     public string Color { get; }
-    public int Members { get; }
+    public int MemberCount { get; }
+    public List<YautjaClanAdminMemberState> Members { get; }
+}
+
+[Serializable, NetSerializable]
+public sealed class YautjaClanAdminMemberState
+{
+    public YautjaClanAdminMemberState(NetUserId playerId, string name, YautjaRank rank, bool online)
+    {
+        PlayerId = playerId;
+        Name = name;
+        Rank = rank;
+        Online = online;
+    }
+
+    public NetUserId PlayerId { get; }
+    public string Name { get; }
+    public YautjaRank Rank { get; }
+    public bool Online { get; }
 }
 
 [Serializable, NetSerializable]
