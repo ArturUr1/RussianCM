@@ -85,6 +85,7 @@ cmu-yautja-clan-admin-color-tooltip = Hex color in #RRGGBB format, for example #
 cmu-yautja-clan-admin-player-tooltip = Enter a player name or UserId.
 cmu-yautja-clan-admin-clan-id-tooltip = Enter an existing numeric id, or none to detach the player.
 cmu-yautja-clan-admin-membership-rank-tooltip = Rank assigned together with clan membership.
+cmu-yautja-clan-admin-membership-rank = Membership rank
 cmu-yautja-clan-admin-rank-tooltip = Persistent rank to assign to the player.
 cmu-yautja-clan-admin-whitelist-tooltip = Whitelist access group to assign to the player.
 cmu-yautja-clan-admin-submit-tooltip = Create a clan or save changes to the current clan.

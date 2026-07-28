@@ -55,6 +55,7 @@ cmu-yautja-clan-admin-color-tooltip = Цвет в формате #RRGGBB, нап
 cmu-yautja-clan-admin-player-tooltip = Введите имя игрока или UserId.
 cmu-yautja-clan-admin-clan-id-tooltip = Укажите существующий числовой ID или none, чтобы отвязать игрока.
 cmu-yautja-clan-admin-membership-rank-tooltip = Ранг, который будет установлен вместе с членством.
+cmu-yautja-clan-admin-membership-rank = Ранг членства
 cmu-yautja-clan-admin-rank-tooltip = Постоянный ранг, который будет назначен игроку.
 cmu-yautja-clan-admin-whitelist-tooltip = Группа доступа whitelist для игрока.
 cmu-yautja-clan-admin-submit-tooltip = Создать клан или сохранить изменения в текущем клане.

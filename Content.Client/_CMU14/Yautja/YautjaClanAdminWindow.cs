@@ -3,6 +3,7 @@ using System.Linq;
 using System.Numerics;
 using Content.Client._RMC14.UserInterface;
 using Content.Shared._CMU14.Yautja;
+using Robust.Client.UserInterface;
 using Robust.Client.UserInterface.Controls;
 using Robust.Client.UserInterface.CustomControls;
 
@@ -54,29 +55,60 @@ public sealed class YautjaClanAdminWindow : DefaultWindow
         };
         Contents.AddChild(root);
 
+        var clanSection = YautjaBracerUiStyle.Section(
+            Loc.GetString("cmu-yautja-clan-admin-section-clan"),
+            out var clanBody,
+            YautjaBracerUiStyle.HotRed);
+        clanBody.AddChild(CreateHint("cmu-yautja-clan-admin-clan-section-hint"));
         _clanFormHeader = CreateHeader("cmu-yautja-clan-admin-create-header");
-        root.AddChild(_clanFormHeader);
-        _clanName = CreateLineEdit("cmu-yautja-clan-admin-name");
-        root.AddChild(_clanName);
-        _clanDescription = CreateLineEdit("cmu-yautja-clan-admin-description");
-        root.AddChild(_clanDescription);
-        _clanColor = CreateLineEdit("cmu-yautja-clan-admin-color");
-        root.AddChild(_clanColor);
-        _submitClan = new Button();
+        clanBody.AddChild(_clanFormHeader);
+        _clanName = CreateLineEdit(
+            "cmu-yautja-clan-admin-name",
+            "cmu-yautja-clan-admin-name-tooltip");
+        clanBody.AddChild(CreateField("cmu-yautja-clan-admin-name", _clanName));
+        _clanDescription = CreateLineEdit(
+            "cmu-yautja-clan-admin-description",
+            "cmu-yautja-clan-admin-description-tooltip");
+        clanBody.AddChild(CreateField("cmu-yautja-clan-admin-description", _clanDescription));
+        _clanColor = CreateLineEdit(
+            "cmu-yautja-clan-admin-color",
+            "cmu-yautja-clan-admin-color-tooltip");
+        clanBody.AddChild(CreateField("cmu-yautja-clan-admin-color", _clanColor));
+
+        var clanActions = new BoxContainer
+        {
+            Orientation = BoxContainer.LayoutOrientation.Horizontal,
+            SeparationOverride = 6,
+            HorizontalExpand = true,
+        };
+        _submitClan = CreateButton(
+            "cmu-yautja-clan-admin-create",
+            "cmu-yautja-clan-admin-submit-tooltip");
         _submitClan.OnPressed += _ => SubmitClan();
-        root.AddChild(_submitClan);
-        _cancelClan = new Button { Text = Loc.GetString("cmu-yautja-clan-admin-cancel") };
+        clanActions.AddChild(_submitClan);
+        _cancelClan = CreateButton(
+            "cmu-yautja-clan-admin-cancel",
+            "cmu-yautja-clan-admin-cancel-tooltip");
+        _cancelClan.MinWidth = 110;
         _cancelClan.OnPressed += _ =>
         {
             _editor.Cancel();
             SyncEditorControls();
         };
-        root.AddChild(_cancelClan);
+        clanActions.AddChild(_cancelClan);
+        clanBody.AddChild(clanActions);
+        root.AddChild(clanSection);
         SyncEditorControls();
 
-        root.AddChild(CreateHeader("cmu-yautja-clan-admin-player-header"));
-        _player = CreateLineEdit("cmu-yautja-clan-admin-player");
-        root.AddChild(_player);
+        var playerSection = YautjaBracerUiStyle.Section(
+            Loc.GetString("cmu-yautja-clan-admin-section-player"),
+            out var playerBody,
+            YautjaBracerUiStyle.Amber);
+        playerBody.AddChild(CreateHint("cmu-yautja-clan-admin-player-section-hint"));
+        _player = CreateLineEdit(
+            "cmu-yautja-clan-admin-player",
+            "cmu-yautja-clan-admin-player-tooltip");
+        playerBody.AddChild(CreateField("cmu-yautja-clan-admin-player", _player));
 
         var membership = new BoxContainer
         {
@@ -84,17 +116,22 @@ public sealed class YautjaClanAdminWindow : DefaultWindow
             SeparationOverride = 6,
             HorizontalExpand = true,
         };
-        _clanId = CreateLineEdit("cmu-yautja-clan-admin-clan-id");
-        membership.AddChild(_clanId);
+        _clanId = CreateLineEdit(
+            "cmu-yautja-clan-admin-clan-id",
+            "cmu-yautja-clan-admin-clan-id-tooltip");
+        membership.AddChild(CreateField("cmu-yautja-clan-admin-clan-id", _clanId));
         _membershipRank = CreateRankOption();
-        membership.AddChild(_membershipRank);
-        var setMembership = new Button { Text = Loc.GetString("cmu-yautja-clan-admin-set-membership") };
+        membership.AddChild(CreateField("cmu-yautja-clan-admin-membership-rank", _membershipRank));
+        var setMembership = CreateButton(
+            "cmu-yautja-clan-admin-set-membership",
+            "cmu-yautja-clan-admin-set-membership-tooltip");
+        setMembership.MinWidth = 180;
         setMembership.OnPressed += _ => OnSetMembership?.Invoke(
             _player.Text,
             string.IsNullOrWhiteSpace(_clanId.Text) ? "none" : _clanId.Text,
             (YautjaRank) _membershipRank.SelectedId);
         membership.AddChild(setMembership);
-        root.AddChild(membership);
+        playerBody.AddChild(membership);
 
         var rankRow = new BoxContainer
         {
@@ -103,25 +140,55 @@ public sealed class YautjaClanAdminWindow : DefaultWindow
             HorizontalExpand = true,
         };
         _rank = CreateRankOption();
-        rankRow.AddChild(_rank);
-        var setRank = new Button { Text = Loc.GetString("cmu-yautja-clan-admin-set-rank") };
+        rankRow.AddChild(CreateField("cmu-yautja-clan-admin-set-rank", _rank));
+        var setRank = CreateButton(
+            "cmu-yautja-clan-admin-set-rank",
+            "cmu-yautja-clan-admin-set-rank-tooltip");
+        setRank.MinWidth = 150;
         setRank.OnPressed += _ => OnSetRank?.Invoke(_player.Text, (YautjaRank) _rank.SelectedId);
         rankRow.AddChild(setRank);
+        playerBody.AddChild(rankRow);
+
+        var whitelistRow = new BoxContainer
+        {
+            Orientation = BoxContainer.LayoutOrientation.Horizontal,
+            SeparationOverride = 6,
+            HorizontalExpand = true,
+        };
         _whitelist = new OptionButton { HorizontalExpand = true };
         AddWhitelistOptions(_whitelist);
-        rankRow.AddChild(_whitelist);
-        var setWhitelist = new Button { Text = Loc.GetString("cmu-yautja-clan-admin-set-whitelist") };
+        whitelistRow.AddChild(CreateField("cmu-yautja-clan-admin-set-whitelist", _whitelist));
+        var setWhitelist = CreateButton(
+            "cmu-yautja-clan-admin-set-whitelist",
+            "cmu-yautja-clan-admin-set-whitelist-tooltip");
+        setWhitelist.MinWidth = 150;
         setWhitelist.OnPressed += _ => OnSetWhitelist?.Invoke(_player.Text, (YautjaWhitelistFlags) _whitelist.SelectedId);
-        rankRow.AddChild(setWhitelist);
-        var inspect = new Button { Text = Loc.GetString("cmu-yautja-clan-admin-inspect") };
+        whitelistRow.AddChild(setWhitelist);
+        playerBody.AddChild(whitelistRow);
+
+        var inspect = CreateButton(
+            "cmu-yautja-clan-admin-inspect",
+            "cmu-yautja-clan-admin-inspect-tooltip");
         inspect.OnPressed += _ => OnInspect?.Invoke(_player.Text);
-        rankRow.AddChild(inspect);
-        root.AddChild(rankRow);
+        playerBody.AddChild(inspect);
 
-        _inspection = new Label { HorizontalExpand = true };
-        root.AddChild(_inspection);
+        _inspection = new Label
+        {
+            HorizontalExpand = true,
+            FontColorOverride = YautjaBracerUiStyle.Muted,
+        };
+        playerBody.AddChild(YautjaBracerUiStyle.Wrap(
+            _inspection,
+            YautjaBracerUiStyle.DeepCard,
+            YautjaBracerUiStyle.MutedBorder,
+            new Thickness(7, 5)));
+        root.AddChild(playerSection);
 
-        root.AddChild(CreateHeader("cmu-yautja-clan-admin-clans-header"));
+        var clansSection = YautjaBracerUiStyle.Section(
+            Loc.GetString("cmu-yautja-clan-admin-section-existing"),
+            out var clansBody,
+            YautjaBracerUiStyle.HotRed);
+        clansBody.AddChild(CreateHint("cmu-yautja-clan-admin-existing-section-hint"));
         var scroll = new ScrollContainer
         {
             VerticalExpand = true,
@@ -135,7 +202,7 @@ public sealed class YautjaClanAdminWindow : DefaultWindow
             HorizontalExpand = true,
         };
         scroll.AddChild(_clans);
-        root.AddChild(scroll);
+        clansBody.AddChild(scroll);
 
         var bottom = new BoxContainer
         {
@@ -145,10 +212,14 @@ public sealed class YautjaClanAdminWindow : DefaultWindow
         };
         _status = new Label { HorizontalExpand = true };
         bottom.AddChild(_status);
-        var refresh = new Button { Text = Loc.GetString("cmu-yautja-clan-admin-refresh") };
+        var refresh = CreateButton(
+            "cmu-yautja-clan-admin-refresh",
+            "cmu-yautja-clan-admin-refresh-tooltip");
+        refresh.MinWidth = 110;
         refresh.OnPressed += _ => OnRefresh?.Invoke();
         bottom.AddChild(refresh);
-        root.AddChild(bottom);
+        clansBody.AddChild(bottom);
+        root.AddChild(clansSection);
     }
 
     public void UpdateState(YautjaClanAdminEuiState state)
@@ -171,28 +242,60 @@ public sealed class YautjaClanAdminWindow : DefaultWindow
                 SeparationOverride = 6,
                 HorizontalExpand = true,
             };
-            row.AddChild(new Label
+            var info = new BoxContainer
+            {
+                Orientation = BoxContainer.LayoutOrientation.Vertical,
+                HorizontalExpand = true,
+            };
+            info.AddChild(new Label
             {
                 Text = Loc.GetString(
-                    "cmu-yautja-clan-admin-clan-row",
+                    "cmu-yautja-clan-admin-clan-row-title",
                     ("id", clan.Id),
-                    ("name", clan.Name),
+                    ("name", clan.Name)),
+                FontColorOverride = YautjaBracerUiStyle.Text,
+                HorizontalExpand = true,
+            });
+            info.AddChild(new Label
+            {
+                Text = Loc.GetString(
+                    "cmu-yautja-clan-admin-clan-row-meta",
                     ("members", clan.Members),
                     ("honor", clan.Honor),
                     ("color", clan.Color)),
+                FontColorOverride = YautjaBracerUiStyle.Muted,
                 HorizontalExpand = true,
             });
-            var edit = new Button { Text = Loc.GetString("cmu-yautja-clan-admin-edit") };
+            row.AddChild(info);
+            var edit = CreateButton(
+                "cmu-yautja-clan-admin-edit",
+                "cmu-yautja-clan-admin-edit-tooltip");
+            edit.MinWidth = 120;
+            edit.HorizontalExpand = false;
+            edit.StyleBoxOverride = YautjaBracerUiStyle.Flat(
+                YautjaBracerUiStyle.DeepCard,
+                YautjaBracerUiStyle.MutedBorder);
             edit.OnPressed += _ =>
             {
                 _editor.BeginEdit(clan);
                 SyncEditorControls();
             };
             row.AddChild(edit);
-            var delete = new Button { Text = Loc.GetString("cmu-yautja-clan-admin-delete") };
+            var delete = CreateButton(
+                "cmu-yautja-clan-admin-delete",
+                "cmu-yautja-clan-admin-delete-tooltip");
+            delete.MinWidth = 100;
+            delete.HorizontalExpand = false;
+            delete.StyleBoxOverride = YautjaBracerUiStyle.Flat(
+                YautjaBracerUiStyle.DeepCard,
+                YautjaBracerUiStyle.HotRed);
             delete.OnPressed += _ => OpenDeleteConfirmation(clan);
             row.AddChild(delete);
-            _clans.AddChild(row);
+            _clans.AddChild(YautjaBracerUiStyle.Wrap(
+                row,
+                YautjaBracerUiStyle.DeepCard,
+                YautjaBracerUiStyle.MutedBorder,
+                new Thickness(7, 5)));
         }
     }
 
@@ -257,21 +360,70 @@ public sealed class YautjaClanAdminWindow : DefaultWindow
 
     private static Label CreateHeader(string localization)
     {
+        var label = YautjaBracerUiStyle.Label(
+            Loc.GetString(localization),
+            YautjaBracerUiStyle.HotRed,
+            "LabelHeading");
+        label.HorizontalExpand = true;
+        return label;
+    }
+
+    private static Label CreateHint(string localization)
+    {
         return new Label
         {
             Text = Loc.GetString(localization),
-            FontColorOverride = Color.LightGray,
+            FontColorOverride = YautjaBracerUiStyle.Muted,
             HorizontalExpand = true,
+            ClipText = false,
         };
     }
 
-    private static LineEdit CreateLineEdit(string localization)
+    private static BoxContainer CreateField(string localization, Control control)
     {
-        return new LineEdit
+        control.HorizontalExpand = true;
+        var field = new BoxContainer
+        {
+            Orientation = BoxContainer.LayoutOrientation.Vertical,
+            SeparationOverride = 3,
+            HorizontalExpand = true,
+        };
+        field.AddChild(new Label
+        {
+            Text = Loc.GetString(localization),
+            FontColorOverride = YautjaBracerUiStyle.Muted,
+            HorizontalExpand = true,
+        });
+        field.AddChild(control);
+        return field;
+    }
+
+    private static LineEdit CreateLineEdit(string localization, string tooltipLocalization)
+    {
+        var line = new LineEdit
         {
             PlaceHolder = Loc.GetString(localization),
             HorizontalExpand = true,
         };
+        ApplyTooltip(line, tooltipLocalization);
+        return line;
+    }
+
+    private static Button CreateButton(string localization, string tooltipLocalization)
+    {
+        var button = new Button
+        {
+            Text = Loc.GetString(localization),
+            HorizontalExpand = true,
+            MinHeight = 32,
+        };
+        ApplyTooltip(button, tooltipLocalization);
+        return button;
+    }
+
+    internal static void ApplyTooltip(Control control, string localization)
+    {
+        control.ToolTip = Loc.GetString(localization);
     }
 
     private static OptionButton CreateRankOption()
