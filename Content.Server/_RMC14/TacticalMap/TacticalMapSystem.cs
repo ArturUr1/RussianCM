@@ -1706,6 +1706,13 @@ public sealed partial class TacticalMapSystem : SharedTacticalMapSystem
                 if (!comp.VisibleToXenos)
                     continue;
 
+                if (TryComp(uid, out HiveMemberComponent? alwaysVisibleMember) &&
+                    alwaysVisibleMember is not null &&
+                    !hiveMembers.Contains(uid.Id))
+                {
+                    continue;
+                }
+
                 if (user.Comp.XenoBlips.ContainsKey(uid.Id) || user.Comp.XenoStructureBlips.ContainsKey(uid.Id))
                     continue;
 
