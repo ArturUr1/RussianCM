@@ -32,4 +32,30 @@ public sealed class YautjaClanAdminEuiStateTest
             Assert.That(clan.Members[0].Online, Is.True);
         });
     }
+
+    [Test]
+    public void StateRetainsClanlessPlayersAndActionTargets()
+    {
+        var playerId = new NetUserId(Guid.Parse("33333333-3333-3333-3333-333333333333"));
+        var player = new YautjaClanAdminMemberState(playerId, "Unsworn", YautjaRank.Blooded, false);
+        var state = new YautjaClanAdminEuiState(
+            [],
+            "",
+            "",
+            "",
+            0,
+            null,
+            YautjaClanAdminMutationKind.None,
+            [player]);
+        var remove = new YautjaClanAdminRemoveMemberMessage(playerId);
+        var clear = new YautjaClanAdminClearWhitelistMessage(playerId);
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(state.ClanlessPlayers[0].PlayerId, Is.EqualTo(playerId));
+            Assert.That(state.ClanlessPlayers[0].Name, Is.EqualTo("Unsworn"));
+            Assert.That(remove.PlayerId, Is.EqualTo(playerId));
+            Assert.That(clear.PlayerId, Is.EqualTo(playerId));
+        });
+    }
 }

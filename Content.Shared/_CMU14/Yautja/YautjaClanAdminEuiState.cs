@@ -16,7 +16,8 @@ public sealed class YautjaClanAdminEuiState : EuiStateBase
         string statusMessage,
         long clanMutationVersion,
         int? lastMutatedClanId,
-        YautjaClanAdminMutationKind lastMutationKind)
+        YautjaClanAdminMutationKind lastMutationKind,
+        List<YautjaClanAdminMemberState>? clanlessPlayers = null)
     {
         Clans = clans;
         InspectedPlayer = inspectedPlayer;
@@ -25,6 +26,7 @@ public sealed class YautjaClanAdminEuiState : EuiStateBase
         ClanMutationVersion = clanMutationVersion;
         LastMutatedClanId = lastMutatedClanId;
         LastMutationKind = lastMutationKind;
+        ClanlessPlayers = clanlessPlayers ?? [];
     }
 
     public List<YautjaClanAdminClanState> Clans { get; }
@@ -34,6 +36,7 @@ public sealed class YautjaClanAdminEuiState : EuiStateBase
     public long ClanMutationVersion { get; }
     public int? LastMutatedClanId { get; }
     public YautjaClanAdminMutationKind LastMutationKind { get; }
+    public List<YautjaClanAdminMemberState> ClanlessPlayers { get; }
 }
 
 [Serializable, NetSerializable]
@@ -123,6 +126,18 @@ public sealed class YautjaClanAdminUpdateClanMessage(
 public sealed class YautjaClanAdminDeleteClanMessage(int clanId) : EuiMessageBase
 {
     public int ClanId { get; } = clanId;
+}
+
+[Serializable, NetSerializable]
+public sealed class YautjaClanAdminRemoveMemberMessage(NetUserId playerId) : EuiMessageBase
+{
+    public NetUserId PlayerId { get; } = playerId;
+}
+
+[Serializable, NetSerializable]
+public sealed class YautjaClanAdminClearWhitelistMessage(NetUserId playerId) : EuiMessageBase
+{
+    public NetUserId PlayerId { get; } = playerId;
 }
 
 [Serializable, NetSerializable]
