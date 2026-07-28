@@ -225,6 +225,8 @@ public sealed class CMUIndependentXenoHiveTest
                 hives.SetHive(forsakenXeno, forsakenHive);
                 hives.SetHive(alphaStructure, alphaHive);
                 hives.SetHive(forsakenStructure, forsakenHive);
+                entMan.EnsureComponent<TacticalMapAlwaysVisibleComponent>(alphaStructure).VisibleToXenos = true;
+                entMan.EnsureComponent<TacticalMapAlwaysVisibleComponent>(forsakenStructure).VisibleToXenos = true;
 
                 var alphaUser = entMan.EnsureComponent<TacticalMapUserComponent>(alphaXeno);
                 alphaUser.Xenos = true;
