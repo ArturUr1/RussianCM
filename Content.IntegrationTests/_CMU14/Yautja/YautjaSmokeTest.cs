@@ -5505,7 +5505,7 @@ public sealed class YautjaSmokeTest
                     Assert.That(actionIds, Does.Contain("CMUActionYautjaOpenBracerMenu"));
                     Assert.That(actionIds, Does.Contain("CMUActionYautjaToggleCloak"));
                     Assert.That(actionIds, Does.Contain("CMUActionYautjaRecall"));
-                    Assert.That(actionIds, Does.Contain("CMUActionYautjaCallDisc"));
+                    Assert.That(actionIds, Does.Not.Contain("CMUActionYautjaCallDisc"));
                     Assert.That(actionIds, Does.Not.Contain("CMUActionYautjaTrackGear"),
                         "The worn bracer should keep the tracker action off the action bar.");
                     foreach (var migratedActionId in migratedActionIds)
@@ -7284,7 +7284,7 @@ public sealed class YautjaSmokeTest
     }
 
     [Test]
-    public async Task BracerRecallActionsRemainDistinct()
+    public async Task BracerRecallActionIsLocalizedAndSoleDiscAction()
     {
         await using var pair = await PoolManager.GetServerClient();
         var server = pair.Server;
@@ -7313,9 +7313,7 @@ public sealed class YautjaSmokeTest
                 Assert.Multiple(() =>
                 {
                     Assert.That(actionNames, Contains.Key("CMUActionYautjaRecall"));
-                    Assert.That(actionNames, Contains.Key("CMUActionYautjaCallDisc"));
-                    Assert.That(actionNames["CMUActionYautjaRecall"], Is.EqualTo("Вернуть снаряжение"));
-                    Assert.That(actionNames["CMUActionYautjaCallDisc"], Is.EqualTo("Вернуть диск"));
+                    Assert.That(actionNames, Does.Not.ContainKey("CMUActionYautjaCallDisc"));
                 });
             }
             finally

@@ -128,7 +128,6 @@ public sealed partial class YautjaPowerSystem : EntitySystem
         AddAction(ent.Comp, ref args, ref ent.Comp.OpenBracerMenuAction, ent.Comp.OpenBracerMenuActionId);
         AddAction(ent.Comp, ref args, ref ent.Comp.ToggleCloakAction, ent.Comp.ToggleCloakActionId);
         AddAction(ent.Comp, ref args, ref ent.Comp.RecallAction, ent.Comp.RecallActionId);
-        AddAction(ent.Comp, ref args, ref ent.Comp.CallDiscAction, ent.Comp.CallDiscActionId);
 
     }
 
