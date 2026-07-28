@@ -42,4 +42,11 @@ public sealed class YautjaClanAdminWindowTest : RobustUnitTest
 
         Assert.That(field.ToolTip, Is.EqualTo(Loc.GetString("cmu-yautja-clan-admin-name-tooltip")));
     }
+
+    [Test]
+    public void DefaultWindowSizeIsCompact()
+    {
+        Assert.That(YautjaClanAdminWindow.DefaultWindowSize.X, Is.LessThanOrEqualTo(760));
+        Assert.That(YautjaClanAdminWindow.DefaultWindowSize.Y, Is.LessThanOrEqualTo(560));
+    }
 }
