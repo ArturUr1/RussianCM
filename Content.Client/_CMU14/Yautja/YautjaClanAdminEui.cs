@@ -1,6 +1,7 @@
 using Content.Client.Eui;
 using Content.Shared._CMU14.Yautja;
 using Content.Shared.Eui;
+using Robust.Shared.Network;
 
 namespace Content.Client._CMU14.Yautja;
 
@@ -18,6 +19,8 @@ public sealed class YautjaClanAdminEui : BaseEui
         _window.OnCreateClan += OnCreateClan;
         _window.OnUpdateClan += OnUpdateClan;
         _window.OnDeleteClan += OnDeleteClan;
+        _window.OnRemoveMember += OnRemoveMember;
+        _window.OnClearWhitelist += OnClearWhitelist;
         _window.OnSetMembership += OnSetMembership;
         _window.OnSetRank += OnSetRank;
         _window.OnSetWhitelist += OnSetWhitelist;
@@ -37,6 +40,8 @@ public sealed class YautjaClanAdminEui : BaseEui
         _window.OnCreateClan -= OnCreateClan;
         _window.OnUpdateClan -= OnUpdateClan;
         _window.OnDeleteClan -= OnDeleteClan;
+        _window.OnRemoveMember -= OnRemoveMember;
+        _window.OnClearWhitelist -= OnClearWhitelist;
         _window.OnSetMembership -= OnSetMembership;
         _window.OnSetRank -= OnSetRank;
         _window.OnSetWhitelist -= OnSetWhitelist;
@@ -68,6 +73,16 @@ public sealed class YautjaClanAdminEui : BaseEui
     private void OnDeleteClan(int clanId)
     {
         SendMessage(new YautjaClanAdminDeleteClanMessage(clanId));
+    }
+
+    private void OnRemoveMember(NetUserId playerId)
+    {
+        SendMessage(new YautjaClanAdminRemoveMemberMessage(playerId));
+    }
+
+    private void OnClearWhitelist(NetUserId playerId)
+    {
+        SendMessage(new YautjaClanAdminClearWhitelistMessage(playerId));
     }
 
     private void OnSetMembership(string player, string clanId, YautjaRank rank)

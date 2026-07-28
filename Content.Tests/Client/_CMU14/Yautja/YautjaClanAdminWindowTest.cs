@@ -1,9 +1,12 @@
+using System;
 using Content.Client._CMU14.Yautja;
+using Content.Shared._CMU14.Yautja;
 using NUnit.Framework;
 using Robust.Client.UserInterface;
 using Robust.Client.UserInterface.Controls;
 using Robust.Shared.IoC;
 using Robust.Shared.Localization;
+using Robust.Shared.Network;
 using Robust.UnitTesting;
 
 namespace Content.Tests.Client._CMU14.Yautja;
@@ -65,5 +68,20 @@ public sealed class YautjaClanAdminWindowTest : RobustUnitTest
     public void RosterScrollHeightIsBounded()
     {
         Assert.That(YautjaClanAdminWindow.RosterMaxHeight, Is.LessThanOrEqualTo(220));
+    }
+
+    [Test]
+    public void ClanlessScrollHeightIsBounded()
+    {
+        Assert.That(YautjaClanAdminWindow.ClanlessMaxHeight, Is.LessThanOrEqualTo(220));
+    }
+
+    [Test]
+    public void RosterActionTargetUsesMemberId()
+    {
+        var id = new NetUserId(Guid.Parse("55555555-5555-5555-5555-555555555555"));
+        var member = new YautjaClanAdminMemberState(id, "Target", YautjaRank.Blooded, true);
+
+        Assert.That(YautjaClanAdminWindow.GetRosterActionTarget(member), Is.EqualTo(id));
     }
 }

@@ -6,6 +6,7 @@ using Content.Shared._CMU14.Yautja;
 using Robust.Client.UserInterface;
 using Robust.Client.UserInterface.Controls;
 using Robust.Client.UserInterface.CustomControls;
+using Robust.Shared.Network;
 
 namespace Content.Client._CMU14.Yautja;
 
@@ -13,6 +14,7 @@ public sealed class YautjaClanAdminWindow : DefaultWindow
 {
     public static readonly Vector2 DefaultWindowSize = new(760, 560);
     public const int RosterMaxHeight = 180;
+    public const int ClanlessMaxHeight = 160;
 
     private readonly LineEdit _clanName;
     private readonly LineEdit _clanDescription;
@@ -39,6 +41,8 @@ public sealed class YautjaClanAdminWindow : DefaultWindow
     public event Action<string, string, string>? OnCreateClan;
     public event Action<int, string, string, string>? OnUpdateClan;
     public event Action<int>? OnDeleteClan;
+    public event Action<NetUserId>? OnRemoveMember;
+    public event Action<NetUserId>? OnClearWhitelist;
     public event Action<string, string, YautjaRank>? OnSetMembership;
     public event Action<string, YautjaRank>? OnSetRank;
     public event Action<string, YautjaWhitelistFlags>? OnSetWhitelist;
@@ -276,6 +280,7 @@ public sealed class YautjaClanAdminWindow : DefaultWindow
         _clans.RemoveAllChildren();
         foreach (var clan in state.Clans)
             _clans.AddChild(BuildClanCard(clan, state));
+        _clans.AddChild(BuildClanlessSection(state.ClanlessPlayers));
     }
 
     private Control BuildClanCard(YautjaClanAdminClanState clan, YautjaClanAdminEuiState state)
@@ -368,7 +373,7 @@ public sealed class YautjaClanAdminWindow : DefaultWindow
             new Thickness(6, 4));
     }
 
-    private static Control BuildRoster(YautjaClanAdminClanState clan)
+    private Control BuildRoster(YautjaClanAdminClanState clan)
     {
         var scroll = new ScrollContainer
         {
@@ -394,32 +399,127 @@ public sealed class YautjaClanAdminWindow : DefaultWindow
         else
         {
             foreach (var member in clan.Members)
-            {
-                var rank = Loc.GetString(YautjaRankMetadata.For(member.Rank).LocalizedName);
-                var status = Loc.GetString(member.Online
-                    ? "cmu-yautja-clan-admin-roster-online"
-                    : "cmu-yautja-clan-admin-roster-offline");
-                roster.AddChild(YautjaBracerUiStyle.Wrap(
-                    new Label
-                    {
-                        Text = Loc.GetString(
-                            "cmu-yautja-clan-admin-roster-member",
-                            ("name", member.Name),
-                            ("rank", rank),
-                            ("status", status)),
-                        FontColorOverride = member.Online
-                            ? YautjaBracerUiStyle.Text
-                            : YautjaBracerUiStyle.Muted,
-                        HorizontalExpand = true,
-                    },
-                    YautjaBracerUiStyle.Row,
-                    YautjaBracerUiStyle.MutedBorder,
-                    new Thickness(5, 3)));
-            }
+                roster.AddChild(BuildMemberRow(member, true));
         }
 
         scroll.AddChild(roster);
         return scroll;
+    }
+
+    private Control BuildClanlessSection(List<YautjaClanAdminMemberState> players)
+    {
+        var section = new BoxContainer
+        {
+            Orientation = BoxContainer.LayoutOrientation.Vertical,
+            SeparationOverride = 4,
+            HorizontalExpand = true,
+        };
+        section.AddChild(new Label
+        {
+            Text = Loc.GetString("cmu-yautja-clan-admin-clanless-header"),
+            FontColorOverride = YautjaBracerUiStyle.Amber,
+            HorizontalExpand = true,
+        });
+
+        var scroll = new ScrollContainer
+        {
+            MaxHeight = ClanlessMaxHeight,
+            HorizontalExpand = true,
+            HScrollEnabled = false,
+        };
+        var roster = new BoxContainer
+        {
+            Orientation = BoxContainer.LayoutOrientation.Vertical,
+            SeparationOverride = 3,
+            HorizontalExpand = true,
+        };
+        if (players.Count == 0)
+        {
+            roster.AddChild(new Label
+            {
+                Text = Loc.GetString("cmu-yautja-clan-admin-clanless-empty"),
+                FontColorOverride = YautjaBracerUiStyle.Muted,
+                HorizontalExpand = true,
+            });
+        }
+        else
+        {
+            foreach (var player in players)
+                roster.AddChild(BuildMemberRow(player, false));
+        }
+
+        scroll.AddChild(roster);
+        section.AddChild(scroll);
+        return YautjaBracerUiStyle.Wrap(
+            section,
+            YautjaBracerUiStyle.DeepCard,
+            YautjaBracerUiStyle.MutedBorder,
+            new Thickness(6, 4));
+    }
+
+    private Control BuildMemberRow(YautjaClanAdminMemberState member, bool includeRemove)
+    {
+        var rank = Loc.GetString(YautjaRankMetadata.For(member.Rank).LocalizedName);
+        var status = Loc.GetString(member.Online
+            ? "cmu-yautja-clan-admin-roster-online"
+            : "cmu-yautja-clan-admin-roster-offline");
+        var row = new BoxContainer
+        {
+            Orientation = BoxContainer.LayoutOrientation.Horizontal,
+            SeparationOverride = 4,
+            HorizontalExpand = true,
+        };
+        row.AddChild(new Label
+        {
+            Text = Loc.GetString(
+                "cmu-yautja-clan-admin-roster-member",
+                ("name", member.Name),
+                ("rank", rank),
+                ("status", status)),
+            FontColorOverride = member.Online
+                ? YautjaBracerUiStyle.Text
+                : YautjaBracerUiStyle.Muted,
+            HorizontalExpand = true,
+            VerticalAlignment = VAlignment.Center,
+        });
+
+        if (includeRemove)
+        {
+            var remove = CreateButton(
+                "cmu-yautja-clan-admin-remove-member",
+                "cmu-yautja-clan-admin-remove-member-tooltip");
+            remove.MinWidth = 105;
+            remove.MinHeight = 24;
+            remove.HorizontalExpand = false;
+            remove.StyleBoxOverride = YautjaBracerUiStyle.Flat(
+                YautjaBracerUiStyle.DeepCard,
+                YautjaBracerUiStyle.HotRed);
+            remove.OnPressed += _ => OnRemoveMember?.Invoke(GetRosterActionTarget(member));
+            row.AddChild(remove);
+        }
+
+        var clearWhitelist = CreateButton(
+            "cmu-yautja-clan-admin-clear-whitelist",
+            "cmu-yautja-clan-admin-clear-whitelist-tooltip");
+        clearWhitelist.MinWidth = 105;
+        clearWhitelist.MinHeight = 24;
+        clearWhitelist.HorizontalExpand = false;
+        clearWhitelist.StyleBoxOverride = YautjaBracerUiStyle.Flat(
+            YautjaBracerUiStyle.Row,
+            YautjaBracerUiStyle.MutedBorder);
+        clearWhitelist.OnPressed += _ => OnClearWhitelist?.Invoke(GetRosterActionTarget(member));
+        row.AddChild(clearWhitelist);
+
+        return YautjaBracerUiStyle.Wrap(
+            row,
+            YautjaBracerUiStyle.Row,
+            YautjaBracerUiStyle.MutedBorder,
+            new Thickness(5, 3));
+    }
+
+    internal static NetUserId GetRosterActionTarget(YautjaClanAdminMemberState member)
+    {
+        return member.PlayerId;
     }
 
     internal static int? ToggleExpandedClan(int? expandedClanId, int clanId)
