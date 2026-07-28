@@ -96,4 +96,73 @@ public sealed class YautjaClanMutationPersistenceTest
 
         await pair.CleanReturnAsync();
     }
+
+    [Test]
+    public async Task AssignmentRejectsInactiveAndMissingClanIds()
+    {
+        await using var pair = await PoolManager.GetServerClient(new PoolSettings { Connected = true });
+        var db = pair.Server.ResolveDependency<IServerDbManager>();
+        var playerId = pair.Player!.UserId.UserId;
+        var inactiveId = await db.CreateYautjaClanAsync(
+            "Inactive assignment",
+            "Inactive assignment test",
+            0,
+            "#111111",
+            active: false);
+
+        var inactiveAssigned = await db.UpsertYautjaClanMemberAsync(Member(playerId, inactiveId));
+        var missingAssigned = await db.UpsertYautjaClanMemberAsync(Member(playerId, int.MaxValue));
+        var member = await db.GetYautjaClanMemberAsync(playerId);
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(inactiveAssigned, Is.False);
+            Assert.That(missingAssigned, Is.False);
+            Assert.That(member, Is.Null);
+        });
+
+        await pair.CleanReturnAsync();
+    }
+
+    [Test]
+    public async Task ConcurrentDeleteAndAssignmentNeverLeaveMemberInInactiveClan()
+    {
+        await using var pair = await PoolManager.GetServerClient(new PoolSettings { Connected = true });
+        var db = pair.Server.ResolveDependency<IServerDbManager>();
+        var playerId = pair.Player!.UserId.UserId;
+        var clanId = await db.CreateYautjaClanAsync(
+            "Concurrent assignment",
+            "Concurrent assignment test",
+            0,
+            "#222222");
+
+        var assignment = db.UpsertYautjaClanMemberAsync(Member(playerId, clanId));
+        var deletion = db.DeactivateYautjaClanAsync(clanId);
+        await Task.WhenAll(assignment, deletion);
+        var deletionResult = await deletion;
+
+        var clan = await db.GetYautjaClanAsync(clanId);
+        var member = await db.GetYautjaClanMemberAsync(playerId);
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(deletionResult.Succeeded, Is.True);
+            Assert.That(clan, Is.Not.Null);
+            Assert.That(clan!.Active, Is.False);
+            Assert.That(member?.ClanId, Is.Null);
+        });
+
+        await pair.CleanReturnAsync();
+    }
+
+    private static YautjaClanMemberRecord Member(Guid playerId, int clanId)
+    {
+        return new(
+            playerId,
+            clanId,
+            (int) YautjaRank.Blooded,
+            (int) YautjaClanPermission.UserAll,
+            0,
+            false);
+    }
 }

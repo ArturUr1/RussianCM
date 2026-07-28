@@ -24,9 +24,6 @@ public sealed class YautjaClanAdminEditorState
 
     public void CaptureDraft(string name, string description, string color)
     {
-        if (!IsEditing)
-            return;
-
         Name = name;
         Description = description;
         Color = color;
@@ -36,6 +33,14 @@ public sealed class YautjaClanAdminEditorState
     {
         var isNewMutation = state.ClanMutationVersion > _lastMutationVersion;
         _lastMutationVersion = Math.Max(_lastMutationVersion, state.ClanMutationVersion);
+
+        if (isNewMutation &&
+            !IsEditing &&
+            state.LastMutationKind == YautjaClanAdminMutationKind.Created)
+        {
+            Cancel();
+            return;
+        }
 
         if (EditingClanId is not { } editingClanId)
             return;

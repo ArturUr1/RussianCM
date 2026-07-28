@@ -212,7 +212,7 @@ namespace Content.Server.Database
         Task<int> CreateYautjaClanAsync(string name, string description, int honor, string color, bool active = true);
         Task<bool> UpdateYautjaClanAsync(int clanId, string name, string description, string color);
         Task<YautjaClanDeleteResult> DeactivateYautjaClanAsync(int clanId);
-        Task UpsertYautjaClanMemberAsync(YautjaClanMemberRecord member);
+        Task<bool> UpsertYautjaClanMemberAsync(YautjaClanMemberRecord member);
         Task<int> GetYautjaWhitelistFlagsAsync(Guid userId);
         Task SetYautjaWhitelistFlagsAsync(Guid userId, int flags);
         #endregion
@@ -853,7 +853,7 @@ namespace Content.Server.Database
             return RunDbCommand(() => _db.DeactivateYautjaClanAsync(clanId));
         }
 
-        public Task UpsertYautjaClanMemberAsync(YautjaClanMemberRecord member)
+        public Task<bool> UpsertYautjaClanMemberAsync(YautjaClanMemberRecord member)
         {
             DbWriteOpsMetric.Inc();
             return RunDbCommand(() => _db.UpsertYautjaClanMemberAsync(member));

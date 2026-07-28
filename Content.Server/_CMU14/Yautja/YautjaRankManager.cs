@@ -1,6 +1,5 @@
 using System;
 using System.Threading.Tasks;
-using Content.Server.Database;
 using Content.Shared._CMU14.Yautja;
 using Robust.Shared.Network;
 
@@ -11,7 +10,7 @@ namespace Content.Server._CMU14.Yautja;
 /// </summary>
 public sealed partial class YautjaRankManager
 {
-    [Dependency] private IServerDbManager _db = default!;
+    [Dependency] private YautjaClanManager _clanManager = default!;
     private readonly Dictionary<NetUserId, YautjaRank> _cache = new();
     private readonly Dictionary<NetUserId, long> _cacheVersions = new();
 
@@ -21,7 +20,7 @@ public sealed partial class YautjaRankManager
             return YautjaRank.YoungBlood;
 
         var requestVersion = GetCacheVersion(userId);
-        var rank = Sanitize(await _db.GetYautjaRank(userId));
+        var rank = (await _clanManager.Resolve(userId)).Rank;
         if (IsCacheVersionCurrent(requestVersion, GetCacheVersion(userId)))
             _cache[userId] = rank;
 
@@ -53,9 +52,17 @@ public sealed partial class YautjaRankManager
             throw new ArgumentException("Young Blood is reserved for the special hunt role.", nameof(rank));
 
         var writeVersion = NextCacheVersion(userId);
-        await _db.SetYautjaRank(userId.UserId, rank);
+        if (!await _clanManager.SetMaintenanceRank(userId, rank))
+            throw new InvalidOperationException("The player's Yautja clan no longer exists or is inactive.");
+
         if (IsCacheVersionCurrent(writeVersion, GetCacheVersion(userId)))
             _cache[userId] = rank;
+    }
+
+    public void InvalidateCached(NetUserId userId)
+    {
+        NextCacheVersion(userId);
+        _cache.Remove(userId);
     }
 
     private long GetCacheVersion(NetUserId userId)

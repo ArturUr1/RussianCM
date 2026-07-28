@@ -36,6 +36,23 @@ public sealed record YautjaClanMemberSnapshot(
     bool IsLegacy,
     int Honor);
 
+public sealed record YautjaClanResolution(
+    YautjaRank Rank,
+    int? ClanId,
+    YautjaClanPermission Permissions,
+    bool IsLegacy,
+    int Honor,
+    YautjaWhitelistFlags WhitelistFlags);
+
+public sealed record YautjaClanView(
+    YautjaClanResolution Viewer,
+    int? ClanId,
+    string ClanName,
+    string ClanDescription,
+    int ClanHonor,
+    string ClanColor,
+    IReadOnlyList<YautjaClanMemberSnapshot> Members);
+
 public sealed record YautjaClanRankRule(
     YautjaRank Rank,
     YautjaClanPermission RequiredPermission,
@@ -146,8 +163,26 @@ public static class YautjaClanPolicy
         YautjaClanMemberSnapshot actor,
         YautjaClanMemberSnapshot target)
     {
-        return HasPermissions(actor.Permissions, YautjaClanPermission.AdminManager) &&
-               CanTarget(actor, target);
+        return CanSetAncient(actor, target, true);
+    }
+
+    public static bool CanSetAncient(
+        YautjaClanMemberSnapshot actor,
+        YautjaClanMemberSnapshot target,
+        bool enabled)
+    {
+        if (!HasPermissions(actor.Permissions, YautjaClanPermission.AdminManager) ||
+            actor.PlayerId == target.PlayerId)
+        {
+            return false;
+        }
+
+        // An Ancient can be demoted only by a full clan manager. This is the
+        // one deliberate exception to the general Ancient protection rule.
+        return enabled
+            ? CanTarget(actor, target)
+            : target.Rank == YautjaRank.Ancient &&
+              HasPermissions(target.Permissions, YautjaClanPermission.AdminAncient);
     }
 
     private static bool HasPermissions(

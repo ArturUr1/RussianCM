@@ -9,6 +9,45 @@ namespace Content.Tests.Client._CMU14.Yautja;
 public sealed class YautjaClanAdminEditorStateTest
 {
     [Test]
+    public void CreateDraftSurvivesErrorAndManualRefresh()
+    {
+        var editor = new YautjaClanAdminEditorState();
+        editor.CaptureDraft("Draft", "Draft description", "#123456");
+
+        editor.ApplyState(State(0, null, YautjaClanAdminMutationKind.None));
+        editor.ApplyState(State(0, null, YautjaClanAdminMutationKind.None));
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(editor.EditingClanId, Is.Null);
+            Assert.That(editor.Name, Is.EqualTo("Draft"));
+            Assert.That(editor.Description, Is.EqualTo("Draft description"));
+            Assert.That(editor.Color, Is.EqualTo("#123456"));
+        });
+    }
+
+    [Test]
+    public void SuccessfulCreateClearsCreateDraft()
+    {
+        var editor = new YautjaClanAdminEditorState();
+        editor.CaptureDraft("Draft", "Draft description", "#123456");
+
+        editor.ApplyState(State(
+            1,
+            7,
+            YautjaClanAdminMutationKind.Created,
+            Clan(7, "Saved", "Saved description", "#123456")));
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(editor.EditingClanId, Is.Null);
+            Assert.That(editor.Name, Is.Empty);
+            Assert.That(editor.Description, Is.Empty);
+            Assert.That(editor.Color, Is.Empty);
+        });
+    }
+
+    [Test]
     public void DraftSurvivesErrorsThenSynchronizesOrResetsOnSuccessfulMutation()
     {
         var editor = new YautjaClanAdminEditorState();

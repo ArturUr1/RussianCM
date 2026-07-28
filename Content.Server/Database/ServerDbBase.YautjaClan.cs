@@ -108,10 +108,20 @@ public abstract partial class ServerDbBase
         return new(true, detachedPlayers);
     }
 
-    public async Task UpsertYautjaClanMemberAsync(YautjaClanMemberRecord member)
+    public async Task<bool> UpsertYautjaClanMemberAsync(YautjaClanMemberRecord member)
     {
         await using var db = await GetDb();
         await using var transaction = await db.DbContext.Database.BeginTransactionAsync();
+
+        if (member.ClanId is { } clanId)
+        {
+            var activeClanLocked = await db.DbContext.YautjaClans
+                .Where(entry => entry.Id == clanId && entry.Active)
+                .ExecuteUpdateAsync(setters => setters
+                    .SetProperty(entry => entry.Active, entry => entry.Active));
+            if (activeClanLocked != 1)
+                return false;
+        }
 
         var player = await db.DbContext.Player
             .SingleOrDefaultAsync(entry => entry.UserId == member.PlayerUserId);
@@ -144,6 +154,7 @@ public abstract partial class ServerDbBase
         player.YautjaRank = member.Rank;
         await db.DbContext.SaveChangesAsync();
         await transaction.CommitAsync();
+        return true;
     }
 
     public async Task<int> GetYautjaWhitelistFlagsAsync(Guid userId)

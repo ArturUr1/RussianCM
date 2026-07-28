@@ -80,6 +80,7 @@ public sealed class YautjaClanAdminCreateClanMessage(
 public enum YautjaClanAdminMutationKind : byte
 {
     None,
+    Created,
     Updated,
     Deleted,
 }

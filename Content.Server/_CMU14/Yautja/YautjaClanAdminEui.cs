@@ -29,11 +29,8 @@ public sealed class YautjaClanAdminEui : BaseEui
     private string _statusMessage = "";
     private string _inspectedPlayer = "";
     private string _inspectedSummary = "";
-    private long _clanMutationVersion;
-    private int? _lastMutatedClanId;
-    private YautjaClanAdminMutationKind _lastMutationKind;
     private readonly YautjaClanAdminStateStore _stateStore = new();
-    private readonly SemaphoreSlim _stateRefreshGate = new(1, 1);
+    private readonly SemaphoreSlim _operationGate = new(1, 1);
     private bool _closed;
 
     public YautjaClanAdminEui()
@@ -53,7 +50,7 @@ public sealed class YautjaClanAdminEui : BaseEui
             return;
         }
 
-        _ = RefreshStateAsync();
+        _ = RefreshInitialStateAsync();
     }
 
     public override void Closed()
@@ -80,47 +77,85 @@ public sealed class YautjaClanAdminEui : BaseEui
         if (msg is CloseEuiMessage)
             return;
 
+        await _operationGate.WaitAsync();
         try
         {
-            switch (msg)
+            if (!_admin.HasAdminFlag(Player, AdminFlags.Admin))
             {
-                case YautjaClanAdminRefreshMessage:
-                    break;
-                case YautjaClanAdminCreateClanMessage create:
-                    await CreateClan(create);
-                    break;
-                case YautjaClanAdminUpdateClanMessage update:
-                    await UpdateClan(update);
-                    break;
-                case YautjaClanAdminDeleteClanMessage delete:
-                    await DeleteClan(delete);
-                    break;
-                case YautjaClanAdminSetMembershipMessage membership:
-                    await SetMembership(membership);
-                    break;
-                case YautjaClanAdminSetRankMessage rank:
-                    await SetRank(rank);
-                    break;
-                case YautjaClanAdminSetWhitelistMessage whitelist:
-                    await SetWhitelist(whitelist);
-                    break;
-                case YautjaClanAdminInspectMessage inspect:
-                    await Inspect(inspect);
-                    break;
+                Close();
+                return;
             }
-        }
-        catch (Exception e)
-        {
-            _statusMessage = e.Message;
-            Logger.GetSawmill("cmu.yautja.clan_admin").Error($"Yautja clan admin action failed:\n{e}");
-        }
 
-        await RefreshStateAsync();
+            var recoveredPendingMutation = false;
+            if (!_stateStore.CanStartMutation)
+            {
+                if (!await RefreshStateAsync())
+                    return;
+
+                recoveredPendingMutation = true;
+            }
+
+            if (msg is YautjaClanAdminRefreshMessage && recoveredPendingMutation)
+                return;
+
+            try
+            {
+                switch (msg)
+                {
+                    case YautjaClanAdminRefreshMessage:
+                        break;
+                    case YautjaClanAdminCreateClanMessage create:
+                        await CreateClan(create);
+                        break;
+                    case YautjaClanAdminUpdateClanMessage update:
+                        await UpdateClan(update);
+                        break;
+                    case YautjaClanAdminDeleteClanMessage delete:
+                        await DeleteClan(delete);
+                        break;
+                    case YautjaClanAdminSetMembershipMessage membership:
+                        await SetMembership(membership);
+                        break;
+                    case YautjaClanAdminSetRankMessage rank:
+                        await SetRank(rank);
+                        break;
+                    case YautjaClanAdminSetWhitelistMessage whitelist:
+                        await SetWhitelist(whitelist);
+                        break;
+                    case YautjaClanAdminInspectMessage inspect:
+                        await Inspect(inspect);
+                        break;
+                }
+            }
+            catch (Exception e)
+            {
+                _statusMessage = e.Message;
+                Logger.GetSawmill("cmu.yautja.clan_admin").Error($"Yautja clan admin action failed:\n{e}");
+            }
+
+            await RefreshStateAsync();
+        }
+        finally
+        {
+            _operationGate.Release();
+        }
     }
 
-    private async Task RefreshStateAsync()
+    private async Task RefreshInitialStateAsync()
     {
-        await _stateRefreshGate.WaitAsync();
+        await _operationGate.WaitAsync();
+        try
+        {
+            await RefreshStateAsync();
+        }
+        finally
+        {
+            _operationGate.Release();
+        }
+    }
+
+    private async Task<bool> RefreshStateAsync()
+    {
         try
         {
             var clans = await _db.GetYautjaClansAsync();
@@ -138,37 +173,27 @@ public sealed class YautjaClanAdminEui : BaseEui
                     memberCount));
             }
 
-            _stateStore.Set(new YautjaClanAdminEuiState(
+            var publishedState = _stateStore.PublishFreshSnapshot(
                 clanStates,
                 _inspectedPlayer,
                 _inspectedSummary,
-                _statusMessage,
-                _clanMutationVersion,
-                _lastMutatedClanId,
-                _lastMutationKind));
+                _statusMessage);
+            _statusMessage = publishedState.StatusMessage;
         }
         catch (Exception e)
         {
             _statusMessage = e.Message;
             Logger.GetSawmill("cmu.yautja.clan_admin").Error($"Yautja clan admin state refresh failed:\n{e}");
+            _stateStore.PublishRefreshFailure(_statusMessage);
 
-            var previousState = _stateStore.Get();
-            _stateStore.Set(new YautjaClanAdminEuiState(
-                previousState.Clans,
-                _inspectedPlayer,
-                _inspectedSummary,
-                _statusMessage,
-                _clanMutationVersion,
-                _lastMutatedClanId,
-                _lastMutationKind));
-        }
-        finally
-        {
-            _stateRefreshGate.Release();
+            if (!_closed && !IsShutDown)
+                StateDirty();
+            return false;
         }
 
         if (!_closed && !IsShutDown)
             StateDirty();
+        return true;
     }
 
     private async Task CreateClan(YautjaClanAdminCreateClanMessage message)
@@ -188,6 +213,7 @@ public sealed class YautjaClanAdminEui : BaseEui
 
         var id = await _db.CreateYautjaClanAsync(fields.Name, fields.Description, 0, fields.Color);
         _statusMessage = Loc.GetString("cmu-yautja-clan-admin-created", ("id", id));
+        _stateStore.StageMutation(id, YautjaClanAdminMutationKind.Created, _statusMessage);
         _adminLog.Add(LogType.AdminCommands, LogImpact.Medium,
             $"{Player.Name} created Yautja clan {id} ({message.Name}).");
     }
@@ -217,10 +243,8 @@ public sealed class YautjaClanAdminEui : BaseEui
             return;
         }
 
-        _clanMutationVersion++;
-        _lastMutatedClanId = message.ClanId;
-        _lastMutationKind = YautjaClanAdminMutationKind.Updated;
         _statusMessage = Loc.GetString("cmu-yautja-clan-admin-updated", ("id", message.ClanId));
+        _stateStore.StageMutation(message.ClanId, YautjaClanAdminMutationKind.Updated, _statusMessage);
         _adminLog.Add(
             LogType.AdminCommands,
             LogImpact.Medium,
@@ -243,13 +267,11 @@ public sealed class YautjaClanAdminEui : BaseEui
             _rankManager.InvalidateCached(userId);
         }
 
-        _clanMutationVersion++;
-        _lastMutatedClanId = message.ClanId;
-        _lastMutationKind = YautjaClanAdminMutationKind.Deleted;
         _statusMessage = Loc.GetString(
             "cmu-yautja-clan-admin-deleted",
             ("id", message.ClanId),
             ("members", result.DetachedPlayers.Count));
+        _stateStore.StageMutation(message.ClanId, YautjaClanAdminMutationKind.Deleted, _statusMessage);
         _adminLog.Add(
             LogType.AdminCommands,
             LogImpact.Medium,
@@ -273,8 +295,7 @@ public sealed class YautjaClanAdminEui : BaseEui
         {
             clanId = null;
         }
-        else if (int.TryParse(message.ClanId, out var parsed) &&
-                 await _db.GetYautjaClanAsync(parsed) is { Active: true })
+        else if (int.TryParse(message.ClanId, out var parsed))
         {
             clanId = parsed;
         }
@@ -285,13 +306,18 @@ public sealed class YautjaClanAdminEui : BaseEui
         }
 
         var existing = await _db.GetYautjaClanMemberAsync(player.UserId.UserId);
-        await _db.UpsertYautjaClanMemberAsync(new YautjaClanMemberRecord(
+        if (!await _db.UpsertYautjaClanMemberAsync(new YautjaClanMemberRecord(
             player.UserId.UserId,
             clanId,
             (int) message.Rank,
             (int) YautjaClanManager.PermissionsForRank(message.Rank),
             existing?.Honor ?? 0,
-            false));
+            false)))
+        {
+            _statusMessage = Loc.GetString("cmu-yautja-clan-admin-invalid-clan-id");
+            return;
+        }
+
         _clanManager.InvalidateCache(player.UserId);
         _rankManager.InvalidateCached(player.UserId);
         _statusMessage = Loc.GetString("cmu-yautja-clan-admin-membership-updated", ("player", player.Username));
