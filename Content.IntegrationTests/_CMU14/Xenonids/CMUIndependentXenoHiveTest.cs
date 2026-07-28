@@ -1,12 +1,15 @@
 using System.Collections.Generic;
+using System.Numerics;
 using Content.Server.GameTicking;
 using Content.Server.Maps;
 using Content.Server._RMC14.Admin;
+using Content.Server._RMC14.TacticalMap;
 using Content.Server._RMC14.Xenonids.Hive;
 using Content.Shared._CMU14.Xenonids.Hive;
 using Content.Shared._RMC14.Xenonids.Egg;
 using Content.Shared._RMC14.Xenonids.Hive;
 using Content.Shared._RMC14.Xenonids.Weeds;
+using Content.Shared._RMC14.TacticalMap;
 using Content.Shared.NPC.Components;
 using Content.Shared.NPC.Prototypes;
 using Content.Shared.NPC.Systems;
@@ -187,6 +190,75 @@ public sealed class CMUIndependentXenoHiveTest
             {
                 entMan.DeleteEntity(alphaXeno);
                 entMan.DeleteEntity(forsakenXeno);
+                entMan.DeleteEntity(alphaHive);
+                entMan.DeleteEntity(forsakenHive);
+            }
+        });
+
+        await pair.CleanReturnAsync();
+    }
+
+    [Test]
+    public async Task HunterShipTacticalMapOnlyShowsOwnHive()
+    {
+        await using var pair = await PoolManager.GetServerClient();
+        var server = pair.Server;
+        var map = await pair.CreateTestMap();
+
+        await server.WaitAssertion(() =>
+        {
+            var entMan = server.EntMan;
+            var hives = entMan.System<XenoHiveSystem>();
+            var tacticalMaps = entMan.System<TacticalMapSystem>();
+            var tacticalMap = entMan.EnsureComponent<TacticalMapComponent>(map.Grid);
+
+            var alphaHive = hives.CreateHive("Hunter Ship Alpha Hive", "CMUHunterShipAlphaHive");
+            var forsakenHive = hives.CreateHive("Hunter Ship Forsaken Hive", "CMUHunterShipForsakenHive");
+            var alphaXeno = entMan.SpawnEntity("CMXenoParasite", map.GridCoords);
+            var forsakenXeno = entMan.SpawnEntity("CMXenoParasite", map.GridCoords.Offset(new Vector2(1, 0)));
+            var alphaStructure = entMan.SpawnEntity("HiveCoreXeno", map.GridCoords.Offset(new Vector2(2, 0)));
+            var forsakenStructure = entMan.SpawnEntity("HiveCoreXeno", map.GridCoords.Offset(new Vector2(3, 0)));
+
+            try
+            {
+                hives.SetHive(alphaXeno, alphaHive);
+                hives.SetHive(forsakenXeno, forsakenHive);
+                hives.SetHive(alphaStructure, alphaHive);
+                hives.SetHive(forsakenStructure, forsakenHive);
+
+                var alphaUser = entMan.EnsureComponent<TacticalMapUserComponent>(alphaXeno);
+                alphaUser.Xenos = true;
+                alphaUser.LiveUpdate = true;
+                var forsakenUser = entMan.EnsureComponent<TacticalMapUserComponent>(forsakenXeno);
+                forsakenUser.Xenos = true;
+                forsakenUser.LiveUpdate = true;
+
+                tacticalMap.XenoBlips[alphaXeno.Id] = new();
+                tacticalMap.XenoBlips[forsakenXeno.Id] = new();
+                tacticalMap.XenoStructureBlips[alphaStructure.Id] = new();
+                tacticalMap.XenoStructureBlips[forsakenStructure.Id] = new();
+
+                tacticalMaps.UpdateUserData((alphaXeno, alphaUser), tacticalMap);
+                tacticalMaps.UpdateUserData((forsakenXeno, forsakenUser), tacticalMap);
+
+                Assert.Multiple(() =>
+                {
+                    Assert.That(alphaUser.XenoBlips.ContainsKey(alphaXeno.Id), Is.True);
+                    Assert.That(alphaUser.XenoBlips.ContainsKey(forsakenXeno.Id), Is.False);
+                    Assert.That(alphaUser.XenoStructureBlips.ContainsKey(alphaStructure.Id), Is.True);
+                    Assert.That(alphaUser.XenoStructureBlips.ContainsKey(forsakenStructure.Id), Is.False);
+                    Assert.That(forsakenUser.XenoBlips.ContainsKey(forsakenXeno.Id), Is.True);
+                    Assert.That(forsakenUser.XenoBlips.ContainsKey(alphaXeno.Id), Is.False);
+                    Assert.That(forsakenUser.XenoStructureBlips.ContainsKey(forsakenStructure.Id), Is.True);
+                    Assert.That(forsakenUser.XenoStructureBlips.ContainsKey(alphaStructure.Id), Is.False);
+                });
+            }
+            finally
+            {
+                entMan.DeleteEntity(alphaXeno);
+                entMan.DeleteEntity(forsakenXeno);
+                entMan.DeleteEntity(alphaStructure);
+                entMan.DeleteEntity(forsakenStructure);
                 entMan.DeleteEntity(alphaHive);
                 entMan.DeleteEntity(forsakenHive);
             }
