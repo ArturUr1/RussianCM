@@ -1,8 +1,8 @@
 - type: entity
   parent: RMCBoonie
   id: RuMCBEARBoonieBlack
-  name: bb
-  description: bb
+  name: panama BEAR
+  description: Lightweight tactical panama hat for reconnaissance and covert operations. Has a built-in microphone and speaker for communication.
   components:
   - type: Sprite
     sprite: _RuMC14/Clothing/BEAR/hats/boonie_black.rsi
@@ -12,8 +12,8 @@
 - type: entity
   parent: RMCBoonie
   id: RuMCBEARBoonieBrown
-  name: bb
-  description: bb
+  name: panama BEAR
+  description: Lightweight tactical panama hat for reconnaissance and covert operations. Has a built-in microphone and speaker for communication.
   components:
   - type: Sprite
     sprite: _RuMC14/Clothing/BEAR/hats/boonie_brown.rsi

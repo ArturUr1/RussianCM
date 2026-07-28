@@ -1,8 +1,8 @@
 - type: entity
   parent: AU14BaseArmor
   id: RuMCArmorBEAR_alt
-  name: bb
-  description: bb
+  name: armor M6SH
+  description: Universal medium-protection body armor with reinforced attachment system.
   components:
   - type: Sprite
     sprite: _RuMC14/Clothing/BEAR/armor/bear_armor.rsi
@@ -16,8 +16,8 @@
 - type: entity
   parent: AU14BaseArmor
   id: RuMCArmorBEAR_Heavy
-  name: bb
-  description: bb
+  name: armor M5S-H
+  description: It significantly reduces mobility, but makes the fighter almost invulnerable to standard weapons.
   components:
   - type: Sprite
     sprite: _RuMC14/Clothing/BEAR/armor/bear_large_armor.rsi
@@ -25,8 +25,8 @@
 - type: entity
   parent: AU14BaseArmor
   id: RuMCArmorBEAR
-  name: bb
-  description: bb
+  name: armor M5S-M
+  description: It does not overload the fighter, allowing him to maneuver in urban conditions.
   components:
   - type: Sprite
     sprite: _RuMC14/Clothing/BEAR/armor/bear_standard_armor.rsi
@@ -34,8 +34,8 @@
 - type: entity
   parent: AU14BaseArmorLight
   id: RuMCArmorBEAR_Light
-  name: bb
-  description: bb
+  name: armor M5S-L
+  description: Ideal for reconnaissance, snipers, and operators on missions.
   components:
   - type: Sprite
     sprite: _RuMC14/Clothing/BEAR/armor/bear_light_armor.rsi
