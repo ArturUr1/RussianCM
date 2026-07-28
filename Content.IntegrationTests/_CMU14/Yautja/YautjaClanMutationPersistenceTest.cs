@@ -60,7 +60,7 @@ public sealed class YautjaClanMutationPersistenceTest
     [Test]
     public async Task DeleteDeactivatesClanAndDetachesMemberWithoutChangingPersistentData()
     {
-        await using var pair = await PoolManager.GetServerClient();
+        await using var pair = await PoolManager.GetServerClient(new PoolSettings { Connected = true });
         var db = pair.Server.ResolveDependency<IServerDbManager>();
         var playerId = pair.Player!.UserId.UserId;
         var clanId = await db.CreateYautjaClanAsync("Delete me", "Deletion test", 7, "#123456");

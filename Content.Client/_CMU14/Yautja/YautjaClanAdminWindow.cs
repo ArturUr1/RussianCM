@@ -196,6 +196,7 @@ public sealed class YautjaClanAdminWindow : DefaultWindow
         }
     }
 
+    [System.Obsolete]
     protected override void Dispose(bool disposing)
     {
         if (disposing)
