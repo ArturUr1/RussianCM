@@ -3,6 +3,7 @@ using NUnit.Framework;
 using Robust.Client.UserInterface;
 using Robust.Client.UserInterface.Controls;
 using Robust.Shared.IoC;
+using Robust.Shared.Localization;
 using Robust.UnitTesting;
 
 namespace Content.Tests.Client._CMU14.Yautja;
@@ -30,5 +31,15 @@ public sealed class YautjaClanAdminWindowTest : RobustUnitTest
             new OptionButton.ItemSelectedEventArgs(6, option));
 
         Assert.That(option.SelectedId, Is.EqualTo(6));
+    }
+
+    [Test]
+    public void ContextualTooltipIsAppliedToControl()
+    {
+        var field = new LineEdit();
+
+        YautjaClanAdminWindow.ApplyTooltip(field, "cmu-yautja-clan-admin-name-tooltip");
+
+        Assert.That(field.ToolTip, Is.EqualTo(Loc.GetString("cmu-yautja-clan-admin-name-tooltip")));
     }
 }
