@@ -49,4 +49,21 @@ public sealed class YautjaClanAdminWindowTest : RobustUnitTest
         Assert.That(YautjaClanAdminWindow.DefaultWindowSize.X, Is.LessThanOrEqualTo(760));
         Assert.That(YautjaClanAdminWindow.DefaultWindowSize.Y, Is.LessThanOrEqualTo(560));
     }
+
+    [Test]
+    public void TogglingClanRosterOpensAndCollapsesOneClan()
+    {
+        Assert.Multiple(() =>
+        {
+            Assert.That(YautjaClanAdminWindow.ToggleExpandedClan(null, 7), Is.EqualTo(7));
+            Assert.That(YautjaClanAdminWindow.ToggleExpandedClan(7, 7), Is.Null);
+            Assert.That(YautjaClanAdminWindow.ToggleExpandedClan(7, 8), Is.EqualTo(8));
+        });
+    }
+
+    [Test]
+    public void RosterScrollHeightIsBounded()
+    {
+        Assert.That(YautjaClanAdminWindow.RosterMaxHeight, Is.LessThanOrEqualTo(220));
+    }
 }
