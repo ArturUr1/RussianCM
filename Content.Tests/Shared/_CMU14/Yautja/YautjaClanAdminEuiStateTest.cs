@@ -58,4 +58,18 @@ public sealed class YautjaClanAdminEuiStateTest
             Assert.That(clear.PlayerId, Is.EqualTo(playerId));
         });
     }
+
+    [Test]
+    public void MemberStateRetainsWhitelistFlagsForRefreshes()
+    {
+        var playerId = new NetUserId(Guid.Parse("66666666-6666-6666-6666-666666666666"));
+        var member = new YautjaClanAdminMemberState(
+            playerId,
+            "Whitelisted",
+            YautjaRank.Blooded,
+            true,
+            YautjaWhitelistFlags.Council);
+
+        Assert.That(member.WhitelistFlags, Is.EqualTo(YautjaWhitelistFlags.Council));
+    }
 }

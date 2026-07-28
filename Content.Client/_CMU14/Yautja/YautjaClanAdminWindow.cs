@@ -37,6 +37,13 @@ public sealed class YautjaClanAdminWindow : DefaultWindow
     private static readonly YautjaRank[] PersistentRanks =
         YautjaClanPolicy.GetNormalAssignableRanks().Append(YautjaRank.Ancient).ToArray();
 
+    private static readonly (YautjaWhitelistFlags Flag, string LocalizationKey)[] WhitelistDisplayFlags =
+    [
+        (YautjaWhitelistFlags.Yautja, "cmu-yautja-clan-admin-whitelist-yautja"),
+        (YautjaWhitelistFlags.Council, "cmu-yautja-clan-admin-whitelist-council"),
+        (YautjaWhitelistFlags.Leader, "cmu-yautja-clan-admin-whitelist-leader"),
+    ];
+
     public event Action? OnRefresh;
     public event Action<string, string, string>? OnCreateClan;
     public event Action<int, string, string, string>? OnUpdateClan;
@@ -453,6 +460,7 @@ public sealed class YautjaClanAdminWindow : DefaultWindow
         var status = Loc.GetString(member.Online
             ? "cmu-yautja-clan-admin-roster-online"
             : "cmu-yautja-clan-admin-roster-offline");
+        var whitelist = GetWhitelistLabel(member.WhitelistFlags);
         var row = new BoxContainer
         {
             Orientation = BoxContainer.LayoutOrientation.Horizontal,
@@ -465,7 +473,9 @@ public sealed class YautjaClanAdminWindow : DefaultWindow
                 "cmu-yautja-clan-admin-roster-member",
                 ("name", member.Name),
                 ("rank", rank),
-                ("status", status)),
+                ("status", status)) + " · " + Loc.GetString(
+                    "cmu-yautja-clan-admin-roster-whitelist",
+                    ("flags", whitelist)),
             FontColorOverride = member.Online
                 ? YautjaBracerUiStyle.Text
                 : YautjaBracerUiStyle.Muted,
@@ -493,6 +503,7 @@ public sealed class YautjaClanAdminWindow : DefaultWindow
             "cmu-yautja-clan-admin-clear-whitelist-tooltip");
         clearWhitelist.MinWidth = 105;
         clearWhitelist.MinHeight = 24;
+        clearWhitelist.Disabled = !CanClearWhitelist(member.WhitelistFlags);
         clearWhitelist.HorizontalExpand = false;
         clearWhitelist.StyleBoxOverride = YautjaBracerUiStyle.Flat(
             YautjaBracerUiStyle.Row,
@@ -510,6 +521,23 @@ public sealed class YautjaClanAdminWindow : DefaultWindow
     internal static NetUserId GetRosterActionTarget(YautjaClanAdminMemberState member)
     {
         return member.PlayerId;
+    }
+
+    internal static bool CanClearWhitelist(YautjaWhitelistFlags flags)
+    {
+        return flags != YautjaWhitelistFlags.None;
+    }
+
+    internal static string GetWhitelistLabel(YautjaWhitelistFlags flags)
+    {
+        if (flags == YautjaWhitelistFlags.None)
+            return Loc.GetString("cmu-yautja-clan-admin-whitelist-none");
+
+        var labels = WhitelistDisplayFlags
+            .Where(entry => (flags & entry.Flag) != 0)
+            .Select(entry => Loc.GetString(entry.LocalizationKey))
+            .ToArray();
+        return labels.Length == 0 ? flags.ToString() : string.Join(", ", labels);
     }
 
     internal static ScrollContainer CreateBoundedRosterScroll(int maxHeight)

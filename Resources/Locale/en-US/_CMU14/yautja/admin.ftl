@@ -106,6 +106,7 @@ cmu-yautja-clan-admin-roster-expand = Roster
 cmu-yautja-clan-admin-roster-collapse = Hide roster
 cmu-yautja-clan-admin-roster-tooltip = Show or hide clan members and their ranks.
 cmu-yautja-clan-admin-roster-member = {$name} — {$rank} ({$status})
+cmu-yautja-clan-admin-roster-whitelist = whitelist: {$flags}
 cmu-yautja-clan-admin-roster-empty = This clan has no members.
 cmu-yautja-clan-admin-roster-online = online
 cmu-yautja-clan-admin-roster-offline = offline

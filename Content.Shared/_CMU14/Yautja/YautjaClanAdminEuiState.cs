@@ -72,18 +72,25 @@ public sealed class YautjaClanAdminClanState
 [Serializable, NetSerializable]
 public sealed class YautjaClanAdminMemberState
 {
-    public YautjaClanAdminMemberState(NetUserId playerId, string name, YautjaRank rank, bool online)
+    public YautjaClanAdminMemberState(
+        NetUserId playerId,
+        string name,
+        YautjaRank rank,
+        bool online,
+        YautjaWhitelistFlags whitelistFlags = YautjaWhitelistFlags.None)
     {
         PlayerId = playerId;
         Name = name;
         Rank = rank;
         Online = online;
+        WhitelistFlags = whitelistFlags;
     }
 
     public NetUserId PlayerId { get; }
     public string Name { get; }
     public YautjaRank Rank { get; }
     public bool Online { get; }
+    public YautjaWhitelistFlags WhitelistFlags { get; }
 }
 
 [Serializable, NetSerializable]

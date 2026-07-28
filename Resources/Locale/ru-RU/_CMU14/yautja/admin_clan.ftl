@@ -76,6 +76,7 @@ cmu-yautja-clan-admin-roster-expand = Состав
 cmu-yautja-clan-admin-roster-collapse = Скрыть состав
 cmu-yautja-clan-admin-roster-tooltip = Показать или скрыть участников клана и их ранги.
 cmu-yautja-clan-admin-roster-member = {$name} — {$rank} ({$status})
+cmu-yautja-clan-admin-roster-whitelist = вайтлист: {$flags}
 cmu-yautja-clan-admin-roster-empty = В клане пока нет участников.
 cmu-yautja-clan-admin-roster-online = онлайн
 cmu-yautja-clan-admin-roster-offline = не в сети

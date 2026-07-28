@@ -96,4 +96,18 @@ public sealed class YautjaClanAdminWindowTest : RobustUnitTest
 
         Assert.That(YautjaClanAdminWindow.GetRosterActionTarget(member), Is.EqualTo(id));
     }
+
+    [Test]
+    public void WhitelistClearActionFollowsSnapshotFlags()
+    {
+        Assert.Multiple(() =>
+        {
+            Assert.That(
+                YautjaClanAdminWindow.CanClearWhitelist(YautjaWhitelistFlags.Yautja),
+                Is.True);
+            Assert.That(
+                YautjaClanAdminWindow.CanClearWhitelist(YautjaWhitelistFlags.None),
+                Is.False);
+        });
+    }
 }

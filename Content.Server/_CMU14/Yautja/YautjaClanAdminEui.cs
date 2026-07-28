@@ -169,16 +169,19 @@ public sealed class YautjaClanAdminEui : BaseEui
         {
             var clans = await _db.GetYautjaClansAsync();
             var memberRecords = await _db.GetYautjaClanMembersAsync();
-            var memberStates = memberRecords.ToDictionary(
-                member => member.PlayerUserId,
-                member =>
-                {
-                    var playerId = new NetUserId(member.PlayerUserId);
-                    return ToMemberState(
+            var memberStates = new Dictionary<Guid, YautjaClanAdminMemberState>(memberRecords.Count);
+            foreach (var member in memberRecords)
+            {
+                var playerId = new NetUserId(member.PlayerUserId);
+                var whitelistFlags = (YautjaWhitelistFlags) await _db.GetYautjaWhitelistFlagsAsync(member.PlayerUserId);
+                memberStates.Add(
+                    member.PlayerUserId,
+                    ToMemberState(
                         member,
                         GetPlayerName(playerId),
-                        _players.TryGetSessionById(playerId, out _));
-                });
+                        _players.TryGetSessionById(playerId, out _),
+                        whitelistFlags));
+            }
             var clanStates = new List<YautjaClanAdminClanState>(clans.Count);
 
             foreach (var clan in clans)
@@ -255,13 +258,15 @@ public sealed class YautjaClanAdminEui : BaseEui
     internal static YautjaClanAdminMemberState ToMemberState(
         YautjaClanMemberRecord member,
         string name,
-        bool online)
+        bool online,
+        YautjaWhitelistFlags whitelistFlags = YautjaWhitelistFlags.None)
     {
         return new(
             new NetUserId(member.PlayerUserId),
             name,
             YautjaClanManager.SanitizeStoredRank(member.Rank),
-            online);
+            online,
+            whitelistFlags);
     }
 
     internal static YautjaClanMemberRecord RemoveFromClan(YautjaClanMemberRecord member)

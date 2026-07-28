@@ -16,7 +16,11 @@ public sealed class YautjaClanAdminEuiTest
         var playerId = Guid.Parse("22222222-2222-2222-2222-222222222222");
         var record = new YautjaClanMemberRecord(playerId, 7, 255, 0, 0, false);
 
-        var state = YautjaClanAdminEui.ToMemberState(record, "Unknown hunter", false);
+        var state = YautjaClanAdminEui.ToMemberState(
+            record,
+            "Unknown hunter",
+            false,
+            YautjaWhitelistFlags.Council);
 
         Assert.Multiple(() =>
         {
@@ -24,6 +28,7 @@ public sealed class YautjaClanAdminEuiTest
             Assert.That(state.Name, Is.EqualTo("Unknown hunter"));
             Assert.That(state.Rank, Is.EqualTo(YautjaRank.Blooded));
             Assert.That(state.Online, Is.False);
+            Assert.That(state.WhitelistFlags, Is.EqualTo(YautjaWhitelistFlags.Council));
         });
     }
 
