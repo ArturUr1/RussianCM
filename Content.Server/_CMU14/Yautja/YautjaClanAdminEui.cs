@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Content.Server.Administration;
@@ -24,6 +25,7 @@ public sealed class YautjaClanAdminEui : BaseEui
     [Dependency] private YautjaClanManager _clanManager = default!;
     [Dependency] private YautjaRankManager _rankManager = default!;
     [Dependency] private IPlayerLocator _playerLocator = default!;
+    [Dependency] private IPlayerManager _players = default!;
     [Dependency] private IAdminLogManager _adminLog = default!;
 
     private string _statusMessage = "";
@@ -164,14 +166,26 @@ public sealed class YautjaClanAdminEui : BaseEui
 
             foreach (var clan in clans)
             {
-                var memberCount = (await _db.GetYautjaClanMembersAsync(clan.Id)).Count;
+                var memberStates = (await _db.GetYautjaClanMembersAsync(clan.Id))
+                    .Select(member =>
+                    {
+                        var playerId = new NetUserId(member.PlayerUserId);
+                        return ToMemberState(
+                            member,
+                            GetPlayerName(playerId),
+                            _players.TryGetSessionById(playerId, out _));
+                    })
+                    .OrderByDescending(member => member.Rank)
+                    .ThenBy(member => member.Name, StringComparer.OrdinalIgnoreCase)
+                    .ToList();
                 clanStates.Add(new YautjaClanAdminClanState(
                     clan.Id,
                     clan.Name,
                     clan.Description,
                     clan.Honor,
                     clan.Color,
-                    memberCount));
+                    memberStates.Count,
+                    memberStates));
             }
 
             var publishedState = _stateStore.PublishFreshSnapshot(
@@ -217,6 +231,25 @@ public sealed class YautjaClanAdminEui : BaseEui
         _stateStore.StageMutation(id, YautjaClanAdminMutationKind.Created, _statusMessage);
         _adminLog.Add(LogType.AdminCommands, LogImpact.Medium,
             $"{Player.Name} created Yautja clan {id} ({message.Name}).");
+    }
+
+    internal static YautjaClanAdminMemberState ToMemberState(
+        YautjaClanMemberRecord member,
+        string name,
+        bool online)
+    {
+        return new(
+            new NetUserId(member.PlayerUserId),
+            name,
+            YautjaClanManager.SanitizeStoredRank(member.Rank),
+            online);
+    }
+
+    private string GetPlayerName(NetUserId userId)
+    {
+        return _players.TryGetSessionById(userId, out var session)
+            ? session.Name
+            : userId.ToString();
     }
 
     private async Task UpdateClan(YautjaClanAdminUpdateClanMessage message)
