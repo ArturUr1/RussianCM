@@ -87,7 +87,8 @@ public sealed class YautjaClanAdminStateStore
         List<YautjaClanAdminClanState> clans,
         string inspectedPlayer,
         string inspectedSummary,
-        string statusMessage)
+        string statusMessage,
+        List<YautjaClanAdminMemberState>? clanlessPlayers = null)
     {
         lock (_sync)
         {
@@ -111,7 +112,8 @@ public sealed class YautjaClanAdminStateStore
                 statusMessage,
                 version,
                 lastMutatedClanId,
-                lastMutationKind);
+                lastMutationKind,
+                clanlessPlayers);
             _state = state;
 
             if (pending != null)
@@ -135,7 +137,8 @@ public sealed class YautjaClanAdminStateStore
                 statusMessage,
                 _state.ClanMutationVersion,
                 _state.LastMutatedClanId,
-                _state.LastMutationKind);
+                _state.LastMutationKind,
+                _state.ClanlessPlayers);
             _state = state;
             return state;
         }

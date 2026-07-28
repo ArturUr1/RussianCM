@@ -116,6 +116,12 @@ public sealed class YautjaClanAdminEui : BaseEui
                     case YautjaClanAdminDeleteClanMessage delete:
                         await DeleteClan(delete);
                         break;
+                    case YautjaClanAdminRemoveMemberMessage removeMember:
+                        await RemoveMember(removeMember);
+                        break;
+                    case YautjaClanAdminClearWhitelistMessage clearWhitelist:
+                        await ClearWhitelist(clearWhitelist);
+                        break;
                     case YautjaClanAdminSetMembershipMessage membership:
                         await SetMembership(membership);
                         break;
@@ -162,19 +168,24 @@ public sealed class YautjaClanAdminEui : BaseEui
         try
         {
             var clans = await _db.GetYautjaClansAsync();
+            var memberRecords = await _db.GetYautjaClanMembersAsync();
+            var memberStates = memberRecords.ToDictionary(
+                member => member.PlayerUserId,
+                member =>
+                {
+                    var playerId = new NetUserId(member.PlayerUserId);
+                    return ToMemberState(
+                        member,
+                        GetPlayerName(playerId),
+                        _players.TryGetSessionById(playerId, out _));
+                });
             var clanStates = new List<YautjaClanAdminClanState>(clans.Count);
 
             foreach (var clan in clans)
             {
-                var memberStates = (await _db.GetYautjaClanMembersAsync(clan.Id))
-                    .Select(member =>
-                    {
-                        var playerId = new NetUserId(member.PlayerUserId);
-                        return ToMemberState(
-                            member,
-                            GetPlayerName(playerId),
-                            _players.TryGetSessionById(playerId, out _));
-                    })
+                var clanMemberStates = memberRecords
+                    .Where(member => member.ClanId == clan.Id)
+                    .Select(member => memberStates[member.PlayerUserId])
                     .OrderByDescending(member => member.Rank)
                     .ThenBy(member => member.Name, StringComparer.OrdinalIgnoreCase)
                     .ToList();
@@ -184,15 +195,23 @@ public sealed class YautjaClanAdminEui : BaseEui
                     clan.Description,
                     clan.Honor,
                     clan.Color,
-                    memberStates.Count,
-                    memberStates));
+                    clanMemberStates.Count,
+                    clanMemberStates));
             }
+
+            var clanlessPlayers = memberRecords
+                .Where(IsClanless)
+                .Select(member => memberStates[member.PlayerUserId])
+                .OrderByDescending(member => member.Rank)
+                .ThenBy(member => member.Name, StringComparer.OrdinalIgnoreCase)
+                .ToList();
 
             var publishedState = _stateStore.PublishFreshSnapshot(
                 clanStates,
                 _inspectedPlayer,
                 _inspectedSummary,
-                _statusMessage);
+                _statusMessage,
+                clanlessPlayers);
             _statusMessage = publishedState.StatusMessage;
         }
         catch (Exception e)
@@ -243,6 +262,16 @@ public sealed class YautjaClanAdminEui : BaseEui
             name,
             YautjaClanManager.SanitizeStoredRank(member.Rank),
             online);
+    }
+
+    internal static YautjaClanMemberRecord RemoveFromClan(YautjaClanMemberRecord member)
+    {
+        return member with { ClanId = null };
+    }
+
+    internal static bool IsClanless(YautjaClanMemberRecord member)
+    {
+        return member.ClanId == null;
     }
 
     private string GetPlayerName(NetUserId userId)
@@ -310,6 +339,44 @@ public sealed class YautjaClanAdminEui : BaseEui
             LogType.AdminCommands,
             LogImpact.Medium,
             $"{Player.Name} deleted Yautja clan {message.ClanId} and detached {result.DetachedPlayers.Count} members.");
+    }
+
+    private async Task RemoveMember(YautjaClanAdminRemoveMemberMessage message)
+    {
+        var existing = await _db.GetYautjaClanMemberAsync(message.PlayerId.UserId);
+        if (existing == null || IsClanless(existing))
+        {
+            _statusMessage = Loc.GetString("cmu-yautja-clan-admin-member-not-found");
+            return;
+        }
+
+        if (!await _db.UpsertYautjaClanMemberAsync(RemoveFromClan(existing)))
+        {
+            _statusMessage = Loc.GetString("cmu-yautja-clan-admin-member-not-found");
+            return;
+        }
+
+        _clanManager.InvalidateCache(message.PlayerId);
+        _rankManager.InvalidateCached(message.PlayerId);
+        var playerName = GetPlayerName(message.PlayerId);
+        _statusMessage = Loc.GetString("cmu-yautja-clan-admin-member-removed", ("player", playerName));
+        _adminLog.Add(
+            LogType.AdminCommands,
+            LogImpact.Medium,
+            $"{Player.Name} removed Yautja player {playerName} ({message.PlayerId}) from a clan.");
+    }
+
+    private async Task ClearWhitelist(YautjaClanAdminClearWhitelistMessage message)
+    {
+        await _db.SetYautjaWhitelistFlagsAsync(message.PlayerId.UserId, (int) YautjaWhitelistFlags.None);
+        _clanManager.InvalidateCache(message.PlayerId);
+        _rankManager.InvalidateCached(message.PlayerId);
+        var playerName = GetPlayerName(message.PlayerId);
+        _statusMessage = Loc.GetString("cmu-yautja-clan-admin-whitelist-cleared", ("player", playerName));
+        _adminLog.Add(
+            LogType.AdminCommands,
+            LogImpact.Medium,
+            $"{Player.Name} cleared Yautja whitelist flags for {playerName} ({message.PlayerId}).");
     }
 
     private async Task SetMembership(YautjaClanAdminSetMembershipMessage message)

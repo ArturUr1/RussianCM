@@ -26,4 +26,40 @@ public sealed class YautjaClanAdminEuiTest
             Assert.That(state.Online, Is.False);
         });
     }
+
+    [Test]
+    public void RemoveFromClanPreservesMemberData()
+    {
+        var source = new YautjaClanMemberRecord(
+            Guid.Parse("44444444-4444-4444-4444-444444444444"),
+            12,
+            5,
+            11,
+            42,
+            true);
+        var detached = YautjaClanAdminEui.RemoveFromClan(source);
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(detached.ClanId, Is.Null);
+            Assert.That(detached.PlayerUserId, Is.EqualTo(source.PlayerUserId));
+            Assert.That(detached.Rank, Is.EqualTo(source.Rank));
+            Assert.That(detached.Permissions, Is.EqualTo(source.Permissions));
+            Assert.That(detached.Honor, Is.EqualTo(source.Honor));
+            Assert.That(detached.IsLegacy, Is.EqualTo(source.IsLegacy));
+        });
+    }
+
+    [Test]
+    public void IsClanlessOnlyAcceptsRecordsWithoutClan()
+    {
+        Assert.That(
+            YautjaClanAdminEui.IsClanless(
+                new YautjaClanMemberRecord(Guid.NewGuid(), null, 2, 3, 0, false)),
+            Is.True);
+        Assert.That(
+            YautjaClanAdminEui.IsClanless(
+                new YautjaClanMemberRecord(Guid.NewGuid(), 9, 2, 3, 0, false)),
+            Is.False);
+    }
 }
