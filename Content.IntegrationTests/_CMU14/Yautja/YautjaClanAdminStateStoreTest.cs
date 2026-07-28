@@ -68,7 +68,7 @@ public sealed class YautjaClanAdminStateStoreTest
 
         Assert.Multiple(() =>
         {
-            Assert.That(store.CanStartMutation, Is.True);
+            Assert.That(store.CanStartMutation, Is.False);
             Assert.That(refreshed.Clans, Is.SameAs(freshClans));
             Assert.That(refreshed.InspectedPlayer, Is.EqualTo("new player"));
             Assert.That(refreshed.InspectedSummary, Is.EqualTo("new summary"));
@@ -77,6 +77,42 @@ public sealed class YautjaClanAdminStateStoreTest
             Assert.That(refreshed.LastMutatedClanId, Is.EqualTo(2));
             Assert.That(refreshed.LastMutationKind, Is.EqualTo(YautjaClanAdminMutationKind.Created));
         });
+
+        Assert.That(store.GetForDelivery(), Is.SameAs(refreshed));
+        Assert.That(store.CanStartMutation, Is.True);
+    }
+
+    [Test]
+    public void RecoveredAcknowledgementMustBeDeliveredBeforeNextMutationCanStart()
+    {
+        var store = new YautjaClanAdminStateStore();
+        store.StageMutation(2, YautjaClanAdminMutationKind.Created, "created");
+        store.PublishRefreshFailure("refresh failed");
+
+        var recovered = store.PublishFreshSnapshot(
+            [Clan(2, "Created")],
+            "",
+            "",
+            "refresh recovered");
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(store.CanStartMutation, Is.False);
+            Assert.That(recovered.LastMutationKind, Is.EqualTo(YautjaClanAdminMutationKind.Created));
+            Assert.That(() => store.StageMutation(2, YautjaClanAdminMutationKind.Updated, "updated"),
+                Throws.InvalidOperationException);
+        });
+
+        var delivered = store.GetForDelivery();
+        Assert.Multiple(() =>
+        {
+            Assert.That(delivered, Is.SameAs(recovered));
+            Assert.That(delivered.LastMutationKind, Is.EqualTo(YautjaClanAdminMutationKind.Created));
+            Assert.That(store.CanStartMutation, Is.True);
+        });
+
+        Assert.DoesNotThrow(() =>
+            store.StageMutation(2, YautjaClanAdminMutationKind.Updated, "updated"));
     }
 
     [Test]

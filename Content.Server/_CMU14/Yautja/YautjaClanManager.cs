@@ -13,6 +13,7 @@ public sealed partial class YautjaClanManager
     [Dependency] private IServerDbManager _db = default!;
 
     private readonly Dictionary<NetUserId, YautjaClanResolution> _cache = new();
+    private readonly YautjaClanCacheVersions _cacheVersions = new();
 
     public async Task<YautjaClanResolution> Resolve(NetUserId userId, bool youngbloodRole = false)
     {
@@ -22,6 +23,7 @@ public sealed partial class YautjaClanManager
         if (_cache.TryGetValue(userId, out var cached))
             return cached;
 
+        var requestVersion = _cacheVersions.Capture(userId);
         var whitelistFlags = (YautjaWhitelistFlags) await _db.GetYautjaWhitelistFlagsAsync(userId.UserId);
         var member = await _db.GetYautjaClanMemberAsync(userId.UserId);
         YautjaClanResolution resolution;
@@ -50,7 +52,9 @@ public sealed partial class YautjaClanManager
             resolution = new(rank, member.ClanId, permissions, member.IsLegacy, member.Honor, whitelistFlags);
         }
 
-        _cache[userId] = resolution;
+        if (_cacheVersions.IsCurrent(userId, requestVersion))
+            _cache[userId] = resolution;
+
         return resolution;
     }
 
@@ -251,7 +255,30 @@ public sealed partial class YautjaClanManager
     public void InvalidateCache(params NetUserId[] userIds)
     {
         foreach (var userId in userIds)
+        {
+            _cacheVersions.Increment(userId);
             _cache.Remove(userId);
+        }
+    }
+}
+
+internal sealed class YautjaClanCacheVersions
+{
+    private readonly Dictionary<NetUserId, long> _versions = new();
+
+    public long Capture(NetUserId userId)
+    {
+        return _versions.TryGetValue(userId, out var version) ? version : 0;
+    }
+
+    public void Increment(NetUserId userId)
+    {
+        _versions[userId] = Capture(userId) + 1;
+    }
+
+    public bool IsCurrent(NetUserId userId, long capturedVersion)
+    {
+        return Capture(userId) == capturedVersion;
     }
 }
 

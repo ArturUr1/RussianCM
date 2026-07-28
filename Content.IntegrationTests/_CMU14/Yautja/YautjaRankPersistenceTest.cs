@@ -1,6 +1,7 @@
 using Content.Server.Database;
 using Content.Server._CMU14.Yautja;
 using Content.Shared._CMU14.Yautja;
+using Robust.Shared.Network;
 
 namespace Content.IntegrationTests._CMU14.Yautja;
 
@@ -28,6 +29,18 @@ public sealed class YautjaRankPersistenceTest
         Assert.That(
             YautjaRankManager.IsCacheVersionCurrent(requestVersion, currentVersion),
             Is.EqualTo(expectedCurrent));
+    }
+
+    [Test]
+    public void InvalidatedClanResolutionRejectsStaleInFlightCompletion()
+    {
+        var versions = new YautjaClanCacheVersions();
+        var userId = new NetUserId(Guid.NewGuid());
+        var inFlightVersion = versions.Capture(userId);
+
+        versions.Increment(userId);
+
+        Assert.That(versions.IsCurrent(userId, inFlightVersion), Is.False);
     }
 
     [Test]

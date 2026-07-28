@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Threading;
 using Content.Shared._CMU14.Yautja;
 
 namespace Content.Server._CMU14.Yautja;
@@ -12,7 +11,9 @@ namespace Content.Server._CMU14.Yautja;
 /// </summary>
 public sealed class YautjaClanAdminStateStore
 {
+    private readonly object _sync = new();
     private (int ClanId, YautjaClanAdminMutationKind Kind, string StatusMessage)? _pendingMutation;
+    private bool _acknowledgementAwaitingDelivery;
     private YautjaClanAdminEuiState _state = new(
         [],
         "",
@@ -22,26 +23,64 @@ public sealed class YautjaClanAdminStateStore
         null,
         YautjaClanAdminMutationKind.None);
 
-    public bool CanStartMutation => _pendingMutation == null;
+    public bool CanStartMutation
+    {
+        get
+        {
+            lock (_sync)
+            {
+                return _pendingMutation == null && !_acknowledgementAwaitingDelivery;
+            }
+        }
+    }
+
+    public bool NeedsMutationRecovery
+    {
+        get
+        {
+            lock (_sync)
+            {
+                return _pendingMutation != null;
+            }
+        }
+    }
 
     public YautjaClanAdminEuiState Get()
     {
-        return Volatile.Read(ref _state);
+        lock (_sync)
+        {
+            return _state;
+        }
+    }
+
+    public YautjaClanAdminEuiState GetForDelivery()
+    {
+        lock (_sync)
+        {
+            _acknowledgementAwaitingDelivery = false;
+            return _state;
+        }
     }
 
     public void Set(YautjaClanAdminEuiState state)
     {
-        Volatile.Write(ref _state, state);
+        lock (_sync)
+        {
+            _state = state;
+        }
     }
 
     public void StageMutation(int clanId, YautjaClanAdminMutationKind kind, string statusMessage)
     {
-        if (kind == YautjaClanAdminMutationKind.None)
-            throw new ArgumentOutOfRangeException(nameof(kind));
-        if (_pendingMutation != null)
-            throw new InvalidOperationException("A clan mutation is already waiting for a fresh snapshot.");
+        lock (_sync)
+        {
+            if (kind == YautjaClanAdminMutationKind.None)
+                throw new ArgumentOutOfRangeException(nameof(kind));
+            if (_pendingMutation != null || _acknowledgementAwaitingDelivery)
+                throw new InvalidOperationException("A previous clan mutation is still awaiting state delivery.");
 
-        _pendingMutation = (clanId, kind, statusMessage);
+            _pendingMutation = (clanId, kind, statusMessage);
+        }
     }
 
     public YautjaClanAdminEuiState PublishFreshSnapshot(
@@ -50,44 +89,55 @@ public sealed class YautjaClanAdminStateStore
         string inspectedSummary,
         string statusMessage)
     {
-        var previous = Get();
-        var version = previous.ClanMutationVersion;
-        var lastMutatedClanId = previous.LastMutatedClanId;
-        var lastMutationKind = previous.LastMutationKind;
-
-        if (_pendingMutation is { } pending)
+        lock (_sync)
         {
-            version++;
-            lastMutatedClanId = pending.ClanId;
-            lastMutationKind = pending.Kind;
-            statusMessage = pending.StatusMessage;
-        }
+            var version = _state.ClanMutationVersion;
+            var lastMutatedClanId = _state.LastMutatedClanId;
+            var lastMutationKind = _state.LastMutationKind;
+            var pending = _pendingMutation;
 
-        var state = new YautjaClanAdminEuiState(
-            clans,
-            inspectedPlayer,
-            inspectedSummary,
-            statusMessage,
-            version,
-            lastMutatedClanId,
-            lastMutationKind);
-        Set(state);
-        _pendingMutation = null;
-        return state;
+            if (pending is { } mutation)
+            {
+                version++;
+                lastMutatedClanId = mutation.ClanId;
+                lastMutationKind = mutation.Kind;
+                statusMessage = mutation.StatusMessage;
+            }
+
+            var state = new YautjaClanAdminEuiState(
+                clans,
+                inspectedPlayer,
+                inspectedSummary,
+                statusMessage,
+                version,
+                lastMutatedClanId,
+                lastMutationKind);
+            _state = state;
+
+            if (pending != null)
+            {
+                _acknowledgementAwaitingDelivery = true;
+                _pendingMutation = null;
+            }
+
+            return state;
+        }
     }
 
     public YautjaClanAdminEuiState PublishRefreshFailure(string statusMessage)
     {
-        var previous = Get();
-        var state = new YautjaClanAdminEuiState(
-            previous.Clans,
-            previous.InspectedPlayer,
-            previous.InspectedSummary,
-            statusMessage,
-            previous.ClanMutationVersion,
-            previous.LastMutatedClanId,
-            previous.LastMutationKind);
-        Set(state);
-        return state;
+        lock (_sync)
+        {
+            var state = new YautjaClanAdminEuiState(
+                _state.Clans,
+                _state.InspectedPlayer,
+                _state.InspectedSummary,
+                statusMessage,
+                _state.ClanMutationVersion,
+                _state.LastMutatedClanId,
+                _state.LastMutationKind);
+            _state = state;
+            return state;
+        }
     }
 }

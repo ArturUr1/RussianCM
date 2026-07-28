@@ -62,7 +62,7 @@ public sealed class YautjaClanAdminEui : BaseEui
 
     public override EuiStateBase GetNewState()
     {
-        return _stateStore.Get();
+        return _stateStore.GetForDelivery();
     }
 
     public override async void HandleMessage(EuiMessageBase msg)
@@ -86,17 +86,18 @@ public sealed class YautjaClanAdminEui : BaseEui
                 return;
             }
 
-            var recoveredPendingMutation = false;
             if (!_stateStore.CanStartMutation)
             {
+                if (!_stateStore.NeedsMutationRecovery)
+                    return;
+
                 if (!await RefreshStateAsync())
                     return;
 
-                recoveredPendingMutation = true;
-            }
-
-            if (msg is YautjaClanAdminRefreshMessage && recoveredPendingMutation)
+                // Publish the recovered acknowledgement in its own state cycle
+                // before accepting another mutation.
                 return;
+            }
 
             try
             {
