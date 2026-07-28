@@ -277,6 +277,7 @@ public sealed class YautjaClanAdminWindow : DefaultWindow
     private static OptionButton CreateRankOption()
     {
         var option = new OptionButton { HorizontalExpand = true };
+        option.OnItemSelected += args => ApplySelectorSelection(option, args);
         foreach (var rank in PersistentRanks)
         {
             option.AddItem(Loc.GetString(YautjaRankMetadata.For(rank).LocalizedName), (int) rank);
@@ -288,10 +289,16 @@ public sealed class YautjaClanAdminWindow : DefaultWindow
 
     private static void AddWhitelistOptions(OptionButton option)
     {
+        option.OnItemSelected += args => ApplySelectorSelection(option, args);
         option.AddItem(Loc.GetString("cmu-yautja-clan-admin-whitelist-none"), (int) YautjaWhitelistFlags.None);
         option.AddItem(Loc.GetString("cmu-yautja-clan-admin-whitelist-yautja"), (int) YautjaWhitelistFlags.Yautja);
         option.AddItem(Loc.GetString("cmu-yautja-clan-admin-whitelist-council"), (int) YautjaWhitelistFlags.Council);
         option.AddItem(Loc.GetString("cmu-yautja-clan-admin-whitelist-leader"), (int) YautjaWhitelistFlags.Leader);
         option.SelectId((int) YautjaWhitelistFlags.None);
+    }
+
+    internal static void ApplySelectorSelection(OptionButton option, OptionButton.ItemSelectedEventArgs args)
+    {
+        option.SelectId(args.Id);
     }
 }
