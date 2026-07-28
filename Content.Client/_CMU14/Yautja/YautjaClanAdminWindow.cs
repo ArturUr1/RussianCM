@@ -43,7 +43,9 @@ public sealed class YautjaClanAdminWindow : DefaultWindow
     public YautjaClanAdminWindow()
     {
         Title = Loc.GetString("cmu-yautja-clan-admin-title");
-        SetSize = MinSize = new Vector2(820, 700);
+        Resizable = true;
+        SetSize = new Vector2(900, 760);
+        MinSize = new Vector2(820, 700);
 
         var root = new BoxContainer
         {
@@ -59,6 +61,7 @@ public sealed class YautjaClanAdminWindow : DefaultWindow
             Loc.GetString("cmu-yautja-clan-admin-section-clan"),
             out var clanBody,
             YautjaBracerUiStyle.HotRed);
+        clanSection.VerticalExpand = false;
         clanBody.AddChild(CreateHint("cmu-yautja-clan-admin-clan-section-hint"));
         _clanFormHeader = CreateHeader("cmu-yautja-clan-admin-create-header");
         clanBody.AddChild(_clanFormHeader);
@@ -104,6 +107,7 @@ public sealed class YautjaClanAdminWindow : DefaultWindow
             Loc.GetString("cmu-yautja-clan-admin-section-player"),
             out var playerBody,
             YautjaBracerUiStyle.Amber);
+        playerSection.VerticalExpand = false;
         playerBody.AddChild(CreateHint("cmu-yautja-clan-admin-player-section-hint"));
         _player = CreateLineEdit(
             "cmu-yautja-clan-admin-player",
@@ -188,6 +192,7 @@ public sealed class YautjaClanAdminWindow : DefaultWindow
             Loc.GetString("cmu-yautja-clan-admin-section-existing"),
             out var clansBody,
             YautjaBracerUiStyle.HotRed);
+        clansSection.VerticalExpand = true;
         clansBody.AddChild(CreateHint("cmu-yautja-clan-admin-existing-section-hint"));
         var scroll = new ScrollContainer
         {
