@@ -77,6 +77,18 @@ public sealed class YautjaClanAdminWindowTest : RobustUnitTest
     }
 
     [Test]
+    public void BoundedRosterScrollMeasuresItsContent()
+    {
+        var scroll = YautjaClanAdminWindow.CreateBoundedRosterScroll(180);
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(scroll.ReturnMeasure, Is.True);
+            Assert.That(scroll.MaxHeight, Is.EqualTo(180));
+        });
+    }
+
+    [Test]
     public void RosterActionTargetUsesMemberId()
     {
         var id = new NetUserId(Guid.Parse("55555555-5555-5555-5555-555555555555"));

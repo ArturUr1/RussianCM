@@ -375,12 +375,7 @@ public sealed class YautjaClanAdminWindow : DefaultWindow
 
     private Control BuildRoster(YautjaClanAdminClanState clan)
     {
-        var scroll = new ScrollContainer
-        {
-            MaxHeight = RosterMaxHeight,
-            HorizontalExpand = true,
-            HScrollEnabled = false,
-        };
+        var scroll = CreateBoundedRosterScroll(RosterMaxHeight);
         var roster = new BoxContainer
         {
             Orientation = BoxContainer.LayoutOrientation.Vertical,
@@ -421,12 +416,7 @@ public sealed class YautjaClanAdminWindow : DefaultWindow
             HorizontalExpand = true,
         });
 
-        var scroll = new ScrollContainer
-        {
-            MaxHeight = ClanlessMaxHeight,
-            HorizontalExpand = true,
-            HScrollEnabled = false,
-        };
+        var scroll = CreateBoundedRosterScroll(ClanlessMaxHeight);
         var roster = new BoxContainer
         {
             Orientation = BoxContainer.LayoutOrientation.Vertical,
@@ -520,6 +510,17 @@ public sealed class YautjaClanAdminWindow : DefaultWindow
     internal static NetUserId GetRosterActionTarget(YautjaClanAdminMemberState member)
     {
         return member.PlayerId;
+    }
+
+    internal static ScrollContainer CreateBoundedRosterScroll(int maxHeight)
+    {
+        return new ScrollContainer
+        {
+            MaxHeight = maxHeight,
+            ReturnMeasure = true,
+            HorizontalExpand = true,
+            HScrollEnabled = false,
+        };
     }
 
     internal static int? ToggleExpandedClan(int? expandedClanId, int clanId)
