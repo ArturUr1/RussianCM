@@ -9706,7 +9706,7 @@ entities:
   - uid: 1374
     components:
     - type: Transform
-      pos: -43.5,4.5
+      pos: 13.5,-12.5
       parent: 1
 - proto: CMSpawnPointCargoTech
   entities:
