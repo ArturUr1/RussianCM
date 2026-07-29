@@ -7,11 +7,14 @@ using Content.Client._RMC14.Dialog;
 using Content.Client.Clickable;
 using Content.Server.Maps;
 using Content.Server.Power.Components;
+using Content.Server.Spawners.Components;
 using Content.Shared._RMC14.Dialog;
 using Content.Shared._CMU14.Yautja;
 using Content.Shared._RMC14.Doors;
 using Content.Shared._RMC14.Rules;
 using Content.Shared.Interaction;
+using Content.Shared.Maps;
+using Content.Shared.Physics;
 using Content.Shared.VendingMachines;
 using Robust.Client.ComponentTrees;
 using Robust.Client.GameObjects;
@@ -19,6 +22,7 @@ using Robust.Client.Graphics;
 using Robust.Shared.ContentPack;
 using Robust.Shared.EntitySerialization;
 using Robust.Shared.GameObjects;
+using Robust.Shared.Map.Components;
 using Robust.Server.GameObjects;
 using Robust.Shared.EntitySerialization.Systems;
 using Robust.Shared.Map;
@@ -95,6 +99,159 @@ public sealed class YautjaHuntingGroundMapTest
                 "In-rotation planet maps missing a CMUYautjaGroundRelayDestination marker:\n" +
                 string.Join('\n', errors));
         });
+
+        await pair.CleanReturnAsync();
+    }
+
+    [Test]
+    public async Task InRotationPlanetGroundRelaysAreAwayFromHumanStructures()
+    {
+        await using var pair = await PoolManager.GetServerClient(new PoolSettings { Destructive = true });
+        var server = pair.Server;
+
+        await pair.LoadPrototypes(new List<string>
+        {
+            """
+            - type: entity
+              id: CMFlash
+              name: test-only missing map prototype shim
+            """,
+        });
+
+        var errors = new List<string>();
+
+        await server.WaitPost(() =>
+        {
+            var entMan = server.EntMan;
+            var prototypes = server.ResolveDependency<IPrototypeManager>();
+            var componentFactory = entMan.ComponentFactory;
+            var loader = entMan.System<MapLoaderSystem>();
+            var mapSystem = entMan.System<SharedMapSystem>();
+            var transform = entMan.System<SharedTransformSystem>();
+            var turf = entMan.System<TurfSystem>();
+            var loadedMaps = new List<EntityUid>();
+
+            try
+            {
+                var mapPaths = GetInRotationPlanetMapPaths(prototypes, componentFactory);
+                Assert.That(mapPaths, Has.Count.EqualTo(17),
+                    "Expected the 17 InRotation primary planet map paths to be checked.");
+
+                foreach (var mapPath in mapPaths)
+                {
+                    if (!loader.TryLoadMap(mapPath, out var map, out var grids,
+                            DeserializationOptions.Default with { InitializeMaps = true }) ||
+                        map == null ||
+                        grids == null)
+                    {
+                        errors.Add($"{mapPath}: failed to load map.");
+                        continue;
+                    }
+
+                    loadedMaps.Add(map.Value.Owner);
+                    var gridIds = grids.Select(grid => grid.Owner).ToHashSet();
+                    var humanStructures = new List<LoadedHumanStructure>();
+                    var relayMarkers = new List<LoadedGroundRelayMarker>();
+
+                    var entityQuery = entMan.EntityQueryEnumerator<MetaDataComponent, TransformComponent>();
+                    while (entityQuery.MoveNext(out var uid, out var meta, out var xform))
+                    {
+                        if (xform.GridUid is not { } gridUid ||
+                            !gridIds.Contains(gridUid) ||
+                            meta.EntityPrototype is not { } prototype)
+                        {
+                            continue;
+                        }
+
+                        if (prototype.ID == "CMUYautjaGroundRelayDestination" &&
+                            entMan.TryGetComponent<YautjaRelayDestinationComponent>(uid, out var destination) &&
+                            destination.Kind == YautjaRelayDestinationKind.Ground)
+                        {
+                            relayMarkers.Add(new LoadedGroundRelayMarker(
+                                uid,
+                                gridUid,
+                                transform.GetWorldPosition(xform),
+                                $"{destination.Id} ({destination.DisplayName})"));
+                            continue;
+                        }
+
+                        if (!IsHumanInfrastructure(entMan, uid, meta, xform))
+                            continue;
+
+                        humanStructures.Add(new LoadedHumanStructure(
+                            uid,
+                            gridUid,
+                            transform.GetWorldPosition(xform),
+                            prototype.ID));
+                    }
+
+                    if (relayMarkers.Count == 0)
+                    {
+                        errors.Add($"{mapPath}: no CMUYautjaGroundRelayDestination markers were loaded.");
+                        continue;
+                    }
+
+                    if (humanStructures.Count == 0)
+                    {
+                        errors.Add($"{mapPath}: no classified human infrastructure was found.");
+                        continue;
+                    }
+
+                    foreach (var marker in relayMarkers)
+                    {
+                        var markerXform = entMan.GetComponent<TransformComponent>(marker.Uid);
+                        if (markerXform.GridUid is not { } markerGrid ||
+                            !entMan.TryGetComponent<MapGridComponent>(markerGrid, out var gridComp) ||
+                            !mapSystem.TryGetTileRef(markerGrid, gridComp, markerXform.Coordinates, out var tileRef))
+                        {
+                            errors.Add($"{mapPath}: relay {marker.Label} at {marker.Position} is not on a valid grid tile.");
+                            continue;
+                        }
+
+                        if (tileRef.Tile.IsEmpty ||
+                            turf.IsTileBlocked(tileRef, CollisionGroup.MobMask))
+                        {
+                            errors.Add($"{mapPath}: relay {marker.Label} at {marker.Position} is not on an accessible open cell.");
+                        }
+
+                        var nearest = humanStructures
+                            .Where(structure => structure.GridUid == marker.GridUid)
+                            .Select(structure => new
+                            {
+                                Structure = structure,
+                                Distance = Vector2.Distance(marker.Position, structure.Position),
+                            })
+                            .OrderBy(candidate => candidate.Distance)
+                            .FirstOrDefault();
+
+                        if (nearest == null)
+                        {
+                            errors.Add($"{mapPath}: relay {marker.Label} at {marker.Position} has no classified human infrastructure on its grid.");
+                            continue;
+                        }
+
+                        if (nearest.Distance < 12f)
+                        {
+                            errors.Add(
+                                $"{mapPath}: relay {marker.Label} at {marker.Position} is {nearest.Distance:0.##} tiles from " +
+                                $"{nearest.Structure.Prototype} at {nearest.Structure.Position}; expected at least 12.");
+                        }
+                    }
+                }
+            }
+            finally
+            {
+                foreach (var loadedMap in loadedMaps)
+                {
+                    if (!entMan.Deleted(loadedMap))
+                        entMan.DeleteEntity(loadedMap);
+                }
+            }
+        });
+
+        Assert.That(errors, Is.Empty,
+            "In-rotation ground relay markers must be open and at least 12 tiles from human infrastructure:\n" +
+            string.Join('\n', errors));
 
         await pair.CleanReturnAsync();
     }
@@ -638,6 +795,149 @@ public sealed class YautjaHuntingGroundMapTest
     {
         return loader.TryLoadMap(path, out var map, out _) && map != null;
     }
+
+    private static IReadOnlyList<ResPath> GetInRotationPlanetMapPaths(
+        IPrototypeManager prototypes,
+        IComponentFactory componentFactory)
+    {
+        var checkedPaths = new HashSet<ResPath>();
+        var paths = new List<ResPath>();
+
+        foreach (var planetPrototype in prototypes.EnumeratePrototypes<EntityPrototype>())
+        {
+            if (!planetPrototype.TryComp<RMCPlanetMapPrototypeComponent>(out var planet, componentFactory) ||
+                !planet!.InRotation)
+            {
+                continue;
+            }
+
+            var mapPath = prototypes.Index<GameMapPrototype>(planet.MapId).MapPath;
+            if (checkedPaths.Add(mapPath))
+                paths.Add(mapPath);
+        }
+
+        paths.Sort((left, right) => string.Compare(left.ToString(), right.ToString(), StringComparison.Ordinal));
+        return paths;
+    }
+
+    private static bool IsHumanInfrastructure(
+        IEntityManager entMan,
+        EntityUid uid,
+        MetaDataComponent meta,
+        TransformComponent transform)
+    {
+        if (IsHumanSpawn(entMan, uid))
+            return true;
+
+        if (!transform.Anchored ||
+            meta.EntityPrototype is not { } prototype)
+        {
+            return false;
+        }
+
+        var prototypeText = $"{prototype.ID} {meta.EntityName}";
+        return ContainsAny(prototypeText, HumanInfrastructureTerms) &&
+               !ContainsAny(prototypeText, NonHumanInfrastructureTerms);
+    }
+
+    private static bool IsHumanSpawn(IEntityManager entMan, EntityUid uid)
+    {
+        if (!entMan.TryGetComponent<SpawnPointComponent>(uid, out var spawn))
+            return false;
+
+        return spawn.Job != null ||
+               spawn.SpawnType is SpawnPointType.Job or
+                   SpawnPointType.LateJoin or
+                   SpawnPointType.LateJoinGovfor or
+                   SpawnPointType.LateJoinOpfor;
+    }
+
+    private static bool ContainsAny(string value, IReadOnlyList<string> terms)
+    {
+        foreach (var term in terms)
+        {
+            if (value.Contains(term, StringComparison.OrdinalIgnoreCase))
+                return true;
+        }
+
+        return false;
+    }
+
+    private static readonly string[] HumanInfrastructureTerms =
+    [
+        "airlock",
+        "apc",
+        "barricade",
+        "bed",
+        "button",
+        "cabinet",
+        "cable",
+        "chair",
+        "computer",
+        "console",
+        "crate",
+        "desk",
+        "door",
+        "engine",
+        "fence",
+        "furniture",
+        "generator",
+        "girder",
+        "lamp",
+        "locker",
+        "machine",
+        "machinery",
+        "pipe",
+        "rack",
+        "railing",
+        "sandbag",
+        "shelf",
+        "shutter",
+        "sign",
+        "table",
+        "terminal",
+        "vendor",
+        "vending",
+        "wall",
+        "window",
+    ];
+
+    private static readonly string[] NonHumanInfrastructureTerms =
+    [
+        "boulder",
+        "bush",
+        "cave",
+        "crystal",
+        "flora",
+        "flower",
+        "foliage",
+        "grass",
+        "hive",
+        "moss",
+        "mushroom",
+        "plant",
+        "resin",
+        "rock",
+        "root",
+        "stalagmite",
+        "tree",
+        "vegetation",
+        "vine",
+        "weed",
+        "xeno",
+    ];
+
+    private readonly record struct LoadedGroundRelayMarker(
+        EntityUid Uid,
+        EntityUid GridUid,
+        Vector2 Position,
+        string Label);
+
+    private readonly record struct LoadedHumanStructure(
+        EntityUid Uid,
+        EntityUid GridUid,
+        Vector2 Position,
+        string Prototype);
 
     private static Dictionary<string, int> CountMapPrototypes(IResourceManager resources, ResPath mapPath)
     {
