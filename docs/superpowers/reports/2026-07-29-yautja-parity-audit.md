@@ -69,6 +69,8 @@ Hunting-ground destination markers в эту проверку не смешив�
 2. Для предметов без явного `throw_range` исходный атомный default равен 7, тогда как текущий общий `HandsComponent.ThrowRange` равен 8. Это касается, например, дуэльного ножа и части оружия без собственного `ItemThrowRange`.
 3. Развёрнутые bracer-attached предметы обрабатываются локальной системой вложенного снаряжения: попытка броска отзывает/складывает attachment вместо выпуска его как обычный предмет. Это системное правило вложений, а не потерянный прототип оружия.
 
+Дополнительно исправлены все 8 размещённых на корабле объектов `CMUHunterShipPlacedCMUYautjaSpikeLauncherSpike*`: раньше они назывались `large harpoon`, но наследовали `CMUYautjaSpikeLauncher` и поэтому получали магазин на 12 шипов. Теперь они наследуют `CMUYautjaHarpoon`; регрессионный тест проверяет отсутствие у них `Gun`, `BasicEntityAmmoProvider` и `YautjaSpikeLauncher`.
+
 ## 5. Самоуничтожение
 
 Оригинал использует:
@@ -86,6 +88,7 @@ Hunting-ground destination markers в эту проверку не смешив�
 ## Проверки
 
 - `dotnet test Content.IntegrationTests/Content.IntegrationTests.csproj --no-restore --filter "FullyQualifiedName~YautjaSelfDestructParityTest|FullyQualifiedName~YautjaWeaponThrowParityTest"` — 2 passed, 0 failed.
+- `dotnet test Content.IntegrationTests/Content.IntegrationTests.csproj --no-build --filter "FullyQualifiedName~YautjaShipWeaponWrapperTest"` — 1 passed, 0 failed.
 - Дефибриллятор — 1 passed, 0 failed.
 - Стеклянная посуда — 2 passed, 0 failed.
 - Harpoon throw-range regression — 1 passed, 0 failed.

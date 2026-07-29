@@ -31231,7 +31231,7 @@
 
 
 - type: entity
-  parent: CMUYautjaSpikeLauncher
+  parent: CMUYautjaHarpoon
   id: CMUHunterShipPlacedCMUYautjaSpikeLauncherSpikeSouthOffset0x9
   name: "Large harpoon"
   description: "A huge metal spike with a hook at the end. It's carved with mysterious alien writing."
@@ -31276,7 +31276,7 @@
 
 
 - type: entity
-  parent: CMUYautjaSpikeLauncher
+  parent: CMUYautjaHarpoon
   id: CMUHunterShipPlacedCMUYautjaSpikeLauncherSpikeSouthOffset0xNeg9
   name: "Large harpoon"
   description: "A huge metal spike with a hook at the end. It's carved with mysterious alien writing."
@@ -31321,7 +31321,7 @@
 
 
 - type: entity
-  parent: CMUYautjaSpikeLauncher
+  parent: CMUYautjaHarpoon
   id: CMUHunterShipPlacedCMUYautjaSpikeLauncherSpikeSouthOffset1xNeg11
   name: "Large harpoon"
   description: "A huge metal spike with a hook at the end. It's carved with mysterious alien writing."
@@ -31366,7 +31366,7 @@
 
 
 - type: entity
-  parent: CMUYautjaSpikeLauncher
+  parent: CMUYautjaHarpoon
   id: CMUHunterShipPlacedCMUYautjaSpikeLauncherSpikeSouthOffset9x0
   name: "Large harpoon"
   description: "A huge metal spike with a hook at the end. It's carved with mysterious alien writing."
@@ -31411,7 +31411,7 @@
 
 
 - type: entity
-  parent: CMUYautjaSpikeLauncher
+  parent: CMUYautjaHarpoon
   id: CMUHunterShipPlacedCMUYautjaSpikeLauncherSpikeSouthOffsetNeg12x7
   name: "Large harpoon"
   description: "A huge metal spike with a hook at the end. It's carved with mysterious alien writing."
@@ -31456,7 +31456,7 @@
 
 
 - type: entity
-  parent: CMUYautjaSpikeLauncher
+  parent: CMUYautjaHarpoon
   id: CMUHunterShipPlacedCMUYautjaSpikeLauncherSpikeSouthOffsetNeg3x2
   name: "Large harpoon"
   description: "A huge metal spike with a hook at the end. It's carved with mysterious alien writing."
@@ -31501,7 +31501,7 @@
 
 
 - type: entity
-  parent: CMUYautjaSpikeLauncher
+  parent: CMUYautjaHarpoon
   id: CMUHunterShipPlacedCMUYautjaSpikeLauncherSpikeSouthOffsetNeg5x6
   name: "Large harpoon"
   description: "A huge metal spike with a hook at the end. It's carved with mysterious alien writing."
@@ -31546,7 +31546,7 @@
 
 
 - type: entity
-  parent: CMUYautjaSpikeLauncher
+  parent: CMUYautjaHarpoon
   id: CMUHunterShipPlacedCMUYautjaSpikeLauncherSpikeSouthOffsetNeg9x0
   name: "Large harpoon"
   description: "A huge metal spike with a hook at the end. It's carved with mysterious alien writing."
