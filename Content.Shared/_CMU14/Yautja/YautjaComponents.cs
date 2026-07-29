@@ -2173,13 +2173,13 @@ public sealed partial class YautjaThrallBracerComponent : Component, IClothingSl
     public ProtoId<ExplosionPrototype> SelfDestructExplosion = "RMC";
 
     [DataField]
-    public float SelfDestructTotalIntensity = 500;
+    public float SelfDestructTotalIntensity = 800;
 
     [DataField]
     public float SelfDestructIntensitySlope = 10;
 
     [DataField]
-    public float SelfDestructMaxIntensity = 65;
+    public float SelfDestructMaxIntensity = 550;
 
     [DataField]
     public int SelfDestructMaxTileBreak = 1;
