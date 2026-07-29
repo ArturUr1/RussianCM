@@ -27,6 +27,9 @@ public sealed record YautjaProfileEditorSummary(
 
 public static class YautjaProfileEditorLayout
 {
+    public const int TechOptionSpacing = 6;
+    public const int TechOptionBottomMargin = 12;
+
     public static IReadOnlyList<YautjaProfileEditorCategoryInfo> Categories { get; } =
     [
         new(YautjaProfileEditorCategory.Appearance, "cmu-yautja-lobby-category-appearance"),

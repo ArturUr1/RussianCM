@@ -21,6 +21,8 @@ namespace Content.Server._CMU14.Yautja;
 
 public sealed class YautjaClanAdminEui : BaseEui
 {
+    public const AdminFlags RequiredAdminFlag = AdminFlags.Clans;
+
     [Dependency] private IAdminManager _admin = default!;
     [Dependency] private IServerDbManager _db = default!;
     [Dependency] private YautjaClanManager _clanManager = default!;
@@ -49,7 +51,7 @@ public sealed class YautjaClanAdminEui : BaseEui
         _closed = false;
         _admin.OnPermsChanged += OnAdminPermsChanged;
 
-        if (!_admin.HasAdminFlag(Player, AdminFlags.Admin))
+        if (!_admin.HasAdminFlag(Player, RequiredAdminFlag))
         {
             Close();
             return;
@@ -72,7 +74,7 @@ public sealed class YautjaClanAdminEui : BaseEui
 
     public override async void HandleMessage(EuiMessageBase msg)
     {
-        if (!_admin.HasAdminFlag(Player, AdminFlags.Admin))
+        if (!_admin.HasAdminFlag(Player, RequiredAdminFlag))
         {
             Close();
             return;
@@ -85,7 +87,7 @@ public sealed class YautjaClanAdminEui : BaseEui
         await _operationGate.WaitAsync();
         try
         {
-            if (!_admin.HasAdminFlag(Player, AdminFlags.Admin))
+            if (!_admin.HasAdminFlag(Player, RequiredAdminFlag))
             {
                 Close();
                 return;
@@ -531,7 +533,7 @@ public sealed class YautjaClanAdminEui : BaseEui
 
     private void OnAdminPermsChanged(AdminPermsChangedEventArgs args)
     {
-        if (args.Player == Player && !_admin.HasAdminFlag(Player, AdminFlags.Admin))
+        if (args.Player == Player && !_admin.HasAdminFlag(Player, RequiredAdminFlag))
             Close();
     }
 }

@@ -14,6 +14,7 @@ using Content.Client.UserInterface.Systems.Actions.Controls;
 using Content.Client.Verbs.UI;
 using Content.Server._CMU14.Yautja;
 using Content.Server.Administration.Logs;
+using Content.Server.Database;
 using Content.Server.EUI;
 using Content.Server.GameTicking;
 using Content.Server.Maps;
@@ -77,6 +78,7 @@ using Robust.Shared.Log;
 using Robust.Shared.Map;
 using Robust.Shared.Map.Components;
 using Robust.Shared.Maths;
+using Robust.Shared.Network;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Utility;
 using Robust.UnitTesting;
@@ -481,6 +483,7 @@ public sealed class YautjaPredatorRoleTest
     {
         await using var pair = await PoolManager.GetServerClient(new PoolSettings
         {
+            Connected = true,
             Dirty = true,
             DummyTicker = false,
         });
@@ -488,6 +491,14 @@ public sealed class YautjaPredatorRoleTest
 
         try
         {
+            var session = pair.Player!;
+            var db = server.ResolveDependency<IServerDbManager>();
+            await db.SetYautjaRank(session.UserId.UserId, YautjaRank.Ancient);
+            await server.ResolveDependency<YautjaRankManager>().Refresh(session.UserId);
+            var clientNet = pair.Client.ResolveDependency<IClientNetManager>();
+            await pair.Client.WaitPost(() => clientNet.ClientDisconnect("Predator round spawn entitlement test"));
+            await pair.RunTicksSync(2);
+
             await server.WaitPost(() =>
             {
                 var cfg = server.CfgMan;
@@ -613,7 +624,12 @@ public sealed class YautjaPredatorRoleTest
                     .WithName("Late Join Kainde Amedha")
                     .WithSkinColor(YautjaSkinColor.Green)
                     .WithEyeColor(YautjaEyeColor.Gold)
-                    .WithArmor(YautjaGearMaterial.Bronze, 3);
+                    .WithArmor(YautjaGearMaterial.Bronze, 3)
+                    .WithStatus(YautjaProfileStatus.Normal)
+                    .WithUnique(YautjaUniqueSet.Anubys)
+                    .WithLegacy(YautjaLegacySet.None)
+                    .WithCapeStyle(YautjaCapeStyle.Ceremonial)
+                    .WithBracer(YautjaBracerMaterial.Bone);
                 var selectedLobbyProfile = HumanoidCharacterProfile.DefaultWithSpecies("Human")
                     .WithName("Human Lobby Profile")
                     .WithYautjaProfile(selectedYautjaProfile);
@@ -622,7 +638,8 @@ public sealed class YautjaPredatorRoleTest
                 var spawned = entMan.System<StationSpawningSystem>().SpawnPlayerCharacterOnStation(
                     hunterStation,
                     "CMUYautjaHunter",
-                    selectedLobbyProfile);
+                    selectedLobbyProfile,
+                    player: session);
                 try
                 {
                     Assert.That(spawned, Is.Not.Null);
@@ -646,6 +663,11 @@ public sealed class YautjaPredatorRoleTest
                             Is.EqualTo(YautjaCharacterProfile.GetSkinColorColor(YautjaSkinColor.Green)));
                         Assert.That(spawnedHumanoid.EyeColor,
                             Is.EqualTo(YautjaCharacterProfile.GetEyeColorColor(YautjaEyeColor.Gold)));
+                        Assert.That(spawnedYautja.Profile.Status, Is.EqualTo(YautjaProfileStatus.Normal));
+                        Assert.That(spawnedYautja.Profile.ClanRank, Is.EqualTo(YautjaRank.Blooded));
+                        Assert.That(spawnedYautja.Profile.Unique, Is.EqualTo(YautjaUniqueSet.Anubys));
+                        Assert.That(spawnedYautja.Profile.CapeStyle, Is.EqualTo(YautjaCapeStyle.Ceremonial));
+                        Assert.That(spawnedYautja.Profile.BracerMaterial, Is.EqualTo(YautjaBracerMaterial.Bone));
                     });
                     Assert.That(hunterJobs.JobList["CMUYautjaHunter"], Is.EqualTo(remainingHunterSlots));
                 }

@@ -544,7 +544,7 @@ public sealed partial class YautjaProfileEditor : ScrollContainer
             }
 
             var preview = YautjaCharacterProfile.Default.WithLegacy(legacy).ArmorPrototype;
-            var locked = YautjaProfileEditorLayout.IsLegacySetLocked(_effectiveCapabilities, legacy);
+            var locked = YautjaProfileEditorLayout.IsLegacySetLocked(_capabilities, legacy);
             var tooltip = locked
                 ? Loc.GetString("cmu-yautja-lobby-locked-legacy")
                 : YautjaCharacterProfile.GetLegacyDisplayName(legacy);
@@ -578,7 +578,7 @@ public sealed partial class YautjaProfileEditor : ScrollContainer
             }
 
             var preview = YautjaCharacterProfile.Default.WithUnique(unique).ArmorPrototype;
-            var locked = YautjaProfileEditorLayout.IsUniqueSetLocked(_effectiveCapabilities, unique);
+            var locked = YautjaProfileEditorLayout.IsUniqueSetLocked(_capabilities, unique);
             var tooltip = locked
                 ? Loc.GetString(
                     "cmu-yautja-lobby-locked-rank",
@@ -746,7 +746,7 @@ public sealed partial class YautjaProfileEditor : ScrollContainer
             foreach (var material in materials)
             {
                 var capturedMaterial = material;
-                var locked = YautjaProfileEditorLayout.IsBracerLocked(_effectiveCapabilities, material);
+                var locked = YautjaProfileEditorLayout.IsBracerLocked(_capabilities, material);
                 var tooltip = locked && material is
                     YautjaBracerMaterial.Dragon or
                     YautjaBracerMaterial.Swamp or
@@ -826,7 +826,7 @@ public sealed partial class YautjaProfileEditor : ScrollContainer
         foreach (var style in YautjaCharacterProfile.CapeStyleOrder)
         {
             var prototype = YautjaCharacterProfile.Default.WithCapeStyle(style).CapePrototype;
-            var locked = YautjaProfileEditorLayout.IsCapeLocked(_effectiveCapabilities, style);
+            var locked = YautjaProfileEditorLayout.IsCapeLocked(_capabilities, style);
             var tooltip = locked
                 ? Loc.GetString("cmu-yautja-lobby-locked-leader-ancient")
                 : YautjaCharacterProfile.GetCapeDisplayName(style);
@@ -1544,13 +1544,15 @@ public sealed partial class YautjaProfileEditor : ScrollContainer
 
     private Control TechOptionBlock(string label, OptionButton option, Label help, Action? preview)
     {
+        option.HorizontalExpand = true;
+
         Button? previewButton = null;
         if (preview != null)
         {
             previewButton = new Button
             {
                 Text = Loc.GetString("cmu-yautja-lobby-preview-sound"),
-                MinWidth = 92,
+                HorizontalExpand = true,
             };
             previewButton.OnPressed += _ => preview();
         }
@@ -1558,37 +1560,24 @@ public sealed partial class YautjaProfileEditor : ScrollContainer
         help.HorizontalExpand = true;
         help.FontColorOverride = Color.FromHex("#b8aaa0");
 
-        var row = new BoxContainer
+        var block = new BoxContainer
         {
-            Orientation = BoxContainer.LayoutOrientation.Horizontal,
+            Orientation = BoxContainer.LayoutOrientation.Vertical,
             HorizontalExpand = true,
-            SeparationOverride = 8,
+            SeparationOverride = YautjaProfileEditorLayout.TechOptionSpacing,
+            Margin = new Thickness(0, 0, 0, YautjaProfileEditorLayout.TechOptionBottomMargin),
             Children =
             {
-                new Label
-                {
-                    Text = Loc.GetString(label),
-                    MinWidth = 160,
-                    VerticalAlignment = VAlignment.Center,
-                },
+                new Label { Text = Loc.GetString(label), HorizontalExpand = true },
                 option,
             },
         };
 
         if (previewButton != null)
-            row.AddChild(previewButton);
+            block.AddChild(previewButton);
 
-        return new BoxContainer
-        {
-            Orientation = BoxContainer.LayoutOrientation.Vertical,
-            HorizontalExpand = true,
-            Margin = new Thickness(0, 0, 0, 10),
-            Children =
-            {
-                row,
-                help,
-            },
-        };
+        block.AddChild(help);
+        return block;
     }
 
     private void UpdateTechHelp(YautjaTranslatorType translatorType, YautjaInvisibilitySound invisibilitySound)

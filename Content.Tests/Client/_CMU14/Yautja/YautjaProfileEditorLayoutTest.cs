@@ -127,6 +127,16 @@ public sealed class YautjaProfileEditorLayoutTest
     }
 
     [Test]
+    public void TechnologyOptionsUseVerticalLocalizationSafeLayout()
+    {
+        Assert.Multiple(() =>
+        {
+            Assert.That(YautjaProfileEditorLayout.TechOptionSpacing, Is.GreaterThan(0));
+            Assert.That(YautjaProfileEditorLayout.TechOptionBottomMargin, Is.GreaterThanOrEqualTo(10));
+        });
+    }
+
+    [Test]
     public void BuildSummaryUsesUniqueSetAndCurrentGearNames()
     {
         var profile = YautjaCharacterProfile.Default

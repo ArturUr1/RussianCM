@@ -110,4 +110,33 @@ public sealed class YautjaRankPersistenceTest
         });
         await pair.CleanReturnAsync();
     }
+
+    [Test]
+    public async Task ClanlessAncientUsesStatusForActiveRankButKeepsAncientEntitlements()
+    {
+        await using var pair = await PoolManager.GetServerClient(new PoolSettings
+        {
+            Connected = true,
+            Dirty = true,
+        });
+        var db = pair.Server.ResolveDependency<IServerDbManager>();
+        var manager = pair.Server.ResolveDependency<YautjaRankManager>();
+        var userId = pair.Player!.UserId;
+
+        await db.SetYautjaRank(userId.UserId, YautjaRank.Ancient);
+        await manager.Refresh(userId);
+        var capabilities = manager.ResolveProfileCapabilitiesCached(userId);
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(capabilities.Rank, Is.EqualTo(YautjaRank.Ancient));
+            Assert.That(capabilities.CanUseUnique, Is.True);
+            Assert.That(capabilities.CanUseCouncilStatus, Is.True);
+            Assert.That(
+                capabilities.ForStatus(YautjaProfileStatus.Normal).Rank,
+                Is.EqualTo(YautjaRank.Blooded));
+        });
+
+        await pair.CleanReturnAsync();
+    }
 }
