@@ -57,15 +57,23 @@ public sealed partial class YautjaProfileApplySystem : EntitySystem
     public void ApplyProfile(
         EntityUid uid,
         YautjaCharacterProfile yautjaProfile,
-        YautjaRank? authoritativeRank = null)
+        YautjaRank? authoritativeRank = null,
+        YautjaProfileCapabilities? authoritativeCapabilities = null)
     {
         if (!TryComp(uid, out HumanoidAppearanceComponent? humanoid))
             return;
 
         // A client-supplied profile is never an authority for clan rank. Ordinary
         // spawns stay Blooded until the server passes the persisted rank explicitly.
-        var rank = YautjaRankManager.Sanitize(authoritativeRank);
-        var profile = yautjaProfile.WithRank(rank);
+        var authoritativeBaseRank = authoritativeCapabilities?.Rank ??
+                                    YautjaRankManager.CanonicalHunterSpawnRank(
+                                        authoritativeRank ?? YautjaRank.Blooded);
+        var capabilities = authoritativeCapabilities ?? new YautjaProfileCapabilities(
+            authoritativeBaseRank,
+            YautjaRankResolver.CanUseUnique(authoritativeBaseRank),
+            false);
+        var profile = yautjaProfile.SanitizeForCapabilities(capabilities);
+        var rank = capabilities.ForStatus(profile.Status).Rank;
         EnsureComp<YautjaAppliedProfileComponent>(uid).Profile = profile.Clone();
 
         var yautja = EnsureComp<YautjaComponent>(uid);

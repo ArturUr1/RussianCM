@@ -9,7 +9,7 @@ const sourceBounds = { minX: 0, minY: 0, maxX: 112, maxY: 96 };
 
 const expectations = [
   { file: "desert_moon.yml", maxSpace: 0, minCave: 1 },
-  { file: "desert_moon_caves.yml", exactSpace: 81, minCave: 1 },
+  { file: "desert_moon_caves.yml", maxSpace: 0, minCave: 1 },
   { file: "jungle_moon.yml", maxSpace: 0, minCave: 0 },
 ];
 

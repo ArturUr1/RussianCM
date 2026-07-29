@@ -412,7 +412,6 @@ public sealed partial class YautjaTrophySystem : EntitySystem
         if (procedure == YautjaButcherProcedure.Skin && source.ButcheryProgress == 0)
         {
             source.ButcheryProgress = 1;
-            Dirty(target, source);
         }
 
         _audio.PlayPvs(source.ButcherStartSound, target);
@@ -678,7 +677,6 @@ public sealed partial class YautjaTrophySystem : EntitySystem
         }
 
         target.Comp.ButcheryProgress = stage == 4 ? 5 : stage + 1;
-        Dirty(target, target.Comp);
         _audio.PlayPvs(target.Comp.ButcherFinishSound, target);
 
         _popup.PopupEntity(

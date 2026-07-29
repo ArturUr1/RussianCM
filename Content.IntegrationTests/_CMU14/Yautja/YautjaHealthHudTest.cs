@@ -9,7 +9,7 @@ namespace Content.IntegrationTests._CMU14.Yautja;
 public sealed class YautjaHealthHudTest
 {
     [Test]
-    public async Task YautjaMaskProvidesBiologicalAndXenoHealthHud()
+    public async Task YautjaMaskShowsBiologicalBarsAndBiologicalOrXenoIcons()
     {
         var (server, _) = await PoolManager.GenerateServer(new PoolSettings(), TestContext.Out);
 
@@ -27,7 +27,7 @@ public sealed class YautjaHealthHudTest
                 Assert.Multiple(() =>
                 {
                     Assert.That(bars!.DamageContainers.Select(container => container.Id),
-                        Is.EquivalentTo(new[] { "Biological", "Xeno" }));
+                        Is.EquivalentTo(new[] { "Biological" }));
                     Assert.That(icons!.DamageContainers.Select(container => container.Id),
                         Is.EquivalentTo(new[] { "Biological", "Xeno" }));
                 });
