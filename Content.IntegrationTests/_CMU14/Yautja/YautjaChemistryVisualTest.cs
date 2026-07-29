@@ -77,6 +77,7 @@ public sealed class YautjaChemistryVisualTest
         var sprite = entMan.GetComponent<SpriteComponent>(uid);
 
         Assert.That(spriteSystem.TryGetLayer((uid, sprite), 0, out var baseLayer, false), Is.True, $"{id} base layer missing");
+        // Red-test coverage: the ship prototype must expose the mapped fill layer before RSI-state checks can pass.
         Assert.That(spriteSystem.TryGetLayer((uid, sprite), SolutionContainerLayers.Fill, out var fillLayer, false), Is.True, $"{id} fill layer missing");
 
         Assert.That(baseLayer!.ActualRsi?.Path, Is.EqualTo(expectedBaseRsi), $"{id} base layer RSI");
