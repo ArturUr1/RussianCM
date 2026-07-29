@@ -1,4 +1,7 @@
+using System;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using Content.Server.Administration.Logs;
 using Content.Server.EUI;
 using Content.Server.Players.JobWhitelist;
@@ -21,6 +24,9 @@ public sealed class YautjaClanInfoEui : BaseEui
 
     private string _statusMessage = "";
     private int? _selectedClanId;
+    private YautjaClanInfoEuiState _state = EmptyState();
+    private readonly SemaphoreSlim _operationGate = new(1, 1);
+    private bool _closed;
 
     public YautjaClanInfoEui()
     {
@@ -30,38 +36,143 @@ public sealed class YautjaClanInfoEui : BaseEui
     public override void Opened()
     {
         base.Opened();
+        _closed = false;
+        _ = RefreshInitialStateAsync();
+    }
 
-        var view = _clanManager.GetView(Player.UserId, _selectedClanId).GetAwaiter().GetResult();
-        var viewer = new YautjaClanMemberSnapshot(
-            Player.UserId,
-            view.Viewer.ClanId,
-            view.Viewer.Rank,
-            view.Viewer.Permissions,
-            view.Viewer.IsLegacy,
-            view.Viewer.Honor);
-        if (!YautjaClanPolicy.CanView(viewer))
-        {
-            Close();
-            return;
-        }
-
-        if (YautjaClanPolicy.HasPermission(viewer.Permissions, YautjaClanPermission.AdminView))
-            _selectedClanId = view.Viewer.ClanId;
-
-        StateDirty();
+    public override void Closed()
+    {
+        base.Closed();
+        _closed = true;
     }
 
     public override EuiStateBase GetNewState()
     {
-        var view = _clanManager.GetView(Player.UserId, _selectedClanId).GetAwaiter().GetResult();
-        _selectedClanId = view.ClanId;
-        var viewer = new YautjaClanMemberSnapshot(
-            Player.UserId,
-            view.Viewer.ClanId,
-            view.Viewer.Rank,
-            view.Viewer.Permissions,
-            view.Viewer.IsLegacy,
-            view.Viewer.Honor);
+        return _state;
+    }
+
+    public override async void HandleMessage(EuiMessageBase msg)
+    {
+        base.HandleMessage(msg);
+        if (msg is CloseEuiMessage || _closed || IsShutDown)
+            return;
+
+        await _operationGate.WaitAsync();
+        try
+        {
+            if (_closed || IsShutDown)
+                return;
+
+            try
+            {
+                if (!await CanViewAsync())
+                    return;
+
+                switch (msg)
+                {
+                    case YautjaClanInfoInitializeMessage:
+                    case YautjaClanInfoRefreshMessage:
+                        break;
+                    case YautjaClanInfoSelectClanMessage selectClan:
+                        _selectedClanId = selectClan.ClanId;
+                        break;
+                    case YautjaClanInfoSetRankMessage setRank:
+                        await SetRankAsync(setRank);
+                        break;
+                    case YautjaClanInfoSetAncientMessage setAncient:
+                        await SetAncientAsync(setAncient);
+                        break;
+                    case YautjaClanInfoUpdateDescriptionMessage description:
+                        await UpdateDescriptionAsync(description);
+                        break;
+                    case YautjaClanInfoUpdateAppearanceMessage appearance:
+                        await UpdateAppearanceAsync(appearance);
+                        break;
+                    case YautjaClanInfoSetHonorMessage honor:
+                        await SetHonorAsync(honor);
+                        break;
+                    case YautjaClanInfoPurgeMemberMessage purge:
+                        await PurgeMemberAsync(purge);
+                        break;
+                    case YautjaClanInfoDeleteClanMessage deleteClan:
+                        await DeleteClanAsync(deleteClan);
+                        break;
+                    case YautjaClanInfoMoveMemberMessage moveMember:
+                        await MoveMemberAsync(moveMember);
+                        break;
+                }
+            }
+            catch (Exception e)
+            {
+                _statusMessage = Loc.GetString("cmu-yautja-clan-info-action-denied");
+                Logger.GetSawmill("cmu.yautja.clan_info").Error($"Yautja clan information action failed:\n{e}");
+            }
+
+            await RefreshStateAsync();
+        }
+        finally
+        {
+            _operationGate.Release();
+        }
+    }
+
+    private async Task RefreshInitialStateAsync()
+    {
+        await _operationGate.WaitAsync();
+        try
+        {
+            await RefreshStateAsync();
+        }
+        finally
+        {
+            _operationGate.Release();
+        }
+    }
+
+    private async Task<bool> CanViewAsync()
+    {
+        var view = await _clanManager.GetView(Player.UserId, _selectedClanId);
+        if (YautjaClanPolicy.CanView(ToViewer(view)))
+            return true;
+
+        Close();
+        return false;
+    }
+
+    private async Task RefreshStateAsync()
+    {
+        try
+        {
+            var view = await _clanManager.GetView(Player.UserId, _selectedClanId);
+            var viewer = ToViewer(view);
+            if (!YautjaClanPolicy.CanView(viewer))
+            {
+                Close();
+                return;
+            }
+
+            if (_selectedClanId == null &&
+                YautjaClanPolicy.HasPermission(viewer.Permissions, YautjaClanPermission.AdminView))
+            {
+                _selectedClanId = view.Viewer.ClanId;
+                if (_selectedClanId != view.ClanId)
+                    view = await _clanManager.GetView(Player.UserId, _selectedClanId);
+            }
+
+            _selectedClanId = view.ClanId;
+            _state = BuildState(view, viewer);
+            if (!_closed && !IsShutDown)
+                StateDirty();
+        }
+        catch (Exception e)
+        {
+            _statusMessage = Loc.GetString("cmu-yautja-clan-info-action-denied");
+            Logger.GetSawmill("cmu.yautja.clan_info").Error($"Yautja clan information refresh failed:\n{e}");
+        }
+    }
+
+    private YautjaClanInfoEuiState BuildState(YautjaClanView view, YautjaClanMemberSnapshot viewer)
+    {
         var members = view.Members
             .OrderByDescending(member => member.Rank)
             .ThenBy(member => GetPlayerName(member.PlayerId))
@@ -137,153 +248,150 @@ public sealed class YautjaClanInfoEui : BaseEui
             _statusMessage);
     }
 
-    public override async void HandleMessage(EuiMessageBase msg)
+    private async Task SetRankAsync(YautjaClanInfoSetRankMessage message)
     {
-        var currentView = await _clanManager.GetView(Player.UserId, _selectedClanId);
-        var currentViewer = new YautjaClanMemberSnapshot(
-            Player.UserId,
-            currentView.Viewer.ClanId,
-            currentView.Viewer.Rank,
-            currentView.Viewer.Permissions,
-            currentView.Viewer.IsLegacy,
-            currentView.Viewer.Honor);
-        if (!YautjaClanPolicy.CanView(currentViewer))
-        {
-            Close();
+        var result = await _clanManager.SetRank(Player.UserId, message.Target, message.Rank);
+        _statusMessage = result.Succeeded
+            ? Loc.GetString("cmu-yautja-clan-info-rank-updated")
+            : result.Error ?? Loc.GetString("cmu-yautja-clan-info-action-denied");
+        if (!result.Succeeded)
             return;
-        }
 
-        base.HandleMessage(msg);
+        await _rankManager.Refresh(message.Target);
+        await _jobWhitelist.RefreshYautjaWhitelist(message.Target);
+        _adminLog.Add(
+            LogType.Action,
+            LogImpact.Medium,
+            $"{Player.Name} changed Yautja rank for {message.Target} to {message.Rank}.");
+    }
 
-        switch (msg)
+    private async Task SetAncientAsync(YautjaClanInfoSetAncientMessage message)
+    {
+        var result = await _clanManager.SetAncient(Player.UserId, message.Target, message.Enabled);
+        _statusMessage = result.Succeeded
+            ? Loc.GetString("cmu-yautja-clan-info-ancient-updated")
+            : result.Error ?? Loc.GetString("cmu-yautja-clan-info-action-denied");
+        if (!result.Succeeded)
+            return;
+
+        await _rankManager.Refresh(message.Target);
+        await _jobWhitelist.RefreshYautjaWhitelist(message.Target);
+        _adminLog.Add(
+            LogType.Action,
+            LogImpact.Medium,
+            $"{Player.Name} { (message.Enabled ? "made" : "demoted") } Yautja {message.Target} { (message.Enabled ? "Ancient" : "from Ancient") }.");
+    }
+
+    private async Task UpdateDescriptionAsync(YautjaClanInfoUpdateDescriptionMessage message)
+    {
+        var result = await _clanManager.UpdateDescription(Player.UserId, message.ClanId, message.Description);
+        _statusMessage = result.Succeeded
+            ? Loc.GetString("cmu-yautja-clan-info-description-updated")
+            : result.Error ?? Loc.GetString("cmu-yautja-clan-info-action-denied");
+    }
+
+    private async Task UpdateAppearanceAsync(YautjaClanInfoUpdateAppearanceMessage message)
+    {
+        var result = await _clanManager.UpdateAppearance(Player.UserId, message.ClanId, message.Name, message.Color);
+        _statusMessage = result.Succeeded
+            ? Loc.GetString("cmu-yautja-clan-info-appearance-updated")
+            : result.Error ?? Loc.GetString("cmu-yautja-clan-info-action-denied");
+    }
+
+    private async Task SetHonorAsync(YautjaClanInfoSetHonorMessage message)
+    {
+        var result = await _clanManager.SetClanHonor(Player.UserId, message.ClanId, message.Honor);
+        _statusMessage = result.Succeeded
+            ? Loc.GetString("cmu-yautja-clan-info-honor-updated")
+            : result.Error ?? Loc.GetString("cmu-yautja-clan-info-action-denied");
+    }
+
+    private async Task PurgeMemberAsync(YautjaClanInfoPurgeMemberMessage message)
+    {
+        var result = await _clanManager.PurgeMember(Player.UserId, message.Target);
+        _statusMessage = result.Succeeded
+            ? Loc.GetString("cmu-yautja-clan-info-member-purged")
+            : result.Error ?? Loc.GetString("cmu-yautja-clan-info-action-denied");
+        if (!result.Succeeded)
+            return;
+
+        foreach (var affectedPlayer in result.AffectedPlayers ?? [])
         {
-            case YautjaClanInfoInitializeMessage:
-            case YautjaClanInfoRefreshMessage:
-                StateDirty();
-                break;
-            case YautjaClanInfoSelectClanMessage selectClan:
-                _selectedClanId = selectClan.ClanId;
-                StateDirty();
-                break;
-            case YautjaClanInfoSetRankMessage setRank:
-                var rankResult = await _clanManager.SetRank(Player.UserId, setRank.Target, setRank.Rank);
-                _statusMessage = rankResult.Succeeded
-                    ? Loc.GetString("cmu-yautja-clan-info-rank-updated")
-                    : rankResult.Error ?? Loc.GetString("cmu-yautja-clan-info-action-denied");
-                if (rankResult.Succeeded)
-                {
-                    await _rankManager.Refresh(setRank.Target);
-                    await _jobWhitelist.RefreshYautjaWhitelist(setRank.Target);
-                    _adminLog.Add(
-                        LogType.Action,
-                        LogImpact.Medium,
-                        $"{Player.Name} changed Yautja rank for {setRank.Target} to {setRank.Rank}.");
-                }
-                StateDirty();
-                break;
-            case YautjaClanInfoSetAncientMessage setAncient:
-                var ancientResult = await _clanManager.SetAncient(Player.UserId, setAncient.Target, setAncient.Enabled);
-                _statusMessage = ancientResult.Succeeded
-                    ? Loc.GetString("cmu-yautja-clan-info-ancient-updated")
-                    : ancientResult.Error ?? Loc.GetString("cmu-yautja-clan-info-action-denied");
-                if (ancientResult.Succeeded)
-                {
-                    await _rankManager.Refresh(setAncient.Target);
-                    await _jobWhitelist.RefreshYautjaWhitelist(setAncient.Target);
-                    _adminLog.Add(
-                        LogType.Action,
-                        LogImpact.Medium,
-                        $"{Player.Name} { (setAncient.Enabled ? "made" : "demoted") } Yautja {setAncient.Target} { (setAncient.Enabled ? "Ancient" : "from Ancient") }.");
-                }
-                StateDirty();
-                break;
-            case YautjaClanInfoUpdateDescriptionMessage description:
-                var descriptionResult = await _clanManager.UpdateDescription(
-                    Player.UserId,
-                    description.ClanId,
-                    description.Description);
-                _statusMessage = descriptionResult.Succeeded
-                    ? Loc.GetString("cmu-yautja-clan-info-description-updated")
-                    : descriptionResult.Error ?? Loc.GetString("cmu-yautja-clan-info-action-denied");
-                StateDirty();
-                break;
-            case YautjaClanInfoUpdateAppearanceMessage appearance:
-                var appearanceResult = await _clanManager.UpdateAppearance(
-                    Player.UserId,
-                    appearance.ClanId,
-                    appearance.Name,
-                    appearance.Color);
-                _statusMessage = appearanceResult.Succeeded
-                    ? Loc.GetString("cmu-yautja-clan-info-appearance-updated")
-                    : appearanceResult.Error ?? Loc.GetString("cmu-yautja-clan-info-action-denied");
-                StateDirty();
-                break;
-            case YautjaClanInfoSetHonorMessage honor:
-                var honorResult = await _clanManager.SetClanHonor(
-                    Player.UserId,
-                    honor.ClanId,
-                    honor.Honor);
-                _statusMessage = honorResult.Succeeded
-                    ? Loc.GetString("cmu-yautja-clan-info-honor-updated")
-                    : honorResult.Error ?? Loc.GetString("cmu-yautja-clan-info-action-denied");
-                StateDirty();
-                break;
-            case YautjaClanInfoPurgeMemberMessage purge:
-                var purgeResult = await _clanManager.PurgeMember(Player.UserId, purge.Target);
-                _statusMessage = purgeResult.Succeeded
-                    ? Loc.GetString("cmu-yautja-clan-info-member-purged")
-                    : purgeResult.Error ?? Loc.GetString("cmu-yautja-clan-info-action-denied");
-                if (purgeResult.Succeeded)
-                {
-                    foreach (var affectedPlayer in purgeResult.AffectedPlayers ?? [])
-                    {
-                        await _rankManager.Refresh(affectedPlayer);
-                        await _jobWhitelist.RefreshYautjaWhitelist(affectedPlayer);
-                    }
-                    _adminLog.Add(
-                        LogType.Action,
-                        LogImpact.Medium,
-                        $"{Player.Name} purged Yautja clan profile {purge.Target}.");
-                }
-                StateDirty();
-                break;
-            case YautjaClanInfoDeleteClanMessage deleteClan:
-                var deleteResult = await _clanManager.DeleteClan(Player.UserId, deleteClan.ClanId);
-                _statusMessage = deleteResult.Succeeded
-                    ? Loc.GetString("cmu-yautja-clan-info-clan-deleted")
-                    : deleteResult.Error ?? Loc.GetString("cmu-yautja-clan-info-action-denied");
-                if (deleteResult.Succeeded)
-                {
-                    _selectedClanId = null;
-                    foreach (var affectedPlayer in deleteResult.AffectedPlayers ?? [])
-                    {
-                        await _rankManager.Refresh(affectedPlayer);
-                        await _jobWhitelist.RefreshYautjaWhitelist(affectedPlayer);
-                    }
-                    _adminLog.Add(
-                        LogType.Action,
-                        LogImpact.Medium,
-                        $"{Player.Name} deleted Yautja clan {deleteClan.ClanId}.");
-                }
-                StateDirty();
-                break;
-            case YautjaClanInfoMoveMemberMessage moveMember:
-                var moveResult = await _clanManager.MoveMember(Player.UserId, moveMember.Target, moveMember.ClanId);
-                _statusMessage = moveResult.Succeeded
-                    ? Loc.GetString("cmu-yautja-clan-info-member-moved")
-                    : moveResult.Error ?? Loc.GetString("cmu-yautja-clan-info-action-denied");
-                if (moveResult.Succeeded)
-                {
-                    await _rankManager.Refresh(moveMember.Target);
-                    await _jobWhitelist.RefreshYautjaWhitelist(moveMember.Target);
-                    _adminLog.Add(
-                        LogType.Action,
-                        LogImpact.Medium,
-                        $"{Player.Name} moved Yautja {moveMember.Target} to clan {moveMember.ClanId?.ToString() ?? "none"}.");
-                }
-                StateDirty();
-                break;
+            await _rankManager.Refresh(affectedPlayer);
+            await _jobWhitelist.RefreshYautjaWhitelist(affectedPlayer);
         }
+
+        _adminLog.Add(LogType.Action, LogImpact.Medium, $"{Player.Name} purged Yautja clan profile {message.Target}.");
+    }
+
+    private async Task DeleteClanAsync(YautjaClanInfoDeleteClanMessage message)
+    {
+        var result = await _clanManager.DeleteClan(Player.UserId, message.ClanId);
+        _statusMessage = result.Succeeded
+            ? Loc.GetString("cmu-yautja-clan-info-clan-deleted")
+            : result.Error ?? Loc.GetString("cmu-yautja-clan-info-action-denied");
+        if (!result.Succeeded)
+            return;
+
+        _selectedClanId = null;
+        foreach (var affectedPlayer in result.AffectedPlayers ?? [])
+        {
+            await _rankManager.Refresh(affectedPlayer);
+            await _jobWhitelist.RefreshYautjaWhitelist(affectedPlayer);
+        }
+
+        _adminLog.Add(LogType.Action, LogImpact.Medium, $"{Player.Name} deleted Yautja clan {message.ClanId}.");
+    }
+
+    private async Task MoveMemberAsync(YautjaClanInfoMoveMemberMessage message)
+    {
+        var result = await _clanManager.MoveMember(Player.UserId, message.Target, message.ClanId);
+        _statusMessage = result.Succeeded
+            ? Loc.GetString("cmu-yautja-clan-info-member-moved")
+            : result.Error ?? Loc.GetString("cmu-yautja-clan-info-action-denied");
+        if (!result.Succeeded)
+            return;
+
+        await _rankManager.Refresh(message.Target);
+        await _jobWhitelist.RefreshYautjaWhitelist(message.Target);
+        _adminLog.Add(
+            LogType.Action,
+            LogImpact.Medium,
+            $"{Player.Name} moved Yautja {message.Target} to clan {message.ClanId?.ToString() ?? "none"}.");
+    }
+
+    private YautjaClanMemberSnapshot ToViewer(YautjaClanView view)
+    {
+        return new YautjaClanMemberSnapshot(
+            Player.UserId,
+            view.Viewer.ClanId,
+            view.Viewer.Rank,
+            view.Viewer.Permissions,
+            view.Viewer.IsLegacy,
+            view.Viewer.Honor);
+    }
+
+    private static YautjaClanInfoEuiState EmptyState()
+    {
+        return new YautjaClanInfoEuiState(
+            null,
+            "",
+            "",
+            0,
+            "",
+            YautjaRank.Blooded,
+            YautjaClanPermission.None,
+            [],
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            [],
+            "");
     }
 
     private string GetPlayerName(NetUserId userId)

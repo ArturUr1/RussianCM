@@ -613,22 +613,34 @@ public sealed partial class YautjaCharacterProfile
         };
     }
 
+    private YautjaCharacterProfile WithActiveRank(YautjaRank rank)
+    {
+        if (!Enum.IsDefined(rank))
+            rank = YautjaRank.Blooded;
+
+        return new YautjaCharacterProfile(this)
+        {
+            ClanRank = rank,
+            OwnerRank = YautjaRankResolver.ToOwnerRank(rank),
+        };
+    }
+
     public YautjaCharacterProfile SanitizeForCapabilities(YautjaProfileCapabilities capabilities)
     {
         var status = capabilities.SanitizeStatus(Status);
-        var effectiveCapabilities = capabilities.ForStatus(status);
-        var profile = WithStatus(status).WithRank(effectiveCapabilities.Rank);
+        var activeCapabilities = capabilities.ForStatus(status);
+        var profile = WithStatus(status).WithActiveRank(activeCapabilities.Rank);
 
-        if (!effectiveCapabilities.CanUseLegacySet(profile.Legacy))
+        if (!capabilities.CanUseLegacySet(profile.Legacy))
             profile = profile.WithLegacy(YautjaLegacySet.None);
 
-        if (!effectiveCapabilities.CanUseUnique || profile.Legacy != YautjaLegacySet.None)
+        if (!capabilities.CanUseUnique || profile.Legacy != YautjaLegacySet.None)
             profile = profile.WithUnique(YautjaUniqueSet.None);
 
-        if (!effectiveCapabilities.CanUseCape(profile.CapeStyle))
+        if (!capabilities.CanUseCape(profile.CapeStyle))
             profile = profile.WithCapeStyle(YautjaCapeStyle.Full);
 
-        if (!effectiveCapabilities.CanUseBracer(profile.BracerMaterial))
+        if (!capabilities.CanUseBracer(profile.BracerMaterial))
             profile = profile.WithBracer(YautjaBracerMaterial.Ebony);
 
         return profile;

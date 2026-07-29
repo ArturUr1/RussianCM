@@ -381,11 +381,12 @@ public sealed partial class YautjaPredatorRoundSystem : GameRuleSystem<YautjaPre
             if (GetRandomPredatorSpawn(comp.PredatorJob) is not { } coordinates)
                 return;
 
-            var capabilities = ev.PlayerSession is { } session
-                ? _rankManager.ResolveProfileCapabilitiesCached(session.UserId).ForStatus(
-                    ev.HumanoidCharacterProfile?.YautjaProfile.Status ?? YautjaProfileStatus.Normal)
+            var entitlementCapabilities = ev.PlayerSession is { } session
+                ? _rankManager.ResolveProfileCapabilitiesCached(session.UserId)
                 : YautjaProfileCapabilities.Default;
-            var rank = capabilities.Rank;
+            var activeCapabilities = entitlementCapabilities.ForStatus(
+                ev.HumanoidCharacterProfile?.YautjaProfile.Status ?? YautjaProfileStatus.Normal);
+            var rank = activeCapabilities.Rank;
 
             if (GetRankSpawnPolicy(rank).BypassSlotCap && comp.RankBypassSlotsRemaining > 0)
                 comp.RankBypassSlotsRemaining--;
@@ -396,7 +397,7 @@ public sealed partial class YautjaPredatorRoundSystem : GameRuleSystem<YautjaPre
                 ev.HumanoidCharacterProfile,
                 ev.Station,
                 authoritativeYautjaRank: rank,
-                authoritativeYautjaCapabilities: capabilities);
+                authoritativeYautjaCapabilities: entitlementCapabilities);
             return;
         }
     }

@@ -55,6 +55,8 @@ public sealed partial class YautjaRankManager : IPostInjectInit
         var rank = youngbloodRole
             ? YautjaRank.YoungBlood
             : CanonicalHunterSpawnRank(resolution.Rank);
+        var externalCouncil = resolution.ClanId == null && rank == YautjaRank.Ancient;
+        var externalLeader = resolution.ClanId == null && rank == YautjaRank.Leader;
 
         return new(
             rank,
@@ -62,8 +64,10 @@ public sealed partial class YautjaRankManager : IPostInjectInit
             resolution.WhitelistFlags.HasFlag(YautjaWhitelistFlags.Legacy) ||
             resolution.WhitelistFlags.HasFlag(YautjaWhitelistFlags.CouncilLegacy),
             resolution.WhitelistFlags.HasFlag(YautjaWhitelistFlags.Council) ||
-            resolution.WhitelistFlags.HasFlag(YautjaWhitelistFlags.CouncilLegacy),
-            resolution.WhitelistFlags.HasFlag(YautjaWhitelistFlags.Leader));
+            resolution.WhitelistFlags.HasFlag(YautjaWhitelistFlags.CouncilLegacy) ||
+            externalCouncil,
+            resolution.WhitelistFlags.HasFlag(YautjaWhitelistFlags.Leader) ||
+            externalLeader);
     }
 
     public static YautjaRank CanonicalHunterSpawnRank(YautjaRank rank)

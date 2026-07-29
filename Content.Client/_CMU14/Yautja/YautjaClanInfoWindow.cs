@@ -64,7 +64,12 @@ public sealed class YautjaClanInfoWindow : DefaultWindow
             if (args.Id < 0 || args.Id >= _clanOptions.Count)
                 return;
 
-            OnSelectClan?.Invoke(_clanOptions[args.Id].ClanId);
+            var clanId = _clanOptions[args.Id].ClanId;
+            if (clanId == _selectedClanId)
+                return;
+
+            _selectedClanId = clanId;
+            OnSelectClan?.Invoke(clanId);
         };
         root.AddChild(_clanSelector);
 

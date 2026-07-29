@@ -15,6 +15,8 @@ namespace Content.Tests.Shared.Administration
         [TestCase("", AdminFlags.None)]
         [TestCase("RMCMAINTAINER", AdminFlags.RMCMaintainer)]
         [TestCase("ADMINGHOST", AdminFlags.AdminGhost)]
+        [TestCase("CLANS", AdminFlags.Clans)]
+        [TestCase("ADMIN,CLANS", AdminFlags.Admin | AdminFlags.Clans)]
         [TestCase("HOST,ADMINGHOST", AdminFlags.Host | AdminFlags.AdminGhost)]
         public void TestNamesToFlags(string namesConcat, AdminFlags flags)
         {
@@ -30,6 +32,8 @@ namespace Content.Tests.Shared.Administration
         [TestCase("", AdminFlags.None)]
         [TestCase("RMCMAINTAINER", AdminFlags.RMCMaintainer)]
         [TestCase("ADMINGHOST", AdminFlags.AdminGhost)]
+        [TestCase("CLANS", AdminFlags.Clans)]
+        [TestCase("ADMIN,CLANS", AdminFlags.Admin | AdminFlags.Clans)]
         [TestCase("ADMINGHOST,HOST", AdminFlags.AdminGhost | AdminFlags.Host)]
         public void TestFlagsToNames(string namesConcat, AdminFlags flags)
         {

@@ -611,7 +611,35 @@ public sealed class YautjaCharacterProfileTest
     }
 
     [Test]
-    public void ProfileSanitizerEnforcesEquipmentAccessPolicy()
+     public void ExternalAncientNormalStatusKeepsEntitledGearAndBloodedActiveRank()
+    {
+        var capabilities = new YautjaProfileCapabilities(
+            YautjaRank.Ancient,
+            canUseUnique: true,
+            canUseLegacy: true,
+            canUseCouncilStatus: true,
+            canUseLeaderStatus: true);
+        var profile = YautjaCharacterProfile.Default
+            .WithStatus(YautjaProfileStatus.Normal)
+            .WithUnique(YautjaUniqueSet.Anubys)
+            .WithLegacy(YautjaLegacySet.None)
+            .WithCapeStyle(YautjaCapeStyle.Ceremonial)
+            .WithBracer(YautjaBracerMaterial.Bone);
+
+        var sanitized = profile.SanitizeForCapabilities(capabilities);
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(sanitized.Status, Is.EqualTo(YautjaProfileStatus.Normal));
+            Assert.That(sanitized.ClanRank, Is.EqualTo(YautjaRank.Blooded));
+            Assert.That(sanitized.Unique, Is.EqualTo(YautjaUniqueSet.Anubys));
+            Assert.That(sanitized.CapeStyle, Is.EqualTo(YautjaCapeStyle.Ceremonial));
+            Assert.That(sanitized.BracerMaterial, Is.EqualTo(YautjaBracerMaterial.Bone));
+        });
+    }
+
+     [Test]
+     public void ProfileSanitizerEnforcesEquipmentAccessPolicy()
     {
         var ordinaryCapabilities = new YautjaProfileCapabilities(YautjaRank.Blooded, false, false);
         var eliteCapabilities = new YautjaProfileCapabilities(YautjaRank.Elite, true, false);
