@@ -205,6 +205,7 @@ rmc-xeno-invisibility-expire-bump = We bumped into someone and lost our invisibi
 # Ovipositor
 cm-xeno-ovipositor-attach = We start attaching to the ovipositor.
 cm-xeno-ovipositor-detach = We start detaching from the ovipositor.
+rmc-xeno-hive-needs-ovipositor-announce = Enough time has passed, we require the Queen in oviposition for evolution.
 
 # Retrieve Egg
 cm-xeno-retrieve-egg-no-eggs = We don't have any eggs stored!

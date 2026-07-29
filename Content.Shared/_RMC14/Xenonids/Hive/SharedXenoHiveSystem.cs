@@ -481,8 +481,7 @@ public abstract partial class SharedXenoHiveSystem : EntitySystem
         hive.Comp.GotOvipositorPopup = true;
         Dirty(hive);
 
-        // TODO: loc
-        var msg = "Enough time has passed, we require the Queen in oviposition for evolution.";
+        var msg = Loc.GetString("rmc-xeno-hive-needs-ovipositor-announce"); // RuMC edit
         var xenos = EntityQueryEnumerator<XenoComponent, HiveMemberComponent, ActorComponent>();
         while (xenos.MoveNext(out var uid, out _, out var member, out _))
         {

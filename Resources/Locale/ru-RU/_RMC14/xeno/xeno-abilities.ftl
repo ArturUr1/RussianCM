@@ -99,6 +99,7 @@ cm-xeno-invisibility-expire = Мы снова стали видимы!
 rmc-xeno-invisibility-expire-bump = Мы столкнулись с кем-то и потеряли невидимость!
 cm-xeno-ovipositor-attach = Мы начинаем прикрепляться к яйцекладу.
 cm-xeno-ovipositor-detach = Мы начинаем открепляться от яйцеклада.
+rmc-xeno-hive-needs-ovipositor-announce = Прошло достаточно времени, нам нужна Королева на яйцекладе для эволюции.
 cm-xeno-retrieve-egg-no-eggs = У нас нет яиц!
 cm-xeno-retrieve-egg-too-many-eggs = Мы не можем нести больше яиц!
 cm-xeno-retrieve-egg-stash-egg = Мы сохраняем яйцо. Теперь несём: {$cur_eggs}/{$max_eggs}.
