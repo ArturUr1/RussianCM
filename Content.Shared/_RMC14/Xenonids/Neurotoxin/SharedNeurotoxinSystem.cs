@@ -674,7 +674,7 @@ public abstract partial class SharedNeurotoxinSystem : EntitySystem
         var distanceVec = _transform.GetMapCoordinates(player).Position - _transform.ToMapCoordinates(coords).Position;
         var distance = distanceVec.Length();
 
-        var direction = distanceVec.GetDir().ToString().ToUpperInvariant();
+        var direction = Loc.GetString($"zzzz-fmt-direction-{distanceVec.GetDir()}").ToUpperInvariant(); // RuMC edit
 
         var msg = distance < 1
         ? Loc.GetString(aboveWarning)
