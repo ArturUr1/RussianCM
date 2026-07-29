@@ -154,6 +154,9 @@ public sealed class YautjaHuntingGroundMapTest
                     var relayMarkers = new List<LoadedGroundRelayMarker>();
 
                     var entityQuery = entMan.EntityQueryEnumerator<MetaDataComponent, TransformComponent>();
+            - type: entity
+              id: RMCGrenadeFlashBang
+              name: test-only missing map prototype shim
                     while (entityQuery.MoveNext(out var uid, out var meta, out var xform))
                     {
                         if (xform.GridUid is not { } gridUid ||
