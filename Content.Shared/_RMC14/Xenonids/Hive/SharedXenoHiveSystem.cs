@@ -1,3 +1,4 @@
+using Content.Shared._CMU14.Hiveless; // RuMC edit
 using Content.Shared._RMC14.Dropship;
 using Content.Shared._RMC14.Marines;
 using Content.Shared._RMC14.NightVision;
@@ -156,8 +157,14 @@ public abstract partial class SharedXenoHiveSystem : EntitySystem
             if (!prototype.TryComp(out XenoComponent? xeno, _compFactory))
                 continue;
 
-            if (xeno.UnlockAt == TimeSpan.Zero || prototype.HasComponent<XenoHiddenComponent>(_compFactory))
+            // RuMC edit start
+            if (xeno.UnlockAt == TimeSpan.Zero ||
+                prototype.HasComponent<XenoHiddenComponent>(_compFactory) ||
+                prototype.HasComponent<HivelessComponent>(_compFactory))
+            {
                 continue;
+            }
+            // RuMC edit end
 
             ent.Comp.Unlocks.GetOrNew(xeno.UnlockAt).Add(prototype.ID);
 
