@@ -47,6 +47,10 @@ public sealed class YautjaDefibrillatorTest
                     Assert.That(defibrillatorSystem.CanZap(defibrillator, yautja, user), Is.False);
                     Assert.That(defibrillatorSystem.CanZap(defibrillator, human, user), Is.True);
                 });
+
+                defibrillatorSystem.Zap(defibrillator, yautja, user);
+                Assert.That(mobState.IsDead(yautja), Is.True,
+                    "A direct standard-defibrillator attempt must not revive a Yautja.");
             }
             finally
             {
