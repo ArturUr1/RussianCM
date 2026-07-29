@@ -297,11 +297,7 @@ public sealed partial class YautjaBracerMenuSystem : EntitySystem
 
     private bool IsTrackedItem(EntityUid uid)
     {
-        if (HasComp<YautjaTrackedItemComponent>(uid))
-            return true;
-
-        return HasComp<YautjaTechItemComponent>(uid) &&
-               !HasComp<YautjaUntrackedItemComponent>(uid);
+        return HasComp<YautjaTrackedItemComponent>(uid);
     }
 
     private string GetTrackerAreaName(MapCoordinates coords)

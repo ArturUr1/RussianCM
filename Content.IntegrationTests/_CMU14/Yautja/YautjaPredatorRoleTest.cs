@@ -72,6 +72,7 @@ using Robust.Shared.EntitySerialization;
 using Robust.Shared.GameObjects;
 using Robust.Shared.Containers;
 using Robust.Shared.Localization;
+using Robust.Shared.Log;
 using Robust.Shared.Map;
 using Robust.Shared.Map.Components;
 using Robust.Shared.Maths;
@@ -1222,11 +1223,11 @@ public sealed class YautjaPredatorRoleTest
     }
 
     [Test]
-    public async Task SimpleRelayBeaconSuccessfulDoAfterDecloaksUserLikeCmss13ThrallTeleporter()
+    public async Task SimpleRelayBeaconSuccessfulDoAfterKeepsUserCloaked()
     {
-        await using var pair = await PoolManager.GetServerClient();
-        var server = pair.Server;
-        var map = await pair.CreateTestMap();
+        var (server, _) = await PoolManager.GenerateServer(new PoolSettings(), TestContext.Out);
+        server.ResolveDependency<ILogManager>().GetSawmill("tts").Level = LogLevel.Fatal;
+        var gridCoords = await CreateServerTestGrid(server);
 
         EntityUid bloodedThrall = default;
         EntityUid simpleBeacon = default;
@@ -1241,11 +1242,11 @@ public sealed class YautjaPredatorRoleTest
                 var hands = entMan.System<SharedHandsSystem>();
                 var inventory = entMan.System<InventorySystem>();
 
-                bloodedThrall = entMan.SpawnEntity("CMMobHuman", map.GridCoords);
+                bloodedThrall = entMan.SpawnEntity("CMMobHuman", gridCoords);
                 entMan.EnsureComponent<YautjaTechAuthorizedComponent>(bloodedThrall);
-                simpleBeacon = entMan.SpawnEntity("CMUYautjaSimpleRelayBeacon", map.GridCoords);
-                bracer = entMan.SpawnEntity("CMUYautjaBracer", map.GridCoords);
-                yautjaShipDestination = entMan.SpawnEntity("CMUHunterShipMarkerPredatorSpawn", map.GridCoords.Offset(new Vector2(14, 0)));
+                simpleBeacon = entMan.SpawnEntity("CMUYautjaSimpleRelayBeacon", gridCoords);
+                bracer = entMan.SpawnEntity("CMUYautjaBracer", gridCoords);
+                yautjaShipDestination = entMan.SpawnEntity("CMUHunterShipMarkerPredatorSpawn", gridCoords.Offset(new Vector2(14, 0)));
 
                 Assert.That(inventory.TryEquip(bloodedThrall, bracer, "gloves", silent: true, force: true), Is.True);
                 MakeActivelyCloaked(entMan, bloodedThrall);
@@ -1258,14 +1259,14 @@ public sealed class YautjaPredatorRoleTest
                 Assert.That(ActiveRelayDoAfters(entMan, bloodedThrall), Is.EqualTo(1));
             });
 
-            await pair.RunTicksSync(pair.SecondsToTicks(10.5f));
-            await pair.RunTicksSync(1);
+            await server.WaitRunTicks((int) Math.Ceiling(10.5f / server.Timing.TickPeriod.TotalSeconds));
+            await server.WaitRunTicks(1);
 
             await server.WaitAssertion(() =>
             {
                 var entMan = server.EntMan;
-                Assert.That(entMan.HasComponent<EntityActiveInvisibleComponent>(bloodedThrall), Is.False,
-                    "CMSS13 thrall_teleporter attack_self() sends COMSIG_MOB_EFFECT_CLOAK_CANCEL to the user before teleporting.");
+                Assert.That(entMan.HasComponent<EntityActiveInvisibleComponent>(bloodedThrall), Is.True,
+                    "A relay teleport must preserve the user's active invisibility.");
             });
         }
         finally
@@ -1281,15 +1282,15 @@ public sealed class YautjaPredatorRoleTest
             });
         }
 
-        await pair.CleanReturnAsync();
+        server.Dispose();
     }
 
     [Test]
-    public async Task SimpleRelayBeaconSuccessfulDoAfterDecloaksPulledLivingPassengerAndTeleportsTrainLikeCmss13ThrallTeleporter()
+    public async Task SimpleRelayBeaconSuccessfulDoAfterKeepsPulledPassengerCloakedAndTeleportsTrain()
     {
-        await using var pair = await PoolManager.GetServerClient();
-        var server = pair.Server;
-        var map = await pair.CreateTestMap();
+        var (server, _) = await PoolManager.GenerateServer(new PoolSettings(), TestContext.Out);
+        server.ResolveDependency<ILogManager>().GetSawmill("tts").Level = LogLevel.Fatal;
+        var gridCoords = await CreateServerTestGrid(server);
 
         EntityUid bloodedThrall = default;
         EntityUid passenger = default;
@@ -1308,12 +1309,12 @@ public sealed class YautjaPredatorRoleTest
                 var pulling = entMan.System<PullingSystem>();
                 var transform = entMan.System<SharedTransformSystem>();
 
-                bloodedThrall = entMan.SpawnEntity("CMMobHuman", map.GridCoords);
+                bloodedThrall = entMan.SpawnEntity("CMMobHuman", gridCoords);
                 entMan.EnsureComponent<YautjaTechAuthorizedComponent>(bloodedThrall);
-                passenger = entMan.SpawnEntity("CMMobHuman", map.GridCoords.Offset(new Vector2(1, 0)));
-                simpleBeacon = entMan.SpawnEntity("CMUYautjaSimpleRelayBeacon", map.GridCoords);
-                passengerBracer = entMan.SpawnEntity("CMUYautjaBracer", map.GridCoords);
-                yautjaShipDestination = entMan.SpawnEntity("CMUHunterShipMarkerPredatorSpawn", map.GridCoords.Offset(new Vector2(14, 0)));
+                passenger = entMan.SpawnEntity("CMMobHuman", gridCoords.Offset(new Vector2(1, 0)));
+                simpleBeacon = entMan.SpawnEntity("CMUYautjaSimpleRelayBeacon", gridCoords);
+                passengerBracer = entMan.SpawnEntity("CMUYautjaBracer", gridCoords);
+                yautjaShipDestination = entMan.SpawnEntity("CMUHunterShipMarkerPredatorSpawn", gridCoords.Offset(new Vector2(14, 0)));
                 yautjaShipCoordinates = transform.GetMapCoordinates(yautjaShipDestination);
 
                 Assert.That(inventory.TryEquip(passenger, passengerBracer, "gloves", silent: true, force: true), Is.True);
@@ -1328,8 +1329,8 @@ public sealed class YautjaPredatorRoleTest
                 Assert.That(ActiveRelayDoAfters(entMan, bloodedThrall), Is.EqualTo(1));
             });
 
-            await pair.RunTicksSync(pair.SecondsToTicks(10.5f));
-            await pair.RunTicksSync(1);
+            await server.WaitRunTicks((int) Math.Ceiling(10.5f / server.Timing.TickPeriod.TotalSeconds));
+            await server.WaitRunTicks(1);
 
             await server.WaitAssertion(() =>
             {
@@ -1340,8 +1341,8 @@ public sealed class YautjaPredatorRoleTest
 
                 Assert.Multiple(() =>
                 {
-                    Assert.That(entMan.HasComponent<EntityActiveInvisibleComponent>(passenger), Is.False,
-                        "CMSS13 thrall_teleporter attack_self() sends COMSIG_MOB_EFFECT_CLOAK_CANCEL to a pulled living mob passenger.");
+                    Assert.That(entMan.HasComponent<EntityActiveInvisibleComponent>(passenger), Is.True,
+                        "A relay teleport must preserve a pulled passenger's active invisibility.");
                     Assert.That(userCoordinates.MapId, Is.EqualTo(yautjaShipCoordinates.MapId));
                     Assert.That(userCoordinates.Position, Is.EqualTo(yautjaShipCoordinates.Position));
                     Assert.That(passengerCoordinates.MapId, Is.EqualTo(yautjaShipCoordinates.MapId));
@@ -1363,7 +1364,7 @@ public sealed class YautjaPredatorRoleTest
             });
         }
 
-        await pair.CleanReturnAsync();
+        server.Dispose();
     }
 
     [Test]
@@ -4385,7 +4386,9 @@ public sealed class YautjaPredatorRoleTest
                 {
                     Assert.That(actionPrototypeIds, Does.Contain("CMUActionYautjaLeap"));
                     Assert.That(actionPrototypeIds, Does.Contain("CMUActionYautjaMarkForHunt"));
+                    Assert.That(actionPrototypeIds, Does.Contain("CMUActionYautjaButcher"));
                     Assert.That(actionPrototypeIds, Does.Contain("CMUActionYautjaAudioPanel"));
+                    Assert.That(actionPrototypeIds, Does.Not.Contain("CMUActionYautjaOpenMarkPanel"));
                     Assert.That(actionPrototypeIds.Any(id => id.StartsWith("CMUActionYautjaVoice")), Is.False);
 
                     var speech = entMan.GetComponent<SpeechComponent>(hunter);
@@ -4641,6 +4644,25 @@ public sealed class YautjaPredatorRoleTest
         invisible.Opacity = 0.2f;
         var turnInvisible = entMan.EnsureComponent<EntityTurnInvisibleComponent>(user);
         turnInvisible.Enabled = true;
+    }
+
+    private static async Task<EntityCoordinates> CreateServerTestGrid(RobustIntegrationTest.ServerIntegrationInstance server)
+    {
+        EntityCoordinates gridCoords = default;
+
+        await server.WaitPost(() =>
+        {
+            var mapSystem = server.System<SharedMapSystem>();
+            mapSystem.CreateMap(out var mapId);
+            var grid = mapSystem.CreateGridEntity(mapId);
+            gridCoords = new EntityCoordinates(grid, 0, 0);
+
+            var tileDefinitionManager = server.ResolveDependency<ITileDefinitionManager>();
+            var plating = tileDefinitionManager["Plating"];
+            mapSystem.SetTile(grid.Owner, grid.Comp, gridCoords, new Tile(plating.TileId));
+        });
+
+        return gridCoords;
     }
 
     private static SixLabors.ImageSharp.Image<Rgba32> LoadRgbaImage(IResourceManager resources, ResPath path)

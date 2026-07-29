@@ -3286,21 +3286,12 @@ public sealed class YautjaBowTest
 
                         Assert.That(actionIds, Does.Contain("CMUActionYautjaToggleWristBlades"),
                             "CMSS13 soldier bracer bracer_actions includes wristblade.");
-                        Assert.That(actionIds, Does.Contain("CMUActionYautjaCreateStabilisingCrystal"),
-                            "CMSS13 soldier bracer bracer_actions includes thwei.");
                         Assert.That(actionIds, Does.Contain("CMUActionYautjaCreateHealingCapsule"),
                             "CMSS13 soldier bracer bracer_actions includes capsule.");
-                        Assert.That(actionIds, Does.Contain("CMUActionYautjaTranslator"),
-                            "CMSS13 soldier bracer bracer_actions includes translator.");
-                        Assert.That(actionIds, Does.Contain("CMUActionYautjaSelfDestruct"),
-                            "CMSS13 soldier bracer bracer_actions includes self_destruct.");
                         Assert.That(actionIds, Is.EquivalentTo(new[]
                         {
                             "CMUActionYautjaToggleWristBlades",
-                            "CMUActionYautjaCreateStabilisingCrystal",
                             "CMUActionYautjaCreateHealingCapsule",
-                            "CMUActionYautjaTranslator",
-                            "CMUActionYautjaSelfDestruct",
                         }), "CMSS13 soldier bracer replaces the inherited bracer_actions list instead of keeping normal hunter bracer actions.");
                     }
 
@@ -16648,6 +16639,14 @@ public sealed class YautjaBowTest
             "A bone that appears to be of human origin.",
             yautjaItems,
             "spine",
+            Cmss13ButcherOutputKind.SkeletonLimb);
+
+        yield return new Cmss13ButcherOutputRow(
+            "CMUYautjaHumanTorso",
+            "ribcage",
+            "A bone that appears to be of human origin.",
+            yautjaItems,
+            "torso",
             Cmss13ButcherOutputKind.SkeletonLimb);
 
         yield return new Cmss13ButcherOutputRow(

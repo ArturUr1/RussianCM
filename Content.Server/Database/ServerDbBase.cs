@@ -1111,6 +1111,31 @@ namespace Content.Server.Database
             return record == null ? null : MakePlayerRecord(record);
         }
 
+        public async Task<YautjaRank?> GetYautjaRank(Guid userId)
+        {
+            await using var db = await GetDb();
+
+            return await db.DbContext.Player
+                .Where(player => player.UserId == userId)
+                .Select(player => player.YautjaRank.HasValue
+                    ? (YautjaRank?)player.YautjaRank.Value
+                    : null)
+                .SingleOrDefaultAsync();
+        }
+
+        public async Task SetYautjaRank(Guid userId, YautjaRank rank)
+        {
+            await using var db = await GetDb();
+
+            var player = await db.DbContext.Player
+                .SingleOrDefaultAsync(entry => entry.UserId == userId);
+            if (player == null)
+                throw new InvalidOperationException($"Cannot set Yautja rank for unknown player {userId}.");
+
+            player.YautjaRank = (int) rank;
+            await db.DbContext.SaveChangesAsync();
+        }
+
         protected async Task<bool> PlayerRecordExists(DbGuard db, NetUserId userId)
         {
             return await db.DbContext.Player.AnyAsync(p => p.UserId == userId);

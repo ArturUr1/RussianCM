@@ -1038,6 +1038,10 @@ namespace Content.Server.Database.Migrations.Postgres
                         .HasColumnType("uuid")
                         .HasColumnName("user_id");
 
+                    b.Property<int?>("YautjaRank")
+                        .HasColumnType("integer")
+                        .HasColumnName("yautja_rank");
+
                     b.HasKey("Id")
                         .HasName("PK_player");
 

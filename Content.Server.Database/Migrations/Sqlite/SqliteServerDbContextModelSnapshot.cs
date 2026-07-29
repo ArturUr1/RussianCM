@@ -990,6 +990,10 @@ namespace Content.Server.Database.Migrations.Sqlite
                         .HasColumnType("TEXT")
                         .HasColumnName("user_id");
 
+                    b.Property<int?>("YautjaRank")
+                        .HasColumnType("INTEGER")
+                        .HasColumnName("yautja_rank");
+
                     b.HasKey("Id")
                         .HasName("PK_player");
 

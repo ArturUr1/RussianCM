@@ -24,11 +24,14 @@ using Robust.Shared.Serialization;
 
 namespace Content.Shared._CMU14.Yautja;
 
-[RegisterComponent, NetworkedComponent]
+[RegisterComponent, NetworkedComponent, AutoGenerateComponentState(true)]
 public sealed partial class YautjaComponent : Component
 {
     [DataField]
     public LocId RankName = "cmu-yautja-rank-hunter";
+
+    [DataField, AutoNetworkedField]
+    public YautjaRank ClanRank = YautjaRank.Blooded;
 
     [DataField]
     public float BaseWalkSpeed = 4.4f;
@@ -2673,6 +2676,21 @@ public enum YautjaButcherKind : byte
 {
     Human,
     Xeno,
+}
+
+[Serializable, NetSerializable]
+public enum YautjaButcherProcedure : byte
+{
+    Skin,
+    Head,
+    RightHand,
+    LeftHand,
+    RightArm,
+    LeftArm,
+    RightFoot,
+    LeftFoot,
+    RightLeg,
+    LeftLeg,
 }
 
 [Serializable, NetSerializable]

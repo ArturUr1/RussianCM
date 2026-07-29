@@ -947,6 +947,7 @@ namespace Content.Shared.Preferences
                 YautjaProfile.GreavesPrototype != other.YautjaProfile.GreavesPrototype ||
                 YautjaProfile.BracerPrototype != other.YautjaProfile.BracerPrototype ||
                 YautjaProfile.CasterPrototype != other.YautjaProfile.CasterPrototype ||
+                YautjaProfile.ClanRank != other.YautjaProfile.ClanRank ||
                 YautjaProfile.OwnerRank != other.YautjaProfile.OwnerRank ||
                 YautjaProfile.CapePrototype != other.YautjaProfile.CapePrototype ||
                 YautjaProfile.CapeColor != other.YautjaProfile.CapeColor ||

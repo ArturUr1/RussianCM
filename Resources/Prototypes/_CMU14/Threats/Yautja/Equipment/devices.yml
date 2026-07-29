@@ -530,6 +530,14 @@
     - GasMask
   - type: Mask
     enabled: false
+  - type: ShowHealthBars
+    damageContainers:
+    - Biological
+    - Xeno
+  - type: ShowHealthIcons
+    damageContainers:
+    - Biological
+    - Xeno
   - type: YautjaMask
     requiresYautjaWearer: true
     drain: 3
