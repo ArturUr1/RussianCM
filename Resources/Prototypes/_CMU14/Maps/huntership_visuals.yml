@@ -14791,6 +14791,9 @@
     layers:
     - state: "beakersilver"
       color: "#9b1818"
+    - state: "beakersilver"
+      map: ["enum.SolutionContainerLayers.Fill"]
+      visible: false
   - type: Icon
     sprite: _CMU14/HunterShip/obj/items/chemistry.rsi
     state: "beakersilver"
@@ -14801,14 +14804,14 @@
     - type: Contraband
   - type: Item
     sprite: _RMC14/Objects/Medical/large_beaker.rsi
-  - type: Physics
-    bodyType: Dynamic
-    fixedRotation: false
-  - type: Clickable
   - type: SolutionContainerVisuals
     fillSprite:
       sprite: _RMC14/Objects/Medical/large_beaker.rsi
       state: beakerlarge1
+  - type: Physics
+    bodyType: Dynamic
+    fixedRotation: false
+  - type: Clickable
   - type: InteractionOutline
   - type: Fixtures
     fixtures:
@@ -14841,6 +14844,9 @@
     layers:
     - state: "beakersilver"
       color: "#9b1818"
+    - state: "beakersilver"
+      map: ["enum.SolutionContainerLayers.Fill"]
+      visible: false
   - type: Icon
     sprite: _CMU14/HunterShip/obj/items/chemistry.rsi
     state: "beakersilver"
@@ -14851,6 +14857,10 @@
     - type: Contraband
   - type: Item
     sprite: _RMC14/Objects/Medical/large_beaker.rsi
+  - type: SolutionContainerVisuals
+    fillSprite:
+      sprite: _RMC14/Objects/Medical/large_beaker.rsi
+      state: beakerlarge1
   - type: Physics
     bodyType: Dynamic
     fixedRotation: false
@@ -14858,10 +14868,6 @@
   - type: InteractionOutline
   - type: Fixtures
     fixtures:
-  - type: SolutionContainerVisuals
-    fillSprite:
-      sprite: _RMC14/Objects/Medical/large_beaker.rsi
-      state: beakerlarge1
       fix1:
         shape:
           !type:PhysShapeAabb

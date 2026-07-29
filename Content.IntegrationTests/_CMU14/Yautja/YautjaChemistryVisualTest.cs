@@ -26,20 +26,30 @@ public sealed class YautjaChemistryVisualTest
         var map = await pair.CreateTestMap();
         var spriteSystem = client.System<SpriteSystem>();
 
-        EntityUid beaker = default;
+        EntityUid backendBeaker = default;
+        EntityUid placedBeakerOffset6x9 = default;
+        EntityUid placedBeakerOffsetNeg5x0 = default;
         EntityUid vial = default;
-        NetEntity beakerNet = default;
+        NetEntity backendBeakerNet = default;
+        NetEntity placedBeakerOffset6x9Net = default;
+        NetEntity placedBeakerOffsetNeg5x0Net = default;
         NetEntity vialNet = default;
 
         await server.WaitPost(() =>
         {
             var entMan = server.EntMan;
             var solutions = entMan.System<SharedSolutionContainerSystem>();
-            beaker = entMan.SpawnEntity("CMUHunterShipSilverCatalystBeaker", map.GridCoords);
-            vial = entMan.SpawnEntity("CMUHunterShipPlacedBaseChemistryEmptyVialVialSouthOffset1x7", map.GridCoords.Offset(new(1, 0)));
-            FillBeaker(beaker, solutions);
+            backendBeaker = entMan.SpawnEntity("CMUHunterShipSilverCatalystBeaker", map.GridCoords);
+            placedBeakerOffset6x9 = entMan.SpawnEntity("CMUHunterShipPlacedBeakerBeakersilverSouthOffset6x9", map.GridCoords.Offset(new(1, 0)));
+            placedBeakerOffsetNeg5x0 = entMan.SpawnEntity("CMUHunterShipPlacedBeakerBeakersilverSouthOffsetNeg5x0", map.GridCoords.Offset(new(2, 0)));
+            vial = entMan.SpawnEntity("CMUHunterShipPlacedBaseChemistryEmptyVialVialSouthOffset1x7", map.GridCoords.Offset(new(3, 0)));
+            FillBeaker(backendBeaker, solutions);
+            FillBeaker(placedBeakerOffset6x9, solutions);
+            FillBeaker(placedBeakerOffsetNeg5x0, solutions);
             FillBeaker(vial, solutions);
-            beakerNet = entMan.GetNetEntity(beaker);
+            backendBeakerNet = entMan.GetNetEntity(backendBeaker);
+            placedBeakerOffset6x9Net = entMan.GetNetEntity(placedBeakerOffset6x9);
+            placedBeakerOffsetNeg5x0Net = entMan.GetNetEntity(placedBeakerOffsetNeg5x0);
             vialNet = entMan.GetNetEntity(vial);
         });
 
@@ -47,7 +57,9 @@ public sealed class YautjaChemistryVisualTest
 
         await client.WaitAssertion(() =>
         {
-            Assert.That(client.EntMan.TryGetEntity(beakerNet, out var clientBeaker), Is.True);
+            Assert.That(client.EntMan.TryGetEntity(backendBeakerNet, out var clientBackendBeaker), Is.True);
+            Assert.That(client.EntMan.TryGetEntity(placedBeakerOffset6x9Net, out var clientPlacedBeakerOffset6x9), Is.True);
+            Assert.That(client.EntMan.TryGetEntity(placedBeakerOffsetNeg5x0Net, out var clientPlacedBeakerOffsetNeg5x0), Is.True);
             Assert.That(client.EntMan.TryGetEntity(vialNet, out var clientVial), Is.True);
 
             Assert.Multiple(() =>
@@ -55,8 +67,28 @@ public sealed class YautjaChemistryVisualTest
                 AssertShipGlasswareFillRsi(
                     client.EntMan,
                     spriteSystem,
-                    clientBeaker.Value,
+                    clientBackendBeaker.Value,
                     "CMUHunterShipSilverCatalystBeaker",
+                    new ResPath("/Textures/_CMU14/HunterShip/obj/items/chemistry.rsi"),
+                    new ResPath("/Textures/_RMC14/Objects/Medical/large_beaker.rsi"),
+                    "beakerlarge",
+                    5);
+
+                AssertShipGlasswareFillRsi(
+                    client.EntMan,
+                    spriteSystem,
+                    clientPlacedBeakerOffset6x9.Value,
+                    "CMUHunterShipPlacedBeakerBeakersilverSouthOffset6x9",
+                    new ResPath("/Textures/_CMU14/HunterShip/obj/items/chemistry.rsi"),
+                    new ResPath("/Textures/_RMC14/Objects/Medical/large_beaker.rsi"),
+                    "beakerlarge",
+                    5);
+
+                AssertShipGlasswareFillRsi(
+                    client.EntMan,
+                    spriteSystem,
+                    clientPlacedBeakerOffsetNeg5x0.Value,
+                    "CMUHunterShipPlacedBeakerBeakersilverSouthOffsetNeg5x0",
                     new ResPath("/Textures/_CMU14/HunterShip/obj/items/chemistry.rsi"),
                     new ResPath("/Textures/_RMC14/Objects/Medical/large_beaker.rsi"),
                     "beakerlarge",
@@ -103,7 +135,11 @@ public sealed class YautjaChemistryVisualTest
                     continue;
 
                 if (!sprite.LayerExists(visuals.Layer))
+                {
+                    Assert.That(visuals.FillSprite, Is.Null,
+                        $"{proto.ID} configures fillSprite/fillBaseName but Sprite lacks mapped {visuals.Layer} layer");
                     continue;
+                }
 
                 var rsi = ResolveFillRsi(proto, visuals, sprite, resourceCache);
 
