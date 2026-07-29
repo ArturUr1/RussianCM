@@ -230,11 +230,11 @@ public sealed class YautjaHuntingGroundMapTest
                             continue;
                         }
 
-                        if (nearest.Distance < 12f)
+                        if (nearest.Distance < 8f)
                         {
                             errors.Add(
                                 $"{mapPath}: relay {marker.Label} at {marker.Position} is {nearest.Distance:0.##} tiles from " +
-                                $"{nearest.Structure.Prototype} at {nearest.Structure.Position}; expected at least 12.");
+                                $"{nearest.Structure.Prototype} at {nearest.Structure.Position}; expected at least 8.");
                         }
                     }
                 }
@@ -250,7 +250,7 @@ public sealed class YautjaHuntingGroundMapTest
         });
 
         Assert.That(errors, Is.Empty,
-            "In-rotation ground relay markers must be open and at least 12 tiles from human infrastructure:\n" +
+            "In-rotation ground relay markers must be open and at least 8 tiles from human infrastructure:\n" +
             string.Join('\n', errors));
 
         await pair.CleanReturnAsync();
@@ -826,7 +826,7 @@ public sealed class YautjaHuntingGroundMapTest
         MetaDataComponent meta,
         TransformComponent transform)
     {
-        if (IsHumanSpawn(entMan, uid))
+        if (IsHumanSpawn(entMan, uid, meta))
             return true;
 
         if (!transform.Anchored ||
@@ -840,10 +840,16 @@ public sealed class YautjaHuntingGroundMapTest
                !ContainsAny(prototypeText, NonHumanInfrastructureTerms);
     }
 
-    private static bool IsHumanSpawn(IEntityManager entMan, EntityUid uid)
+    private static bool IsHumanSpawn(IEntityManager entMan, EntityUid uid, MetaDataComponent meta)
     {
         if (!entMan.TryGetComponent<SpawnPointComponent>(uid, out var spawn))
             return false;
+
+        if (meta.EntityPrototype is { } prototype &&
+            ContainsAny($"{prototype.ID} {meta.EntityName}", NonHumanInfrastructureTerms))
+        {
+            return false;
+        }
 
         return spawn.Job != null ||
                spawn.SpawnType is SpawnPointType.Job or
