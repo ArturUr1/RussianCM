@@ -33,7 +33,7 @@
 - type: radioChannel
   id: CMUYautjaMilitary
   name: chat-radio-cmu-yautja-military
-  keycode: "м"
+  keycode: "ю"
   frequency: 1545
   color: "#8db7d4"
   longRange: true
