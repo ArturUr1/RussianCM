@@ -14,6 +14,7 @@ using Content.Shared.Mobs.Systems;
 using Content.Shared.Movement.Pulling.Systems;
 using Content.Shared.NPC.Components;
 using Content.Shared.NPC.Prototypes;
+using Content.Shared.NPC.Systems;
 using Content.Shared.Popups;
 using Content.Shared.Prototypes;
 using Content.Shared.Stunnable;
@@ -48,10 +49,12 @@ public abstract partial class SharedXenoHiveSystem : EntitySystem
     [Dependency] private SharedTransformSystem _transform = default!;
     [Dependency] private XenoSystem _xeno = default!;
     [Dependency] private SharedXenoAnnounceSystem _xenoAnnounce = default!;
+    [Dependency] private NpcFactionSystem _npcFaction = default!;
 
     private EntityQuery<HiveComponent> _query;
     private EntityQuery<HiveMemberComponent> _memberQuery;
 
+    private static readonly ProtoId<NpcFactionPrototype> RmcXenoFaction = "RMCXeno";
     private readonly HashSet<EntityUid> _contacting = new();
 
     public override void Initialize()
@@ -335,6 +338,27 @@ public abstract partial class SharedXenoHiveSystem : EntitySystem
         {
             Log.Error($"Tried to set hive of {ToPrettyString(member)} to bad hive entity {ToPrettyString(hive)}");
             return; // invalid hive was passed, prevent it breaking anything else
+        }
+
+        var oldFaction = old is { } oldHive && _query.TryComp(oldHive, out var previousHiveComp)
+            ? previousHiveComp.NpcFaction
+            : null;
+        var newFaction = hiveEnt?.Comp.NpcFaction;
+
+        if (oldFaction != newFaction)
+        {
+            if (oldFaction is { } oldFactionId)
+                _npcFaction.RemoveFaction(member.Owner, oldFactionId);
+
+            if (newFaction is { } newFactionId)
+            {
+                _npcFaction.RemoveFaction(member.Owner, RmcXenoFaction);
+                _npcFaction.AddFaction(member.Owner, newFactionId);
+            }
+            else if (oldFaction is not null)
+            {
+                _npcFaction.AddFaction(member.Owner, RmcXenoFaction);
+            }
         }
 
         comp.Hive = hive;
@@ -688,8 +712,8 @@ public abstract partial class SharedXenoHiveSystem : EntitySystem
 
     public bool FromSameHiveOrAlly(Entity<HiveMemberComponent?> a, Entity<HiveMemberComponent?> b)
     {
-        // TODO RMC14
-        return FromSameHive(a, b);
+        return FromSameHive(a, b) ||
+               (GetHive(a) is { } hive && IsAllyOfHive(b.Owner, hive.Owner));
     }
 
     private void UpdateHiveAppearance(EntityUid member, Entity<HiveComponent>? hive)

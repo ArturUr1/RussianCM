@@ -6,7 +6,7 @@
   components:
   - type: CMArmor
     melee: 25
-    bullet: 30
+    bullet: 40
     bio: 20
     explosionArmor: 12
     # armor_laser = 15
@@ -37,7 +37,7 @@
   components:
   - type: CMArmor
     melee: 25
-    bullet: 25
+    bullet: 40
     bio: 20
     explosionArmor: 12
     # armor_laser = 15
