@@ -7968,6 +7968,9 @@
     layers:
     - state: "vial"
       color: "#9b1818"
+    - state: "vial"
+      map: ["enum.SolutionContainerLayers.Fill"]
+      visible: false
   - type: Icon
     sprite: _CMU14/HunterShip/obj/items/chemistry.rsi
     state: "vial"
@@ -7978,6 +7981,10 @@
     - type: Contraband
   - type: Item
     sprite: _RMC14/Objects/Chemistry/vials.rsi
+  - type: SolutionContainerVisuals
+    fillSprite:
+      sprite: _RMC14/Objects/Chemistry/vials.rsi
+      state: vial1
   - type: Physics
     bodyType: Dynamic
     fixedRotation: false
@@ -8014,6 +8021,9 @@
     layers:
     - state: "vial"
       color: "#9b1818"
+    - state: "vial"
+      map: ["enum.SolutionContainerLayers.Fill"]
+      visible: false
   - type: Icon
     sprite: _CMU14/HunterShip/obj/items/chemistry.rsi
     state: "vial"
@@ -8024,6 +8034,10 @@
     - type: Contraband
   - type: Item
     sprite: _RMC14/Objects/Chemistry/vials.rsi
+  - type: SolutionContainerVisuals
+    fillSprite:
+      sprite: _RMC14/Objects/Chemistry/vials.rsi
+      state: vial1
   - type: Physics
     bodyType: Dynamic
     fixedRotation: false
@@ -8060,6 +8074,9 @@
     layers:
     - state: "vial"
       color: "#9b1818"
+    - state: "vial"
+      map: ["enum.SolutionContainerLayers.Fill"]
+      visible: false
   - type: Icon
     sprite: _CMU14/HunterShip/obj/items/chemistry.rsi
     state: "vial"
@@ -8070,6 +8087,10 @@
     - type: Contraband
   - type: Item
     sprite: _RMC14/Objects/Chemistry/vials.rsi
+  - type: SolutionContainerVisuals
+    fillSprite:
+      sprite: _RMC14/Objects/Chemistry/vials.rsi
+      state: vial1
   - type: Physics
     bodyType: Dynamic
     fixedRotation: false
@@ -8106,6 +8127,9 @@
     layers:
     - state: "vial"
       color: "#9b1818"
+    - state: "vial"
+      map: ["enum.SolutionContainerLayers.Fill"]
+      visible: false
   - type: Icon
     sprite: _CMU14/HunterShip/obj/items/chemistry.rsi
     state: "vial"
@@ -8116,6 +8140,10 @@
     - type: Contraband
   - type: Item
     sprite: _RMC14/Objects/Chemistry/vials.rsi
+  - type: SolutionContainerVisuals
+    fillSprite:
+      sprite: _RMC14/Objects/Chemistry/vials.rsi
+      state: vial1
   - type: Physics
     bodyType: Dynamic
     fixedRotation: false
@@ -8152,6 +8180,9 @@
     layers:
     - state: "vial"
       color: "#9b1818"
+    - state: "vial"
+      map: ["enum.SolutionContainerLayers.Fill"]
+      visible: false
   - type: Icon
     sprite: _CMU14/HunterShip/obj/items/chemistry.rsi
     state: "vial"
@@ -8162,6 +8193,10 @@
     - type: Contraband
   - type: Item
     sprite: _RMC14/Objects/Chemistry/vials.rsi
+  - type: SolutionContainerVisuals
+    fillSprite:
+      sprite: _RMC14/Objects/Chemistry/vials.rsi
+      state: vial1
   - type: Physics
     bodyType: Dynamic
     fixedRotation: false
