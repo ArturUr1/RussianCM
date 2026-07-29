@@ -1,6 +1,7 @@
 using Content.Server._CMU14.Yautja;
 using Content.Server.Administration.Logs;
 using Content.Server.Database;
+using Content.Server.Players.JobWhitelist;
 using Content.Shared.Administration;
 using Content.Shared.Administration.Logs;
 using Content.Shared.Database;
@@ -13,8 +14,9 @@ namespace Content.Server.Administration.Commands;
 public sealed partial class YautjaRankCommand : LocalizedCommands
 {
     [Dependency] private IPlayerLocator _playerLocator = default!;
-    [Dependency] private IServerDbManager _db = default!;
+    [Dependency] private YautjaClanManager _clanManager = default!;
     [Dependency] private YautjaRankManager _rankManager = default!;
+    [Dependency] private JobWhitelistManager _jobWhitelist = default!;
     [Dependency] private IAdminLogManager _adminLog = default!;
 
     public override string Command => "yautjarank";
@@ -40,13 +42,14 @@ public sealed partial class YautjaRankCommand : LocalizedCommands
             return;
         }
 
-        var previous = await _db.GetYautjaRank(player.UserId.UserId);
+        var previous = await _clanManager.Resolve(player.UserId);
         await _rankManager.Set(player.UserId, rank);
+        await _jobWhitelist.RefreshYautjaWhitelist(player.UserId);
 
         _adminLog.Add(
             LogType.AdminCommands,
             LogImpact.Medium,
-            $"{shell.Player?.Name ?? "Console"} set Yautja rank for {player.Username} ({player.UserId}) from {previous?.ToString() ?? "unset"} to {rank}.");
+            $"{shell.Player?.Name ?? "Console"} set Yautja rank for {player.Username} ({player.UserId}) from {previous.Rank} to {rank}.");
         shell.WriteLine($"Set {player.Username}'s Yautja rank to {rank}.");
     }
 
@@ -92,7 +95,7 @@ public sealed partial class YautjaRankCommand : LocalizedCommands
 public sealed partial class YautjaGetRankCommand : LocalizedCommands
 {
     [Dependency] private IPlayerLocator _playerLocator = default!;
-    [Dependency] private IServerDbManager _db = default!;
+    [Dependency] private YautjaClanManager _clanManager = default!;
 
     public override string Command => "yautjaget";
 
@@ -111,8 +114,9 @@ public sealed partial class YautjaGetRankCommand : LocalizedCommands
             return;
         }
 
-        var rank = await _db.GetYautjaRank(player.UserId.UserId);
-        shell.WriteLine($"{player.Username}'s stored Yautja rank: {rank?.ToString() ?? "unset (defaults to Blooded)"}.");
+        var resolution = await _clanManager.Resolve(player.UserId);
+        var clan = resolution.ClanId?.ToString() ?? "none";
+        shell.WriteLine($"{player.Username}: rank={resolution.Rank}, clan={clan}, permissions={resolution.Permissions}, whitelist={resolution.WhitelistFlags}, legacy={resolution.IsLegacy}.");
     }
 
     public override CompletionResult GetCompletion(IConsoleShell shell, string[] args)

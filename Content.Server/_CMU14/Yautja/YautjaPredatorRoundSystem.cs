@@ -3,6 +3,7 @@ using Content.Server.GameTicking;
 using Content.Server.GameTicking.Events;
 using Content.Server.GameTicking.Rules;
 using Content.Server.Maps;
+using Content.Server.Preferences.Managers;
 using Content.Server.Spawners.Components;
 using Content.Server.Spawners.EntitySystems;
 using Content.Server.Station.Components;
@@ -13,12 +14,14 @@ using Content.Shared.GameTicking;
 using Content.Shared.GameTicking.Components;
 using Content.Shared.Roles;
 using Content.Shared._CMU14.Yautja;
+using Content.Shared.Preferences;
 using Robust.Shared.Map;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Configuration;
 using Robust.Shared.EntitySerialization;
 using Robust.Shared.EntitySerialization.Systems;
 using Robust.Shared.Log;
+using Robust.Shared.Network;
 using Robust.Shared.Player;
 using Robust.Shared.Random;
 
@@ -42,6 +45,7 @@ public sealed partial class YautjaPredatorRoundSystem : GameRuleSystem<YautjaPre
     [Dependency] private StationSystem _station = default!;
     [Dependency] private StationSpawningSystem _stationSpawning = default!;
     [Dependency] private YautjaRankManager _rankManager = default!;
+    [Dependency] private IServerPreferencesManager _preferences = default!;
     [Dependency] private IRobustRandom _random = default!;
 
     private readonly ISawmill _sawmill = Logger.GetSawmill("cmu.yautja.round");
@@ -94,7 +98,29 @@ public sealed partial class YautjaPredatorRoundSystem : GameRuleSystem<YautjaPre
 
     public YautjaRank ResolveRankForSession(ICommonSession session, bool youngbloodRole = false)
     {
-        return _rankManager.ResolveCached(session.UserId, youngbloodRole);
+        return ResolveCapabilitiesForSession(session, youngbloodRole).Rank;
+    }
+
+    public YautjaProfileCapabilities ResolveCapabilitiesForSession(
+        ICommonSession session,
+        bool youngbloodRole = false)
+    {
+        return ResolveCapabilitiesForPlayer(session.UserId, youngbloodRole);
+    }
+
+    private YautjaRank ResolveRankForPlayer(NetUserId userId, bool youngbloodRole = false)
+    {
+        return ResolveCapabilitiesForPlayer(userId, youngbloodRole).Rank;
+    }
+
+    private YautjaProfileCapabilities ResolveCapabilitiesForPlayer(
+        NetUserId userId,
+        bool youngbloodRole = false)
+    {
+        var capabilities = _rankManager.ResolveProfileCapabilitiesCached(userId, youngbloodRole);
+        var status = (_preferences.GetPreferencesOrNull(userId)?.SelectedCharacter as HumanoidCharacterProfile)?
+            .YautjaProfile.Status ?? YautjaProfileStatus.Normal;
+        return capabilities.ForStatus(status);
     }
 
     public override void Initialize()
@@ -252,7 +278,7 @@ public sealed partial class YautjaPredatorRoundSystem : GameRuleSystem<YautjaPre
         }
 
         if (ShouldExcludeOrdinaryRankFromHunterCandidates(
-                _rankManager.ResolveCached(ev.Player),
+                ResolveRankForPlayer(ev.Player),
                 rule.Comp.RoundStartHunterSlotsRemaining,
                 rule.Comp.RoundStartBypassSlotsRemaining))
         {
@@ -272,7 +298,7 @@ public sealed partial class YautjaPredatorRoundSystem : GameRuleSystem<YautjaPre
         if (rule.Comp.RoundStartHunterSlotsRemaining > 0)
             rule.Comp.RoundStartHunterSlotsRemaining--;
 
-        if (GetRankSpawnPolicy(_rankManager.ResolveCached(ev.Player)).BypassSlotCap &&
+        if (GetRankSpawnPolicy(ResolveRankForPlayer(ev.Player)).BypassSlotCap &&
             rule.Comp.RoundStartBypassSlotsRemaining > 0)
         {
             rule.Comp.RoundStartBypassSlotsRemaining--;
@@ -355,9 +381,11 @@ public sealed partial class YautjaPredatorRoundSystem : GameRuleSystem<YautjaPre
             if (GetRandomPredatorSpawn(comp.PredatorJob) is not { } coordinates)
                 return;
 
-            var rank = ev.PlayerSession is { } session
-                ? ResolveRankForSession(session)
-                : YautjaRank.Blooded;
+            var capabilities = ev.PlayerSession is { } session
+                ? _rankManager.ResolveProfileCapabilitiesCached(session.UserId).ForStatus(
+                    ev.HumanoidCharacterProfile?.YautjaProfile.Status ?? YautjaProfileStatus.Normal)
+                : YautjaProfileCapabilities.Default;
+            var rank = capabilities.Rank;
 
             if (GetRankSpawnPolicy(rank).BypassSlotCap && comp.RankBypassSlotsRemaining > 0)
                 comp.RankBypassSlotsRemaining--;
@@ -367,7 +395,8 @@ public sealed partial class YautjaPredatorRoundSystem : GameRuleSystem<YautjaPre
                 ev.Job,
                 ev.HumanoidCharacterProfile,
                 ev.Station,
-                authoritativeYautjaRank: rank);
+                authoritativeYautjaRank: rank,
+                authoritativeYautjaCapabilities: capabilities);
             return;
         }
     }

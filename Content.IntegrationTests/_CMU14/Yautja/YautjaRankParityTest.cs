@@ -8,13 +8,13 @@ namespace Content.IntegrationTests._CMU14.Yautja;
 [TestFixture]
 public sealed class YautjaRankParityTest
 {
-    [TestCase(YautjaRank.Unblooded, "unblooded", false, false, new[] { "CMUAccessYautjaSecure" })]
-    [TestCase(YautjaRank.YoungBlood, "youngblood", false, false, new[] { "CMUAccessYautjaSecure" })]
-    [TestCase(YautjaRank.Blooded, "blooded", false, false, new[] { "CMUAccessYautjaSecure" })]
-    [TestCase(YautjaRank.Elite, "elite", true, false, new[] { "CMUAccessYautjaSecure", "CMUAccessYautjaElite" })]
-    [TestCase(YautjaRank.Elder, "elder", true, false, new[] { "CMUAccessYautjaSecure", "CMUAccessYautjaElite", "CMUAccessYautjaElder" })]
-    [TestCase(YautjaRank.Leader, "leader", true, true, new[] { "CMUAccessYautjaSecure", "CMUAccessYautjaElite", "CMUAccessYautjaElder", "CMUAccessYautjaLeader" })]
-    [TestCase(YautjaRank.Ancient, "ancient", true, true, new[] { "CMUAccessYautjaSecure", "CMUAccessYautjaElite", "CMUAccessYautjaElder", "CMUAccessYautjaLeader", "CMUAccessYautjaAncient" })]
+    [TestCase(YautjaRank.Unblooded, "predhud", false, false, new[] { "CMUAccessYautjaSecure" })]
+    [TestCase(YautjaRank.YoungBlood, "predhud", false, false, new[] { "CMUAccessYautjaSecure" })]
+    [TestCase(YautjaRank.Blooded, "predhud", false, false, new[] { "CMUAccessYautjaSecure" })]
+    [TestCase(YautjaRank.Elite, "predhud", true, false, new[] { "CMUAccessYautjaSecure", "CMUAccessYautjaElite" })]
+    [TestCase(YautjaRank.Elder, "predhud", true, false, new[] { "CMUAccessYautjaSecure", "CMUAccessYautjaElite", "CMUAccessYautjaElder" })]
+    [TestCase(YautjaRank.Leader, "leaderhud", true, true, new[] { "CMUAccessYautjaSecure", "CMUAccessYautjaElite", "CMUAccessYautjaElder", "CMUAccessYautjaLeader" })]
+    [TestCase(YautjaRank.Ancient, "councilhud", true, true, new[] { "CMUAccessYautjaSecure", "CMUAccessYautjaElite", "CMUAccessYautjaElder", "CMUAccessYautjaLeader", "CMUAccessYautjaAncient" })]
     public void RankMetadataMatchesCmss13(
         YautjaRank rank,
         string icon,
@@ -39,6 +39,58 @@ public sealed class YautjaRankParityTest
         Assert.That(
             YautjaRankMetadata.GetRackAccessTags(YautjaRank.Elder).Select(tag => tag.Id),
             Is.EqualTo(new[] { "CMUAccessYautjaElder", "CMUAccessYautjaAncient" }));
+    }
+
+    [Test]
+    public void LegacyWhitelistUsesItsOwnServerFlag()
+    {
+        var legacy = (YautjaWhitelistFlags) (1 << 1);
+        var councilLegacy = (YautjaWhitelistFlags) (1 << 3);
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(legacy, Is.EqualTo(YautjaWhitelistFlags.Legacy));
+            Assert.That(councilLegacy, Is.EqualTo(YautjaWhitelistFlags.CouncilLegacy));
+            Assert.That(Enum.IsDefined(legacy), Is.True);
+            Assert.That(Enum.IsDefined(councilLegacy), Is.True);
+        });
+    }
+
+    [Test]
+    public void SeniorWhitelistNormalStatusFallsBackToBlooded()
+    {
+        var capabilities = new YautjaProfileCapabilities(
+            YautjaRank.Ancient,
+            true,
+            false,
+            canUseCouncilStatus: true,
+            canUseLeaderStatus: true);
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(capabilities.ResolveRank(YautjaProfileStatus.Normal), Is.EqualTo(YautjaRank.Blooded));
+            Assert.That(capabilities.ResolveRank(YautjaProfileStatus.Council), Is.EqualTo(YautjaRank.Ancient));
+            Assert.That(capabilities.ResolveRank(YautjaProfileStatus.Leader), Is.EqualTo(YautjaRank.Ancient));
+        });
+    }
+
+    [Test]
+    public void EffectiveCapabilitiesFollowSelectedSeniorStatus()
+    {
+        var capabilities = new YautjaProfileCapabilities(
+            YautjaRank.Ancient,
+            true,
+            true,
+            canUseCouncilStatus: true,
+            canUseLeaderStatus: true);
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(capabilities.ForStatus(YautjaProfileStatus.Normal).Rank, Is.EqualTo(YautjaRank.Blooded));
+            Assert.That(capabilities.ForStatus(YautjaProfileStatus.Normal).CanUseUnique, Is.False);
+            Assert.That(capabilities.ForStatus(YautjaProfileStatus.Council).Rank, Is.EqualTo(YautjaRank.Ancient));
+            Assert.That(capabilities.ForStatus(YautjaProfileStatus.Council).CanUseUnique, Is.True);
+        });
     }
 
     [Test]

@@ -41,6 +41,26 @@ public static class YautjaProfileEditorLayout
         return unique != YautjaUniqueSet.None && !YautjaRankResolver.CanUseUnique(profile);
     }
 
+    public static bool IsUniqueSetLocked(YautjaProfileCapabilities capabilities, YautjaUniqueSet unique)
+    {
+        return unique != YautjaUniqueSet.None && !capabilities.CanUseUnique;
+    }
+
+    public static bool IsLegacySetLocked(YautjaProfileCapabilities capabilities, YautjaLegacySet legacy)
+    {
+        return !capabilities.CanUseLegacySet(legacy);
+    }
+
+    public static bool IsCapeLocked(YautjaProfileCapabilities capabilities, YautjaCapeStyle cape)
+    {
+        return !capabilities.CanUseCape(cape);
+    }
+
+    public static bool IsBracerLocked(YautjaProfileCapabilities capabilities, YautjaBracerMaterial bracer)
+    {
+        return !capabilities.CanUseBracer(bracer);
+    }
+
     public static YautjaProfileEditorSummary BuildSummary(YautjaCharacterProfile profile)
     {
         var set = profile.Unique != YautjaUniqueSet.None

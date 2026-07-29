@@ -26,7 +26,7 @@ public sealed partial class YautjaHudSystem : EntitySystem
 
     private void OnGetRankStatusIcons(Entity<YautjaComponent> ent, ref GetStatusIconsEvent args)
     {
-        if (!HasYautjaHudViewer())
+        if (!CanSeeYautjaRankIcon(ent.Owner))
             return;
 
         EnsureCached();
@@ -126,5 +126,15 @@ public sealed partial class YautjaHudSystem : EntitySystem
     private bool HasYautjaHudViewer()
     {
         return _player.LocalEntity is { } viewer && HasComp<YautjaHudViewerComponent>(viewer);
+    }
+
+    private bool CanSeeYautjaRankIcon(EntityUid target)
+    {
+        if (_player.LocalEntity is not { } viewer)
+            return false;
+
+        // A Yautja must see their own rank in-game even before equipping the mask.
+        // Other entities only receive rank icons through the mask HUD, as in CMSS13.
+        return viewer == target || HasComp<YautjaHudViewerComponent>(viewer);
     }
 }

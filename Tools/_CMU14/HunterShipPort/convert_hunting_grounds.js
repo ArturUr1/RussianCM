@@ -41,6 +41,7 @@ const maps = [
         name: "Yautja Desert Moon Caves",
         mapUid: 1,
         gridUid: 2,
+        fillSourceAreaSpace: true,
       },
     },
     destinationId: "desert_moon",
@@ -65,6 +66,7 @@ const tileIds = [
 ];
 
 const tileIdByName = new Map(tileIds.map((id, index) => [id, index]));
+const sourceBounds = { minX: 0, minY: 0, maxX: 112, maxY: 96 };
 
 function parseDefinitions(source) {
   const definitions = new Map();
@@ -424,7 +426,13 @@ function convertMap(mapConfig) {
 
     const grid = grids.get(cell.z) ?? new Map();
     const grouped = entities.get(cell.z) ?? new Map();
-    const tile = tileFor(cell.entries, mapConfig.defaultTile);
+    const output = mapConfig.outputs[cell.z];
+    let tile = tileFor(cell.entries, mapConfig.defaultTile);
+    if (tile === "Space" && output.fillSourceAreaSpace &&
+        cell.x >= sourceBounds.minX && cell.x <= sourceBounds.maxX &&
+        cell.y >= sourceBounds.minY && cell.y <= sourceBounds.maxY) {
+      tile = mapConfig.defaultTile;
+    }
     if (tile !== "Space")
       grid.set(`${cell.x},${cell.y}`, tileIdByName.get(tile));
 
