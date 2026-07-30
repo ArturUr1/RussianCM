@@ -37,13 +37,13 @@
   description: They are made in a "scale" pattern, so they don't restrict movement. Included in the SZ "Kogot" additional equipment.
   components:
   - type: Sprite
-    sprite: _RuMC14\Clothing\BEAR\garb\crotch.rsi
+    sprite: _RuMC14/Clothing/BEAR/garb/crotch.rsi
     state: icon
   - type: Item
-    sprite: _RuMC14\Clothing\BEAR\garb\crotch.rsi
+    sprite: _RuMC14/Clothing/BEAR/garb/crotch.rsi
   - type: OuterClothingAccessory
     rsi:
-      sprite: _RuMC14\Clothing\BEAR\garb\crotch.rsi
+      sprite: _RuMC14/Clothing/BEAR/garb/crotch.rsi
       state: helmet
 
 # Universal
