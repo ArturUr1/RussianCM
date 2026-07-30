@@ -1,8 +1,5 @@
 # Generated from explicit Yautja entity name/description fields.
 
-ent-CMUActionYautjaToggleLantern = Toggle Light
-    .desc = Turn the light on and off.
-
 ent-CMUActionYautjaAddTeleporterLocation = { cmu-yautja-relay-add-destination-action-name }
     .desc = { cmu-yautja-relay-add-destination-action-desc }
 
@@ -11,18 +8,6 @@ ent-CMUActionYautjaFoldCombistick = { cmu-yautja-combistick-fold-action-name }
 
 ent-CMUActionYautjaCallCombi = { cmu-yautja-combistick-call-action-name }
     .desc = { cmu-yautja-combistick-call-action-desc }
-
-ent-CMUActionYautjaCreateHealingCapsule = Create Healing Capsule
-    .desc = Create a healing capsule.
-
-ent-CMUActionYautjaButcher = Butcher
-    .desc = Butcher a corpse you're standing next to for its tasty meats.
-
-ent-CMUActionYautjaFalconControl = Control Falcon Drone
-    .desc = Activates your falcon drone.
-
-ent-CMUActionYautjaFalconRecall = Recall falcon drone
-    .desc = Recall your falcon drone.
 
 ent-CMUActionYautjaGuardChainGauntlet = { cmu-yautja-chain-gauntlet-guard-action-name }
     .desc = { cmu-yautja-chain-gauntlet-guard-action-desc }

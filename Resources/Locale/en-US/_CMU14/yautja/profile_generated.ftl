@@ -354,18 +354,6 @@ cmu-yautja-profile-caster-bone = bone shoulder plasma caster
 
 cmu-yautja-profile-cape-full = battle-worn cape
 
-cmu-yautja-profile-cape-ceremonial = ceremonial cape
-
-cmu-yautja-profile-cape-third = third cape
-
-cmu-yautja-profile-cape-half = half cape
-
-cmu-yautja-profile-cape-quarter = quarter cape
-
-cmu-yautja-profile-cape-poncho = councilor poncho
-
-cmu-yautja-profile-cape-damaged = damaged cape
-
 cmu-yautja-profile-mask-accessory-none = None
 
 cmu-yautja-profile-mask-accessory-ebony-1 = ebony mask accessory 1
@@ -398,42 +386,6 @@ cmu-yautja-profile-mask-accessory-bone-2 = bone mask accessory 2
 
 cmu-yautja-profile-mask-accessory-bone-3 = bone mask accessory 3
 
-cmu-yautja-profile-material-ebony = ebony
-
-cmu-yautja-profile-material-silver = silver
-
-cmu-yautja-profile-material-bronze = bronze
-
-cmu-yautja-profile-material-crimson = crimson
-
-cmu-yautja-profile-material-bone = bone
-
-cmu-yautja-profile-bracer-material-retro = retro
-
-cmu-yautja-profile-bracer-material-ebony = ebony
-
-cmu-yautja-profile-bracer-material-silver = silver
-
-cmu-yautja-profile-bracer-material-bronze = bronze
-
-cmu-yautja-profile-bracer-material-crimson = crimson
-
-cmu-yautja-profile-bracer-material-bone = bone
-
-cmu-yautja-profile-bracer-material-dragon = dragon
-
-cmu-yautja-profile-bracer-material-swamp = swamp
-
-cmu-yautja-profile-bracer-material-enforcer = enforcer
-
-cmu-yautja-profile-bracer-material-collector = collector
-
-cmu-yautja-profile-translator-modern = Modern
-
-cmu-yautja-profile-translator-retro = Retro
-
-cmu-yautja-profile-translator-combo = Combo
-
 cmu-yautja-profile-invisibility-sound-modern = Modern
 
 cmu-yautja-profile-invisibility-sound-retro = Retro
@@ -443,26 +395,6 @@ cmu-yautja-profile-status-normal = Normal
 cmu-yautja-profile-status-council = Council
 
 cmu-yautja-profile-status-leader = Leader
-
-cmu-yautja-profile-legacy-none = None
-
-cmu-yautja-profile-legacy-dragon = Dragon
-
-cmu-yautja-profile-legacy-swamp = Swamp
-
-cmu-yautja-profile-legacy-enforcer = Enforcer
-
-cmu-yautja-profile-legacy-collector = Collector
-
-cmu-yautja-profile-unique-none = None
-
-cmu-yautja-profile-unique-anubys = Anubys
-
-cmu-yautja-profile-unique-cleopatra = Cleopatra
-
-cmu-yautja-profile-unique-plated = Plated
-
-cmu-yautja-profile-unique-ronin = Ronin
 
 cmu-yautja-profile-skin-color-green = green
 
@@ -531,8 +463,6 @@ cmu-yautja-profile-material-group-legacy = LEGACY
 cmu-yautja-lobby-filter-tooltip = Filter
 
 cmu-yautja-lobby-filter-label = Filter
-
-cmu-yautja-lobby-filter-all = ALL
 
 cmu-yautja-profile-legacy-dragon-armor = Dragon legacy armor
 

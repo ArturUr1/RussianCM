@@ -1,8 +1,5 @@
 # Generated from explicit Yautja entity name/description fields.
 
-ent-CMUActionYautjaToggleLantern = Переключить свет
-    .desc = Включить или выключить свет.
-
 ent-CMUActionYautjaAddTeleporterLocation = { cmu-yautja-relay-add-destination-action-name }
     .desc = { cmu-yautja-relay-add-destination-action-desc }
 
@@ -12,53 +9,11 @@ ent-CMUActionYautjaFoldCombistick = { cmu-yautja-combistick-fold-action-name }
 ent-CMUActionYautjaCallCombi = { cmu-yautja-combistick-call-action-name }
     .desc = { cmu-yautja-combistick-call-action-desc }
 
-ent-CMUActionYautjaChangeExplosionType = Изменить тип взрыва
-    .desc = изменить наруч самоуничтожение mode.
-
-ent-CMUActionYautjaToggleBracerNotificationSound = Переключить звуки уведомлений наруча
-    .desc = Переключить звуки уведомлений наруча.
-
-ent-CMUActionYautjaToggleBracerName = Переключить отображение имени наруча
-    .desc = переключить наруч name витрина.
-
-ent-CMUActionYautjaTrackGear = Отслеживать снаряжение
-    .desc = открыть tracked снаряжение list.
-
-ent-CMUActionYautjaAddTrackedItem = Добавить отслеживаемый предмет
-    .desc = добавить item для tracked снаряжение list.
-
-ent-CMUActionYautjaRemoveTrackedItem = Удалить отслеживаемый предмет
-    .desc = удалить item из tracked снаряжение list.
-
-ent-CMUActionYautjaAudioPanel = Аудиопанель
-    .desc = Открыть аудиопанель яутжа.
-
-ent-CMUActionYautjaCallDisc = вызвать Disc
-    .desc = Вернуть свой смарт-диск.
-
-ent-CMUActionYautjaButcher = Разделать
-    .desc = разделать труп you're standing next для для его вкусный мясо.
-
-ent-CMUActionYautjaFalconControl = управление Falcon дрон
-    .desc = Активирует вашего дрона-сокола.
-
-ent-CMUActionYautjaFalconRecall = вернуть falcon дрон
-    .desc = Вернуть вашего дрона-сокола.
-
-ent-CMUActionYautjaUsePlasmaCannons = использовать плазма пушки
-    .desc = Выстрелить из плазменных пушек.
-
 ent-CMUActionYautjaGuardChainGauntlet = { cmu-yautja-chain-gauntlet-guard-action-name }
     .desc = { cmu-yautja-chain-gauntlet-guard-action-desc }
 
 ent-CMUActionYautjaRemoveBracerAttachments = { cmu-yautja-remove-bracer-attachments-action-name }
     .desc = { cmu-yautja-remove-bracer-attachments-action-desc }
-
-ent-CMUActionYautjaLeap = прыжок
-    .desc = Прыгнуть в указанную точку.
-
-ent-CMUActionYautjaMarkForHunt = пометить для Hunt
-    .desc = Пометить цель для охоты.
 
 ent-CMUYautjaAncientAlienArmor = древний инопланетный броня
     .desc = древний броня сделанный из странный сплав. он feels холодный с инопланетный вес.

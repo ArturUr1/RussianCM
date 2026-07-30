@@ -74,12 +74,8 @@ cmu-yautja-action-voice-roar-desc = Emit a hunting roar.
 cmu-yautja-bracer-healing-capsule-created = The bracer prints {$item}.
 cmu-yautja-falcon-drone = Falcon Drone
 cmu-yautja-gear = Yautja Gear
-cmu-yautja-hivebreaker-requires-recent-death = The target must have died recently.
 cmu-yautja-id-card = Yautja ID Card
 cmu-yautja-id-chip = Yautja ID Chip
 cmu-yautja-mask-accessory = Bio-Mask Accessory
-cmu-yautja-job-description-youngblood = A young Yautja hunter undergoing the Blooding ritual.
-cmu-yautja-job-name-youngblood = Yautja Youngblood
-
 cmu-yautja-badblood-weapon-choice-title = Choose Your Weapon
 cmu-yautja-badblood-weapon-choice-warning = This action is irreversible, are you sure?

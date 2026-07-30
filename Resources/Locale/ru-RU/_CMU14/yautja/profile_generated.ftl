@@ -354,18 +354,6 @@ cmu-yautja-profile-caster-bone = костяной плечевой плазме�
 
 cmu-yautja-profile-cape-full = боевой плащ
 
-cmu-yautja-profile-cape-ceremonial = церемониальный плащ
-
-cmu-yautja-profile-cape-third = третий плащ
-
-cmu-yautja-profile-cape-half = полуплащ
-
-cmu-yautja-profile-cape-quarter = четвертной плащ
-
-cmu-yautja-profile-cape-poncho = пончо советника
-
-cmu-yautja-profile-cape-damaged = повреждённый плащ
-
 cmu-yautja-profile-mask-accessory-none = Нет
 
 cmu-yautja-profile-mask-accessory-ebony-1 = эбеновая украшение маски 1
@@ -398,42 +386,6 @@ cmu-yautja-profile-mask-accessory-bone-2 = костяная украшение �
 
 cmu-yautja-profile-mask-accessory-bone-3 = костяная украшение маски 3
 
-cmu-yautja-profile-material-ebony = эбеновая
-
-cmu-yautja-profile-material-silver = серебряная
-
-cmu-yautja-profile-material-bronze = бронзовая
-
-cmu-yautja-profile-material-crimson = алая
-
-cmu-yautja-profile-material-bone = костяная
-
-cmu-yautja-profile-bracer-material-retro = ретро
-
-cmu-yautja-profile-bracer-material-ebony = эбеновый
-
-cmu-yautja-profile-bracer-material-silver = серебряный
-
-cmu-yautja-profile-bracer-material-bronze = бронзовый
-
-cmu-yautja-profile-bracer-material-crimson = алый
-
-cmu-yautja-profile-bracer-material-bone = костяной
-
-cmu-yautja-profile-bracer-material-dragon = драконий
-
-cmu-yautja-profile-bracer-material-swamp = болотный
-
-cmu-yautja-profile-bracer-material-enforcer = энфорсерский
-
-cmu-yautja-profile-bracer-material-collector = коллекционерский
-
-cmu-yautja-profile-translator-modern = Современный
-
-cmu-yautja-profile-translator-retro = Ретро
-
-cmu-yautja-profile-translator-combo = Комбо
-
 cmu-yautja-profile-invisibility-sound-modern = Современный
 
 cmu-yautja-profile-invisibility-sound-retro = Ретро
@@ -443,26 +395,6 @@ cmu-yautja-profile-status-normal = Обычный
 cmu-yautja-profile-status-council = Совет
 
 cmu-yautja-profile-status-leader = Лидер
-
-cmu-yautja-profile-legacy-none = Нет
-
-cmu-yautja-profile-legacy-dragon = Драконий
-
-cmu-yautja-profile-legacy-swamp = Болотный
-
-cmu-yautja-profile-legacy-enforcer = Энфорсер
-
-cmu-yautja-profile-legacy-collector = Коллекционер
-
-cmu-yautja-profile-unique-none = Нет
-
-cmu-yautja-profile-unique-anubys = Анубис
-
-cmu-yautja-profile-unique-cleopatra = Клеопатра
-
-cmu-yautja-profile-unique-plated = Пластинчатый
-
-cmu-yautja-profile-unique-ronin = Ронин
 
 cmu-yautja-profile-skin-color-green = зелёный
 
@@ -531,8 +463,6 @@ cmu-yautja-profile-material-group-legacy = НАСЛЕДНЫЕ
 cmu-yautja-lobby-filter-tooltip = Фильтр
 
 cmu-yautja-lobby-filter-label = Фильтр
-
-cmu-yautja-lobby-filter-all = ВСЕ
 
 cmu-yautja-profile-legacy-dragon-armor = Драконий armor
 
