@@ -5,7 +5,7 @@
   description: Standardized uniform for the BEAR PMC operator.
   components:
   - type: Sprite
-    sprite: _RuMC14\Clothing\BEAR\jumpsuits\bear_forms_brown.rsi
+    sprite: _RuMC14/Clothing/BEAR/jumpsuits/bear_forms_brown.rsi
   - type: Foldable
     unfoldVerbText: rmc-sleeves-verb-unfold
     foldVerbText: rmc-sleeves-verb-fold
@@ -26,7 +26,7 @@
   description: Standardized uniform for the BEAR PMC operator.
   components:
   - type: Sprite
-    sprite: _RuMC14\Clothing\BEAR\jumpsuits\bear_forms_black.rsi
+    sprite: _RuMC14/Clothing/BEAR/jumpsuits/bear_forms_black.rsi
 
 - type: entity
   parent: RuMCUniformBEAR
@@ -35,4 +35,4 @@
   description: Standardized uniform for the BEAR PMC operator.
   components:
   - type: Sprite
-    sprite: _RuMC14\Clothing\BEAR\jumpsuits\bear_forms_gray.rsi
+    sprite: _RuMC14/Clothing/BEAR/jumpsuits/bear_forms_gray.rsi

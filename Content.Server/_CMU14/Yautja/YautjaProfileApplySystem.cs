@@ -78,6 +78,7 @@ public sealed partial class YautjaProfileApplySystem : EntitySystem
 
         var yautja = EnsureComp<YautjaComponent>(uid);
         yautja.ClanRank = rank;
+        yautja.RankName = YautjaRankMetadata.For(rank).LocalizedName;
         Dirty(uid, yautja);
 
         var humanoidProfile = HumanoidCharacterProfile.DefaultWithSpecies("Yautja")
@@ -88,6 +89,11 @@ public sealed partial class YautjaProfileApplySystem : EntitySystem
             .WithCharacterAppearance(profile.Appearance);
 
         _humanoid.LoadProfile(uid, humanoidProfile, humanoid);
+        // YautjaStatsSystem schedules its normal random skin pass on startup.
+        // A player profile is authoritative and must not be replaced on the
+        // first server tick after the profile was applied.
+        yautja.SkinColorRandomized = true;
+        Dirty(uid, yautja);
         _meta.SetEntityName(uid, profile.Name);
 
         ReplaceEquipped(uid, "outerClothing", profile.ArmorPrototype);

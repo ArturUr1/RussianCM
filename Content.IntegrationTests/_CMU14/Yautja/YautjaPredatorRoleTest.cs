@@ -245,6 +245,62 @@ public sealed class YautjaPredatorRoleTest
     }
 
     [Test]
+    public async Task PredatorSpawnKeepsProfileColorsAfterYautjaStartup()
+    {
+        await using var pair = await PoolManager.GetServerClient();
+        var server = pair.Server;
+        var map = await pair.CreateTestMap();
+        EntityUid hunter = default;
+
+        try
+        {
+            var profile = YautjaCharacterProfile.Default
+                .WithName("Color Test Hunter")
+                .WithSkinColor(YautjaSkinColor.Blue)
+                .WithEyeColor(YautjaEyeColor.Slate)
+                .WithDreadColor(YautjaDreadColor.Bone)
+                .WithQuillStyle(YautjaQuillStyle.LongCurved);
+
+            await server.WaitPost(() =>
+            {
+                var spawning = server.EntMan.System<StationSpawningSystem>();
+                var normalProfile = HumanoidCharacterProfile.DefaultWithSpecies("Human")
+                    .WithYautjaProfile(profile);
+                hunter = spawning.SpawnPlayerMob(map.GridCoords, "CMUYautjaHunter", normalProfile, station: null);
+            });
+
+            await server.WaitRunTicks(2);
+
+            await server.WaitAssertion(() =>
+            {
+                var entMan = server.EntMan;
+                var humanoid = entMan.GetComponent<HumanoidAppearanceComponent>(hunter);
+                var quills = humanoid.MarkingSet.Markings.Values
+                    .SelectMany(markings => markings)
+                    .Single(marking => marking.MarkingId == profile.QuillMarkingId);
+
+                Assert.Multiple(() =>
+                {
+                    Assert.That(humanoid.SkinColor, Is.EqualTo(YautjaCharacterProfile.GetSkinColorColor(YautjaSkinColor.Blue)));
+                    Assert.That(humanoid.EyeColor, Is.EqualTo(YautjaCharacterProfile.GetEyeColorColor(YautjaEyeColor.Slate)));
+                    Assert.That(quills.MarkingColors.Single(),
+                        Is.EqualTo(YautjaCharacterProfile.GetDreadColorColor(YautjaDreadColor.Bone, humanoid.SkinColor)));
+                });
+            });
+        }
+        finally
+        {
+            await server.WaitAssertion(() =>
+            {
+                if (hunter != default && !server.EntMan.Deleted(hunter))
+                    server.EntMan.DeleteEntity(hunter);
+            });
+        }
+
+        await pair.CleanReturnAsync();
+    }
+
+    [Test]
     public async Task PredatorJobIsRoundPlayableWhitelistedYautjaRole()
     {
         await using var pair = await PoolManager.GetServerClient();
