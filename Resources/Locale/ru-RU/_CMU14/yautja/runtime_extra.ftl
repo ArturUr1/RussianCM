@@ -155,12 +155,336 @@ cmu-yautja-caster-deactivated = –í—ã –¥–µ–∞–∫—Ç–∏–≤–∏—Ä—É–µ—Ç–µ –ø–ª–∞–∑–º–µ–Ω–Ω
 cmu-yautja-cauldron-cancel = –í—ã –≤—ã—Ç–∞—Å–∫–∏–≤–∞–µ—Ç–µ {$limb} –æ–±—Ä–∞—Ç–Ω–æ –∏–∑ –∫–æ—Ç–ª–∞.
 cmu-yautja-cauldron-denied = –í—ã –Ω–µ –∑–Ω–∞–µ—Ç–µ, —á—Ç–æ —ç—Ç–æ –¥–µ–ª–∞–µ—Ç, –∏ —Ä–µ—à–∞–µ—Ç–µ, —á—Ç–æ —Å–µ–π—á–∞—Å –Ω–µ –≤—Ä–µ–º—è –≤—ã—è—Å–Ω—è—Ç—å.
 cmu-yautja-cauldron-examine-1 = –≠—Ç–∞ –º–∞—à–∏–Ω–∞ —Å–Ω–∏–º–∞–µ—Ç –∫–æ–∂—É —Å –∫–æ–Ω–µ—á–Ω–æ—Å—Ç–µ–π –∏ –ø—Ä–µ–≤—Ä–∞—â–∞–µ—Ç –∏—Ö –≤ –∫–æ—Å—Ç–∏ –¥–ª—è –≤–∞—à–µ–π –±—Ä–æ–Ω–∏.
-cmu-yautja-cauldron-examine-2 = –°–Ω–∞—á–∞–ª–∞ –Ω–∞–Îùª∂âûÀk∫wµÁCFBÔB◊B”FF;F'B◊B‰ÉFB◊BÔF3F8ÉB»ÉB˚B«BÔB√FFB‡ÅÏëÖ…ïÖÙ∏)çµ‘µÂÖ’—©ÑµµÖ…¨µ¡…ï‰µëïÕ—…ΩÂïêÄÙÉBKB√F#B¿ÉB”B˚B«F/FB¿ÉBˇB˚BÔB˜B˚FFF3F8ÉFB˜B„FFB˚B€B◊B˜B¿Ñ)çµ‘µÂÖ’—©ÑµµÖ…¨µ¡…ï‰µ…ïµΩŸïêÄÙÉBKF,ÉFB«FB√BÔB‡ÅÏë—Ö…ùï—ÙÉB„B‹ÉFBÀB˚B◊B‰ÉB˚FB˚FF,∏)çµ‘µÂÖ’—©ÑµµÖ…¨µ’πµÖ…¨µπΩ–µΩ›πï»ÄÙÉBwB◊BÔF3BﬂF<ÉB˚FBÛB◊B˜B„FF0ÉB”B◊BÁFFBÀB„F<ÉB€B„BÀB˚BœB¯ÉB«FB√FB¿ÉB„BÔB‡ÉFB◊FFFF,Ñ)çµ‘µÂÖ’—©ÑµµÖÕ¨µÖççïÕÕΩ…‰ÄÙÉBCBÎFB◊FFFB√F ÉB«B„B˚BÛB√FBÎB‡)çµ‘µÂÖ’—©Ñµ¡…ï‰µç±Ö•¥µâ…ΩÖëçÖÕ–ÄÙÅÏë°’π—ï…ÙÉBﬂB√B«FB√BÏÅÏë—Ö…ùï—ÙÉBÎB√BËÉFFB˚FB◊B‰∏)çµ‘µÂÖ’—©Ñµ¡…ï‰µç±Ö•¥µÕï±òÄÙÉBKF,ÉBﬂB√B«FB√BÔB‡ÅÏë—Ö…ùï—ÙÉBÎB√BËÉFFB˚FB◊B‰∏)çµ‘µÂÖ’—©Ñµ¡…ï‰µÕçÖ±¿µç±Ö•¥µâ…ΩÖëçÖÕ–ÄÙÅÏë°’π—ï…ÙÉBﬂB√B«FB√BÏÉFBÎB√BÔF3B¸ÅÏë—Ö…ùï—ÙÉBÎB√BËÉFFB˚FB◊B‰∏)çµ‘µÂÖ’—©Ñµ¡…ï‰µÕçÖ±¿µç±Ö•¥µÕï±òÄÙÉBKF,ÉBﬂB√B«FB√BÔB‡ÉFBÎB√BÔF3B¸ÅÏë—Ö…ùï—ÙÉBÎB√BËÉFFB˚FB◊B‰∏)çµ‘µÂÖ’—©Ñµ…Öç¨µ›…Ωπúµ…Ω±îÄÙÉB∑FB¿ÉBÛB√F#B„B˜B¿ÉB˜B‘ÉB”BÔF<ÉBÀB√F∏()çµ‘µÂÖ’—©Ñµ…ï±Ö‰µÖëêµëïÕ—•πÖ—•Ω∏µÖç—•Ω∏µëïÕåÄÙÉBSB˚B«B√BÀBÔF?B◊FÉBÀB√F#B‘ÉFB◊BÎFF'B◊B‘ÉBÛB◊FFB˚BˇB˚BÔB˚B€B◊B˜B„B‘ÉB»ÉF7FB˚FÉFB◊FFB√B˜FBÔF?FB˚F ∏)çµ‘µÂÖ’—©Ñµ…ï±Ö‰µÖëêµëïÕ—•πÖ—•Ω∏µÖç—•Ω∏µπÖµîÄÙÉBSB˚B«B√BÀB„FF0ÉFB˚FBÎFÉFB◊BÔB◊BˇB˚FFB√FB„B‡)çµ‘µÂÖ’—©Ñµ…ï±Ö‰µÖëêµëïÕ—•πÖ—•Ω∏µâ…ΩÖëçÖÕ–ÄÙÅÏë°’π—ï…ÙÉFB˚BﬂB”B√BÏÉB˜B˚BÀFF8ÉFB˚FBÎFÉFB◊BÔB◊BˇB˚FFB√FB„B‡ÅÏëπÖµïÙÉB»ÉBÛB◊FFB‘ÅÏë±ΩçÖ—•ΩπÙ∞ÉB˚B«BÔB√FFF0ÅÏëÖ…ïÖÙ)çµ‘µÂÖ’—©Ñµ…ï±Ö‰µÖëêµëïÕ—•πÖ—•Ω∏µëïπ•ïêÄÙÉBKF,ÉBˇB˚B˜F?FB„F<ÉB˜B‘ÉB„BÛB◊B◊FB‘∞ÉBÎB√BËÉFB√B«B˚FB√B◊FÉF7FB¿ÉF#FFBÎB¿Ñ)çµ‘µÂÖ’—©Ñµ…ï±Ö‰µÖëêµëïÕ—•πÖ—•Ω∏µ¡…Ωµ¡–ÄÙÉBkB√BËÉB˜B√BﬂBÀB√FF0ÉF7FB¯ÉBÛB◊FFB¯¸)çµ‘µÂÖ’—©Ñµ…ï±Ö‰µÖëêµëïÕ—•πÖ—•Ω∏µÕ’ççïÕÃÄÙÉBãB◊BˇB◊FF0ÉBÀF,ÉBÛB˚B€B◊FB‘ÉFB◊BÔB◊BˇB˚FFB„FB˚BÀB√FF3FF<ÉB»ÉF7FB¯ÉBÛB◊FFB¯Ñ)çµ‘µÂÖ’—©Ñµ…ï±Ö‰µâïÖçΩ∏µçΩµ¡±ï—îÄÙÉBÉB◊FFB√B˜FBÔF?FB˚F ÉFFB√B«B„BÔB„BﬂB„FFB◊FÉBÀB√F#B‘ÉFB◊BÔB¯∏)çµ‘µÂÖ’—©Ñµ…ï±Ö‰µâïÖçΩ∏µëïπ•ïêÄÙÉBKF,ÉBÀB˚BﬂB„FB◊FF0ÉFÉB˜B„B∞ÉB˜B¯ÉB˜B„FB◊BœB¯ÉB˜B‘ÉBˇFB˚B„FFB˚B”B„FÑ)çµ‘µÂÖ’—©Ñµ…ï±Ö‰µâïÖçΩ∏µë•ÕÖ¡¡ïÖ»ÄÙÅÏë’Õï…ÙÉB„FFB◊BﬂB√B◊FÑ)çµ‘µÂÖ’—©Ñµ…ï±Ö‰µâïÖçΩ∏µ°ïÖëï»ÄÙÉBKF/B«B◊FB„FB‘ÉB˜B√BˇFB√BÀBÔB◊B˜B„B‘)çµ‘µÂÖ’—©Ñµ…ï±Ö‰µâïÖçΩ∏µÕ—Ö…–ÄÙÅÏë’Õï…ÙÉB˜B√FB„B˜B√B◊FÉBÛB◊FFB√FF0ÉB‡ÉFB√FBˇBÔF/BÀB√FF3FF<∏∏∏)çµ‘µÂÖ’—©Ñµ…ï±Ö‰µâïÖçΩ∏µ—•—±îÄÙÉBÉB◊FFB√B˜FBÔF?FB˚F )çµ‘µÂÖ’—©Ñµ…ï±Ö‰µâïÖçΩ∏µÂΩ’πùâ±ΩΩêµëïπ•ïêÄÙÉBKB√FÉB˜B‘ÉB˚B«FFB√BÔB‡ÉBˇB˚BÔF3BﬂB˚BÀB√FF3FF<ÉFB◊FFB√B˜FBÔF?FB˚FB˚BÉäPÉBÔFFF#B‘ÉB˜B‘ÉBÀB˚BﬂB„FB◊FF0ÉFÉB˜B„B∏)çµ‘µÂÖ’—©Ñµ…ï±Ö‰µëïÕ—•πÖ—•Ω∏µ°’µÖ∏µÕ°•¿ÄÙÉBüB◊BÔB˚BÀB◊FB◊FBÎB„B‰ÉBÎB˚FB√B«BÔF0)çµ‘µÂÖ’—©Ñµ…ï±Ö‰µëïÕ—•πÖ—•Ω∏µ’πÖŸÖ•±Öâ±îÄÙÅÏëëïÕ—•πÖ—•ΩπÙÄ£B˜B◊B”B˚FFFBˇB˜B¯§)çµ‘µÂÖ’—©Ñµ…ï±Ö‰µëïÕ—•πÖ—•Ω∏µÂÖ’—©ÑµÕ°•¿ÄÙÉBkB˚FB√B«BÔF0ÉF?FFB€B¿)çµ‘µÂÖ’—©Ñµ…ïµΩŸîµâ…Öçï»µÖ——Öç°µïπ—ÃµÖç—•Ω∏µëïÕåÄÙÉBáB˜B„BÛB√B◊FÉBˇFB„FBˇB˚FB˚B«BÔB◊B˜B„F<ÉFÉBÀB√F#B◊BœB¯ÉB˜B√FFFB¿∏)çµ‘µÂÖ’—©Ñµ…ïµΩŸîµâ…Öçï»µÖ——Öç°µïπ—ÃµÖç—•Ω∏µπÖµîÄÙÉBáB˜F?FF0ÉBˇFB„FBˇB˚FB˚B«BÔB◊B˜B„B‘ÉB˜B√FFFB¿()çµ‘µÂÖ’—©ÑµÕçÖ±¿µπΩ∏µÂÖ’—©Ñµï·Öµ•πîÄÙÉBáB«B˚F ÉFBÎB√BÔF3BˇB˚B»ÉB”B˚BÔB€B◊BÙÉB«F/BÏÉB«F/FF0ÄÒ§˚F#FFBÎB˚B‰Ω§¯∏∏∏)çµ‘µÂÖ’—©ÑµÕçÂ—°îµâΩπ’ÃµÕ—…•≠îµΩ—°ï…ÃÄÙÉBHÉB«B˚F8ÉBˇB˚F?BÀBÔF?B◊FFF<ÉBÀB˚BﬂBÛB˚B€B˜B˚FFF0ÉB”BÔF<ÉFB”B√FB¿Ñ)çµ‘µÂÖ’—©ÑµÕçÂ—°îµâΩπ’ÃµÕ—…•≠îµÕï±òÄÙÉBKB√BÉFB”B√FGFFF<ÉB˜B√B˜B◊FFB‡ÉBÀFB√BœFÉB◊F'FDÉB˚B”B„BÙÉFB”B√F Ñ)çµ‘µÂÖ’—©ÑµÕ°Ö…êµµï…ùîÄÙÉBKF,ÉFB˚B«B„FB√B◊FB‘ÉB˚FBÎB˚BÔB˚BËÉB˚B«FB√FB˜B¯∏)çµ‘µÂÖ’—©ÑµÕ°Ö…êµπïïêµâΩ—†µ°Ö±ŸïÃÄÙÉBSBÔF<ÉF7FB˚BœB¯ÉB˜FB€B˜B¯ÉB”B◊FB€B√FF0ÉB˚B«B‘ÉBˇB˚BÔB˚BÀB„B˜F,∏)çµ‘µÂÖ’—©ÑµÕ°Ö…êµπïïêµâΩ—†µ°ÖπëÃÄÙÉBSBÔF<ÉFB√BﬂB”B◊BÔB◊B˜B„F<ÉB˜FB€B˜F,ÉB˚B«B‘ÉFBÀB˚B«B˚B”B˜F/B‘ÉFFBÎB‡∏)çµ‘µÂÖ’—©ÑµÕ°Ö…êµπïïêµΩ—°ï»µ°Ö±òÄÙÉBSBÔF<ÉFB«B˚FBÎB‡ÉB˜FB€B˜B¿ÉBÀFB˚FB√F<ÉBˇB˚BÔB˚BÀB„B˜B¿∏)çµ‘µÂÖ’—©ÑµÕ°Ö…êµπºµ•ëïÑÄÙÉBKF,ÉBˇB˚B˜F?FB„F<ÉB˜B‘ÉB„BÛB◊B◊FB‘∞ÉBÎB√BËÉF7FB¯ÉFB√B«B˚FB√B◊F∏)çµ‘µÂÖ’—©ÑµÕ°Ö…êµÕ¡±•–ÄÙÉBKF,ÉFB√BﬂB”B◊BÔF?B◊FB‘ÉB˚FBÎB˚BÔB˚BËÉB˜B√B”BÀB˚B‘∏)çµ‘µÂÖ’—©ÑµÕ°Ö…êµ’ÕîµçΩµ¡±ï—îÄÙÉB∑B˜B◊FBœB„F<ÉB˚FBÎB˚BÔBÎB¿ÉBˇFB˚FB˚B”B„FÉFB◊FB◊B‹ÉBÀB√F#B‘ÉFB◊BÔB¯∏)çµ‘µÂÖ’—©ÑµÕ°Ö…êµ’ÕîµÕ—Ö…–ÄÙÉBKF,ÉB˜B√FB„B˜B√B◊FB‘ÉBˇB˚BœBÔB˚F'B√FF0ÉF7B˜B◊FBœB„F8ÉB˚FBÎB˚BÔBÎB¿∏∏∏)çµ‘µÂÖ’—©ÑµÕ°’——±îµçΩπÕΩ±îµëïπ•ïêÄÙÉBKF,ÉB˜B‘ÉBˇB˚B˜B„BÛB√B◊FB‘∞ÉBÎB√BËÉBˇB˚BÔF3BﬂB˚BÀB√FF3FF<ÉF7FB„BÉFB◊FBÛB„B˜B√BÔB˚B∏)çµ‘µÂÖ’—©ÑµÕ≠ï±ï—Ω∏µ—…Ω¡°‰µÖ——Öç†µëïπ•ïêÄÙÉB_B√FB◊BÉBÀF,ÉBˇF/FB√B◊FB◊FF0ÉBˇFB„BÎFB◊BˇB„FF0ÉF7FB¯ÉBËÉB˚B”B◊B€B”B‘¸)çµ‘µÂÖ’—©ÑµÕ≠ï±ï—Ω∏µ—…Ω¡°‰µë•…—‰µï·Öµ•πîÄÙÅÏë—…Ω¡°ÂÙÉBÀFFDÉB◊F'FDÉBœFF?BﬂB˜F/B‰∏)çµ‘µÂÖ’—©ÑµÕ≠ï±ï—Ω∏µ—…Ω¡°‰µ¡Ω±•Õ°ïêµï·Öµ•πîÄÙÉB{FBˇB˚BÔB„FB˚BÀB√B˜B¯ÉB”B¯ÉFB˚BÀB◊FF#B◊B˜FFBÀB¿∏)çµ‘µÂÖ’—©ÑµÕπÖ…îµÖ……Ω‹µë•ÕÖ…µïêÄÙÅÏë—…Ö¡ÙÉB˚B«B◊BﬂBÀFB◊B€B◊B˜B¿∏)çµ‘µÂÖ’—©ÑµÕπÖ…îµÖ……Ω‹µ—…•ùùï…ïêÄÙÉBKF,ÉBˇB˚BˇB√BÔB„FF0ÉB»ÅÏë—…Ö¡ÙÑ)çµ‘µÂÖ’—©ÑµÕ¡•≠îµ±Ö’πç°ï»µëïπ•ïêÄÙÉBKF,ÉBˇB˚B˜F?FB„F<ÉB˜B‘ÉB„BÛB◊B◊FB‘∞ÉBÎB√BËÉFB√B«B˚FB√B◊FÉF7FB¿ÉF#FFBÎB¿Ñ)çµ‘µÂÖ’—©ÑµÕ—Ö—îµπºµ±Ωπùï»ÄÙÉB«B˚BÔF3F#B‘ÉB˜B‘)çµ‘µÂÖ’—©ÑµÕ—Ö—îµπΩ‹ÄÙÉFB◊BˇB◊FF0)çµ‘µÂÖ’—©ÑµÕ—Ö—îµΩôòÄÙÉBÀF/BÎBÔF;FB◊BÙ)çµ‘µÂÖ’—©ÑµÕ—Ö—îµΩ∏ÄÙÉBÀBÎBÔF;FFGBÙ)çµ‘µÂÖ’—©Ñµ—ïç†µπΩ—°•πúµ°Ö¡¡ïπÃÄÙÉBKF,ÉBÀB˚BﬂB„FB◊FF0ÉFÉBÎB˜B˚BˇBÎB√BÛB‡∞ÉB˜B¯ÉB˜B„FB◊BœB¯ÉB˜B‘ÉBˇFB˚B„FFB˚B”B„F∏∏∏)çµ‘µÂÖ’—©Ñµ—ïç†µ¡…ïÕÃµâ’——ΩπÃÄÙÉBKF,ÉB˜B√B€B„BÛB√B◊FB‘ÉB˜B◊FBÎB˚BÔF3BÎB¯ÉBÎB˜B˚BˇB˚BË∏∏∏)çµ‘µÂÖ’—©Ñµ—ïç†µ…ÖπëΩ¥µëï±•µâÃÄÙÉBèFFFB˚BÁFFBÀB¯ÉB„BﬂB”B√FGFÉFFFB√B˜B˜F/B‰ÉBﬂBÀFBËÉB‡ÉB˚FBÀB√BÔB„BÀB√B◊FFF<∏∏∏ÉBKBÛB◊FFB‘ÉFÉBÀB√F#B„BÛB‡ÉFFBÎB√BÛB‡Ñ)çµ‘µÂÖ’—©Ñµ—ïç†µÕ°Ωç¨µΩ—°ï…ÃÄÙÅÏëâ…Öçï…ÙÉB„BﬂB”B√FGFÉFB„BœB˜B√BÏÉB‡ÉBˇFB˚BˇFFBÎB√B◊FÉFB√BﬂFF?B–ÉFB◊FB◊B‹ÉFB◊BÔB¯ÅÏë’Õï…ÙÑ()çµ‘µÂÖ’—©Ñµ—°…Ö±∞µÖ±…ïÖë‰µâ±ΩΩëïêÄÙÅÏë—Ö…ùï—ÙÉFB€B‘ÉB˚BÎFB˚BÀB√BÀBÔB◊BÙÅÏë°’π—ï…ÙÉBﬂB¿É
-≠Ïë…ïÖÕΩπ˜
-ÏÑ)çµ‘µÂÖ’—©Ñµ—°…Ö±∞µÖ±…ïÖë‰µÕ—’ππïêÄÙÉBKB√F ÉFB√BƒÉFB€B‘ÉB˚BœBÔFF#FGBÙÑ)çµ‘µÂÖ’—©Ñµ—°…Ö±∞µâ±ΩΩëïêµçÖππΩ–µ…ïµΩŸîÄÙÉBB˚FBÔB‘ÉBÎFB˚BÀB√BÀB˚BœB¯ÉBˇB˚FBÀF?F'B◊B˜B„F<ÉFB√B«B¿ÉBˇFFB‡ÉB˜B√BﬂB√B–ÉB˜B◊F∏)çµ‘µÂÖ’—©Ñµ—°…Ö±∞µëïÕ—…ΩÂïêµâ…ΩÖëçÖÕ–ÄÙÉBÉB√BƒÅÏë°’π—ï…Ù∞ÅÏë—Ö…ùï—Ù∞ÉBˇB˚BÔB˜B˚FFF3F8ÉFB˜B„FFB˚B€B◊BÙÑ)çµ‘µÂÖ’—©Ñµ—°…Ö±∞µëïÕ—…ΩÂïêµµÖÕ—ï»ÄÙÉBKB√F ÉFB√BƒÉBˇB˚BÔB˜B˚FFF3F8ÉFB˜B„FFB˚B€B◊BÙÑ)çµ‘µÂÖ’—©Ñµ—°…Ö±∞µ±•π¨µÖ±…ïÖë‰ÄÙÉBáBÀF?BﬂF0ÉFB€B‘ÉFFFB√B˜B˚BÀBÔB◊B˜B¿Ñ)çµ‘µÂÖ’—©Ñµ—°…Ö±∞µµïÕÕÖùîµπºµâ…Öçï»µµÖÕ—ï»ÄÙÉBKB√F ÉBœB˚FBˇB˚B”B„BÙÉB˜B‘ÉB˜B˚FB„FÉB˜B√FFFÑ)çµ‘µÂÖ’—©Ñµ—°…Ö±∞µµïÕÕÖùîµπºµâ…Öçï»µ—°…Ö±∞ÄÙÉBKB√F ÉFB√BƒÉB˜B‘ÉB˜B˚FB„FÉB˜B√FFFÑ)çµ‘µÂÖ’—©Ñµ—°…Ö±∞µµïÕÕÖùîµπΩπîÄÙÉBKB√BÉB˜B◊BÎB˚BÛFÉB˚FBˇFB√BÀB„FF0ÉFB˚B˚B«F'B◊B˜B„B‘Ñ)çµ‘µÂÖ’—©Ñµ—°…Ö±∞µ…ï±ïÖÕîµâ…ΩÖëçÖÕ–ÄÙÅÏë°’π—ï…ÙÉB˚FBÀB˚B«B˚B”B„BÏÅÏë—Ö…ùï—ÙÉB˚FÉFB√B«FFBÀB¿Ñ)çµ‘µÂÖ’—©Ñµ—°…Ö±∞µÕï±òµëïÕ—…’ç–µâ…ΩÖëçÖÕ–ÄÙÅÏë°’π—ï…ÙÉBﬂB√BˇFFFB„BÏÉBˇFB˚FB◊B”FFFÉFB√BÛB˚FB˜B„FFB˚B€B◊B˜B„F<ÉFBÀB˚B◊BœB¯ÉFB√B«B¿∏)çµ‘µÂÖ’—©Ñµ—°…Ö±∞µÕï±òµëïÕ—…’ç–µçΩπô•…¥ÄÙÉBKF,ÉFBÀB◊FB◊B˜F,∞ÉFFB¯ÉFB˚FB„FB‘ÉBÀBﬂB˚FBÀB√FF0ÉB˜B√FFFÅÏëÕ¡ïç•ïÕÙ¸ÉB{FFB√B˜B˚BÀB„FF0ÉBˇFB˚FB◊FFÉB«FB”B◊FÉB˜B◊BÀB˚BﬂBÛB˚B€B˜B¯∏)çµ‘µÂÖ’—©Ñµ—°…Ö±∞µÕï±òµëïÕ—…’ç–µë•Ö±Ωúµ—•—±îÄÙÉBáB√BÛB˚FB˜B„FFB˚B€B◊B˜B„B‘ÉFB√B«B¿)çµ‘µÂÖ’—©Ñµ—°…Ö±∞µÕï±òµëïÕ—…’ç–µπΩπîÄÙÉBåÉBÀB√FÉB˜B◊FÉFB√B«B¿ÉB”BÔF<ÉFB˜B„FFB˚B€B◊B˜B„F<Ñ)çµ‘µÂÖ’—©Ñµ—°…Ö±∞µÕ—’∏µπΩπîÄÙÉBåÉBÀB√FÉB˜B◊FÉFB√B«B¿ÉB”BÔF<ÉB˜B√BÎB√BﬂB√B˜B„F<Ñ()çµ‘µÂÖ’—©Ñµ—…Öç≠ï»µÖç—•Ÿîµ°Öπêµ…ï≈’•…ïêÄÙÉBSBÔF<ÉFB”B√BÔB◊B˜B„F<ÉBˇFB◊B”BÛB◊FB¿ÉB„B‹ÉFFB◊BÎB◊FB¿ÉB˚BÙÉB”B˚BÔB€B◊BÙÉB«F/FF0ÉB»ÉB√BÎFB„BÀB˜B˚B‰ÉFFBÎB‘Ñ)çµ‘µÂÖ’—©Ñµ—…Öç≠ï»µÖëëïêÄÙÉBKF,ÉB”B˚B«B√BÀBÔF?B◊FB‘ÄÒà˘Ïë•—ïµÙΩà¯ÉB»ÉFB„FFB◊BÛFÉB˚FFBÔB◊B€B„BÀB√B˜B„F<∏)çµ‘µÂÖ’—©Ñµ—…Öç≠ï»µÖ±…ïÖë‰µ—…Öç≠ïêÄÙÅÏë•—ïµÙÉFB€B‘ÉB˚FFBÔB◊B€B„BÀB√B◊FFF<∏)çµ‘µÂÖ’—©Ñµ—…Öç≠ï»µπΩ–µ—…Öç≠ïêÄÙÅÏë•—ïµÙÉB˚FFFFFFBÀFB◊FÉB»ÉFB„FFB◊BÛB‘ÉB˚FFBÔB◊B€B„BÀB√B˜B„F<∏)çµ‘µÂÖ’—©Ñµ—…Öç≠ï»µ…ïµΩŸïêÄÙÉBKF,ÉFB”B√BÔF?B◊FB‘ÄÒà˘Ïë•—ïµÙΩà¯ÉB„B‹ÉFB„FFB◊BÛF,ÉB˚FFBÔB◊B€B„BÀB√B˜B„F<∏)çµ‘µÂÖ’—©Ñµ—…Ö¿µÖ…¥µëïπ•ïêÄÙÉBKF,ÉB˜B‘ÉBﬂB˜B√B◊FB‘∞ÉBÎB√BËÉBˇB˚BÔF3BﬂB˚BÀB√FF3FF<ÉF7FB˚B‰ÉF#FFBÎB˚B‰Ñ)çµ‘µÂÖ’—©Ñµ—…Ö¿µâÖëâ±ΩΩêµ°•ŸîµÖŸΩ•êÄÙÉBsF,ÉB˚FFB˚FB˚B€B˜B¯ÉB˚B«FB˚B”B„BÉBÔB˚BÀFF#BÎF∏)çµ‘µÂÖ’—©Ñµ—…Ö¿µâ…ïÖ¨µô…ïîµÖ±ï…–µëïÕåÄÙÉBKF,ÉBˇFB„BÀF?BﬂB√B˜F,ÉFB˜B√FF?B€B◊B˜B„B◊BÉF?FFB€B¿∏ÉBwB√B€BÛB„FB‘∞ÉFFB˚B«F,ÉBˇB˚BˇF/FB√FF3FF<ÉB˚FBÀB˚B«B˚B”B„FF3FF<∏)çµ‘µÂÖ’—©Ñµ—…Ö¿µâ…ïÖ¨µô…ïîµÖ±ï…–µπÖµîÄÙÉB{FBÀB˚B«B˚B”B„FF3FF<)çµ‘µÂÖ’—©Ñµ—…Ö¿µçΩπô•ù’…îµëïπ•ïêÄÙÉBKF,ÉB˜B‘ÉFBÛB◊B◊FB‘ÉB˜B√FFFB√B„BÀB√FF0ÉBÔB˚BÀFF#BÎF∏)çµ‘µÂÖ’—©Ñµ—…Ö¿µçΩπô•ù’…îµµïÕÕÖùîÄÙÉBwB¿ÉBÎB√BÎB˚B‘ÉFB√FFFB˚F?B˜B„B‘ÉB˜B√FFFB˚B„FF0ÉB˚FB˚FB˜B„FF3F8ÉBÔB˚BÀFF#BÎF¸)çµ‘µÂÖ’—©Ñµ—…Ö¿µçΩπô•ù’…îµÕï–ÄÙÉBKF,ÉFFFB√B˜B√BÀBÔB„BÀB√B◊FB‘ÉFB√B”B„FFÉBˇFB„BÀF?BﬂB‡ÉBÔB˚BÀFF#BÎB‡ËÅÏë…ÖπùïÙ∏)çµ‘µÂÖ’—©Ñµ—…Ö¿µçΩπô•ù’…îµ—•—±îÄÙÉBÉB√B”B„FFÉB˚FB˚FB˜B„FF3B◊B‰ÉBÔB˚BÀFF#BÎB‡)çµ‘µÂÖ’—©Ñµ—…Ö¿µçΩπô•ù’…îµŸï…àÄÙÉBwB√FFFB˚B„FF0ÉB˚FB˚FB˜B„FF3F8ÉBÔB˚BÀFF#BÎF)çµ‘µÂÖ’—©Ñµ—…Ö¿µπΩ∏µÂÖ’—©Ñµ—…•ùùï»ÄÙÉBKF,ÉB˜B◊B˚FFB˚FB˚B€B˜B¯ÉFF?B˜B◊FB◊FF0ÉBËÅÏë—…Ö¡Ù∏∏∏)çµ‘µÂÖ’—©Ñµ—…Ö¿µΩâÕï…Ÿï»µ—…•ùùï…ïêÄÙÅÏë—Ö…ùï—ÙÉBˇB˚BˇB√B”B√B◊FFF<ÉB»ÅÏë—…Ö¡Ù∏)çµ‘µÂÖ’—©Ñµ—…Ö¿µ—…•ùùï»µâ…ΩÖëçÖÕ–ÄÙÉB{FB˚FB˜B„FF3F<ÉBÔB˚BÀFF#BÎB¿ÉBˇB˚BÁBÛB√BÔB¿ÉBÎB˚BœB¯∑FB¯ÉB»ÉB˚B«BÔB√FFB‡ÅÏëÖ…ïÖÙÑ)çµ‘µÂÖ’—©Ñµ—…Ö¿µÂÖ’—©ÑµÖŸΩ•êÄÙÉBKF,ÉB˚FFB˚FB˚B€B˜B¯ÉB˚B«FB˚B”B„FB‘ÉBÔB˚BÀFF#BÎF∏)çµ‘µÂÖ’—©Ñµ’πµÖ…¨µë•Õ°ΩπΩ…ïêµâ…ΩÖëçÖÕ–ÄÙÅÏë°’π—ï…ÙÉFB˜F?BÏÉFÅÏë—Ö…ùï—ÙÉBÎBÔB◊BÁBÛB¯ÉB˚B«B◊FFB◊F'B◊B˜B˜B˚BœB¯Ñ)çµ‘µÂÖ’—©Ñµ’πµÖ…¨µùïÖ»µçÖ……•ï»µâ…ΩÖëçÖÕ–ÄÙÅÏë°’π—ï…ÙÉFB˜F?BÏÉFÅÏë—Ö…ùï—ÙÉBÎBÔB◊BÁBÛB¯ÉB˜B˚FB„FB◊BÔF<ÉFB˜B√FF?B€B◊B˜B„F<Ñ)çµ‘µÂÖ’—©Ñµ’πµÖ…¨µ°ΩπΩ…ïêµâ…ΩÖëçÖÕ–ÄÙÅÏë°’π—ï…ÙÉFB˜F?BÏÉFÅÏë—Ö…ùï—ÙÉBÎBÔB◊BÁBÛB¯ÉBˇB˚FFGFB˜B˚BœB¯Ñ)çµ‘µÂÖ’—©ÑµŸ•ÕΩ»µëïπ•ïêÄÙÉBKF,ÉBˇB˚B˜F?FB„F<ÉB˜B‘ÉB„BÛB◊B◊FB‘∞ÉBÎB√BËÉF7FB„BÉBˇB˚BÔF3BﬂB˚BÀB√FF3FF<Ñ)çµ‘µÂÖ’—©ÑµŸ•ÕΩ»µïÂïÃµâ±Ωç≠ïêÄÙÉBáB˜B√FB√BÔB¿ÉFB˜B„BÛB„FB‘ÉB˚FBÎB‡∏ÉB_B√FB◊BÉBÀF,ÉBÀB˚B˚B«F'B‘ÉB„FÉB˜B˚FB„FB‘¸)çµ‘µÂÖ’—©ÑµŸ•ÕΩ»µ±Ω‹µ¡Ω›ï»ÄÙÉBHÉBÀB√F#B„FÉB˜B√FFFB√FÉB˜B◊B”B˚FFB√FB˚FB˜B¯ÉF7B˜B◊FBœB„B‡ÉB”BÔF<ÉFB√B«B˚FF,ÉBÀB„BﬂB˚FB¿∏)çµ‘µÂÖ’—©ÑµŸ•ÕΩ»µπºµâ…Öçï»ÄÙÉBwFB€B˜B¯ÉB˜B˚FB„FF0ÉB˜B√FFFB‡ËÉB„BÛB◊B˜B˜B¯ÉB˚B˜B‡ÉFBÔFB€B√FÉB„FFB˚FB˜B„BÎB˚BÉBˇB„FB√B˜B„F<∏)çµ‘µÂÖ’—©ÑµŸ•ÕΩ»µ›ïÖ»µµÖÕ¨ÄÙÉBwB√B”B◊B˜F3FB‘ÅÏëµÖÕ≠ÙÑ()çµ‘µÂÖ’—©ÑµÂΩ’πùâ±ΩΩêµÖ±…ïÖë‰µâ±ΩΩëïêÄÙÅÏë—Ö…ùï—ÙÉFB€B‘ÉB˚BÎFB˚BÀB√BÀBÔB◊BÙÅÏëµïπ—Ω…ÙÉBﬂB¿É
-≠Ïë…ïÖÕΩπ˜
-ÏÑ)çµ‘µÂÖ’—©ÑµÂΩ’πùâ±ΩΩêµÖ±…ïÖë‰µç±Ö•µïêÄÙÅÏë—Ö…ùï—ÙÉFB€B‘ÉBﬂB√F?BÀBÔB◊BÙÅÏëµïπ—Ω…Ù∏)çµ‘µÂÖ’—©ÑµÂΩ’πùâ±ΩΩêµâ±ΩΩëïêµâ…ΩÖëçÖÕ–ÄÙÅÏëµïπ—Ω…ÙÉB˚BÎFB˚BÀB√BÀB„BÏÅÏë—Ö…ùï—ÙÉBﬂB¿É
-≠Ïë…ïÖÕΩπ˜
-Ï∏)çµ‘µÂÖ’—©ÑµÂΩ’πùâ±ΩΩêµâ±ΩΩëïêµµïπ—Ω»ÄÙÉBKF,ÉB˚BÎFB˚BÀB√BÀBÔB„BÀB√B◊FB‘ÅÏë—Ö…ùï—Ù∏ÉBcFBˇF/FB√B˜B„B‘ÉBﬂB√BÀB◊FF#B◊B˜B¯∏)çµ‘µÂÖ’—©ÑµÂΩ’πùâ±ΩΩêµâ±ΩΩëïêµ¡’¡•∞ÄÙÉBKF,ÉäPÉB˚BÎFB˚BÀB√BÀBÔB◊B˜B˜F/B‰ÉFB√Bƒ∏ÉBáB˚FFB◊B”B˚FB˚FF3FB◊FF0ÉB˜B¿ÉB˚B«F'B◊B˜B„B‡ÉFÉFB„F'B˜B„BÎB√BÛB‡ÉB‡ÉFBÎFB◊BˇBÔB◊B˜B„B‡ÉFBÀB˚B◊B‰ÉFB◊BˇFFB√FB„B‡∏ÉBGFB”F3FB‘ÉB˜B√B«BÔF;B”B√FB◊BÔF3B˜F,ÉB‡ÉFB”B◊FB€B√B˜B˜F,∞ÉB˚FB˚FF?FF0ÉB˜B¿ÉB”B˚FFB˚BÁB˜FF8ÉB”B˚B«F/FF∏ÉBcBﬂFFB√BÁFB‘ÉBˇFB◊B”B√B˜B„F<ÉF?FFB€B¿ÉB‡ÉBÎB˚B”B◊BÎFÉFB◊FFB‡∏ÉBWFBÔB‡ÉFÉBÀB√FÉB◊FFF0ÉBÀB˚BˇFB˚FF,∞ÉB˚B«FB√FB„FB◊FF0ÉBËÉB„BœFB˚BÎB√BÉFÉB”B˚BˇFFBÎB˚BÉB»Å1==∏)çµ‘µÂÖ’—©ÑµÂΩ’πùâ±ΩΩêµï·ïç’—îµâ…ΩÖëçÖÕ–ÄÙÅÏë°’π—ï…ÙÉBÎB√BﬂB˜B„BÏÅÏë—Ö…ùï—ÙÉBﬂB¿ÉB˜B√FFF#B◊B˜B„B‘ËÉ
-≠Ïë…ïÖÕΩπ˜
-Ï∏)çµ‘µÂÖ’—©ÑµÂΩ’πùâ±ΩΩêµï·ïç’—îµµïÕÕÖùîÄÙÉBKF/B«B◊FB„FB‘ÉB€B„BÀB˚BœB¯ÉBÛB˚BÔB˚B”B˚BœB¯ÉB˚FB˚FB˜B„BÎB¿ÉB”BÔF<ÉBÎB√BﬂB˜B‡ÉBﬂB¿ÉB˜B√FFF#B◊B˜B„B‘ÉBÎB˚B”B◊BÎFB¿ÉFB◊FFB‡∏)çµ‘µÂÖ’—©ÑµÂΩ’πùâ±ΩΩêµï·ïç’—îµπΩπîÄÙÉBáB◊BÁFB√FÉB˜B◊FÉB€B„BÀF/FÉBÛB˚BÔB˚B”F/FÉB˚FB˚FB˜B„BÎB˚B»∏)çµ‘µÂÖ’—©ÑµÂΩ’πùâ±ΩΩêµï·ïç’—îµ…ïÖÕΩ∏µ¡…Ωµ¡–ÄÙÉBèBÎB√B€B„FB‘ÉBˇFB„FB„B˜FÉBÎB√BﬂB˜B‡ÅÏë—Ö…ùï—Ù∏)çµ‘µÂÖ’—©ÑµÂΩ’πùâ±ΩΩêµï·ïç’—îµ…ïÖÕΩ∏µ…ï≈’•…ïêÄÙÉBwFB€B˜B¯ÉFBÎB√BﬂB√FF0ÉBˇFB„FB„B˜FÉBÎB√BﬂB˜B‡ÉBÛB˚BÔB˚B”B˚BœB¯ÉB˚FB˚FB˜B„BÎB¿∏)çµ‘µÂÖ’—©ÑµÂΩ’πùâ±ΩΩêµï·ïç’—îµ—•—±îÄÙÉBkB√BﬂB˜F0ÉBÛB˚BÔB˚B”B˚BœB¯ÉB˚FB˚FB˜B„BÎB¿)çµ‘µÂÖ’—©ÑµÂΩ’πùâ±ΩΩêµùïÖ»µëïπ•ïêÄÙÉBKF,ÉB◊F'FDÉB˜B‘ÉBﬂB√FBÔFB€B„BÔB‡ÉBˇFB√BÀB¯ÉB„FBˇB˚BÔF3BﬂB˚BÀB√FF0ÉF7FFÉFFB˜BÎFB„F8ÉB˜B√FFFB¿∏)çµ‘µÂÖ’—©ÑµÂΩ’πùâ±ΩΩêµù°ΩÕ–µëïÕç…•¡—•Ω∏ÄÙÉBFB„FB˚B◊B”B„B˜B„FB◊FF0ÉBËÉB˚FB˚FB‘ÉB»ÉFB˚BÔB‡ÉBÛB˚BÔB˚B”B˚BœB¯ÉF?FFB€B¿∞ÉBˇFB˚FB˚B”F?F'B◊BœB¯ÉBÎFB˚BÀB√BÀB˚B‘ÉBˇB˚FBÀF?F'B◊B˜B„B‘∏)çµ‘µÂÖ’—©ÑµÂΩ’πùâ±ΩΩêµù°ΩÕ–µπÖµîÄÙÉBsB˚BÔB˚B”B˚B‰ÉF?FFB€B¿)çµ‘µÂÖ’—©ÑµÂΩ’πùâ±ΩΩêµù°ΩÕ–µ…’±ïÃÄÙÉBKF,ÉäPÉBÛB˚BÔB˚B”B˚B‰ÉF?FFB€B¿∏ÉBáBÔB◊B”FBÁFB‘ÉBﬂB¿ÉFFB√FF#B„BÛB‡ÉB˚FB˚FB˜B„BÎB√BÛB‡ÉB‡ÉFBÎB√BﬂB√B˜B„F?BÛB‡ÉBÀB◊B”FF'B„FÉBÀB¯ÉBÀFB◊BÛF<ÉB˚FB˚FF,∏)çµ‘µÂÖ’—©ÑµÂΩ’πùâ±ΩΩêµµïπ—Ω»µÖ±…ïÖë‰µ°ÖÃµ¡’¡•∞ÄÙÉBKF,ÉFB€B‘ÉB˜B√FFB√BÀBÔF?B◊FB‘ÉB”FFBœB˚BœB¯ÉBÛB˚BÔB˚B”B˚BœB¯ÉB˚FB˚FB˜B„BÎB¿∏)çµ‘µÂÖ’—©ÑµÂΩ’πùâ±ΩΩêµµïπ—Ω»µâ…ΩÖëçÖÕ–ÄÙÅÏëµïπ—Ω…ÙÉB˚B«F+F?BÀBÔF?B◊FÅÏë—Ö…ùï—ÙÉFBÀB˚B„BÉFFB◊B˜B„BÎB˚B∏)çµ‘µÂÖ’—©ÑµÂΩ’πùâ±ΩΩêµµïπ—Ω»µç±Ö•µïêÄÙÉBKF,ÉB˚B«F+F?BÀBÔF?B◊FB‘ÅÏë—Ö…ùï—ÙÉFBÀB˚B„BÉFFB◊B˜B„BÎB˚B∏)çµ‘µÂÖ’—©ÑµÂΩ’πùâ±ΩΩêµµïπ—Ω»µ…ï±ïÖÕïêÄÙÉBKF,ÉB˚FBÀB˚B«B˚B€B”B√B◊FB‘ÅÏë—Ö…ùï—ÙÉB˚FÉB˜B√FFB√BÀB˜B„FB◊FFBÀB¿∏)çµ‘µÂÖ’—©ÑµÂΩ’πùâ±ΩΩêµπΩ–µÂΩ’»µ¡’¡•∞ÄÙÉB∑FB˚FÉBÛB˚BÔB˚B”B˚B‰ÉB˚FB˚FB˜B„BËÉBˇFB„B˜B√B”BÔB◊B€B„FÉB”FFBœB˚BÛFÉB˜B√FFB√BÀB˜B„BÎF∏)çµ‘µÂÖ’—©ÑµÂΩ’πùâ±ΩΩêµ¡’¡•∞µç±Ö•µïêÄÙÅÏëµïπ—Ω…ÙÉB˚FBÛB◊FB„BÏÉBÀB√FÉBÎB√BËÉBÛB˚BÔB˚B”B˚BœB¯ÉFFB◊B˜B„BÎB¿∏ÉBáB˚FFB◊B”B˚FB˚FF3FB◊FF0ÉB˜B¿ÉB˚B«FFB◊B˜B„B‡ÉFÉB˜B√FFB√BÀB˜B„BÎB¿ÉB‡ÉFBÎFB◊BˇBÔB◊B˜B„B‡ÉFBÀB˚B◊B‰ÉFB◊BˇFFB√FB„B‡∏ÉBGFB”F3FB‘ÉB˜B√B«BÔF;B”B√FB◊BÔF3B˜F,ÉB‡ÉFB”B◊FB€B√B˜B˜F,∞ÉB˚FB˚FF?FF0ÉB˜B¿ÉB”B˚FFB˚BÁB˜FF8ÉB”B˚B«F/FF∏ÉBWFBÔB‡ÉFÉBÀB√FÉB◊FFF0ÉBÀB˚BˇFB˚FF,∞ÉB˚B«FB√FB„FB◊FF0ÉBËÉB„BœFB˚BÎB√BÉFÉB”B˚BˇFFBÎB˚BÉBÔB„FB˜B¯ÉB„BÔB‡ÉB»Å1==∏)çµ‘µÂÖ’—©ÑµÂΩ’πùâ±ΩΩêµ¡’¡•∞µ…ï±ïÖÕïêÄÙÉBwB√FFB√BÀB˜B„BËÉB˚FBÀB˚B«B˚B€B”B√B◊FÉBÀB√F∏)çµ‘µÂÖ’—©ÑµÂΩ’πùâ±ΩΩêµ…ï±ïÖÕîµâ…ΩÖëçÖÕ–ÄÙÅÏëµïπ—Ω…ÙÉB˚FBÀB˚B«B˚B€B”B√B◊FÉFFB◊B˜B„BÎB¿ÅÏë—Ö…ùï—Ù∏)çµ‘µÂÖ’—©ÑµÂΩ’πùâ±ΩΩêµ…Ω±îµâ…•ïô•πúÄÙÉBKB√FÉB€B”FGFÉFB„FFB√BÏÉBÎFB˚BÀB√BÀB˚BœB¯ÉBˇB˚FBÀF?F'B◊B˜B„F<∏ÉBáB˚B«B◊FB„FB‘ÉB˚FB˚FB˜B„FF3B‘ÉFB˜B√FF?B€B◊B˜B„B‘∞ÉFBÔFF#B√BÁFB‘ÉFFB√FF#B„FÉB˚FB˚FB˜B„BÎB˚B»ÉB‡ÉBœB˚FB˚BÀF3FB◊FF0ÉBËÉBÀF/FB√B”BÎB‘∏)çµ‘µÂÖ’—©ÑµÂΩ’πùâ±ΩΩêµ…Ω±îµ°ïÖëï»ÄÙÉBKF,ÉBˇFB˚B«FB€B”B√B◊FB◊FF0ÉBÛB˚BÔB˚B”F/BÉF?FFB€B¿∏)çµ‘µÂÖ’—©ÑµÂΩ’πùâ±ΩΩêµ…Ω±îµΩâ©ïç—•ŸïÃÄÙÉB{FB˚FF3FB◊FF0ÉB˜B¿ÉB”B˚FFB˚BÁB˜FF8ÉB”B˚B«F/FF∞ÉBˇB◊FB◊B€B„BÀB„FB‘ÉFB„FFB√BÏÉB‡ÉBﬂB√FBÔFB€B„FB‘ÉBÎFB˚BÀB√BÀB˚B‘ÉBˇB˚FBÀF?F'B◊B˜B„B‘∏)çµ‘µÂÖ’—©ÑµÂΩ’πùâ±ΩΩêµ…Ω’πêµïπêµÖ±•ŸîÄÙÉB€B„B»)çµ‘µÂÖ’—©ÑµÂΩ’πùâ±ΩΩêµ…Ω’πêµïπêµëïÖêÄÙÉBÛFGFFB»)çµ‘µÂÖ’—©ÑµÂΩ’πùâ±ΩΩêµ…Ω’πêµïπêµïπ—…‰ÄÙÉäPÅÏëπÖµïÙËÅÏëÕ—Ö—’ÕÙ)çµ‘µÂÖ’—©ÑµÂΩ’πùâ±ΩΩêµ…Ω’πêµïπêµ°ïÖëï»ÄÙÉBáB˚FFB˚F?B˜B„B‘ÉB„FBˇF/FB√B˜B„B‰ÉBÛB˚BÔB˚B”F/FÉB˚FB˚FB˜B„BÎB˚B»Ë)çµ‘µÂÖ’—©ÑµÂΩ’πùâ±ΩΩêµÕï±òµëïÕ—…’ç–µëïπ•ïêÄÙÉBKF,ÉB◊F'FDÉB˜B‘ÉBˇB˚B˜B„BÛB√B◊FB‘∞ÉBÎB√BËÉF7FB„BÉBˇB˚BÔF3BﬂB˚BÀB√FF3FF<∏()çµ‘µÂÖ’—©Ñµç±ïÖŸ•πúµù±Ö•ŸîµÕ≠’±∞µëïπ•ïêÄÙÉB_B√FB◊BÉBÀF,ÉBÀB˚B˚B«F'B‘ÉFB˚FB„FB‘ÉF7FB¯ÉFB”B◊BÔB√FF0Ñ¸)çµ‘µÂÖ’—©Ñµç±ïÖŸ•πúµù±Ö•ŸîµÕ≠’±∞µï·•Õ—•πúÄÙÉBwB¿ÅÏëù±Ö•ŸïÙÉFB€B‘ÉFFFB√B˜B˚BÀBÔB◊BÙÅÏëÕ≠’±±Ù∏)çµ‘µÂÖ’—©Ñµç±ïÖŸ•πúµù±Ö•ŸîµÕ≠’±∞µµΩ’π—ïêÄÙÉBKF,ÉFFFB√B˜B√BÀBÔB„BÀB√B◊FB‘ÅÏëÕ≠’±±ÙÉB˜B¿ÅÏëù±Ö•ŸïÙ∏)çµ‘µÂÖ’—©Ñµç±ïÖŸ•πúµù±Ö•ŸîµÕ≠’±∞µï·Öµ•πîÄÙÉBwB¿ÅÏëù±Ö•ŸïÙÉFFFB√B˜B˚BÀBÔB◊BÙÉFB◊BÔB˚BÀB◊FB◊FBÎB„B‰ÉFB◊FB◊B¸∏)çµ‘µÂÖ’—©Ñµ©ΩàµëïÕç…•¡—•Ω∏µÂΩ’πùâ±ΩΩêÄÙÉBsB˚BÔB˚B”B˚B‰ÉB˚FB˚FB˜B„BËÉF?FFB€B¿∞ÉBˇFB˚FB˚B”F?F'B„B‰ÉFB„FFB√BÏÉBÎFB˚BÀB√BÀB˚BœB¯ÉBˇB˚FBÀF?F'B◊B˜B„F<∏)çµ‘µÂÖ’—©Ñµ©ΩàµπÖµîµÂΩ’πùâ±ΩΩêÄÙÉBsB˚BÔB˚B”B˚B‰ÉF?FFB€B¿)ç°Ö–µ…Öë•ºµçµ‘µÂÖ’—©Ñµµ•±•—Ö…‰ÄÙÅeMA)ç°Ö–µ…Öë•ºµçµ‘µÂÖ’—©ÑµÕ—…ÖπëïêÄÙÅMQI9()çµ‘µÂÖ’—©ÑµâÖëâ±ΩΩêµ›ïÖ¡Ω∏µç°Ω•çîµ—•—±îÄÙÉBKF/B«B◊FB„FB‘ÉB˚FFB€B„B‘)çµ‘µÂÖ’—©ÑµâÖëâ±ΩΩêµ›ïÖ¡Ω∏µç°Ω•çîµ›Ö…π•πúÄÙÉB∑FB¯ÉB”B◊BÁFFBÀB„B‘ÉB˜B◊B˚B«FB√FB„BÛB¯∏ÉBKF,ÉFBÀB◊FB◊B˜F,¸(
+cmu-yautja-cauldron-examine-2 = –°–Ω–∞—á–∞–ª–∞ –Ω–∞–π–¥–∏—Ç–µ –∫–æ–Ω–µ—á–Ω–æ—Å—Ç—å. –ó–∞—Ç–µ–º –ø–æ–¥–≥–æ—Ç–æ–≤—å—Ç–µ –µ—ë —Ü–µ—Ä–µ–º–æ–Ω–∏–∞–ª—å–Ω—ã–º –∫–∏–Ω–∂–∞–ª–æ–º.
+cmu-yautja-cauldron-examine-3 = –ü–æ–¥–≥–æ—Ç–æ–≤–∏–≤ –∫–æ–Ω–µ—á–Ω–æ—Å—Ç—å, –ø–æ–ª–æ–∂–∏—Ç–µ –µ—ë –≤ –∫–æ—Ç—ë–ª, —á—Ç–æ–±—ã —É–¥–∞–ª–∏—Ç—å –ø–ª–æ—Ç—å –∏ –æ—Å—Ç–∞–≤–∏—Ç—å –∫–æ—Å—Ç—å.
+cmu-yautja-cauldron-examine-4 = –ó–∞—Ç–µ–º –æ—á–∏—Å—Ç–∏—Ç–µ –∏ –æ—Ç–ø–æ–ª–∏—Ä—É–π—Ç–µ –ø–æ–ª—É—á–∏–≤—à–∏–µ—Å—è –∫–æ—Å—Ç–∏ —Ç—Ä—è–ø–∫–æ–π, —á—Ç–æ–±—ã –ø—Ä–∏–∫—Ä–µ–ø–∏—Ç—å –∏—Ö –∫ –±—Ä–æ–Ω–µ.
+cmu-yautja-cauldron-limb-not-ready = –≠—Ç–∞ –∫–æ–Ω–µ—á–Ω–æ—Å—Ç—å –Ω–µ –≥–æ—Ç–æ–≤–∞.
+cmu-yautja-cauldron-not-limb = –ù–µ–ª—å–∑—è –ø–æ–º–µ—Å—Ç–∏—Ç—å —ç—Ç–æ –≤ {$cauldron}.
+cmu-yautja-cauldron-skull-desc = –≠—Ç–æ—Ç —á–µ—Ä–µ–ø –∫–æ–≥–¥–∞-—Ç–æ –±—ã–ª {$limb}.
+cmu-yautja-cauldron-start = –í—ã –ø–æ–º–µ—â–∞–µ—Ç–µ {$limb} –≤–Ω—É—Ç—Ä—å –∏ –∑–∞–ø—É—Å–∫–∞–µ—Ç–µ –∫–æ—Ç—ë–ª.
+
+cmu-yautja-ceremonial-dagger-flay-first-pass-others = {$user} –¥–µ–ª–∞–µ—Ç —Å–µ—Ä–∏—é –Ω–∞–¥—Ä–µ–∑–æ–≤ –Ω–∞ –∫–æ–∂–µ {$victim}.
+cmu-yautja-ceremonial-dagger-flay-first-pass-self = –í—ã –ø–æ–¥–≥–æ—Ç–∞–≤–ª–∏–≤–∞–µ—Ç–µ –∫–æ–∂—É, —Å—Ä–µ–∑–∞—è –ø–ª–æ—Ç—å –≤ –Ω—É–∂–Ω—ã—Ö –º–µ—Å—Ç–∞—Ö.
+cmu-yautja-ceremonial-dagger-flay-non-human = –≠—Ç–∏–º –∫–∏–Ω–∂–∞–ª–æ–º –º–æ–∂–Ω–æ —Å–Ω–∏–º–∞—Ç—å –∫–æ–∂—É —Ç–æ–ª—å–∫–æ —Å –≥—É–º–∞–Ω–æ–∏–¥–æ–≤!
+cmu-yautja-ceremonial-dagger-flay-not-strong = –í—ã –Ω–µ–¥–æ—Å—Ç–∞—Ç–æ—á–Ω–æ —Å–∏–ª—å–Ω—ã, —á—Ç–æ–±—ã —Ä–∞–∑–æ—Ä–≤–∞—Ç—å –≥—É–º–∞–Ω–æ–∏–¥–Ω–æ–µ —Ç–µ–ª–æ. –ò –≤–æ–æ–±—â–µ, —ç—Ç–æ –¥–æ–≤–æ–ª—å–Ω–æ –º–µ—Ä–∑–∫–æ.
+cmu-yautja-ceremonial-dagger-flay-start-others = {$user} –Ω–∞—á–∏–Ω–∞–µ—Ç —Å–Ω–∏–º–∞—Ç—å –∫–æ–∂—É —Å {$victim} –ø—Ä–∏ –ø–æ–º–æ—â–∏ {$dagger}...
+cmu-yautja-ceremonial-dagger-flay-start-self = –í—ã –Ω–∞—á–∏–Ω–∞–µ—Ç–µ —Å–Ω–∏–º–∞—Ç—å –∫–æ–∂—É —Å {$victim} —Å–≤–æ–∏–º {$dagger}...
+cmu-yautja-ceremonial-dagger-flay-synth = –ù–µ–ª—å–∑—è —Å–Ω—è—Ç—å –∫–æ–∂—É —Å –º–µ—Ç–∞–ª–ª–∞...
+cmu-yautja-ceremonial-dagger-flay-yautja = –í–´ –í–û–û–ë–©–ï –í –°–í–û–Å–ú –£–ú–ï!?
+cmu-yautja-ceremonial-dagger-limb-already-flayed = –° —ç—Ç–æ–π –∫–æ–Ω–µ—á–Ω–æ—Å—Ç–∏ —É–∂–µ —Å–Ω—è–ª–∏ –∫–æ–∂—É.
+cmu-yautja-ceremonial-dagger-limb-flay-cancel = –í—ã —Ä–µ—à–∞–µ—Ç–µ –Ω–µ —Å–Ω–∏–º–∞—Ç—å –∫–æ–∂—É —Å {$limb}.
+cmu-yautja-ceremonial-dagger-limb-flay-finish = –í—ã –∑–∞–∫–∞–Ω—á–∏–≤–∞–µ—Ç–µ —Å–Ω–∏–º–∞—Ç—å –∫–æ–∂—É —Å {$limb}.
+cmu-yautja-ceremonial-dagger-limb-flay-start = –í—ã –Ω–∞—á–∏–Ω–∞–µ—Ç–µ —Å–Ω–∏–º–∞—Ç—å –∫–æ–∂—É —Å {$limb}.
+
+cmu-yautja-chain-gauntlet-active-hand = –ù—É–∂–Ω–æ –¥–µ—Ä–∂–∞—Ç—å {$item} –≤ –∞–∫—Ç–∏–≤–Ω–æ–π —Ä—É–∫–µ.
+cmu-yautja-chain-gauntlet-already = –í—ã —É–∂–µ –∑–∞—Ä—è–∂–∞–µ—Ç–µ –æ—Ä—É–∂–∏–µ.
+cmu-yautja-chain-gauntlet-chain-existing = –ù–∞ —ç—Ç–æ–º –æ—Ä—É–∂–∏–∏ —É–∂–µ –µ—Å—Ç—å —Ü–µ–ø–∏!
+cmu-yautja-chain-gauntlet-chain-wrapped = –í—ã –æ–±–º–∞—Ç—ã–≤–∞–µ—Ç–µ {$chain} –≤–æ–∫—Ä—É–≥ {$item}.
+cmu-yautja-chain-gauntlet-execution-message = {$user} —Ö–≤–∞—Ç–∞–µ—Ç {$target}, –º–µ–¥–ª–µ–Ω–Ω–æ –ø–æ–¥–Ω–∏–º–∞–µ—Ç –Ω–∞–¥ –≥–æ–ª–æ–≤–æ–π –∏ —Å —Å–∏–ª–æ–π –æ–±—Ä—É—à–∏–≤–∞–µ—Ç –≤–Ω–∏–∑!
+cmu-yautja-chain-gauntlet-guard-action-desc = –ü–æ–¥–Ω–∏–º–∏—Ç–µ —Ü–µ–ø–Ω—ã–µ –ø–µ—Ä—á–∞—Ç–∫–∏ –∏ –∑–∞—Ä—è–¥–∏—Ç–µ –∏—Ö –Ω–∞ –∫–æ—Ä–æ—Ç–∫–∏–π —Ä—ã–≤–æ–∫.
+cmu-yautja-chain-gauntlet-guard-action-name = –ó–∞—â–∏—Ç–∏—Ç—å—Å—è
+cmu-yautja-chain-gauntlet-help-message = {$user} —Ö–≤–∞—Ç–∞–µ—Ç {$target} –∑–∞ –∑–∞—Ç—ã–ª–æ–∫ –∏ —à–≤—ã—Ä—è–µ—Ç –Ω–∞ –∑–µ–º–ª—é!
+cmu-yautja-chain-gauntlet-start = –í—ã –ø–æ–¥–Ω–∏–º–∞–µ—Ç–µ {$item} –ø–µ—Ä–µ–¥ –ª–∏—Ü–æ–º –∏ –Ω–∞—á–∏–Ω–∞–µ—Ç–µ –±–µ–∂–∞—Ç—å!
+cmu-yautja-chained-weapon-catch = –í—ã –ª–µ–≥–∫–æ –ª–æ–≤–∏—Ç–µ {$item}.
+cmu-yautja-chained-weapon-untangle-start = {$user} –Ω–∞—á–∏–Ω–∞–µ—Ç —Ä–∞—Å–ø—É—Ç—ã–≤–∞—Ç—å —Ü–µ–ø—å –Ω–∞ {$item}...
+
+cmu-yautja-change-explosion-type-active-small = –ó–∞—á–µ–º –≤–∞–º —ç—Ç–æ?
+cmu-yautja-change-explosion-type-big = –°–∞–º–æ—É–Ω–∏—á—Ç–æ–∂–µ–Ω–∏–µ –Ω–∞—Ä—É—á–∞ –Ω–∞—Å—Ç—Ä–æ–µ–Ω–æ –Ω–∞ –±–æ–ª—å—à–æ–π –≤–∑—Ä—ã–≤.
+cmu-yautja-change-explosion-type-small = –°–∞–º–æ—É–Ω–∏—á—Ç–æ–∂–µ–Ω–∏–µ –Ω–∞—Ä—É—á–∞ –Ω–∞—Å—Ç—Ä–æ–µ–Ω–æ –Ω–∞ –º–∞–ª—ã–π –≤–∑—Ä—ã–≤.
+cmu-yautja-cleanser-cancel-others = {$user} –ø–µ—Ä–µ—Å—Ç–∞—ë—Ç –ª–∏—Ç—å –∂–∏–¥–∫–æ—Å—Ç—å –Ω–∞ {$target}!
+cmu-yautja-cleanser-cancel-self = –í—ã —Ä–µ—à–∞–µ—Ç–µ –Ω–µ –ø–æ–∫—Ä—ã–≤–∞—Ç—å {$target} —Ä–∞—Å—Ç–≤–æ—Ä—è—é—â–∏–º –≥–µ–ª–µ–º.
+cmu-yautja-cleanser-cloaked = –ü—ã—Ç–∞—Ç—å—Å—è —Å–¥–µ–ª–∞—Ç—å —ç—Ç–æ –≤ –º–∞—Å–∫–∏—Ä–æ–≤–∫–µ –Ω–µ–±–µ–∑–æ–ø–∞—Å–Ω–æ!
+cmu-yautja-cleanser-covered-others = {$user} –æ–±–ª–∏–≤–∞–µ—Ç {$target} —Å–∏–Ω–µ–π –∂–∏–¥–∫–æ—Å—Ç—å—é!
+cmu-yautja-cleanser-fluid = –ù–µ–ª—å–∑—è —Ä–∞—Å—Ç–≤–æ—Ä–∏—Ç—å –±–æ–ª—å—à–µ —Ä–∞—Å—Ç–≤–æ—Ä—è—é—â–µ–π –∂–∏–¥–∫–æ—Å—Ç–∏.
+cmu-yautja-cleanser-start-others = {$user} –æ—Ç–∫—Ä—ã–≤–∞–µ—Ç —Ñ–ª–∞–∫–æ–Ω –∏ –Ω–∞—á–∏–Ω–∞–µ—Ç –ø–æ–ª–∏–≤–∞—Ç—å {$target} —è—Ä–∫–æ-—Å–∏–Ω–µ–π –∂–∏–¥–∫–æ—Å—Ç—å—é!
+cmu-yautja-cloak-cooldown = –£—Å—Ç—Ä–æ–π—Å—Ç–≤–æ –º–∞—Å–∫–∏—Ä–æ–≤–∫–∏ –ø–µ—Ä–µ–∑–∞—Ä—è–∂–∞–µ—Ç—Å—è... –û—Å—Ç–∞–ª–æ—Å—å {$seconds} —Å–µ–∫.
+cmu-yautja-cloak-fizzle = –í–∞—à–∞ –º–∞—Å–∫–∏—Ä–æ–≤–∫–∞ –Ω–∞—á–∏–Ω–∞–µ—Ç –≥–∞—Å–Ω—É—Ç—å.
+cmu-yautja-combistick-active-hand = –ù—É–∂–Ω–æ –¥–µ—Ä–∂–∞—Ç—å {$item} –≤ –∞–∫—Ç–∏–≤–Ω–æ–π —Ä—É–∫–µ.
+cmu-yautja-combistick-call-action-desc = –î—ë—Ä–Ω–∏—Ç–µ –∑–∞ —Ü–µ–ø—å –∫–æ–º–±–∏-–ø–æ—Å–æ—Ö–∞, –µ—Å–ª–∏ –æ–Ω –≤ –ø—Ä–µ–¥–µ–ª–∞—Ö –¥–æ—Å—è–≥–∞–µ–º–æ—Å—Ç–∏. –ò–Ω–∞—á–µ... –∑–∞–±–µ—Ä–∏—Ç–µ –µ–≥–æ —Å–∞–º–∏.
+cmu-yautja-combistick-call-action-name = –ü—Ä–∏—Ç—è–Ω—É—Ç—å –æ—Ä—É–∂–∏–µ
+cmu-yautja-combistick-extend = –í—ã –≤—ã–¥–≤–∏–≥–∞–µ—Ç–µ {$item}.
+cmu-yautja-combistick-fold = –í—ã —Å–∫–ª–∞–¥—ã–≤–∞–µ—Ç–µ {$item} –¥–ª—è —Ö—Ä–∞–Ω–µ–Ω–∏—è.
+cmu-yautja-combistick-fold-action-desc = –°–ª–æ–∂–∏—Ç—å –∏–ª–∏ —Ä–∞–∑–ª–æ–∂–∏—Ç—å –∫–æ–º–±–∏-–ø–æ—Å–æ—Ö –≤ —Ä—É–∫–µ.
+cmu-yautja-combistick-fold-action-name = –°–ª–æ–∂–∏—Ç—å –∫–æ–º–±–∏-–ø–æ—Å–æ—Ö
+cmu-yautja-disc-catch-self = –í—ã –ª–µ–≥–∫–æ –ª–æ–≤–∏—Ç–µ {$disc}.
+cmu-yautja-disc-fiddle = –í—ã –≤–æ–∑–∏—Ç–µ—Å—å —Å –¥–∏—Å–∫–æ–º, –Ω–æ –Ω–∏—á–µ–≥–æ –Ω–µ –ø—Ä–æ–∏—Å—Ö–æ–¥–∏—Ç. –ú–æ–∂–µ—Ç, –µ—â—ë —Ä–∞–∑?
+cmu-yautja-drain-power-failed = –í –≤–∞—à–∏—Ö –Ω–∞—Ä—É—á–∞—Ö –Ω–µ–¥–æ—Å—Ç–∞—Ç–æ—á–Ω–æ —ç–Ω–µ—Ä–≥–∏–∏. –û—Å—Ç–∞–ª–æ—Å—å [bold]{$charge}/{$max}[/bold], —Ç—Ä–µ–±—É–µ—Ç—Å—è [bold]{$amount}[/bold].
+
+cmu-yautja-emote-msg-distract = –∏–∑–¥–∞—ë—Ç —Å—Ç—Ä–∞–Ω–Ω—ã–π, –∑–∞–≤–æ—Ä–∞–∂–∏–≤–∞—é—â–∏–π –∑–≤—É–∫.
+cmu-yautja-emote-msg-fake-aliengrowl = –∏–∑–¥–∞—ë—Ç —Ä—ã–∫ –∫—Å–µ–Ω–æ–º–æ—Ä—Ñ–∞ —á–µ—Ä–µ–∑ –≥–æ–ª–æ—Å–æ–≤–æ–π —Å–∏–Ω—Ç–µ–∑–∞—Ç–æ—Ä.
+cmu-yautja-emote-msg-fake-alienhelp = –∏–∑–¥–∞—ë—Ç —á–µ—Ä–µ–∑ –≥–æ–ª–æ—Å–æ–≤–æ–π —Å–∏–Ω—Ç–µ–∑–∞—Ç–æ—Ä —Ç—Ä–µ–≤–æ–∂–Ω—ã–π –∑–æ–≤ –∫—Å–µ–Ω–æ–º–æ—Ä—Ñ–∞.
+cmu-yautja-emote-msg-fake-femalescream = –∏–∑–¥–∞—ë—Ç –∂–µ–Ω—Å–∫–∏–π —á–µ–ª–æ–≤–µ—á–µ—Å–∫–∏–π –∫—Ä–∏–∫ —á–µ—Ä–µ–∑ –≥–æ–ª–æ—Å–æ–≤–æ–π —Å–∏–Ω—Ç–µ–∑–∞—Ç–æ—Ä.
+cmu-yautja-emote-msg-fake-malescream = –∏–∑–¥–∞—ë—Ç –º—É–∂—Å–∫–æ–π —á–µ–ª–æ–≤–µ—á–µ—Å–∫–∏–π –∫—Ä–∏–∫ —á–µ—Ä–µ–∑ –≥–æ–ª–æ—Å–æ–≤–æ–π —Å–∏–Ω—Ç–µ–∑–∞—Ç–æ—Ä.
+cmu-yautja-emote-msg-voice-anytime = —á–µ—Ä–µ–∑ –≥–æ–ª–æ—Å–æ–≤–æ–π —Å–∏–Ω—Ç–µ–∑–∞—Ç–æ—Ä –ø—Ä–æ–∏–∑–Ω–æ—Å–∏—Ç ¬´–í –ª—é–±–æ–µ –≤—Ä–µ–º—è¬ª.
+cmu-yautja-emote-msg-voice-burnyoufucker = —á–µ—Ä–µ–∑ –≥–æ–ª–æ—Å–æ–≤–æ–π —Å–∏–Ω—Ç–µ–∑–∞—Ç–æ—Ä –ø—Ä–æ–∏–∑–Ω–æ—Å–∏—Ç ¬´–ì–æ—Ä–µ—Ç—å —Ç–µ–±–µ, —É–±–ª—é–¥–æ–∫!¬ª.
+cmu-yautja-emote-msg-voice-comeonout = —á–µ—Ä–µ–∑ –≥–æ–ª–æ—Å–æ–≤–æ–π —Å–∏–Ω—Ç–µ–∑–∞—Ç–æ—Ä –ø—Ä–æ–∏–∑–Ω–æ—Å–∏—Ç ¬´–í—ã—Ö–æ–¥–∏, —É–±–ª—é–¥–æ–∫¬ª.
+cmu-yautja-emote-msg-voice-doitrookie = —á–µ—Ä–µ–∑ –≥–æ–ª–æ—Å–æ–≤–æ–π —Å–∏–Ω—Ç–µ–∑–∞—Ç–æ—Ä –ø—Ä–æ–∏–∑–Ω–æ—Å–∏—Ç ¬´–î–∞–≤–∞–π, —Å–∞–ª–∞–≥–∞!¬ª.
+cmu-yautja-emote-msg-voice-forwardmarine = —á–µ—Ä–µ–∑ –≥–æ–ª–æ—Å–æ–≤–æ–π —Å–∏–Ω—Ç–µ–∑–∞—Ç–æ—Ä –ø—Ä–æ–∏–∑–Ω–æ—Å–∏—Ç ¬´–í–ø–µ—Ä—ë–¥, –º–æ—Ä–ø–µ—Ö!¬ª.
+cmu-yautja-emote-msg-voice-helpme = —á–µ—Ä–µ–∑ –≥–æ–ª–æ—Å–æ–≤–æ–π —Å–∏–Ω—Ç–µ–∑–∞—Ç–æ—Ä –ø—Ä–æ–∏–∑–Ω–æ—Å–∏—Ç ¬´–ü–æ–º–æ–≥–∏ –º–Ω–µ!¬ª.
+cmu-yautja-emote-msg-voice-iseeyou = —á–µ—Ä–µ–∑ –≥–æ–ª–æ—Å–æ–≤–æ–π —Å–∏–Ω—Ç–µ–∑–∞—Ç–æ—Ä –ø—Ä–æ–∏–∑–Ω–æ—Å–∏—Ç ¬´–Ø –≤–∏–∂—É —Ç–µ–±—è¬ª.
+cmu-yautja-emote-msg-voice-itsatrap = —á–µ—Ä–µ–∑ –≥–æ–ª–æ—Å–æ–≤–æ–π —Å–∏–Ω—Ç–µ–∑–∞—Ç–æ—Ä –ø—Ä–æ–∏–∑–Ω–æ—Å–∏—Ç ¬´–≠—Ç–æ –ª–æ–≤—É—à–∫–∞¬ª.
+cmu-yautja-emote-msg-voice-justyou = —á–µ—Ä–µ–∑ –≥–æ–ª–æ—Å–æ–≤–æ–π —Å–∏–Ω—Ç–µ–∑–∞—Ç–æ—Ä –ø—Ä–æ–∏–∑–Ω–æ—Å–∏—Ç ¬´–¢–æ–ª—å–∫–æ —Ç—ã?¬ª.
+cmu-yautja-emote-msg-voice-luckyyou = —á–µ—Ä–µ–∑ –≥–æ–ª–æ—Å–æ–≤–æ–π —Å–∏–Ω—Ç–µ–∑–∞—Ç–æ—Ä –ø—Ä–æ–∏–∑–Ω–æ—Å–∏—Ç ¬´–ö—Ç–æ —Ç–∞–º? –¢–µ–±–µ –ø–æ–≤–µ–∑–ª–æ!¬ª.
+cmu-yautja-emote-msg-voice-overhere = —á–µ—Ä–µ–∑ –≥–æ–ª–æ—Å–æ–≤–æ–π —Å–∏–Ω—Ç–µ–∑–∞—Ç–æ—Ä –ø—Ä–æ–∏–∑–Ω–æ—Å–∏—Ç ¬´–°—é–¥–∞¬ª.
+cmu-yautja-emote-msg-voice-overthere = —á–µ—Ä–µ–∑ –≥–æ–ª–æ—Å–æ–≤–æ–π —Å–∏–Ω—Ç–µ–∑–∞—Ç–æ—Ä –ø—Ä–æ–∏–∑–Ω–æ—Å–∏—Ç ¬´–í–æ–Ω —Ç—É–¥–∞¬ª.
+cmu-yautja-emote-msg-voice-tellme = —á–µ—Ä–µ–∑ –≥–æ–ª–æ—Å–æ–≤–æ–π —Å–∏–Ω—Ç–µ–∑–∞—Ç–æ—Ä –ø—Ä–æ–∏–∑–Ω–æ—Å–∏—Ç ¬´–ì–æ–≤–æ—Ä–∏!¬ª.
+cmu-yautja-emote-msg-voice-turnaround = —á–µ—Ä–µ–∑ –≥–æ–ª–æ—Å–æ–≤–æ–π —Å–∏–Ω—Ç–µ–∑–∞—Ç–æ—Ä –ø—Ä–æ–∏–∑–Ω–æ—Å–∏—Ç ¬´–û–±–µ—Ä–Ω–∏—Å—å¬ª.
+cmu-yautja-emote-msg-voice-uglyfreak = —á–µ—Ä–µ–∑ –≥–æ–ª–æ—Å–æ–≤–æ–π —Å–∏–Ω—Ç–µ–∑–∞—Ç–æ—Ä –ø—Ä–æ–∏–∑–Ω–æ—Å–∏—Ç ¬´–í—ã—Ö–æ–¥–∏, —É—Ä–æ–¥¬ª.
+cmu-yautja-emote-name-distract = –û—Ç–≤–ª–µ—á–µ–Ω–∏–µ
+
+cmu-yautja-falcon-drone = –°–æ–∫–æ–ª–∏–Ω—ã–π –¥—Ä–æ–Ω
+cmu-yautja-falcon-drone-bracer-required = –î–ª—è —É–ø—Ä–∞–≤–ª–µ–Ω–∏—è {$item} –Ω—É–∂–Ω—ã –≤–∞—à–∏ –Ω–∞—Ä—É—á–∏!
+cmu-yautja-falcon-drone-denied = –í—ã –Ω–µ –∑–Ω–∞–µ—Ç–µ, –∫–∞–∫ —ç—Ç–∏–º –ø–æ–ª—å–∑–æ–≤–∞—Ç—å—Å—è.
+cmu-yautja-falcon-drone-deployed = –°–æ–∫–æ–ª–∏–Ω—ã–π –¥—Ä–æ–Ω –≤–∑–ª–µ—Ç–∞–µ—Ç –∏ –ø–µ—Ä–µ–¥–∞—ë—Ç –∏–∑–æ–±—Ä–∞–∂–µ–Ω–∏–µ –≤ –≤–∞—à—É –º–∞—Å–∫—É.
+cmu-yautja-falcon-drone-recalled = –ò–∑–æ–±—Ä–∞–∂–µ–Ω–∏–µ —Å —Å–æ–∫–æ–ª–∏–Ω–æ–≥–æ –¥—Ä–æ–Ω–∞ –≤–æ–∑–≤—Ä–∞—â–∞–µ—Ç—Å—è –≤ –≤–∞—à–µ –ø–æ–ª–µ –∑—Ä–µ–Ω–∏—è.
+cmu-yautja-fancy-grip-safety-denied = –û—Ä—É–∂–∏–µ –ø–∏—â–∏—Ç –∏ –æ—Ç–∫–∞–∑—ã–≤–∞–µ—Ç—Å—è —Å—Ç—Ä–µ–ª—è—Ç—å. –ù–∞–≤–µ—Ä–Ω–æ–µ, —ç—Ç–æ –∫–∞–∫–æ–π-—Ç–æ —Ö–∏—Ç—Ä—ã–π –ø—Ä–µ–¥–æ—Ö—Ä–∞–Ω–∏—Ç–µ–ª—å —Ä—É–∫–æ—è—Ç–∏!
+cmu-yautja-gear = –°–Ω–∞—Ä—è–∂–µ–Ω–∏–µ —è—É—Ç–∂–∞
+cmu-yautja-hellhound-emote-growl = –∏–∑–¥–∞—ë—Ç —Å—Ç—Ä–∞–Ω–Ω—ã–π —É–≥—Ä–æ–∂–∞—é—â–∏–π —Ä—ã–∫.
+
+cmu-yautja-hivebreaker-cancel-self = –í—ã —Ä–µ—à–∞–µ—Ç–µ –Ω–µ –æ–±—Ä–∞—â–∞—Ç—å {$target} –≤ —Ä–∞–±–∞.
+cmu-yautja-hivebreaker-caste-denied = –ù–µ–ª—å–∑—è –æ–±—Ä–∞—Ç–∏—Ç—å —ç—Ç—É –∑–º–µ—é –≤ —Ä–∞–±–∞!
+cmu-yautja-hivebreaker-defective = –≠—Ç–∞ –∑–º–µ—è, –ø–æ—Ö–æ–∂–µ, –Ω–µ–∏—Å–ø—Ä–∞–≤–Ω–∞. –û–Ω–∞ –Ω–µ —Ä–µ–∞–≥–∏—Ä—É–µ—Ç.
+cmu-yautja-hivebreaker-dethralled-target = –ú—ã –±–æ–ª—å—à–µ –Ω–µ –ø–æ—Ä–∞–±–æ—â–µ–Ω—ã —è—É—Ç–∂–∞ –∏–∑ —á–∏—Å–ª–∞ –ø–ª–æ—Ö–æ–π –∫—Ä–æ–≤–∏!
+cmu-yautja-hivebreaker-enthralled-target = –ú—ã –±—ã–ª–∏ –ø–æ—Ä–∞–±–æ—â–µ–Ω—ã —è—É—Ç–∂–∞ –∏–∑ —á–∏—Å–ª–∞ –ø–ª–æ—Ö–æ–π –∫—Ä–æ–≤–∏!
+cmu-yautja-hivebreaker-evolution-blocked = –ú—ã –±–æ–ª—å—à–µ –Ω–µ –º–æ–∂–µ–º —Ä–∞–∑–≤–∏–≤–∞—Ç—å—Å—è –∏–ª–∏ –ø—Ä–∏—á–∏–Ω—è—Ç—å –≤—Ä–µ–¥ –≥–æ—Å–ø–æ–¥–∏–Ω—É.
+cmu-yautja-hivebreaker-hivemind-lost = –°–≤—è–∑—å —Å –∫–æ–ª–ª–µ–∫—Ç–∏–≤–Ω—ã–º —Ä–∞–∑—É–º–æ–º –ø–æ—Ç–µ—Ä—è–Ω–∞! –¢–µ–ø–µ—Ä—å –º—ã –ø–æ–¥—á–∏–Ω—è–µ–º—Å—è –≥–æ—Å–ø–æ–¥–∏–Ω—É. –ü–æ–¥—á–∏–Ω—è–π—Ç–µ—Å—å –µ–≥–æ –ø—Ä–∏–∫–∞–∑–∞–º.
+cmu-yautja-hivebreaker-hivemind-restored = –°–≤—è–∑—å —Å –∫–æ–ª–ª–µ–∫—Ç–∏–≤–Ω—ã–º —Ä–∞–∑—É–º–æ–º –≤–æ—Å—Å—Ç–∞–Ω–æ–≤–ª–µ–Ω–∞!
+cmu-yautja-hivebreaker-refused = –ö–æ–ª–ª–µ–∫—Ç–∏–≤–Ω—ã–π —Ä–∞–∑—É–º —Å–æ–ø—Ä–æ—Ç–∏–≤–ª—è–µ—Ç—Å—è –ø–æ–ø—ã—Ç–∫–µ —Ä–∞–∑–æ—Ä–≤–∞—Ç—å —Å–≤—è–∑—å! (–≠—Ç–æ—Ç –∏–≥—Ä–æ–∫ –Ω–µ —Ö–æ—á–µ—Ç —Å—Ç–∞–Ω–æ–≤–∏—Ç—å—Å—è —Ä–∞–±–æ–º.)
+cmu-yautja-hivebreaker-requires-recent-death = –¶–µ–ª—å –¥–æ–ª–∂–Ω–∞ –Ω–µ–¥–∞–≤–Ω–æ –ø–æ–≥–∏–±–Ω—É—Ç—å.
+cmu-yautja-honor-worth-examine = {$target} —Å—Ç–æ–∏—Ç {$honor} —á–µ—Å—Ç–∏.
+
+cmu-yautja-hunt-escape-console-already-closed = –ó–∞—Å–ª–æ–Ω–∫–∞ —É–∂–µ –∑–∞–∫—Ä—ã—Ç–∞.
+cmu-yautja-hunt-escape-console-already-open = –ó–∞—Å–ª–æ–Ω–∫–∞ —É–∂–µ –æ—Ç–∫—Ä—ã—Ç–∞.
+cmu-yautja-hunt-escape-console-close = –ó–∞–∫—Ä—ã—Ç—å
+cmu-yautja-hunt-escape-console-closed-broadcast = –ó–∞—Å–ª–æ–Ω–∫–∏ –æ—Ö–æ—Ç–Ω–∏—á—å–µ–≥–æ –∑–∞–ø–æ–≤–µ–¥–Ω–∏–∫–∞ –∑–∞–∫—Ä—ã—Ç—ã.
+cmu-yautja-hunt-escape-console-mask-not-held = –ù–µ–ª—å–∑—è –ø—Ä–æ—Å–∫–∞–Ω–∏—Ä–æ–≤–∞—Ç—å {$item}, –Ω–µ –¥–µ—Ä–∂–∞ –µ–≥–æ –≤ —Ä—É–∫–∞—Ö.
+cmu-yautja-hunt-escape-console-mask-refused = –ö–æ–Ω—Å–æ–ª—å –æ—Ç–∫–∞–∑—ã–≤–∞–µ—Ç—Å—è —Å–∫–∞–Ω–∏—Ä–æ–≤–∞—Ç—å {$item}.
+cmu-yautja-hunt-escape-console-mask-required = –ö–æ–Ω—Å–æ–ª—å –æ—Ç–∫–∞–∑—ã–≤–∞–µ—Ç—Å—è —Å–∫–∞–Ω–∏—Ä–æ–≤–∞—Ç—å —á—Ç–æ-–ª–∏–±–æ, –∫—Ä–æ–º–µ –º–∞—Å–∫–∏ —è—É—Ç–∂–∞.
+cmu-yautja-hunt-escape-console-nonyautja = –°—Ç—Ä–∞–Ω–Ω–∞—è –∫–æ–Ω—Å–æ–ª—å –≤—ã–¥–∞—ë—Ç –¥–≤–∞ –ø–æ–Ω—è—Ç–Ω—ã—Ö —Å–ª–æ–≤–∞: ¬´–°–∫–∞–Ω–∏—Ä–æ–≤–∞—Ç—å¬ª –∏ ¬´–ú–∞—Å–∫–∞¬ª.
+cmu-yautja-hunt-escape-console-open = –û—Ç–∫—Ä—ã—Ç—å
+cmu-yautja-hunt-escape-console-opened-broadcast = –ó–∞—Å–ª–æ–Ω–∫–∏ –æ—Ö–æ—Ç–Ω–∏—á—å–µ–≥–æ –∑–∞–ø–æ–≤–µ–¥–Ω–∏–∫–∞ –æ—Ç–∫—Ä—ã—Ç—ã.
+cmu-yautja-hunt-escape-console-opened-by-yautja-broadcast = {$hunter} –æ—Ç–∫—Ä—ã–ª –∑–∞—Å–ª–æ–Ω–∫—É –∑–∞–ø–æ–≤–µ–¥–Ω–∏–∫–∞.
+cmu-yautja-hunt-escape-console-scan-broadcast = –î–æ–±—ã—á–∞ –ø—ã—Ç–∞–µ—Ç—Å—è —Å–±–µ–∂–∞—Ç—å –∏–∑ –æ—Ö–æ—Ç–Ω–∏—á—å–∏—Ö —É–≥–æ–¥–∏–π —É –∫–æ–Ω—Å–æ–ª–∏ {$area}.
+cmu-yautja-hunt-escape-console-scan-cancelled = –°—Ç—Ä–∞–Ω–Ω–∞—è –∫–æ–Ω—Å–æ–ª—å –≤–Ω–µ–∑–∞–ø–Ω–æ –ø—Ä–µ–∫—Ä–∞—â–∞–µ—Ç —Å–∫–∞–Ω–∏—Ä–æ–≤–∞–Ω–∏–µ.
+cmu-yautja-hunt-escape-console-scan-start = –í—ã –ø–æ–¥–Ω–æ—Å–∏—Ç–µ {$item} –∫ –∫–æ–Ω—Å–æ–ª–∏, –∏ –æ–Ω–∞ –Ω–∞—á–∏–Ω–∞–µ—Ç —Å–∫–∞–Ω–∏—Ä–æ–≤–∞–Ω–∏–µ...
+cmu-yautja-hunt-escape-console-scan-success = –≠–∫—Ä–∞–Ω —Å—Ç—Ä–∞–Ω–Ω–æ–π –∫–æ–Ω—Å–æ–ª–∏ –∑–µ–ª–µ–Ω–µ–µ—Ç, –∏ –∑–∞—Å–ª–æ–Ω–∫–∞ –æ—Ç–∫—Ä—ã–≤–∞–µ—Ç—Å—è. –ü–æ—Ä–∞ –±–µ–∂–∞—Ç—å!
+cmu-yautja-hunt-escape-console-title = –ó–∞—Å–ª–æ–Ω–∫–∏ –∑–∞–ø–æ–≤–µ–¥–Ω–∏–∫–∞
+
+cmu-yautja-hunt-prey-ghost-description = –í–æ–π–¥–∏—Ç–µ –≤ –æ—Ö–æ—Ç–Ω–∏—á—å–∏ —É–≥–æ–¥—å—è —è—É—Ç–∂–∞ –≤ –∫–∞—á–µ—Å—Ç–≤–µ —Å—é–∂–µ—Ç–Ω–æ–π –¥–æ–±—ã—á–∏.
+cmu-yautja-hunt-prey-ghost-name = –î–æ–±—ã—á–∞ –æ—Ö–æ—Ç—ã
+cmu-yautja-hunt-prey-ghost-rules = –í—ã ‚Äî —Å—é–∂–µ—Ç–Ω–∞—è –¥–æ–±—ã—á–∞ –≤ –æ—Ö–æ—Ç–µ —è—É—Ç–∂–∞. –°–ª–µ–¥—É–π—Ç–µ —É–∫–∞–∑–∞–Ω–∏—è–º –≤–µ–¥—É—â–∏—Ö –∏ –ø–æ–¥–¥–µ—Ä–∂–∏–≤–∞–π—Ç–µ –∏–Ω—Ç–µ—Ä–µ—Å –æ—Ö–æ—Ç—ã.
+cmu-yautja-hunt-teleporter-denied = –õ—É—á—à–µ –Ω–µ –ø—ã—Ç–∞–π—Ç–µ—Å—å —ç—Ç–∏–º –ø–æ–ª—å–∑–æ–≤–∞—Ç—å—Å—è: –º–æ–∂–Ω–æ –ø–æ—Ç–µ—Ä—è—Ç—å –ø–æ–ª–æ–≤–∏–Ω—É —Ç–µ–ª–∞!
+cmu-yautja-hunt-teleporter-no-destination = –£ —Ä–µ—Ç—Ä–∞–Ω—Å–ª—è—Ç–æ—Ä–∞ –æ—Ö–æ—Ç–Ω–∏—á—å–∏—Ö —É–≥–æ–¥–∏–π –Ω–µ—Ç –Ω–∞—Å—Ç—Ä–æ–µ–Ω–Ω—ã—Ö –Ω–∞–ø—Ä–∞–≤–ª–µ–Ω–∏–π.
+cmu-yautja-hunt-teleporter-ship-confirm-message = –í—ã—Å–∞–¥–∏—Ç—å—Å—è –≤ –æ—Ö–æ—Ç–Ω–∏—á—å–∏—Ö —É–≥–æ–¥—å—è—Ö?
+cmu-yautja-hunt-teleporter-ship-confirm-title = –í—ã—Å–∞–¥–∫–∞ –≤ –æ—Ö–æ—Ç–Ω–∏—á—å–∏ —É–≥–æ–¥—å—è
+cmu-yautja-hunt-teleporter-young-confirm-message = –ü–æ—Å–ª–µ –≤—Ö–æ–¥–∞ –≤ –æ—Ö–æ—Ç–Ω–∏—á—å–∏ —É–≥–æ–¥—å—è –Ω–∞—á–Ω—ë—Ç—Å—è –≤–∞—à–µ –∫—Ä–æ–≤–∞–≤–æ–µ –ø–æ—Å–≤—è—â–µ–Ω–∏–µ. –ü—Ä–æ–¥–æ–ª–∂–∏—Ç—å?
+cmu-yautja-hunt-teleporter-young-confirm-title = –í—ã—Å–∞–¥–∫–∞ –º–æ–ª–æ–¥–æ–≥–æ –æ—Ö–æ—Ç–Ω–∏–∫–∞
+cmu-yautja-hunt-teleporter-young-denied = –í–∞—Å –Ω–µ –æ–±—É—á–∞–ª–∏ –ø–æ–ª—å–∑–æ–≤–∞—Ç—å—Å—è —ç—Ç–∏–º —Ç–µ–ª–µ–ø–æ—Ä—Ç–∞—Ç–æ—Ä–æ–º.
+
+cmu-yautja-hunter-spear-fishing-caught-others = {$user} –±—ã—Å—Ç—Ä–æ –≤–æ–Ω–∑–∞–µ—Ç {$spear} –≤ –≤–æ–¥—É –∏ –≤—ã—Ç–∞—Å–∫–∏–≤–∞–µ—Ç {$catch}!
+cmu-yautja-hunter-spear-fishing-caught-self = –í—ã –±—ã—Å—Ç—Ä–æ –≤–æ–Ω–∑–∞–µ—Ç–µ {$spear} –≤ –≤–æ–¥—É –∏ –≤—ã—Ç–∞—Å–∫–∏–≤–∞–µ—Ç–µ {$catch}!
+cmu-yautja-hunter-spear-fishing-fail = –í–∞–º –Ω–µ —É–¥–∞—ë—Ç—Å—è –Ω–∏—á–µ–≥–æ –ø–æ–π–º–∞—Ç—å!
+cmu-yautja-hunter-spear-fishing-start-others = {$user} –Ω–∞—á–∏–Ω–∞–µ—Ç —Ü–µ–ª–∏—Ç—å—Å—è {$spear} –≤ –≤–æ–¥—É...
+cmu-yautja-hunter-spear-fishing-start-self = –í—ã –≥–æ—Ç–æ–≤–∏—Ç–µ—Å—å –ø–æ–π–º–∞—Ç—å —á—Ç–æ-–Ω–∏–±—É–¥—å –≤ –≤–æ–¥–µ...
+
+cmu-yautja-id-card = –ò–¥–µ–Ω—Ç–∏—Ñ–∏–∫–∞—Ü–∏–æ–Ω–Ω–∞—è –∫–∞—Ä—Ç–∞ —è—É—Ç–∂–∞
+cmu-yautja-id-chip = ID-—á–∏–ø —è—É—Ç–∂–∞
+cmu-yautja-job-description-badblood = –û–±–µ—Å—á–µ—â–µ–Ω–Ω—ã–π –æ—Ö–æ—Ç–Ω–∏–∫ —è—É—Ç–∂–∞ —Å —Ä–µ–Ω–µ–≥–∞—Ç—Å–∫–∏–º —Å–Ω–∞—Ä—è–∂–µ–Ω–∏–µ–º –∏ –∏–∑–æ–ª–∏—Ä–æ–≤–∞–Ω–Ω–æ–π —Å–≤—è–∑—å—é.
+cmu-yautja-job-description-hellhound = –û—Ö–æ—Ç–Ω–∏—á–∏–π –∑–≤–µ—Ä—å —è—É—Ç–∂–∞, –ø—Ä–æ–±—É–∂–¥—ë–Ω–Ω—ã–π –Ω–∞ –∫–æ—Ä–∞–±–ª–µ –æ—Ö–æ—Ç–Ω–∏–∫–æ–≤.
+cmu-yautja-job-name-badblood = –Ø—É—Ç–∂–∞ –ø–ª–æ—Ö–æ–π –∫—Ä–æ–≤–∏
+cmu-yautja-job-name-hellhound = –ê–¥—Å–∫–∞—è –≥–æ–Ω—á–∞—è
+
+cmu-yautja-lobby-age = –í–æ–∑—Ä–∞—Å—Ç
+cmu-yautja-lobby-armor = –ë—Ä–æ–Ω—è
+cmu-yautja-lobby-armor-material = –ú–∞—Ç–µ—Ä–∏–∞–ª –±—Ä–æ–Ω–∏
+cmu-yautja-lobby-armor-style = –°—Ç–∏–ª—å –±—Ä–æ–Ω–∏
+cmu-yautja-lobby-bracer = –ù–∞—Ä—É—á
+cmu-yautja-lobby-bracer-material = –°—Ç–∏–ª—å –Ω–∞—Ä—É—á–∞
+cmu-yautja-lobby-cape = –ù–∞–∫–∏–¥–∫–∞
+cmu-yautja-lobby-caster = –ù–∞–ø–ª–µ—á–Ω—ã–π –∫–∞—Å—Ç–µ—Ä
+cmu-yautja-lobby-eyes = –¶–≤–µ—Ç –≥–ª–∞–∑
+cmu-yautja-lobby-flavor = –û–ø–∏—Å–∞–Ω–∏–µ –ø–µ—Ä—Å–æ–Ω–∞–∂–∞
+cmu-yautja-lobby-flavor-limit = { $count } / { $max } —Å–∏–º–≤–æ–ª–æ–≤ –º–∞–∫—Å–∏–º—É–º
+cmu-yautja-lobby-flavor-limit-tooltip = –ú–∞–∫—Å–∏–º—É–º { $max } —Å–∏–º–≤–æ–ª–æ–≤.
+cmu-yautja-lobby-flavor-placeholder = –ù–µ–æ–±—è–∑–∞—Ç–µ–ª—å–Ω–æ–µ –æ–ø–∏—Å–∞–Ω–∏–µ –ø–µ—Ä—Å–æ–Ω–∞–∂–∞
+cmu-yautja-lobby-gender = –ü–æ–ª
+cmu-yautja-lobby-greaves = –ü–æ–Ω–æ–∂–∏
+cmu-yautja-lobby-greaves-material = –ú–∞—Ç–µ—Ä–∏–∞–ª –ø–æ–Ω–æ–∂–µ–π
+cmu-yautja-lobby-greaves-style = –°—Ç–∏–ª—å –ø–æ–Ω–æ–∂–µ–π
+cmu-yautja-lobby-hair = –¶–≤–µ—Ç –¥—Ä–µ–¥–æ–≤
+cmu-yautja-lobby-invisibility-help-modern = –°–æ–≤—Ä–µ–º–µ–Ω–Ω—ã–µ –∑–≤—É–∫–∏ –∞–∫—Ç–∏–≤–∞—Ü–∏–∏ –∏ –¥–µ–∞–∫—Ç–∏–≤–∞—Ü–∏–∏ –º–∞—Å–∫–∏—Ä–æ–≤–∫–∏.
+cmu-yautja-lobby-invisibility-help-retro = –°—Ç–∞—Ä—ã–µ —Ä–µ—Ç—Ä–æ-–∑–≤—É–∫–∏ –∞–∫—Ç–∏–≤–∞—Ü–∏–∏ –∏ –¥–µ–∞–∫—Ç–∏–≤–∞—Ü–∏–∏ –º–∞—Å–∫–∏—Ä–æ–≤–∫–∏.
+cmu-yautja-lobby-invisibility-sound = –ó–≤—É–∫ –º–∞—Å–∫–∏—Ä–æ–≤–∫–∏
+cmu-yautja-lobby-legacy = –ù–∞—Å–ª–µ–¥–Ω—ã–π –∫–æ–º–ø–ª–µ–∫—Ç
+cmu-yautja-lobby-mask = –ë–∏–æ–º–∞—Å–∫–∞
+cmu-yautja-lobby-mask-accessory = –ê–∫—Å–µ—Å—Å—É–∞—Ä –º–∞—Å–∫–∏
+cmu-yautja-lobby-mask-material = –ú–∞—Ç–µ—Ä–∏–∞–ª –º–∞—Å–∫–∏
+cmu-yautja-lobby-mask-style = –°—Ç–∏–ª—å –º–∞—Å–∫–∏
+cmu-yautja-lobby-name = –ò–º—è —è—É—Ç–∂–∞
+cmu-yautja-lobby-preview-rotate-left = –ü–æ–≤–µ—Ä–Ω—É—Ç—å –≤–ª–µ–≤–æ
+cmu-yautja-lobby-preview-rotate-right = –ü–æ–≤–µ—Ä–Ω—É—Ç—å –≤–ø—Ä–∞–≤–æ
+cmu-yautja-lobby-preview-sound = –ü—Ä–æ—Å–ª—É—à–∞—Ç—å
+cmu-yautja-lobby-preview-without-gear = –ü—Ä–æ—Å–º–æ—Ç—Ä –±–µ–∑ —Å–Ω–∞—Ä—è–∂–µ–Ω–∏—è
+cmu-yautja-lobby-quills = –ò–≥–ª—ã
+cmu-yautja-lobby-sets = –ö–æ–º–ø–ª–µ–∫—Ç—ã
+cmu-yautja-lobby-sex = –ü–æ–ª
+cmu-yautja-lobby-skin = –¶–≤–µ—Ç –∫–æ–∂–∏
+cmu-yautja-lobby-skin-color = –¶–≤–µ—Ç –∫–æ–∂–∏
+cmu-yautja-lobby-tab = –Ø—É—Ç–∂–∞
+cmu-yautja-lobby-tech = –¢–µ—Ö–Ω–æ–ª–æ–≥–∏–∏
+cmu-yautja-lobby-translator-help-combo = –ü–µ—Ä–µ–≤–µ–¥—ë–Ω–Ω–∞—è —Ä–µ—á—å –≤ —Å—Ç–∏–ª–µ leetspeak —Å —Å–æ–≤—Ä–µ–º–µ–Ω–Ω—ã–º —Ñ–æ—Ä–º–∞—Ç–∏—Ä–æ–≤–∞–Ω–∏–µ–º –ø–µ—Ä–µ–≤–æ–¥—á–∏–∫–∞.
+cmu-yautja-lobby-translator-help-modern = –ß–∏—Å—Ç–∞—è –ø–µ—Ä–µ–≤–µ–¥—ë–Ω–Ω–∞—è —Ä–µ—á—å —Å —Å–æ–≤—Ä–µ–º–µ–Ω–Ω—ã–º –æ—Ñ–æ—Ä–º–ª–µ–Ω–∏–µ–º –∫—Ä–∞—Å–Ω–æ–≥–æ –Ω–∞—Ä—É—á–∞.
+cmu-yautja-lobby-translator-help-retro = –ü–µ—Ä–µ–≤–µ–¥—ë–Ω–Ω–∞—è —Ä–µ—á—å –≤ —Å—Ç–∏–ª–µ leetspeak —Å –±–µ–ª—ã–º —Ä–µ—Ç—Ä–æ-–æ—Ñ–æ—Ä–º–ª–µ–Ω–∏–µ–º –ø–µ—Ä–µ–≤–æ–¥—á–∏–∫–∞.
+cmu-yautja-lobby-translator-type = –¢–∏–ø –ø–µ—Ä–µ–≤–æ–¥—á–∏–∫–∞
+cmu-yautja-lobby-unique = –£–Ω–∏–∫–∞–ª—å–Ω—ã–π –∫–æ–º–ø–ª–µ–∫—Ç
+
+cmu-yautja-mark-already-dishonored = {$target} —É–∂–µ –∑–∞–∫–ª–µ–π–º—ë–Ω –∫–∞–∫ –æ–±–µ—Å—á–µ—â–µ–Ω–Ω—ã–π {$hunter} –∑–∞ ¬´{$reason}¬ª!
+cmu-yautja-mark-already-gear-carrier = {$target} —É–∂–µ –æ—Ç–º–µ—á–µ–Ω {$hunter} –∫–∞–∫ –Ω–æ—Å–∏—Ç–µ–ª—å —Å–Ω–∞—Ä—è–∂–µ–Ω–∏—è!
+cmu-yautja-mark-already-honored = {$target} —É–∂–µ —É–¥–æ—Å—Ç–æ–µ–Ω —á–µ—Å—Ç–∏ {$hunter} –∑–∞ ¬´{$reason}¬ª!
+cmu-yautja-mark-already-marked = {$target} —É–∂–µ –æ—Ç–º–µ—á–µ–Ω {$hunter}.
+cmu-yautja-mark-dishonored-broadcast = {$hunter} –∑–∞–∫–ª–µ–π–º–∏–ª {$target} –∫–∞–∫ –æ–±–µ—Å—á–µ—â–µ–Ω–Ω–æ–≥–æ –∑–∞ ¬´{$reason}¬ª.
+cmu-yautja-mark-gear-carrier-broadcast = {$hunter} –æ—Ç–º–µ—Ç–∏–ª {$target} –∫–∞–∫ –Ω–æ—Å–∏—Ç–µ–ª—è —Å–Ω–∞—Ä—è–∂–µ–Ω–∏—è!
+cmu-yautja-mark-honored-broadcast = {$hunter} —É–¥–æ—Å—Ç–æ–∏–ª {$target} —á–µ—Å—Ç–∏ –∑–∞ ¬´{$reason}¬ª.
+cmu-yautja-mark-prey-broadcast = {$hunter} –≤—ã–±—Ä–∞–ª {$target} ({$honor} —á–µ—Å—Ç–∏) —Å–ª–µ–¥—É—é—â–µ–π —Ü–µ–ª—å—é –≤ –æ–±–ª–∞—Å—Ç–∏ {$area}.
+cmu-yautja-mark-prey-destroyed = –í–∞—à–∞ –¥–æ–±—ã—á–∞ –ø–æ–ª–Ω–æ—Å—Ç—å—é —É–Ω–∏—á—Ç–æ–∂–µ–Ω–∞!
+cmu-yautja-mark-prey-removed = –í—ã —É–±—Ä–∞–ª–∏ {$target} –∏–∑ —Å–≤–æ–µ–π –æ—Ö–æ—Ç—ã.
+cmu-yautja-mark-unmark-not-owner = –ù–µ–ª—å–∑—è –æ—Ç–º–µ–Ω–∏—Ç—å –¥–µ–π—Å—Ç–≤–∏—è –∂–∏–≤–æ–≥–æ –±—Ä–∞—Ç–∞ –∏–ª–∏ —Å–µ—Å—Ç—Ä—ã!
+cmu-yautja-mask-accessory = –ê–∫—Å–µ—Å—Å—É–∞—Ä –±–∏–æ–º–∞—Å–∫–∏
+cmu-yautja-prey-claim-broadcast = {$hunter} –∑–∞–±—Ä–∞–ª {$target} –∫–∞–∫ —Ç—Ä–æ—Ñ–µ–π.
+cmu-yautja-prey-claim-self = –í—ã –∑–∞–±—Ä–∞–ª–∏ {$target} –∫–∞–∫ —Ç—Ä–æ—Ñ–µ–π.
+cmu-yautja-prey-scalp-claim-broadcast = {$hunter} –∑–∞–±—Ä–∞–ª —Å–∫–∞–ª—å–ø {$target} –∫–∞–∫ —Ç—Ä–æ—Ñ–µ–π.
+cmu-yautja-prey-scalp-claim-self = –í—ã –∑–∞–±—Ä–∞–ª–∏ —Å–∫–∞–ª—å–ø {$target} –∫–∞–∫ —Ç—Ä–æ—Ñ–µ–π.
+cmu-yautja-rack-wrong-role = –≠—Ç–∞ –º–∞—à–∏–Ω–∞ –Ω–µ –¥–ª—è –≤–∞—Å.
+
+cmu-yautja-relay-add-destination-action-desc = –î–æ–±–∞–≤–ª—è–µ—Ç –≤–∞—à–µ —Ç–µ–∫—É—â–µ–µ –º–µ—Å—Ç–æ–ø–æ–ª–æ–∂–µ–Ω–∏–µ –≤ —ç—Ç–æ—Ç —Ä–µ—Ç—Ä–∞–Ω—Å–ª—è—Ç–æ—Ä.
+cmu-yautja-relay-add-destination-action-name = –î–æ–±–∞–≤–∏—Ç—å —Ç–æ—á–∫—É —Ç–µ–ª–µ–ø–æ—Ä—Ç–∞—Ü–∏–∏
+cmu-yautja-relay-add-destination-broadcast = {$hunter} —Å–æ–∑–¥–∞–ª –Ω–æ–≤—É—é —Ç–æ—á–∫—É —Ç–µ–ª–µ–ø–æ—Ä—Ç–∞—Ü–∏–∏ {$name} –≤ –º–µ—Å—Ç–µ {$location}, –æ–±–ª–∞—Å—Ç—å {$area}
+cmu-yautja-relay-add-destination-denied = –í—ã –ø–æ–Ω—è—Ç–∏—è –Ω–µ –∏–º–µ–µ—Ç–µ, –∫–∞–∫ —Ä–∞–±–æ—Ç–∞–µ—Ç —ç—Ç–∞ —à—Ç—É–∫–∞!
+cmu-yautja-relay-add-destination-prompt = –ö–∞–∫ –Ω–∞–∑–≤–∞—Ç—å —ç—Ç–æ –º–µ—Å—Ç–æ?
+cmu-yautja-relay-add-destination-success = –¢–µ–ø–µ—Ä—å –≤—ã –º–æ–∂–µ—Ç–µ —Ç–µ–ª–µ–ø–æ—Ä—Ç–∏—Ä–æ–≤–∞—Ç—å—Å—è –≤ —ç—Ç–æ –º–µ—Å—Ç–æ!
+cmu-yautja-relay-beacon-complete = –†–µ—Ç—Ä–∞–Ω—Å–ª—è—Ç–æ—Ä —Å—Ç–∞–±–∏–ª–∏–∑–∏—Ä—É–µ—Ç –≤–∞—à–µ —Ç–µ–ª–æ.
+cmu-yautja-relay-beacon-denied = –í—ã –≤–æ–∑–∏—Ç–µ—Å—å —Å –Ω–∏–º, –Ω–æ –Ω–∏—á–µ–≥–æ –Ω–µ –ø—Ä–æ–∏—Å—Ö–æ–¥–∏—Ç!
+cmu-yautja-relay-beacon-disappear = {$user} –∏—Å—á–µ–∑–∞–µ—Ç!
+cmu-yautja-relay-beacon-header = –í—ã–±–µ—Ä–∏—Ç–µ –Ω–∞–ø—Ä–∞–≤–ª–µ–Ω–∏–µ
+cmu-yautja-relay-beacon-start = {$user} –Ω–∞—á–∏–Ω–∞–µ—Ç –º–µ—Ä—Ü–∞—Ç—å –∏ —Ä–∞—Å–ø–ª—ã–≤–∞—Ç—å—Å—è...
+cmu-yautja-relay-beacon-title = –†–µ—Ç—Ä–∞–Ω—Å–ª—è—Ç–æ—Ä
+cmu-yautja-relay-beacon-youngblood-denied = –í–∞—Å –Ω–µ –æ–±—É—á–∞–ª–∏ –ø–æ–ª—å–∑–æ–≤–∞—Ç—å—Å—è —Ä–µ—Ç—Ä–∞–Ω—Å–ª—è—Ç–æ—Ä–æ–º ‚Äî –ª—É—á—à–µ –Ω–µ –≤–æ–∑–∏—Ç–µ—Å—å —Å –Ω–∏–º.
+cmu-yautja-relay-destination-human-ship = –ß–µ–ª–æ–≤–µ—á–µ—Å–∫–∏–π –∫–æ—Ä–∞–±–ª—å
+cmu-yautja-relay-destination-unavailable = {$destination} (–Ω–µ–¥–æ—Å—Ç—É–ø–Ω–æ)
+cmu-yautja-relay-destination-yautja-ship = –ö–æ—Ä–∞–±–ª—å —è—É—Ç–∂–∞
+cmu-yautja-remove-bracer-attachments-action-desc = –°–Ω–∏–º–∞–µ—Ç –ø—Ä–∏—Å–ø–æ—Å–æ–±–ª–µ–Ω–∏—è —Å –≤–∞—à–µ–≥–æ –Ω–∞—Ä—É—á–∞.
+cmu-yautja-remove-bracer-attachments-action-name = –°–Ω—è—Ç—å –ø—Ä–∏—Å–ø–æ—Å–æ–±–ª–µ–Ω–∏–µ –Ω–∞—Ä—É—á–∞
+
+cmu-yautja-scalp-non-yautja-examine = –°–±–æ—Ä —Å–∫–∞–ª—å–ø–æ–≤ –¥–æ–ª–∂–µ–Ω –±—ã–ª –±—ã—Ç—å <i>—à—É—Ç–∫–æ–π</i>...
+cmu-yautja-scythe-bonus-strike-others = –í –±–æ—é –ø–æ—è–≤–ª—è–µ—Ç—Å—è –≤–æ–∑–º–æ–∂–Ω–æ—Å—Ç—å –¥–ª—è —É–¥–∞—Ä–∞!
+cmu-yautja-scythe-bonus-strike-self = –í–∞–º —É–¥–∞—ë—Ç—Å—è –Ω–∞–Ω–µ—Å—Ç–∏ –≤—Ä–∞–≥—É –µ—â—ë –æ–¥–∏–Ω —É–¥–∞—Ä!
+cmu-yautja-shard-merge = –í—ã —Å–æ–±–∏—Ä–∞–µ—Ç–µ –æ—Å–∫–æ–ª–æ–∫ –æ–±—Ä–∞—Ç–Ω–æ.
+cmu-yautja-shard-need-both-halves = –î–ª—è —ç—Ç–æ–≥–æ –Ω—É–∂–Ω–æ –¥–µ—Ä–∂–∞—Ç—å –æ–±–µ –ø–æ–ª–æ–≤–∏–Ω—ã.
+cmu-yautja-shard-need-both-hands = –î–ª—è —Ä–∞–∑–¥–µ–ª–µ–Ω–∏—è –Ω—É–∂–Ω—ã –æ–±–µ —Å–≤–æ–±–æ–¥–Ω—ã–µ —Ä—É–∫–∏.
+cmu-yautja-shard-need-other-half = –î–ª—è —Å–±–æ—Ä–∫–∏ –Ω—É–∂–Ω–∞ –≤—Ç–æ—Ä–∞—è –ø–æ–ª–æ–≤–∏–Ω–∞.
+cmu-yautja-shard-no-idea = –í—ã –ø–æ–Ω—è—Ç–∏—è –Ω–µ –∏–º–µ–µ—Ç–µ, –∫–∞–∫ —ç—Ç–æ —Ä–∞–±–æ—Ç–∞–µ—Ç.
+cmu-yautja-shard-split = –í—ã —Ä–∞–∑–¥–µ–ª—è–µ—Ç–µ –æ—Å–∫–æ–ª–æ–∫ –Ω–∞–¥–≤–æ–µ.
+cmu-yautja-shard-use-complete = –≠–Ω–µ—Ä–≥–∏—è –æ—Å–∫–æ–ª–∫–∞ –ø—Ä–æ—Ö–æ–¥–∏—Ç —á–µ—Ä–µ–∑ –≤–∞—à–µ —Ç–µ–ª–æ.
+cmu-yautja-shard-use-start = –í—ã –Ω–∞—á–∏–Ω–∞–µ—Ç–µ –ø–æ–≥–ª–æ—â–∞—Ç—å —ç–Ω–µ—Ä–≥–∏—é –æ—Å–∫–æ–ª–∫–∞...
+cmu-yautja-shuttle-console-denied = –í—ã –Ω–µ –ø–æ–Ω–∏–º–∞–µ—Ç–µ, –∫–∞–∫ –ø–æ–ª—å–∑–æ–≤–∞—Ç—å—Å—è —ç—Ç–∏–º —Ç–µ—Ä–º–∏–Ω–∞–ª–æ–º.
+cmu-yautja-skeleton-trophy-attach-denied = –ó–∞—á–µ–º –≤—ã –ø—ã—Ç–∞–µ—Ç–µ—Å—å –ø—Ä–∏–∫—Ä–µ–ø–∏—Ç—å —ç—Ç–æ –∫ –æ–¥–µ–∂–¥–µ?
+cmu-yautja-skeleton-trophy-dirty-examine = {$trophy} –≤—Å—ë –µ—â—ë –≥—Ä—è–∑–Ω—ã–π.
+cmu-yautja-skeleton-trophy-polished-examine = –û—Ç–ø–æ–ª–∏—Ä–æ–≤–∞–Ω–æ –¥–æ —Å–æ–≤–µ—Ä—à–µ–Ω—Å—Ç–≤–∞.
+cmu-yautja-snare-arrow-disarmed = {$trap} –æ–±–µ–∑–≤—Ä–µ–∂–µ–Ω–∞.
+cmu-yautja-snare-arrow-triggered = –í—ã –ø–æ–ø–∞–ª–∏—Å—å –≤ {$trap}!
+cmu-yautja-spike-launcher-denied = –í—ã –ø–æ–Ω—è—Ç–∏—è –Ω–µ –∏–º–µ–µ—Ç–µ, –∫–∞–∫ —Ä–∞–±–æ—Ç–∞–µ—Ç —ç—Ç–∞ —à—Ç—É–∫–∞!
+cmu-yautja-state-no-longer = –±–æ–ª—å—à–µ –Ω–µ
+cmu-yautja-state-now = —Ç–µ–ø–µ—Ä—å
+cmu-yautja-state-off = –≤—ã–∫–ª—é—á–µ–Ω
+cmu-yautja-state-on = –≤–∫–ª—é—á—ë–Ω
+cmu-yautja-tech-nothing-happens = –í—ã –≤–æ–∑–∏—Ç–µ—Å—å —Å –∫–Ω–æ–ø–∫–∞–º–∏, –Ω–æ –Ω–∏—á–µ–≥–æ –Ω–µ –ø—Ä–æ–∏—Å—Ö–æ–¥–∏—Ç...
+cmu-yautja-tech-press-buttons = –í—ã –Ω–∞–∂–∏–º–∞–µ—Ç–µ –Ω–µ—Å–∫–æ–ª—å–∫–æ –∫–Ω–æ–ø–æ–∫...
+cmu-yautja-tech-random-delimbs = –£—Å—Ç—Ä–æ–π—Å—Ç–≤–æ –∏–∑–¥–∞—ë—Ç —Å—Ç—Ä–∞–Ω–Ω—ã–π –∑–≤—É–∫ –∏ –æ—Ç–≤–∞–ª–∏–≤–∞–µ—Ç—Å—è... –í–º–µ—Å—Ç–µ —Å –≤–∞—à–∏–º–∏ —Ä—É–∫–∞–º–∏!
+cmu-yautja-tech-shock-others = {$bracer} –∏–∑–¥–∞—ë—Ç —Å–∏–≥–Ω–∞–ª –∏ –ø—Ä–æ–ø—É—Å–∫–∞–µ—Ç —Ä–∞–∑—Ä—è–¥ —á–µ—Ä–µ–∑ —Ç–µ–ª–æ {$user}!
+
+cmu-yautja-thrall-already-blooded = {$target} —É–∂–µ –æ–∫—Ä–æ–≤–∞–≤–ª–µ–Ω {$hunter} –∑–∞ ¬´{$reason}¬ª!
+cmu-yautja-thrall-already-stunned = –í–∞—à —Ä–∞–± —É–∂–µ –æ–≥–ª—É—à—ë–Ω!
+cmu-yautja-thrall-blooded-cannot-remove = –ü–æ—Å–ª–µ –∫—Ä–æ–≤–∞–≤–æ–≥–æ –ø–æ—Å–≤—è—â–µ–Ω–∏—è —Ä–∞–±–∞ –ø—É—Ç–∏ –Ω–∞–∑–∞–¥ –Ω–µ—Ç.
+cmu-yautja-thrall-destroyed-broadcast = –†–∞–± {$hunter}, {$target}, –ø–æ–ª–Ω–æ—Å—Ç—å—é —É–Ω–∏—á—Ç–æ–∂–µ–Ω!
+cmu-yautja-thrall-destroyed-master = –í–∞—à —Ä–∞–± –ø–æ–ª–Ω–æ—Å—Ç—å—é —É–Ω–∏—á—Ç–æ–∂–µ–Ω!
+cmu-yautja-thrall-link-already = –°–≤—è–∑—å —É–∂–µ —É—Å—Ç–∞–Ω–æ–≤–ª–µ–Ω–∞!
+cmu-yautja-thrall-message-no-bracer-master = –í–∞—à –≥–æ—Å–ø–æ–¥–∏–Ω –Ω–µ –Ω–æ—Å–∏—Ç –Ω–∞—Ä—É—á!
+cmu-yautja-thrall-message-no-bracer-thrall = –í–∞—à —Ä–∞–± –Ω–µ –Ω–æ—Å–∏—Ç –Ω–∞—Ä—É—á!
+cmu-yautja-thrall-message-none = –í–∞–º –Ω–µ–∫–æ–º—É –æ—Ç–ø—Ä–∞–≤–∏—Ç—å —Å–æ–æ–±—â–µ–Ω–∏–µ!
+cmu-yautja-thrall-release-broadcast = {$hunter} –æ—Å–≤–æ–±–æ–¥–∏–ª {$target} –æ—Ç —Ä–∞–±—Å—Ç–≤–∞!
+cmu-yautja-thrall-self-destruct-broadcast = {$hunter} –∑–∞–ø—É—Å—Ç–∏–ª –ø—Ä–æ—Ü–µ–¥—É—Ä—É —Å–∞–º–æ—É–Ω–∏—á—Ç–æ–∂–µ–Ω–∏—è —Å–≤–æ–µ–≥–æ —Ä–∞–±–∞.
+cmu-yautja-thrall-self-destruct-confirm = –í—ã —É–≤–µ—Ä–µ–Ω—ã, —á—Ç–æ —Ö–æ—Ç–∏—Ç–µ –≤–∑–æ—Ä–≤–∞—Ç—å –Ω–∞—Ä—É—á {$species}? –û—Å—Ç–∞–Ω–æ–≤–∏—Ç—å –ø—Ä–æ—Ü–µ—Å—Å –±—É–¥–µ—Ç –Ω–µ–≤–æ–∑–º–æ–∂–Ω–æ.
+cmu-yautja-thrall-self-destruct-dialog-title = –°–∞–º–æ—É–Ω–∏—á—Ç–æ–∂–µ–Ω–∏–µ —Ä–∞–±–∞
+cmu-yautja-thrall-self-destruct-none = –£ –≤–∞—Å –Ω–µ—Ç —Ä–∞–±–∞ –¥–ª—è —É–Ω–∏—á—Ç–æ–∂–µ–Ω–∏—è!
+cmu-yautja-thrall-stun-none = –£ –≤–∞—Å –Ω–µ—Ç —Ä–∞–±–∞ –¥–ª—è –Ω–∞–∫–∞–∑–∞–Ω–∏—è!
+
+cmu-yautja-tracker-active-hand-required = –î–ª—è —É–¥–∞–ª–µ–Ω–∏—è –ø—Ä–µ–¥–º–µ—Ç–∞ –∏–∑ —Ç—Ä–µ–∫–µ—Ä–∞ –æ–Ω –¥–æ–ª–∂–µ–Ω –±—ã—Ç—å –≤ –∞–∫—Ç–∏–≤–Ω–æ–π —Ä—É–∫–µ!
+cmu-yautja-tracker-added = –í—ã –¥–æ–±–∞–≤–ª—è–µ—Ç–µ <b>{$item}</b> –≤ —Å–∏—Å—Ç–µ–º—É –æ—Ç—Å–ª–µ–∂–∏–≤–∞–Ω–∏—è.
+cmu-yautja-tracker-already-tracked = {$item} —É–∂–µ –æ—Ç—Å–ª–µ–∂–∏–≤–∞–µ—Ç—Å—è.
+cmu-yautja-tracker-not-tracked = {$item} –æ—Ç—Å—É—Ç—Å—Ç–≤—É–µ—Ç –≤ —Å–∏—Å—Ç–µ–º–µ –æ—Ç—Å–ª–µ–∂–∏–≤–∞–Ω–∏—è.
+cmu-yautja-tracker-removed = –í—ã —É–¥–∞–ª—è–µ—Ç–µ <b>{$item}</b> –∏–∑ —Å–∏—Å—Ç–µ–º—ã –æ—Ç—Å–ª–µ–∂–∏–≤–∞–Ω–∏—è.
+cmu-yautja-trap-arm-denied = –í—ã –Ω–µ –∑–Ω–∞–µ—Ç–µ, –∫–∞–∫ –ø–æ–ª—å–∑–æ–≤–∞—Ç—å—Å—è —ç—Ç–æ–π —à—Ç—É–∫–æ–π!
+cmu-yautja-trap-badblood-hive-avoid = –ú—ã –æ—Å—Ç–æ—Ä–æ–∂–Ω–æ –æ–±—Ö–æ–¥–∏–º –ª–æ–≤—É—à–∫—É.
+cmu-yautja-trap-break-free-alert-desc = –í—ã –ø—Ä–∏–≤—è–∑–∞–Ω—ã —Å–Ω–∞—Ä—è–∂–µ–Ω–∏–µ–º —è—É—Ç–∂–∞. –ù–∞–∂–º–∏—Ç–µ, —á—Ç–æ–±—ã –ø–æ–ø—ã—Ç–∞—Ç—å—Å—è –æ—Å–≤–æ–±–æ–¥–∏—Ç—å—Å—è.
+cmu-yautja-trap-break-free-alert-name = –û—Å–≤–æ–±–æ–¥–∏—Ç—å—Å—è
+cmu-yautja-trap-configure-denied = –í—ã –Ω–µ —É–º–µ–µ—Ç–µ –Ω–∞—Å—Ç—Ä–∞–∏–≤–∞—Ç—å –ª–æ–≤—É—à–∫—É.
+cmu-yautja-trap-configure-message = –ù–∞ –∫–∞–∫–æ–µ —Ä–∞—Å—Å—Ç–æ—è–Ω–∏–µ –Ω–∞—Å—Ç—Ä–æ–∏—Ç—å –æ—Ö–æ—Ç–Ω–∏—á—å—é –ª–æ–≤—É—à–∫—É?
+cmu-yautja-trap-configure-set = –í—ã —É—Å—Ç–∞–Ω–∞–≤–ª–∏–≤–∞–µ—Ç–µ —Ä–∞–¥–∏—É—Å –ø—Ä–∏–≤—è–∑–∏ –ª–æ–≤—É—à–∫–∏: {$range}.
+cmu-yautja-trap-configure-title = –†–∞–¥–∏—É—Å –æ—Ö–æ—Ç–Ω–∏—á—å–µ–π –ª–æ–≤—É—à–∫–∏
+cmu-yautja-trap-configure-verb = –ù–∞—Å—Ç—Ä–æ–∏—Ç—å –æ—Ö–æ—Ç–Ω–∏—á—å—é –ª–æ–≤—É—à–∫—É
+cmu-yautja-trap-non-yautja-trigger = –í—ã –Ω–µ–æ—Å—Ç–æ—Ä–æ–∂–Ω–æ —Ç—è–Ω–µ—Ç–µ—Å—å –∫ {$trap}...
+cmu-yautja-trap-observer-triggered = {$target} –ø–æ–ø–∞–¥–∞–µ—Ç—Å—è –≤ {$trap}.
+cmu-yautja-trap-trigger-broadcast = –û—Ö–æ—Ç–Ω–∏—á—å—è –ª–æ–≤—É—à–∫–∞ –ø–æ–π–º–∞–ª–∞ –∫–æ–≥–æ-—Ç–æ –≤ –æ–±–ª–∞—Å—Ç–∏ {$area}!
+cmu-yautja-trap-yautja-avoid = –í—ã –æ—Å—Ç–æ—Ä–æ–∂–Ω–æ –æ–±—Ö–æ–¥–∏—Ç–µ –ª–æ–≤—É—à–∫—É.
+cmu-yautja-unmark-dishonored-broadcast = {$hunter} —Å–Ω—è–ª —Å {$target} –∫–ª–µ–π–º–æ –æ–±–µ—Å—á–µ—â–µ–Ω–Ω–æ–≥–æ!
+cmu-yautja-unmark-gear-carrier-broadcast = {$hunter} —Å–Ω—è–ª —Å {$target} –∫–ª–µ–π–º–æ –Ω–æ—Å–∏—Ç–µ–ª—è —Å–Ω–∞—Ä—è–∂–µ–Ω–∏—è!
+cmu-yautja-unmark-honored-broadcast = {$hunter} —Å–Ω—è–ª —Å {$target} –∫–ª–µ–π–º–æ –ø–æ—á—ë—Ç–Ω–æ–≥–æ!
+cmu-yautja-visor-denied = –í—ã –ø–æ–Ω—è—Ç–∏—è –Ω–µ –∏–º–µ–µ—Ç–µ, –∫–∞–∫ —ç—Ç–∏–º –ø–æ–ª—å–∑–æ–≤–∞—Ç—å—Å—è!
+cmu-yautja-visor-eyes-blocked = –°–Ω–∞—á–∞–ª–∞ —Å–Ω–∏–º–∏—Ç–µ –æ—á–∫–∏. –ó–∞—á–µ–º –≤—ã –≤–æ–æ–±—â–µ –∏—Ö –Ω–æ—Å–∏—Ç–µ?
+cmu-yautja-visor-low-power = –í –≤–∞—à–∏—Ö –Ω–∞—Ä—É—á–∞—Ö –Ω–µ–¥–æ—Å—Ç–∞—Ç–æ—á–Ω–æ —ç–Ω–µ—Ä–≥–∏–∏ –¥–ª—è —Ä–∞–±–æ—Ç—ã –≤–∏–∑–æ—Ä–∞.
+cmu-yautja-visor-no-bracer = –ù—É–∂–Ω–æ –Ω–æ—Å–∏—Ç—å –Ω–∞—Ä—É—á–∏: –∏–º–µ–Ω–Ω–æ –æ–Ω–∏ —Å–ª—É–∂–∞—Ç –∏—Å—Ç–æ—á–Ω–∏–∫–æ–º –ø–∏—Ç–∞–Ω–∏—è.
+cmu-yautja-visor-wear-mask = –ù–∞–¥–µ–Ω—å—Ç–µ {$mask}!
+
+cmu-yautja-youngblood-already-blooded = {$target} —É–∂–µ –æ–∫—Ä–æ–≤–∞–≤–ª–µ–Ω {$mentor} –∑–∞ ¬´{$reason}¬ª!
+cmu-yautja-youngblood-already-claimed = {$target} —É–∂–µ –∑–∞—è–≤–ª–µ–Ω {$mentor}.
+cmu-yautja-youngblood-blooded-broadcast = {$mentor} –æ–∫—Ä–æ–≤–∞–≤–∏–ª {$target} –∑–∞ ¬´{$reason}¬ª.
+cmu-yautja-youngblood-blooded-mentor = –í—ã –æ–∫—Ä–æ–≤–∞–≤–ª–∏–≤–∞–µ—Ç–µ {$target}. –ò—Å–ø—ã—Ç–∞–Ω–∏–µ –∑–∞–≤–µ—Ä—à–µ–Ω–æ.
+cmu-yautja-youngblood-blooded-pupil = –í—ã ‚Äî –æ–∫—Ä–æ–≤–∞–≤–ª–µ–Ω–Ω—ã–π —Ä–∞–±. –°–æ—Å—Ä–µ–¥–æ—Ç–æ—á—å—Ç–µ—Å—å –Ω–∞ –æ–±—â–µ–Ω–∏–∏ —Å —Ö–∏—â–Ω–∏–∫–∞–º–∏ –∏ —É–∫—Ä–µ–ø–ª–µ–Ω–∏–∏ —Å–≤–æ–µ–π —Ä–µ–ø—É—Ç–∞—Ü–∏–∏. –ë—É–¥—å—Ç–µ –Ω–∞–±–ª—é–¥–∞—Ç–µ–ª—å–Ω—ã –∏ —Å–¥–µ—Ä–∂–∞–Ω–Ω—ã, –æ—Ö–æ—Ç—è—Å—å –Ω–∞ –¥–æ—Å—Ç–æ–π–Ω—É—é –¥–æ–±—ã—á—É. –ò–∑—É—á–∞–π—Ç–µ –ø—Ä–µ–¥–∞–Ω–∏—è —è—É—Ç–∂–∞ –∏ –∫–æ–¥–µ–∫—Å —á–µ—Å—Ç–∏. –ï—Å–ª–∏ —É –≤–∞—Å –µ—Å—Ç—å –≤–æ–ø—Ä–æ—Å—ã, –æ–±—Ä–∞—Ç–∏—Ç–µ—Å—å –∫ –∏–≥—Ä–æ–∫–∞–º —Å –¥–æ–ø—É—Å–∫–æ–º –≤ LOOC.
+cmu-yautja-youngblood-execute-broadcast = {$hunter} –∫–∞–∑–Ω–∏–ª {$target} –∑–∞ –Ω–∞—Ä—É—à–µ–Ω–∏–µ: ¬´{$reason}¬ª.
+cmu-yautja-youngblood-execute-message = –í—ã–±–µ—Ä–∏—Ç–µ –∂–∏–≤–æ–≥–æ –º–æ–ª–æ–¥–æ–≥–æ –æ—Ö–æ—Ç–Ω–∏–∫–∞ –¥–ª—è –∫–∞–∑–Ω–∏ –∑–∞ –Ω–∞—Ä—É—à–µ–Ω–∏–µ –∫–æ–¥–µ–∫—Å–∞ —á–µ—Å—Ç–∏.
+cmu-yautja-youngblood-execute-none = –°–µ–π—á–∞—Å –Ω–µ—Ç –∂–∏–≤—ã—Ö –º–æ–ª–æ–¥—ã—Ö –æ—Ö–æ—Ç–Ω–∏–∫–æ–≤.
+cmu-yautja-youngblood-execute-reason-prompt = –£–∫–∞–∂–∏—Ç–µ –ø—Ä–∏—á–∏–Ω—É –∫–∞–∑–Ω–∏ {$target}.
+cmu-yautja-youngblood-execute-reason-required = –ù—É–∂–Ω–æ —É–∫–∞–∑–∞—Ç—å –ø—Ä–∏—á–∏–Ω—É –∫–∞–∑–Ω–∏ –º–æ–ª–æ–¥–æ–≥–æ –æ—Ö–æ—Ç–Ω–∏–∫–∞.
+cmu-yautja-youngblood-execute-title = –ö–∞–∑–Ω—å –º–æ–ª–æ–¥–æ–≥–æ –æ—Ö–æ—Ç–Ω–∏–∫–∞
+cmu-yautja-youngblood-gear-denied = –í—ã –µ—â—ë –Ω–µ –∑–∞—Å–ª—É–∂–∏–ª–∏ –ø—Ä–∞–≤–æ –∏—Å–ø–æ–ª—å–∑–æ–≤–∞—Ç—å —ç—Ç—É —Ñ—É–Ω–∫—Ü–∏—é –Ω–∞—Ä—É—á–∞.
+cmu-yautja-youngblood-ghost-description = –ü—Ä–∏—Å–æ–µ–¥–∏–Ω–∏—Ç–µ—Å—å –∫ –æ—Ö–æ—Ç–µ –≤ —Ä–æ–ª–∏ –º–æ–ª–æ–¥–æ–≥–æ —è—É—Ç–∂–∞, –ø—Ä–æ—Ö–æ–¥—è—â–µ–≥–æ –∫—Ä–æ–≤–∞–≤–æ–µ –ø–æ—Å–≤—è—â–µ–Ω–∏–µ.
+cmu-yautja-youngblood-ghost-name = –ú–æ–ª–æ–¥–æ–π —è—É—Ç–∂–∞
+cmu-yautja-youngblood-ghost-rules = –í—ã ‚Äî –º–æ–ª–æ–¥–æ–π —è—É—Ç–∂–∞. –°–ª–µ–¥—É–π—Ç–µ –∑–∞ —Å—Ç–∞—Ä—à–∏–º–∏ –æ—Ö–æ—Ç–Ω–∏–∫–∞–º–∏ –∏ —É–∫–∞–∑–∞–Ω–∏—è–º–∏ –≤–µ–¥—É—â–∏—Ö –≤–æ –≤—Ä–µ–º—è –æ—Ö–æ—Ç—ã.
+cmu-yautja-youngblood-mentor-already-has-pupil = –í—ã —É–∂–µ –Ω–∞—Å—Ç–∞–≤–ª—è–µ—Ç–µ –¥—Ä—É–≥–æ–≥–æ –º–æ–ª–æ–¥–æ–≥–æ –æ—Ö–æ—Ç–Ω–∏–∫–∞.
+cmu-yautja-youngblood-mentor-broadcast = {$mentor} –æ–±—ä—è–≤–ª—è–µ—Ç {$target} —Å–≤–æ–∏–º —É—á–µ–Ω–∏–∫–æ–º.
+cmu-yautja-youngblood-mentor-claimed = –í—ã –æ–±—ä—è–≤–ª—è–µ—Ç–µ {$target} —Å–≤–æ–∏–º —É—á–µ–Ω–∏–∫–æ–º.
+cmu-yautja-youngblood-mentor-released = –í—ã –æ—Å–≤–æ–±–æ–∂–¥–∞–µ—Ç–µ {$target} –æ—Ç –Ω–∞—Å—Ç–∞–≤–Ω–∏—á–µ—Å—Ç–≤–∞.
+cmu-yautja-youngblood-not-your-pupil = –≠—Ç–æ—Ç –º–æ–ª–æ–¥–æ–π –æ—Ö–æ—Ç–Ω–∏–∫ –ø—Ä–∏–Ω–∞–¥–ª–µ–∂–∏—Ç –¥—Ä—É–≥–æ–º—É –Ω–∞—Å—Ç–∞–≤–Ω–∏–∫—É.
+cmu-yautja-youngblood-pupil-claimed = {$mentor} –æ—Ç–º–µ—Ç–∏–ª –≤–∞—Å –∫–∞–∫ –º–æ–ª–æ–¥–æ–≥–æ —É—á–µ–Ω–∏–∫–∞. –°–æ—Å—Ä–µ–¥–æ—Ç–æ—á—å—Ç–µ—Å—å –Ω–∞ –æ–±—É—á–µ–Ω–∏–∏ —É –Ω–∞—Å—Ç–∞–≤–Ω–∏–∫–∞ –∏ —É–∫—Ä–µ–ø–ª–µ–Ω–∏–∏ —Å–≤–æ–µ–π —Ä–µ–ø—É—Ç–∞—Ü–∏–∏. –ë—É–¥—å—Ç–µ –Ω–∞–±–ª—é–¥–∞—Ç–µ–ª—å–Ω—ã –∏ —Å–¥–µ—Ä–∂–∞–Ω–Ω—ã, –æ—Ö–æ—Ç—è—Å—å –Ω–∞ –¥–æ—Å—Ç–æ–π–Ω—É—é –¥–æ–±—ã—á—É. –ï—Å–ª–∏ —É –≤–∞—Å –µ—Å—Ç—å –≤–æ–ø—Ä–æ—Å—ã, –æ–±—Ä–∞—Ç–∏—Ç–µ—Å—å –∫ –∏–≥—Ä–æ–∫–∞–º —Å –¥–æ–ø—É—Å–∫–æ–º –ª–∏—á–Ω–æ –∏–ª–∏ –≤ LOOC.
+cmu-yautja-youngblood-pupil-released = –ù–∞—Å—Ç–∞–≤–Ω–∏–∫ –æ—Å–≤–æ–±–æ–∂–¥–∞–µ—Ç –≤–∞—Å.
+cmu-yautja-youngblood-release-broadcast = {$mentor} –æ—Å–≤–æ–±–æ–∂–¥–∞–µ—Ç —É—á–µ–Ω–∏–∫–∞ {$target}.
+cmu-yautja-youngblood-role-briefing = –í–∞—Å –∂–¥—ë—Ç —Ä–∏—Ç—É–∞–ª –∫—Ä–æ–≤–∞–≤–æ–≥–æ –ø–æ—Å–≤—è—â–µ–Ω–∏—è. –°–æ–±–µ—Ä–∏—Ç–µ –æ—Ö–æ—Ç–Ω–∏—á—å–µ —Å–Ω–∞—Ä—è–∂–µ–Ω–∏–µ, —Å–ª—É—à–∞–π—Ç–µ —Å—Ç–∞—Ä—à–∏—Ö –æ—Ö–æ—Ç–Ω–∏–∫–æ–≤ –∏ –≥–æ—Ç–æ–≤—å—Ç–µ—Å—å –∫ –≤—ã—Å–∞–¥–∫–µ.
+cmu-yautja-youngblood-role-header = –í—ã –ø—Ä–æ–±—É–∂–¥–∞–µ—Ç–µ—Å—å –º–æ–ª–æ–¥—ã–º —è—É—Ç–∂–∞.
+cmu-yautja-youngblood-role-objectives = –û—Ö–æ—Ç—å—Ç–µ—Å—å –Ω–∞ –¥–æ—Å—Ç–æ–π–Ω—É—é –¥–æ–±—ã—á—É, –ø–µ—Ä–µ–∂–∏–≤–∏—Ç–µ —Ä–∏—Ç—É–∞–ª –∏ –∑–∞—Å–ª—É–∂–∏—Ç–µ –∫—Ä–æ–≤–∞–≤–æ–µ –ø–æ—Å–≤—è—â–µ–Ω–∏–µ.
+cmu-yautja-youngblood-round-end-alive = –∂–∏–≤
+cmu-yautja-youngblood-round-end-dead = –º—ë—Ä—Ç–≤
+cmu-yautja-youngblood-round-end-entry = ‚Äî {$name}: {$status}
+cmu-yautja-youngblood-round-end-header = –°–æ—Å—Ç–æ—è–Ω–∏–µ –∏—Å–ø—ã—Ç–∞–Ω–∏–π –º–æ–ª–æ–¥—ã—Ö –æ—Ö–æ—Ç–Ω–∏–∫–æ–≤:
+cmu-yautja-youngblood-self-destruct-denied = –í—ã –µ—â—ë –Ω–µ –ø–æ–Ω–∏–º–∞–µ—Ç–µ, –∫–∞–∫ —ç—Ç–∏–º –ø–æ–ª—å–∑–æ–≤–∞—Ç—å—Å—è.
+
+cmu-yautja-cleaving-glaive-skull-denied = –ó–∞—á–µ–º –≤—ã –≤–æ–æ–±—â–µ —Ö–æ—Ç–∏—Ç–µ —ç—Ç–æ —Å–¥–µ–ª–∞—Ç—å!?
+cmu-yautja-cleaving-glaive-skull-existing = –ù–∞ {$glaive} —É–∂–µ —É—Å—Ç–∞–Ω–æ–≤–ª–µ–Ω {$skull}.
+cmu-yautja-cleaving-glaive-skull-mounted = –í—ã —É—Å—Ç–∞–Ω–∞–≤–ª–∏–≤–∞–µ—Ç–µ {$skull} –Ω–∞ {$glaive}.
+cmu-yautja-cleaving-glaive-skull-examine = –ù–∞ {$glaive} —É—Å—Ç–∞–Ω–æ–≤–ª–µ–Ω —á–µ–ª–æ–≤–µ—á–µ—Å–∫–∏–π —á–µ—Ä–µ–ø.
+cmu-yautja-job-description-youngblood = –ú–æ–ª–æ–¥–æ–π –æ—Ö–æ—Ç–Ω–∏–∫ —è—É—Ç–∂–∞, –ø—Ä–æ—Ö–æ–¥—è—â–∏–π —Ä–∏—Ç—É–∞–ª –∫—Ä–æ–≤–∞–≤–æ–≥–æ –ø–æ—Å–≤—è—â–µ–Ω–∏—è.
+cmu-yautja-job-name-youngblood = –ú–æ–ª–æ–¥–æ–π —è—É—Ç–∂–∞
+chat-radio-cmu-yautja-military = YSPEC
+chat-radio-cmu-yautja-stranded = STRND
+
+cmu-yautja-badblood-weapon-choice-title = –í—ã–±–µ—Ä–∏—Ç–µ –æ—Ä—É–∂–∏–µ
+cmu-yautja-badblood-weapon-choice-warning = –≠—Ç–æ –¥–µ–π—Å—Ç–≤–∏–µ –Ω–µ–æ–±—Ä–∞—Ç–∏–º–æ. –í—ã —É–≤–µ—Ä–µ–Ω—ã?
