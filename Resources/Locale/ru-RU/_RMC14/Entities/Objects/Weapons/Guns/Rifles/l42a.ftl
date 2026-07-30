@@ -15,7 +15,7 @@ ent-RMCMagazineRifleL42AExtendedEmpty = {ent-RMCMagazineRifleL42AExtended}
     .desc = {ent-RMCMagazineRifleL42AExtended.desc}
     .suffix = Пустой
 
-ent-RMCMagazineRifleL42AAP = магазин Л42А ББ (10х24мм)
+ent-RMCMagazineRifleL42AAP = Магазин Л42А ББ (10х24мм)
     .desc = Магазин для боевой винтовки c бронебойными патронами 10х24 мм.
     .suffix = ББ
 

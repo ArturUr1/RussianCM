@@ -1899,7 +1899,7 @@ namespace Content.Client.Lobby.UI
 
             _loadoutWindow = new LoadoutWindow(Profile, roleLoadout, roleLoadoutProto, _playerManager.LocalSession, collection)
             {
-                Title = jobProto.ID + "-loadout",
+                Title = Loc.GetString("rmc-loadout-window-title", ("job", LobbyHighJobPreview.GetLocalizedJobName(jobProto))), // RuMC edit
             };
 
             // Refresh the buttons etc.
