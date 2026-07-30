@@ -241,3 +241,7 @@ origin-icsc-turkey-description = Рождён в Турции, независи�
 
 origin-icsc-pakistan-name = НКВС - Пакистан
 origin-icsc-pakistan-description = Рождён в Пакистане, независимом государстве в составе НКВС
+
+# Продиджи
+origin-prodigy-newsiam-name = Продиджи - Новый Сиам
+origin-prodigy-newsiam-description = Из Нового Сиама, территории корпорации «Продиджи».
