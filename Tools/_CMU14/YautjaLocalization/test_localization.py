@@ -10,6 +10,30 @@ from .audit import (
 
 
 class YautjaLocalizationAuditTests(unittest.TestCase):
+    def test_known_runtime_keys_have_both_locales_and_matching_placeholders(self) -> None:
+        from .audit import audit_repository
+
+        root = Path(__file__).resolve().parents[3]
+        result = audit_repository(root)
+        required_keys = {
+            "cmu-yautja-hivebreaker-requires-recent-death",
+            "cmu-yautja-apc-siphon-verb",
+            "cmu-yautja-self-destruct-dialog-title",
+            "cmu-yautja-ceremonial-dagger-flay-first-pass-self",
+            "cmu-yautja-hunt-console-blooding-cancelled",
+            "cmu-yautja-lobby-translator-help-modern",
+            "cmu-yautja-mark-already-marked",
+        }
+
+        for key in required_keys:
+            self.assertFalse(any(error.startswith(f"Missing en-US key: {key}") for error in result.errors))
+            self.assertFalse(any(error.startswith(f"Missing ru-RU key: {key}") for error in result.errors))
+
+        self.assertFalse(
+            any(error.startswith("Placeholder mismatch: cmu-yautja-") for error in result.errors),
+            "Yautja placeholders must match between locales",
+        )
+
     def test_parse_fluent_messages_and_attributes(self) -> None:
         with TemporaryDirectory() as directory:
             path = Path(directory) / "sample.ftl"

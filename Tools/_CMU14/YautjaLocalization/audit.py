@@ -12,13 +12,30 @@ import yaml
 
 _FLUENT_MESSAGE_RE = re.compile(r"^([A-Za-z][A-Za-z0-9_.-]*)\s*=")
 _FLUENT_ATTRIBUTE_RE = re.compile(r"^\s+\.([A-Za-z][A-Za-z0-9_-]*)\s*=")
-_PLACEHOLDER_RE = re.compile(r"\{\$\s*([A-Za-z_][A-Za-z0-9_-]*)")
+_PLACEHOLDER_RE = re.compile(r"\{\s*\$\s*([A-Za-z_][A-Za-z0-9_-]*)")
 _LOCALIZATION_CALL_RE = re.compile(
     r"Loc\.(?:GetString|GetStringP|TryGetString)\s*\(\s*\"([^\"]+)\""
 )
-_YAUTJA_KEY_RE = re.compile(
-    r"\"((?:cmu-(?:yautja|predalien|hellhound)|ent-CMU)[A-Za-z0-9_.-]*)\""
+_LOC_ID_RE = re.compile(
+    r"\b(?:LocId|LocalizedName)\b[^\"\n]*\"((?:cmu-(?:yautja|predalien|hellhound)|ent-CMU)[A-Za-z0-9_.-]*)\""
 )
+
+_STATIC_LOCALIZATION_KEYS = {
+    "cmu-yautja-hunt-console-blooding-cancelled",
+    "cmu-yautja-hunt-console-hunt-ground-cancelled",
+    "cmu-yautja-hunt-console-selection-cancelled",
+    "cmu-yautja-lobby-translator-help-combo",
+    "cmu-yautja-lobby-translator-help-modern",
+    "cmu-yautja-lobby-translator-help-retro",
+    "cmu-yautja-mark-already-dishonored",
+    "cmu-yautja-mark-already-gear-carrier",
+    "cmu-yautja-mark-already-honored",
+    "cmu-yautja-mark-already-marked",
+    "cmu-yautja-mark-dishonored-broadcast",
+    "cmu-yautja-mark-honored-broadcast",
+    "cmu-yautja-unmark-dishonored-broadcast",
+    "cmu-yautja-unmark-honored-broadcast",
+}
 
 _YAML_GLOBS = (
     "Resources/Prototypes/_CMU14/Threats/Yautja/**/*.yml",
@@ -187,10 +204,15 @@ def _collect_runtime_keys(root: Path) -> tuple[set[str], dict[str, str]]:
 
             for line_number, line in enumerate(path.read_text(encoding="utf-8-sig").splitlines(), 1):
                 matches = set(_LOCALIZATION_CALL_RE.findall(line))
-                matches.update(_YAUTJA_KEY_RE.findall(line))
+                matches.update(_LOC_ID_RE.findall(line))
+                matches.update(_STATIC_LOCALIZATION_KEYS.intersection(set(_LOCALIZATION_CALL_RE.findall(line))))
                 for key in matches:
                     keys.add(key)
                     sources.setdefault(key, f"{relative}:{line_number}")
+
+    for key in _STATIC_LOCALIZATION_KEYS:
+        keys.add(key)
+        sources.setdefault(key, "Yautja static localization selector")
 
     return keys, sources
 
