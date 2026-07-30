@@ -32,6 +32,14 @@ Add a `Пол`/gender row to the existing left-side Yautja profile summary contr
 
 Selecting an option updates the nested profile, immediately rebuilds the Yautja preview, and marks the parent profile dirty through the existing lobby editor callback. Other selectors and equipment choices are not rebuilt or reset.
 
+### Responsive layout
+
+The Yautja workbench must remain usable when the character editor is narrower than its current three-column minimum. The current preview column has rows that require about 298 px despite its 210 px minimum, the category navigation requires 176 px, and equipment filters require roughly 240–256 px. The character picker already reserves 325 px, so the remaining editor width can be smaller than the combined preview/navigation/page layout.
+
+When the available workbench width falls below the horizontal layout threshold, reflow the work area vertically: keep the preview column above the category workspace, and let the category workspace use the full width. Continue reducing selector grid columns based on the actual page viewport. Keep horizontal scrolling available as a fallback for fixed-width controls that cannot fit at extremely small widths.
+
+Do not solve the issue by silently clipping the category page. Long selector labels must remain accessible; labels may be visually shortened inside cards, but the full value must remain available through the existing tooltip.
+
 ### Profile model
 
 `YautjaCharacterProfile` remains the source of truth for the Yautja-specific choice. Its existing `Sex` and `Gender` fields are retained for compatibility with the humanoid appearance and grammar systems.
@@ -75,6 +83,8 @@ Add or update automated coverage for:
 3. Male and Female profiles are distinguished by `MemberwiseEquals`.
 4. Applying a Female Yautja profile produces Female sex and gender on the humanoid appearance component.
 5. Existing appearance, equipment, and capability behavior remains unchanged.
+6. The Yautja workbench reflows at narrow widths instead of clipping cards or fixed-width controls.
+7. Selector column calculations use the usable page width and preserve access to every selector at narrow widths.
 
 Manual acceptance in the lobby:
 
@@ -84,6 +94,7 @@ Manual acceptance in the lobby:
 4. Reopen or reload the personalization and confirm Female remains selected.
 5. Spawn as Yautja and confirm female body, vocal sounds, and pronouns/grammar.
 6. Switch back to Male and confirm the male body and vocal/grammar behavior return.
+7. Resize or use a narrow lobby viewport and confirm the preview, category navigation, filters, and selector cards remain reachable without clipped-off controls.
 
 ## Expected implementation surface
 
@@ -91,5 +102,6 @@ Manual acceptance in the lobby:
 - `Content.Shared/_CMU14/Yautja/YautjaCharacterProfile.cs`
 - `Content.Server/_CMU14/Yautja/YautjaProfileApplySystem.cs`
 - `Content.Shared/Preferences/HumanoidCharacterProfile.cs`
+- `Content.Tests/Client/_CMU14/Yautja/YautjaProfileEditorLayoutTest.cs`
 - Existing Yautja profile tests, plus focused regression coverage where needed
 - Yautja lobby localization entries for the label and two options
