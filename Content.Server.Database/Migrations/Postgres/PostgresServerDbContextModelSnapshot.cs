@@ -26,6 +26,50 @@ namespace Content.Server.Database.Migrations.Postgres
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
+            modelBuilder.Entity("Content.Server.Database.AU14CustomConstructionEntry", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("au14_custom_construction_entries_id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at");
+
+                    b.Property<string>("EntryKey")
+                        .IsRequired()
+                        .HasMaxLength(256)
+                        .HasColumnType("character varying(256)")
+                        .HasColumnName("entry_key");
+
+                    b.Property<string>("Kind")
+                        .IsRequired()
+                        .HasMaxLength(32)
+                        .HasColumnType("character varying(32)")
+                        .HasColumnName("kind");
+
+                    b.Property<DateTime>("LastEditedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("last_edited_at");
+
+                    b.Property<string>("Yaml")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("yaml");
+
+                    b.HasKey("Id")
+                        .HasName("PK_au14_custom_construction_entries");
+
+                    b.HasIndex("Kind", "EntryKey")
+                        .IsUnique()
+                        .HasDatabaseName("IX_au14_custom_construction_entries_kind_entry_key");
+
+                    b.ToTable("au14_custom_construction_entries", (string)null);
+                });
+
             modelBuilder.Entity("Content.Server.Database.AU14FactionDefinition", b =>
                 {
                     b.Property<int>("Id")
@@ -69,50 +113,6 @@ namespace Content.Server.Database.Migrations.Postgres
                         .HasDatabaseName("IX_au14_faction_definitions_title");
 
                     b.ToTable("au14_faction_definitions", (string)null);
-                });
-
-            modelBuilder.Entity("Content.Server.Database.AU14CustomConstructionEntry", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasColumnName("au14_custom_construction_entries_id");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("created_at");
-
-                    b.Property<string>("EntryKey")
-                        .IsRequired()
-                        .HasMaxLength(256)
-                        .HasColumnType("character varying(256)")
-                        .HasColumnName("entry_key");
-
-                    b.Property<string>("Kind")
-                        .IsRequired()
-                        .HasMaxLength(32)
-                        .HasColumnType("character varying(32)")
-                        .HasColumnName("kind");
-
-                    b.Property<DateTime>("LastEditedAt")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("last_edited_at");
-
-                    b.Property<string>("Yaml")
-                        .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("yaml");
-
-                    b.HasKey("Id")
-                        .HasName("PK_au14_custom_construction_entries");
-
-                    b.HasIndex("Kind", "EntryKey")
-                        .IsUnique()
-                        .HasDatabaseName("IX_au14_custom_construction_entries_kind_entry_key");
-
-                    b.ToTable("au14_custom_construction_entries", (string)null);
                 });
 
             modelBuilder.Entity("Content.Server.Database.Admin", b =>
@@ -1113,10 +1113,24 @@ namespace Content.Server.Database.Migrations.Postgres
                         .HasColumnType("text")
                         .HasColumnName("armor_preference");
 
+                    b.Property<string>("Build")
+                        .IsRequired()
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("text")
+                        .HasDefaultValue("")
+                        .HasColumnName("build");
+
                     b.Property<string>("CharacterName")
                         .IsRequired()
                         .HasColumnType("text")
                         .HasColumnName("char_name");
+
+                    b.Property<string>("CriminalRecord")
+                        .IsRequired()
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("text")
+                        .HasDefaultValue("")
+                        .HasColumnName("criminal_record");
 
                     b.Property<string>("EyeColor")
                         .IsRequired()
@@ -1138,6 +1152,13 @@ namespace Content.Server.Database.Migrations.Postgres
                         .HasColumnType("text")
                         .HasColumnName("flavor_text");
 
+                    b.Property<string>("FullDescription")
+                        .IsRequired()
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("text")
+                        .HasDefaultValue("")
+                        .HasColumnName("full_description");
+
                     b.Property<string>("GamemodeAntagPreferences")
                         .HasColumnType("text")
                         .HasColumnName("gamemode_antag_preferences");
@@ -1155,6 +1176,13 @@ namespace Content.Server.Database.Migrations.Postgres
                         .HasColumnType("text")
                         .HasColumnName("gender");
 
+                    b.Property<string>("GeneralRecord")
+                        .IsRequired()
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("text")
+                        .HasDefaultValue("")
+                        .HasColumnName("general_record");
+
                     b.Property<string>("HairColor")
                         .IsRequired()
                         .HasColumnType("text")
@@ -1165,9 +1193,29 @@ namespace Content.Server.Database.Migrations.Postgres
                         .HasColumnType("text")
                         .HasColumnName("hair_name");
 
+                    b.Property<string>("Height")
+                        .IsRequired()
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("text")
+                        .HasDefaultValue("")
+                        .HasColumnName("height");
+
+                    b.Property<bool>("HideMetaInformation")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("boolean")
+                        .HasDefaultValue(false)
+                        .HasColumnName("hide_meta_information");
+
                     b.Property<JsonDocument>("Markings")
                         .HasColumnType("jsonb")
                         .HasColumnName("markings");
+
+                    b.Property<string>("MedicalRecord")
+                        .IsRequired()
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("text")
+                        .HasDefaultValue("")
+                        .HasColumnName("medical_record");
 
                     b.Property<string>("Origin")
                         .HasColumnType("text")
@@ -1212,6 +1260,13 @@ namespace Content.Server.Database.Migrations.Postgres
                         .HasColumnType("text")
                         .HasColumnName("sex");
 
+                    b.Property<string>("ShortExamine")
+                        .IsRequired()
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("text")
+                        .HasDefaultValue("")
+                        .HasColumnName("short_examine");
+
                     b.Property<string>("SkinColor")
                         .IsRequired()
                         .HasColumnType("text")
@@ -1242,6 +1297,12 @@ namespace Content.Server.Database.Migrations.Postgres
                     b.Property<string>("ThreatPreference")
                         .HasColumnType("text")
                         .HasColumnName("threat_preference");
+
+                    b.Property<int>("Weight")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasDefaultValue(160)
+                        .HasColumnName("weight");
 
                     b.Property<string>("XenoPostfix")
                         .IsRequired()
