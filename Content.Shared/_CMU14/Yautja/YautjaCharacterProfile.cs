@@ -430,25 +430,25 @@ public sealed partial class YautjaCharacterProfile
     };
 
     public string ArmorDisplayName => Legacy != YautjaLegacySet.None
-        ? Loc.GetString("cmu-yautja-profile-legacy-armor", ("set", GetLegacyDisplayName(Legacy)))
+        ? $"cmu-yautja-profile-legacy-{LegacyKey(Legacy)}-armor"
         : Unique != YautjaUniqueSet.None
-            ? Loc.GetString("cmu-yautja-profile-unique-armor", ("set", GetUniqueDisplayName(Unique)))
+            ? $"cmu-yautja-profile-unique-{UniqueKey(Unique)}-armor"
             : GetArmorStyleDisplayName(ArmorMaterial, ArmorStyle);
 
     public string MaskDisplayName => Legacy != YautjaLegacySet.None
-        ? Loc.GetString("cmu-yautja-profile-legacy-mask", ("set", GetLegacyDisplayName(Legacy)))
+        ? $"cmu-yautja-profile-legacy-{LegacyKey(Legacy)}-mask"
         : Unique != YautjaUniqueSet.None
-            ? Loc.GetString("cmu-yautja-profile-unique-mask", ("set", GetUniqueDisplayName(Unique)))
+            ? $"cmu-yautja-profile-unique-{UniqueKey(Unique)}-mask"
             : GetMaskStyleDisplayName(MaskMaterial, MaskStyle);
 
     public string GreavesDisplayName => Legacy != YautjaLegacySet.None
-        ? Loc.GetString("cmu-yautja-profile-legacy-greaves", ("set", GetLegacyDisplayName(Legacy)))
+        ? $"cmu-yautja-profile-legacy-{LegacyKey(Legacy)}-greaves"
         : Unique != YautjaUniqueSet.None
-            ? Loc.GetString("cmu-yautja-profile-unique-greaves", ("set", GetUniqueDisplayName(Unique)))
+            ? $"cmu-yautja-profile-unique-{UniqueKey(Unique)}-greaves"
             : GetGreavesStyleDisplayName(GreavesMaterial, GreavesStyle);
 
     public string BracerDisplayName => Legacy != YautjaLegacySet.None
-        ? Loc.GetString("cmu-yautja-profile-legacy-bracers", ("set", GetLegacyDisplayName(Legacy)))
+        ? $"cmu-yautja-profile-legacy-{LegacyKey(Legacy)}-bracer"
         : GetBracerDisplayName(BracerMaterial);
 
     public YautjaCharacterProfile()
@@ -481,679 +481,4 @@ public sealed partial class YautjaCharacterProfile
         InvisibilitySound = SanitizeEnum(other.InvisibilitySound, YautjaInvisibilitySound.Modern);
         Legacy = SanitizeEnum(other.Legacy, YautjaLegacySet.None);
         Unique = SanitizeEnum(other.Unique, YautjaUniqueSet.None);
-        FlavorText = other.FlavorText;
-    }
-
-    public YautjaCharacterProfile Clone()
-    {
-        return new YautjaCharacterProfile(this);
-    }
-
-    public YautjaCharacterProfile WithName(string name)
-    {
-        return new(this) { Name = string.IsNullOrWhiteSpace(name) ? Default.Name : name.Trim() };
-    }
-
-    public YautjaCharacterProfile WithAge(int age)
-    {
-        return new(this) { Age = Clamp(age, 100, 1200) };
-    }
-
-    public YautjaCharacterProfile WithSex(Sex sex)
-    {
-        return new(this) { Sex = Sex.Male };
-    }
-
-    public YautjaCharacterProfile WithGender(Gender gender)
-    {
-        return new(this) { Gender = Gender.Male };
-    }
-
-    public YautjaCharacterProfile WithAppearance(HumanoidCharacterAppearance appearance)
-    {
-        var profile = new YautjaCharacterProfile(this);
-        profile.Appearance = SanitizeAppearance(appearance, profile.DreadColor);
-        return profile;
-    }
-
-    public YautjaCharacterProfile WithSkinColor(YautjaSkinColor skinColor)
-    {
-        var color = GetSkinColorColor(skinColor);
-        return WithAppearance(Appearance.WithSkinColor(color));
-    }
-
-    public YautjaCharacterProfile WithEyeColor(YautjaEyeColor eyeColor)
-    {
-        return WithAppearance(Appearance.WithEyeColor(GetEyeColorColor(eyeColor)));
-    }
-
-    public YautjaCharacterProfile WithDreadColor(YautjaDreadColor dreadColor)
-    {
-        var profile = new YautjaCharacterProfile(this)
-        {
-            DreadColor = SanitizeDreadColor(dreadColor),
-        };
-        profile.Appearance = SanitizeAppearance(profile.Appearance, profile.DreadColor);
-        return profile;
-    }
-
-    public YautjaCharacterProfile WithQuillStyle(YautjaQuillStyle style)
-    {
-        return WithAppearance(ApplyQuillStyle(Appearance, style));
-    }
-
-    public YautjaCharacterProfile WithArmor(YautjaGearMaterial material, int style)
-    {
-        return new(this)
-        {
-            ArmorMaterial = material,
-            ArmorStyle = Clamp(style, 1, 8),
-        };
-    }
-
-    public YautjaCharacterProfile WithMask(YautjaGearMaterial material, int style)
-    {
-        return new(this)
-        {
-            MaskMaterial = material,
-            MaskStyle = Clamp(style, 1, 20),
-        };
-    }
-
-    public YautjaCharacterProfile WithMaskAccessory(int style)
-    {
-        return new(this) { MaskAccessoryStyle = Clamp(style, 0, 3) };
-    }
-
-    public YautjaCharacterProfile WithGreaves(YautjaGearMaterial material, int style)
-    {
-        return new(this)
-        {
-            GreavesMaterial = material,
-            GreavesStyle = Clamp(style, 1, 4),
-        };
-    }
-
-    public YautjaCharacterProfile WithBracer(YautjaBracerMaterial material)
-    {
-        return new(this) { BracerMaterial = material };
-    }
-
-    public YautjaCharacterProfile WithCaster(YautjaBracerMaterial material)
-    {
-        return new(this) { CasterMaterial = material };
-    }
-
-    public YautjaCharacterProfile WithClanRank(YautjaRank rank)
-    {
-        return WithRank(rank);
-    }
-
-    public YautjaCharacterProfile WithRank(YautjaRank rank)
-    {
-        if (!Enum.IsDefined(rank))
-            rank = YautjaRank.Blooded;
-
-        var profile = new YautjaCharacterProfile(this)
-        {
-            ClanRank = rank,
-            OwnerRank = YautjaRankResolver.ToOwnerRank(rank),
-        };
-
-        return YautjaRankResolver.CanUseUnique(rank)
-            ? profile
-            : profile.WithUnique(YautjaUniqueSet.None);
-    }
-
-    public YautjaCharacterProfile WithStatus(YautjaProfileStatus status)
-    {
-        return new(this)
-        {
-            Status = Enum.IsDefined(status) ? status : YautjaProfileStatus.Normal,
-        };
-    }
-
-    private YautjaCharacterProfile WithActiveRank(YautjaRank rank)
-    {
-        if (!Enum.IsDefined(rank))
-            rank = YautjaRank.Blooded;
-
-        return new YautjaCharacterProfile(this)
-        {
-            ClanRank = rank,
-            OwnerRank = YautjaRankResolver.ToOwnerRank(rank),
-        };
-    }
-
-    public YautjaCharacterProfile SanitizeForCapabilities(YautjaProfileCapabilities capabilities)
-    {
-        var status = capabilities.SanitizeStatus(Status);
-        var activeCapabilities = capabilities.ForStatus(status);
-        var profile = WithStatus(status).WithActiveRank(activeCapabilities.Rank);
-
-        if (!capabilities.CanUseLegacySet(profile.Legacy))
-            profile = profile.WithLegacy(YautjaLegacySet.None);
-
-        if (!capabilities.CanUseUnique || profile.Legacy != YautjaLegacySet.None)
-            profile = profile.WithUnique(YautjaUniqueSet.None);
-
-        if (!capabilities.CanUseCape(profile.CapeStyle))
-            profile = profile.WithCapeStyle(YautjaCapeStyle.Full);
-
-        if (!capabilities.CanUseBracer(profile.BracerMaterial))
-            profile = profile.WithBracer(YautjaBracerMaterial.Ebony);
-
-        return profile;
-    }
-
-    public YautjaCharacterProfile WithOwnerRank(YautjaBracerOwnerRank ownerRank)
-    {
-        return new(this)
-        {
-            ClanRank = null,
-            OwnerRank = ownerRank,
-        };
-    }
-
-    public YautjaCharacterProfile WithCapeStyle(YautjaCapeStyle style)
-    {
-        return new(this) { CapeStyle = style };
-    }
-
-    public YautjaCharacterProfile WithCapeColor(Color color)
-    {
-        return new(this) { CapeColor = color.WithAlpha(1f) };
-    }
-
-    public YautjaCharacterProfile WithTranslatorType(YautjaTranslatorType translatorType)
-    {
-        return new(this) { TranslatorType = translatorType };
-    }
-
-    public YautjaCharacterProfile WithInvisibilitySound(YautjaInvisibilitySound invisibilitySound)
-    {
-        return new(this) { InvisibilitySound = invisibilitySound };
-    }
-
-    public YautjaCharacterProfile WithLegacy(YautjaLegacySet legacy)
-    {
-        return new(this) { Legacy = legacy };
-    }
-
-    public YautjaCharacterProfile WithUnique(YautjaUniqueSet unique)
-    {
-        return new(this) { Unique = unique };
-    }
-
-    public YautjaCharacterProfile WithFlavorText(string flavorText)
-    {
-        flavorText = flavorText.Trim();
-        if (flavorText.Length > MaxFlavorTextLength)
-            flavorText = flavorText[..MaxFlavorTextLength];
-
-        return new(this) { FlavorText = flavorText };
-    }
-
-    public static string GetArmorStyleDisplayName(YautjaGearMaterial material, int style)
-    {
-        return GearDisplayName(material, Loc.GetString("cmu-yautja-lobby-armor"), Clamp(style, 1, 8));
-    }
-
-    public static string GetMaskStyleDisplayName(YautjaGearMaterial material, int style)
-    {
-        return GearDisplayName(material, Loc.GetString("cmu-yautja-lobby-mask"), Clamp(style, 1, 20));
-    }
-
-    public static string GetGreavesStyleDisplayName(YautjaGearMaterial material, int style)
-    {
-        return GearDisplayName(material, Loc.GetString("cmu-yautja-lobby-greaves"), Clamp(style, 1, 4));
-    }
-
-    public static string GetBracerDisplayName(YautjaBracerMaterial material)
-    {
-        return material is YautjaBracerMaterial.Dragon or
-            YautjaBracerMaterial.Swamp or
-            YautjaBracerMaterial.Enforcer or
-            YautjaBracerMaterial.Collector
-            ? Loc.GetString("cmu-yautja-profile-legacy-bracers", ("set", GetBracerMaterialDisplayName(material)))
-            : Loc.GetString("cmu-yautja-profile-clan-bracers", ("set", GetBracerMaterialDisplayName(material)));
-    }
-
-    public static string GetCasterDisplayName(YautjaBracerMaterial material)
-    {
-        return Loc.GetString(
-            "cmu-yautja-profile-shoulder-caster",
-            ("material", GetBracerMaterialDisplayName(material)));
-    }
-
-    public static string GetCapeDisplayName(YautjaCapeStyle style)
-    {
-        return style switch
-        {
-            YautjaCapeStyle.Ceremonial => Loc.GetString("cmu-yautja-profile-cape-ceremonial"),
-            YautjaCapeStyle.Third => Loc.GetString("cmu-yautja-profile-cape-third"),
-            YautjaCapeStyle.Half => Loc.GetString("cmu-yautja-profile-cape-half"),
-            YautjaCapeStyle.Quarter => Loc.GetString("cmu-yautja-profile-cape-quarter"),
-            YautjaCapeStyle.Poncho => Loc.GetString("cmu-yautja-profile-cape-poncho"),
-            YautjaCapeStyle.Damaged => Loc.GetString("cmu-yautja-profile-cape-damaged"),
-            _ => Loc.GetString("cmu-yautja-profile-cape-battle-worn"),
-        };
-    }
-
-    public static string GetMaskAccessoryDisplayName(int style, YautjaGearMaterial material)
-    {
-        return style == 0
-            ? Loc.GetString("cmu-yautja-profile-no-accessory")
-            : Loc.GetString(
-                "cmu-yautja-profile-mask-accessory",
-                ("material", GetMaterialDisplayName(material)),
-                ("style", Clamp(style, 1, 3)));
-    }
-
-    public static string GetMaterialDisplayName(YautjaGearMaterial material)
-    {
-        return material switch
-        {
-            YautjaGearMaterial.Bronze => Loc.GetString("cmu-yautja-profile-material-bronze"),
-            YautjaGearMaterial.Silver => Loc.GetString("cmu-yautja-profile-material-silver"),
-            YautjaGearMaterial.Crimson => Loc.GetString("cmu-yautja-profile-material-crimson"),
-            YautjaGearMaterial.Bone => Loc.GetString("cmu-yautja-profile-material-bone"),
-            _ => Loc.GetString("cmu-yautja-profile-material-ebony"),
-        };
-    }
-
-    public static string GetBracerMaterialDisplayName(YautjaBracerMaterial material)
-    {
-        return material switch
-        {
-            YautjaBracerMaterial.Retro => Loc.GetString("cmu-yautja-profile-bracer-material-retro"),
-            YautjaBracerMaterial.Silver => Loc.GetString("cmu-yautja-profile-bracer-material-silver"),
-            YautjaBracerMaterial.Bronze => Loc.GetString("cmu-yautja-profile-bracer-material-bronze"),
-            YautjaBracerMaterial.Crimson => Loc.GetString("cmu-yautja-profile-bracer-material-crimson"),
-            YautjaBracerMaterial.Bone => Loc.GetString("cmu-yautja-profile-bracer-material-bone"),
-            YautjaBracerMaterial.Dragon => Loc.GetString("cmu-yautja-profile-bracer-material-dragon"),
-            YautjaBracerMaterial.Swamp => Loc.GetString("cmu-yautja-profile-bracer-material-swamp"),
-            YautjaBracerMaterial.Enforcer => Loc.GetString("cmu-yautja-profile-bracer-material-enforcer"),
-            YautjaBracerMaterial.Collector => Loc.GetString("cmu-yautja-profile-bracer-material-collector"),
-            _ => Loc.GetString("cmu-yautja-profile-bracer-material-ebony"),
-        };
-    }
-
-    public static string GetTranslatorTypeDisplayName(YautjaTranslatorType type)
-    {
-        return type switch
-        {
-            YautjaTranslatorType.Retro => Loc.GetString("cmu-yautja-profile-translator-retro"),
-            YautjaTranslatorType.Combo => Loc.GetString("cmu-yautja-profile-translator-combo"),
-            _ => Loc.GetString("cmu-yautja-profile-translator-modern"),
-        };
-    }
-
-    public static string GetInvisibilitySoundDisplayName(YautjaInvisibilitySound sound)
-    {
-        return sound switch
-        {
-            YautjaInvisibilitySound.Retro => Loc.GetString("cmu-yautja-profile-sound-retro"),
-            _ => Loc.GetString("cmu-yautja-profile-sound-modern"),
-        };
-    }
-
-    public static string GetLegacyDisplayName(YautjaLegacySet legacy)
-    {
-        return legacy switch
-        {
-            YautjaLegacySet.Dragon => Loc.GetString("cmu-yautja-profile-legacy-dragon"),
-            YautjaLegacySet.Swamp => Loc.GetString("cmu-yautja-profile-legacy-swamp"),
-            YautjaLegacySet.Enforcer => Loc.GetString("cmu-yautja-profile-legacy-enforcer"),
-            YautjaLegacySet.Collector => Loc.GetString("cmu-yautja-profile-legacy-collector"),
-            _ => Loc.GetString("cmu-yautja-profile-legacy-none"),
-        };
-    }
-
-    public static string GetStatusDisplayName(YautjaProfileStatus status)
-    {
-        return status switch
-        {
-            YautjaProfileStatus.Council => "Council",
-            YautjaProfileStatus.Leader => "Leader",
-            _ => "Normal",
-        };
-    }
-
-    public static string GetStatusDisplayName(YautjaProfileStatus status)
-    {
-        return status switch
-        {
-            YautjaProfileStatus.Council => "Council",
-            YautjaProfileStatus.Leader => "Leader",
-            _ => "Normal",
-        };
-    }
-
-    public static string GetUniqueDisplayName(YautjaUniqueSet unique)
-    {
-        return unique switch
-        {
-            YautjaUniqueSet.Anubys => Loc.GetString("cmu-yautja-profile-unique-anubys"),
-            YautjaUniqueSet.Cleopatra => Loc.GetString("cmu-yautja-profile-unique-cleopatra"),
-            YautjaUniqueSet.Plated => Loc.GetString("cmu-yautja-profile-unique-plated"),
-            YautjaUniqueSet.Ronin => Loc.GetString("cmu-yautja-profile-unique-ronin"),
-            _ => Loc.GetString("cmu-yautja-profile-unique-none"),
-        };
-    }
-
-    public static string GetSkinColorDisplayName(YautjaSkinColor skinColor)
-    {
-        return skinColor switch
-        {
-            YautjaSkinColor.Green => Loc.GetString("cmu-yautja-profile-skin-green"),
-            YautjaSkinColor.Purple => Loc.GetString("cmu-yautja-profile-skin-purple"),
-            YautjaSkinColor.Blue => Loc.GetString("cmu-yautja-profile-skin-blue"),
-            YautjaSkinColor.Red => Loc.GetString("cmu-yautja-profile-skin-red"),
-            YautjaSkinColor.Black => Loc.GetString("cmu-yautja-profile-skin-black"),
-            _ => Loc.GetString("cmu-yautja-profile-skin-tan"),
-        };
-    }
-
-    public static string GetEyeColorDisplayName(YautjaEyeColor eyeColor)
-    {
-        return eyeColor switch
-        {
-            YautjaEyeColor.Amber => Loc.GetString("cmu-yautja-profile-eye-amber"),
-            YautjaEyeColor.Copper => Loc.GetString("cmu-yautja-profile-eye-copper"),
-            YautjaEyeColor.Red => Loc.GetString("cmu-yautja-profile-eye-red"),
-            YautjaEyeColor.Jade => Loc.GetString("cmu-yautja-profile-eye-jade"),
-            YautjaEyeColor.Slate => Loc.GetString("cmu-yautja-profile-eye-slate"),
-            YautjaEyeColor.Black => Loc.GetString("cmu-yautja-profile-eye-black"),
-            _ => Loc.GetString("cmu-yautja-profile-eye-gold"),
-        };
-    }
-
-    public static string GetDreadColorDisplayName(YautjaDreadColor dreadColor)
-    {
-        return dreadColor switch
-        {
-            YautjaDreadColor.Black => "black",
-            YautjaDreadColor.DarkBrown => "dark brown",
-            YautjaDreadColor.Brown => "brown",
-            YautjaDreadColor.Auburn => "auburn",
-            YautjaDreadColor.Ash => "ash",
-            YautjaDreadColor.Bone => "bone",
-            _ => "match skin",
-        };
-    }
-
-    public static string GetDreadColorDisplayName(YautjaDreadColor dreadColor)
-    {
-        return dreadColor switch
-        {
-            YautjaDreadColor.Black => "black",
-            YautjaDreadColor.DarkBrown => "dark brown",
-            YautjaDreadColor.Brown => "brown",
-            YautjaDreadColor.Auburn => "auburn",
-            YautjaDreadColor.Ash => "ash",
-            YautjaDreadColor.Bone => "bone",
-            _ => "match skin",
-        };
-    }
-
-    public static string GetQuillStyleDisplayName(YautjaQuillStyle style)
-    {
-        return style switch
-        {
-            YautjaQuillStyle.ShortThick => Loc.GetString("cmu-yautja-profile-quills-short-thick"),
-            YautjaQuillStyle.StraightThin => Loc.GetString("cmu-yautja-profile-quills-straight-thin"),
-            YautjaQuillStyle.LongTied => Loc.GetString("cmu-yautja-profile-quills-long-tied"),
-            YautjaQuillStyle.ShortThin => Loc.GetString("cmu-yautja-profile-quills-short-thin"),
-            YautjaQuillStyle.LongCurved => Loc.GetString("cmu-yautja-profile-quills-long-curved"),
-            YautjaQuillStyle.LongStraight => Loc.GetString("cmu-yautja-profile-quills-long-straight"),
-            YautjaQuillStyle.LongWide => Loc.GetString("cmu-yautja-profile-quills-long-wide"),
-            YautjaQuillStyle.ShortWide => Loc.GetString("cmu-yautja-profile-quills-short-wide"),
-            _ => Loc.GetString("cmu-yautja-profile-quills-standard"),
-        };
-    }
-
-    public static Color GetSkinToneColor(int index)
-    {
-        return SkinToneColors[Clamp(index, 0, SkinToneColors.Length - 1)];
-    }
-
-    public static int GetClosestSkinToneIndex(Color color)
-    {
-        return Array.IndexOf(SkinColorOrder, GetClosestSkinColor(color));
-    }
-
-    public static Color GetClosestSkinToneColor(Color color)
-    {
-        return GetSkinColorColor(GetClosestSkinColor(color));
-    }
-
-    public static Color GetSkinColorColor(YautjaSkinColor color)
-    {
-        return color switch
-        {
-            YautjaSkinColor.Green => SkinToneColors[1],
-            YautjaSkinColor.Purple => SkinToneColors[2],
-            YautjaSkinColor.Blue => SkinToneColors[3],
-            YautjaSkinColor.Red => SkinToneColors[4],
-            YautjaSkinColor.Black => SkinToneColors[5],
-            _ => SkinToneColors[0],
-        };
-    }
-
-    public static Color GetEyeColorColor(YautjaEyeColor color)
-    {
-        return color switch
-        {
-            YautjaEyeColor.Amber => EyeColors[1],
-            YautjaEyeColor.Copper => EyeColors[2],
-            YautjaEyeColor.Red => EyeColors[3],
-            YautjaEyeColor.Jade => EyeColors[4],
-            YautjaEyeColor.Slate => EyeColors[5],
-            YautjaEyeColor.Black => EyeColors[6],
-            _ => EyeColors[0],
-        };
-    }
-
-    public static Color GetDreadColorColor(YautjaDreadColor color, Color skinColor)
-    {
-        return color switch
-        {
-            YautjaDreadColor.Black => C(20, 18, 16),
-            YautjaDreadColor.DarkBrown => C(45, 32, 24),
-            YautjaDreadColor.Brown => C(78, 54, 34),
-            YautjaDreadColor.Auburn => C(94, 48, 36),
-            YautjaDreadColor.Ash => C(105, 105, 100),
-            YautjaDreadColor.Bone => C(185, 174, 145),
-            _ => skinColor.WithAlpha(1f),
-        };
-    }
-
-    public static Color GetClosestEyeColorColor(Color color)
-    {
-        return GetEyeColorColor(GetClosestEyeColor(color));
-    }
-
-    public static string GetQuillMarkingId(YautjaQuillStyle style)
-    {
-        return style switch
-        {
-            YautjaQuillStyle.ShortThick => $"{QuillMarkingPrefix}ShortThick",
-            YautjaQuillStyle.StraightThin => $"{QuillMarkingPrefix}StraightThin",
-            YautjaQuillStyle.LongTied => $"{QuillMarkingPrefix}LongTied",
-            YautjaQuillStyle.ShortThin => $"{QuillMarkingPrefix}ShortThin",
-            YautjaQuillStyle.LongCurved => $"{QuillMarkingPrefix}LongCurved",
-            YautjaQuillStyle.LongStraight => $"{QuillMarkingPrefix}LongStraight",
-            YautjaQuillStyle.LongWide => $"{QuillMarkingPrefix}LongWide",
-            YautjaQuillStyle.ShortWide => $"{QuillMarkingPrefix}ShortWide",
-            _ => $"{QuillMarkingPrefix}Standard",
-        };
-    }
-
-    private static HumanoidCharacterAppearance BuildDefaultAppearance()
-    {
-        var skin = GetSkinColorColor(YautjaSkinColor.Green);
-        return new HumanoidCharacterAppearance(
-            HairStyles.DefaultHairStyle,
-            skin,
-            HairStyles.DefaultFacialHairStyle,
-            Color.Black,
-            GetEyeColorColor(YautjaEyeColor.Black),
-            skin,
-            new List<Marking>
-            {
-                new(GetQuillMarkingId(YautjaQuillStyle.Standard), new List<Color> { skin }),
-            },
-            HairStyles.DefaultHairStyle,
-            Color.Black,
-            HairStyles.DefaultFacialHairStyle,
-            Color.Black);
-    }
-
-    private static HumanoidCharacterAppearance SanitizeAppearance(
-        HumanoidCharacterAppearance appearance,
-        YautjaDreadColor dreadColor)
-    {
-        var skinColor = GetClosestSkinToneColor(appearance.SkinColor);
-        var hairColor = GetDreadColorColor(SanitizeDreadColor(dreadColor), skinColor);
-        return ApplyQuillStyle(
-            appearance.Clone()
-                .WithSkinColor(skinColor)
-                .WithHairColor(hairColor)
-                .WithEyeColor(GetClosestEyeColorColor(appearance.EyeColor)),
-            GetQuillStyle(appearance));
-    }
-
-    private static YautjaDreadColor SanitizeDreadColor(YautjaDreadColor dreadColor)
-    {
-        return Enum.IsDefined(dreadColor) ? dreadColor : YautjaDreadColor.MatchSkin;
-    }
-
-    private static T SanitizeEnum<T>(T value, T fallback) where T : struct, Enum
-    {
-        return Enum.IsDefined(value) ? value : fallback;
-    }
-
-    private static HumanoidCharacterAppearance ApplyQuillStyle(HumanoidCharacterAppearance appearance, YautjaQuillStyle style)
-    {
-        var markings = new List<Marking>();
-        foreach (var marking in appearance.Markings)
-        {
-            if (IsQuillMarking(marking.MarkingId))
-                continue;
-
-            markings.Add(new Marking(marking));
-        }
-
-        markings.Add(new Marking(GetQuillMarkingId(style), new List<Color> { appearance.HairColor }));
-        return appearance.WithMarkings(markings);
-    }
-
-    private static YautjaQuillStyle GetQuillStyle(HumanoidCharacterAppearance appearance)
-    {
-        foreach (var marking in appearance.Markings)
-        {
-            if (!IsQuillMarking(marking.MarkingId))
-                continue;
-
-            foreach (var style in QuillStyleOrder)
-            {
-                if (marking.MarkingId == GetQuillMarkingId(style))
-                    return style;
-            }
-        }
-
-        return YautjaQuillStyle.Standard;
-    }
-
-    private static bool IsQuillMarking(string markingId)
-    {
-        return markingId.StartsWith(QuillMarkingPrefix, StringComparison.Ordinal);
-    }
-
-    private static YautjaSkinColor GetClosestSkinColor(Color color)
-    {
-        var bestColor = YautjaSkinColor.Green;
-        var bestDistance = int.MaxValue;
-
-        foreach (var skinColor in SkinColorOrder)
-        {
-            var tone = GetSkinColorColor(skinColor);
-            var red = color.RByte - tone.RByte;
-            var green = color.GByte - tone.GByte;
-            var blue = color.BByte - tone.BByte;
-            var distance = red * red + green * green + blue * blue;
-
-            if (distance >= bestDistance)
-                continue;
-
-            bestDistance = distance;
-            bestColor = skinColor;
-        }
-
-        return bestColor;
-    }
-
-    private static YautjaEyeColor GetClosestEyeColor(Color color)
-    {
-        var bestColor = YautjaEyeColor.Black;
-        var bestDistance = int.MaxValue;
-
-        foreach (var eyeColor in EyeColorOrder)
-        {
-            var tone = GetEyeColorColor(eyeColor);
-            var red = color.RByte - tone.RByte;
-            var green = color.GByte - tone.GByte;
-            var blue = color.BByte - tone.BByte;
-            var distance = red * red + green * green + blue * blue;
-
-            if (distance >= bestDistance)
-                continue;
-
-            bestDistance = distance;
-            bestColor = eyeColor;
-        }
-
-        return bestColor;
-    }
-
-    private static string ClanPrototype(string prefix, YautjaGearMaterial material, int style)
-    {
-        var suffix = MaterialSuffix(material);
-        if (material == YautjaGearMaterial.Ebony)
-            return style == 1 ? prefix : $"{prefix}{style}";
-
-        return style == 1 ? $"{prefix}{suffix}" : $"{prefix}{suffix}{style}";
-    }
-
-    private static string MaterialSuffix(YautjaGearMaterial material)
-    {
-        return material switch
-        {
-            YautjaGearMaterial.Bronze => "Bronze",
-            YautjaGearMaterial.Silver => "Silver",
-            YautjaGearMaterial.Crimson => "Crimson",
-            YautjaGearMaterial.Bone => "Bone",
-            _ => "Ebony",
-        };
-    }
-
-    private static string GearDisplayName(YautjaGearMaterial material, string itemName, int style)
-    {
-        return Loc.GetString(
-            "cmu-yautja-profile-pattern",
-            ("material", GetMaterialDisplayName(material)),
-            ("item", itemName),
-            ("style", style));
-    }
-
-    private static int Clamp(int value, int min, int max)
-    {
-        return Math.Clamp(value, min, max);
-    }
-
-    private static Color C(byte red, byte green, byte blue)
-    {
-        return new Color(red, green, blue);
-    }
-}
+        FlavorTexÛnõ¶‰žËkºwµçUÉ¥…°¤(€€€ì(€€€€€€€Ù…ÈÍÕ™™¥à€ôµ…Ñ•É¥…°¥Ìe…ÕÑ©…	É…•É5…Ñ•É¥…°¹É…½¸½È(€€€€€€€€€€€e…ÕÑ©…	É…•É5…Ñ•É¥…°¹MÝ…µÀ½È(€€€€€€€€€€€e…ÕÑ©…	É…•É5…Ñ•É¥…°¹¹™½É•È½È(€€€€€€€€€€€e…ÕÑ©…	É…•É5…Ñ•É¥…°¹½±±•Ñ½È(€€€€€€€€€€€€ü€‰±•…äˆ(€€€€€€€€€€€€è€‰±…¸ˆì(€€€€€€€É•ÑÕÉ¸€‰µÔµå…ÕÑ©„µÁÉ½™¥±”µ‰É…•Èµí	É…•É5…Ñ•É¥…±-•ä¡µ…Ñ•É¥…°¥ôµíÍÕ™™¥áôˆì(€€€ô((€€€ÁÕ‰±¥ŒÍÑ…Ñ¥ŒÍÑÉ¥¹œ•Ñ…ÍÑ•É¥ÍÁ±…å9…µ”¡e…ÕÑ©…	É…•É5…Ñ•É¥…°µ…Ñ•É¥…°¤(€€€ì(€€€€€€€É•ÑÕÉ¸€‰µÔµå…ÕÑ©„µÁÉ½™¥±”µ…ÍÑ•Èµí	É…•É5…Ñ•É¥…±-•ä¡µ…Ñ•É¥…°¥ôˆì(€€€ô((€€€ÁÕ‰±¥ŒÍÑ…Ñ¥ŒÍÑÉ¥¹œ•Ñ…Á•¥ÍÁ±…å9…µ”¡e…ÕÑ©……Á•MÑå±”ÍÑå±”¤(€€€ì(€€€€€€€Ù…ÈÍÕ™™¥à€ôÍÑå±”ÍÝ¥Ñ (€€€€€€€ì(€€€€€€€€€€€e…ÕÑ©……Á•MÑå±”¹•É•µ½¹¥…°€ôø€‰•É•µ½¹¥…°ˆ°(€€€€€€€€€€€e…ÕÑ©……Á•MÑå±”¹Q¡¥É€ôø€‰Ñ¡¥Éˆ°(€€€€€€€€€€€e…ÕÑ©……Á•MÑå±”¹!…±˜€ôø€‰¡…±˜ˆ°(€€€€€€€€€€€e…ÕÑ©……Á•MÑå±”¹EÕ…ÉÑ•È€ôø€‰ÅÕ…ÉÑ•Èˆ°(€€€€€€€€€€€e…ÕÑ©……Á•MÑå±”¹A½¹¡¼€ôø€‰Á½¹¡¼ˆ°(€€€€€€€€€€€e…ÕÑ©……Á•MÑå±”¹…µ…•€ôø€‰‘…µ…•ˆ°(€€€€€€€€€€€|€ôø€‰™Õ±°ˆ°(€€€€€€€ôì(€€€€€€€É•ÑÕÉ¸€‰µÔµå…ÕÑ©„µÁÉ½™¥±”µ…Á”µíÍÕ™™¥áôˆì(€€€ô((€€€ÁÕ‰±¥ŒÍÑ…Ñ¥ŒÍÑÉ¥¹œ•Ñ5…Í­•ÍÍ½Éå¥ÍÁ±…å9…µ”¡¥¹ÐÍÑå±”°e…ÕÑ©…•…É5…Ñ•É¥…°µ…Ñ•É¥…°¤(€€€ì(€€€€€€€É•ÑÕÉ¸ÍÑå±”€ôô€À(€€€€€€€€€€€€ü€‰µÔµå…ÕÑ©„µÁÉ½™¥±”µµ…Í¬µ…•ÍÍ½Éäµ¹½¹”ˆ(€€€€€€€€€€€€è€‰µÔµå…ÕÑ©„µÁÉ½™¥±”µµ…Í¬µ…•ÍÍ½Éäµí5…Ñ•É¥…±-•ä¡µ…Ñ•É¥…°¥ôµí±…µÀ¡ÍÑå±”°€Ä°€Ì¥ôˆì(€€€ô((€€€ÁÕ‰±¥ŒÍÑ…Ñ¥ŒÍÑÉ¥¹œ•Ñ5…Ñ•É¥…±¥ÍÁ±…å9…µ”¡e…ÕÑ©…•…É5…Ñ•É¥…°µ…Ñ•É¥…°¤(€€€ì(€€€€€€€É•ÑÕÉ¸€‰µÔµå…ÕÑ©„µÁÉ½™¥±”µµ…Ñ•É¥…°µí5…Ñ•É¥…±-•ä¡µ…Ñ•É¥…°¥ôˆì(€€€ô((€€€ÁÕ‰±¥ŒÍÑ…Ñ¥ŒÍÑÉ¥¹œ•Ñ	É…•É5…Ñ•É¥…±¥ÍÁ±…å9…µ”¡e…ÕÑ©…	É…•É5…Ñ•É¥…°µ…Ñ•É¥…°¤(€€€ì(€€€€€€€É•ÑÕÉ¸€‰µÔµå…ÕÑ©„µÁÉ½™¥±”µ‰É…•Èµµ…Ñ•É¥…°µí	É…•É5…Ñ•É¥…±-•ä¡µ…Ñ•É¥…°¥ôˆì(€€€ô((€€€ÁÕ‰±¥ŒÍÑ…Ñ¥ŒÍÑÉ¥¹œ•ÑQÉ…¹Í±…Ñ½ÉQåÁ•¥ÍÁ±…å9…µ”¡e…ÕÑ©…QÉ…¹Í±…Ñ½ÉQåÁ”ÑåÁ”¤(€€€ì(€€€€€€€Ù…ÈÍÕ™™¥à€ôÑåÁ”ÍÝ¥Ñ (€€€€€€€ì(€€€€€€€€€€€e…ÕÑ©…QÉ…¹Í±…Ñ½ÉQåÁ”¹I•ÑÉ¼€ôø€‰É•ÑÉ¼ˆ°(€€€€€€€€€€€e…ÕÑ©…QÉ…¹Í±…Ñ½ÉQåÁ”¹½µ‰¼€ôø€‰½µ‰¼ˆ°(€€€€€€€€€€€|€ôø€‰µ½‘•É¸ˆ°(€€€€€€€ôì(€€€€€€€É•ÑÕÉ¸€‰µÔµå…ÕÑ©„µÁÉ½™¥±”µÑÉ…¹Í±…Ñ½ÈµíÍÕ™™¥áôˆì(€€€ô((€€€ÁÕ‰±¥ŒÍÑ…Ñ¥ŒÍÑÉ¥¹œ•Ñ%¹Ù¥Í¥‰¥±¥ÑåM½Õ¹‘¥ÍÁ±…å9…µ”¡e…ÕÑ©…%¹Ù¥Í¥‰¥±¥ÑåM½Õ¹Í½Õ¹¤(€€€ì(€€€€€€€Ù…ÈÍÕ™™¥à€ôÍ½Õ¹€ôôe…ÕÑ©…%¹Ù¥Í¥‰¥±¥ÑåM½Õ¹¹I•ÑÉ¼€ü€‰É•ÑÉ¼ˆ€è€‰µ½‘•É¸ˆì(€€€€€€€É•ÑÕÉ¸€‰µÔµå…ÕÑ©„µÁÉ½™¥±”µ¥¹Ù¥Í¥‰¥±¥ÑäµÍ½Õ¹µíÍÕ™™¥áôˆì(€€€ô((€€€ÁÕ‰±¥ŒÍÑ…Ñ¥ŒÍÑÉ¥¹œ•Ñ1•…å¥ÍÁ±…å9…µ”¡e…ÕÑ©…1•…åM•Ð±•…ä¤(€€€ì(€€€€€€€É•ÑÕÉ¸€‰µÔµå…ÕÑ©„µÁÉ½™¥±”µ±•…äµí1•…å-•ä¡±•…ä¥ôˆì(€€€ô((€€€ÁÕ‰±¥ŒÍÑ…Ñ¥ŒÍÑÉ¥¹œ•ÑMÑ…ÑÕÍ¥ÍÁ±…å9…µ”¡e…ÕÑ©…AÉ½™¥±•MÑ…ÑÕÌÍÑ…ÑÕÌ¤(€€€ì(€€€€€€€Ù…ÈÍÕ™™¥à€ôÍÑ…ÑÕÌÍÝ¥Ñ (€€€€€€€ì(€€€€€€€€€€€e…ÕÑ©…AÉ½™¥±•MÑ…ÑÕÌ¹½Õ¹¥°€ôø€‰½Õ¹¥°ˆ°(€€€€€€€€€€€e…ÕÑ©…AÉ½™¥±•MÑ…ÑÕÌ¹1•…‘•È€ôø€‰±•…‘•Èˆ°(€€€€€€€€€€€|€ôø€‰¹½Éµ…°ˆ°(€€€€€€€ôì(€€€€€€€É•ÑÕÉ¸€‰µÔµå…ÕÑ©„µÁÉ½™¥±”µÍÑ…ÑÕÌµíÍÕ™™¥áôˆì(€€€ô((€€€ÁÕ‰±¥ŒÍÑ…Ñ¥ŒÍÑÉ¥¹œ•ÑU¹¥ÅÕ•¥ÍÁ±…å9…µ”¡e…ÕÑ©…U¹¥ÅÕ•M•ÐÕ¹¥ÅÕ”¤(€€€ì(€€€€€€€É•ÑÕÉ¸€‰µÔµå…ÕÑ©„µÁÉ½™¥±”µÕ¹¥ÅÕ”µíU¹¥ÅÕ•-•ä¡Õ¹¥ÅÕ”¥ôˆì(€€€ô((€€€ÁÕ‰±¥ŒÍÑ…Ñ¥ŒÍÑÉ¥¹œ•ÑM­¥¹½±½É¥ÍÁ±…å9…µ”¡e…ÕÑ©…M­¥¹½±½ÈÍ­¥¹½±½È¤(€€€ì(€€€€€€€É•ÑÕÉ¸€‰µÔµå…ÕÑ©„µÁÉ½™¥±”µÍ­¥¸µ½±½ÈµíM­¥¹½±½É-•ä¡Í­¥¹½±½È¥ôˆì(€€€ô((€€€ÁÕ‰±¥ŒÍÑ…Ñ¥ŒÍÑÉ¥¹œ•Ñå•½±½É¥ÍÁ±…å9…µ”¡e…ÕÑ©…å•½±½È•å•½±½È¤(€€€ì(€€€€€€€É•ÑÕÉ¸€‰µÔµå…ÕÑ©„µÁÉ½™¥±”µ•å”µ½±½Èµíå•½±½É-•ä¡•å•½±½È¥ôˆì(€€€ô((€€€ÁÕ‰±¥ŒÍÑ…Ñ¥ŒÍÑÉ¥¹œ•ÑÉ•…‘½±½É¥ÍÁ±…å9…µ”¡e…ÕÑ©…É•…‘½±½È‘É•…‘½±½È¤(€€€ì(€€€€€€€É•ÑÕÉ¸€‰µÔµå…ÕÑ©„µÁÉ½™¥±”µ‘É•…µ½±½ÈµíÉ•…‘½±½É-•ä¡‘É•…‘½±½È¥ôˆì(€€€ô((€€€ÁÕ‰±¥ŒÍÑ…Ñ¥ŒÍÑÉ¥¹œ•ÑEÕ¥±±MÑå±•¥ÍÁ±…å9…µ”¡e…ÕÑ©…EÕ¥±±MÑå±”ÍÑå±”¤(€€€ì(€€€€€€€Ù…ÈÍÕ™™¥à€ôÍÑå±”ÍÝ¥Ñ (€€€€€€€ì(€€€€€€€€€€€e…ÕÑ©…EÕ¥±±MÑå±”¹M¡½ÉÑQ¡¥¬€ôø€‰Í¡½ÉÐµÑ¡¥¬ˆ°(€€€€€€€€€€€e…ÕÑ©…EÕ¥±±MÑå±”¹MÑÉ…¥¡ÑQ¡¥¸€ôø€‰ÍÑÉ…¥¡ÐµÑ¡¥¸ˆ°(€€€€€€€€€€€e…ÕÑ©…EÕ¥±±MÑå±”¹1½¹Q¥•€ôø€‰±½¹œµÑ¥•ˆ°(€€€€€€€€€€€e…ÕÑ©…EÕ¥±±MÑå±”¹M¡½ÉÑQ¡¥¸€ôø€‰Í¡½ÉÐµÑ¡¥¸ˆ°(€€€€€€€€€€€e…ÕÑ©…EÕ¥±±MÑå±”¹1½¹ÕÉÙ•€ôø€‰±½¹œµÕÉÙ•ˆ°(€€€€€€€€€€€e…ÕÑ©…EÕ¥±±MÑå±”¹1½¹MÑÉ…¥¡Ð€ôø€‰±½¹œµÍÑÉ…¥¡Ðˆ°(€€€€€€€€€€€e…ÕÑ©…EÕ¥±±MÑå±”¹1½¹]¥‘”€ôø€‰±½¹œµÝ¥‘”ˆ°(€€€€€€€€€€€e…ÕÑ©…EÕ¥±±MÑå±”¹M¡½ÉÑ]¥‘”€ôø€‰Í¡½ÉÐµÝ¥‘”ˆ°(€€€€€€€€€€€|€ôø€‰ÍÑ…¹‘…Éˆ°(€€€€€€€ôì(€€€€€€€É•ÑÕÉ¸€‰µÔµå…ÕÑ©„µÁÉ½™¥±”µÅÕ¥±°µíÍÕ™™¥áôˆì(€€€ô((€€€ÁÕ‰±¥ŒÍÑ…Ñ¥Œ½±½È•ÑM­¥¹Q½¹•½±½È¡¥¹Ð¥¹‘•à¤(€€€ì(€€€€€€€É•ÑÕÉ¸M­¥¹Q½¹•½±½ÉÍm±…µÀ¡¥¹‘•à°€À°M­¥¹Q½¹•½±½ÉÌ¹1•¹Ñ €´€Ä¥tì(€€€ô((€€€ÁÕ‰±¥ŒÍÑ…Ñ¥Œ¥¹Ð•Ñ±½Í•ÍÑM­¥¹Q½¹•%¹‘•à¡½±½È½±½È¤(€€€ì(€€€€€€€É•ÑÕÉ¸ÉÉ…ä¹%¹‘•á=˜¡M­¥¹½±½É=É‘•È°•Ñ±½Í•ÍÑM­¥¹½±½È¡½±½È¤¤ì(€€€ô((€€€ÁÕ‰±¥ŒÍÑ…Ñ¥Œ½±½È•Ñ±½Í•ÍÑM­¥¹Q½¹•½±½È¡½±½È½±½È¤(€€€ì(€€€€€€€É•ÑÕÉ¸•ÑM­¥¹½±½É½±½È¡•Ñ±½Í•ÍÑM­¥¹½±½È¡½±½È¤¤ì(€€€ô((€€€ÁÕ‰±¥ŒÍÑ…Ñ¥Œ½±½È•ÑM­¥¹½±½É½±½È¡e…ÕÑ©…M­¥¹½±½È½±½È¤(€€€ì(€€€€€€€É•ÑÕÉ¸½±½ÈÍÝ¥Ñ (€€€€€€€ì(€€€€€€€€€€€e…ÕÑ©…M­¥¹½±½È¹É••¸€ôøM­¥¹Q½¹•½±½ÉÍlÅt°(€€€€€€€€€€€e…ÕÑ©…M­¥¹½±½È¹AÕÉÁ±”€ôøM­¥¹Q½¹•½±½ÉÍlÉt°(€€€€€€€€€€€e…ÕÑ©…M­¥¹½±½È¹	±Õ”€ôøM­¥¹Q½¹•½±½ÉÍlÍt°(€€€€€€€€€€€e…ÕÑ©…M­¥¹½±½È¹I•€ôøM­¥¹Q½¹•½±½ÉÍlÑt°(€€€€€€€€€€€e…ÕÑ©…M­¥¹½±½È¹	±…¬€ôøM­¥¹Q½¹•½±½ÉÍlÕt°(€€€€€€€€€€€|€ôøM­¥¹Q½¹•½±½ÉÍlÁt°(€€€€€€€ôì(€€€ô((€€€ÁÕ‰±¥ŒÍÑ…Ñ¥Œ½±½È•Ñå•½±½É½±½È¡e…ÕÑ©…å•½±½È½±½È¤(€€€ì(€€€€€€€É•ÑÕÉ¸½±½ÈÍÝ¥Ñ (€€€€€€€ì(€€€€€€€€€€€e…ÕÑ©…å•½±½È¹µ‰•È€ôøå•½±½ÉÍlÅt°(€€€€€€€€€€€e…ÕÑ©…å•½±½È¹½ÁÁ•È€ôøå•½±½ÉÍlÉt°(€€€€€€€€€€€e…ÕÑ©…å•½±½È¹I•€ôøå•½±½ÉÍlÍt°(€€€€€€€€€€€e…ÕÑ©…å•½±½È¹)…‘”€ôøå•½±½ÉÍlÑt°(€€€€€€€€€€€e…ÕÑ©…å•½±½È¹M±…Ñ”€ôøå•½±½ÉÍlÕt°(€€€€€€€€€€€e…ÕÑ©…å•½±½È¹	±…¬€ôøå•½±½ÉÍlÙt°(€€€€€€€€€€€|€ôøå•½±½ÉÍlÁt°(€€€€€€€ôì(€€€ô((€€€ÁÕ‰±¥ŒÍÑ…Ñ¥Œ½±½È•ÑÉ•…‘½±½É½±½È¡e…ÕÑ©…É•…‘½±½È½±½È°½±½ÈÍ­¥¹½±½È¤(€€€ì(€€€€€€€É•ÑÕÉ¸½±½ÈÍÝ¥Ñ (€€€€€€€ì(€€€€€€€€€€€e…ÕÑ©…É•…‘½±½È¹	±…¬€ôø ÈÀ°€Äà°€ÄØ¤°(€€€€€€€€€€€e…ÕÑ©…É•…‘½±½È¹…É­	É½Ý¸€ôø ÐÔ°€ÌÈ°€ÈÐ¤°(€€€€€€€€€€€e…ÕÑ©…É•…‘½±½È¹	É½Ý¸€ôø Üà°€ÔÐ°€ÌÐ¤°(€€€€€€€€€€€e…ÕÑ©…É•…‘½±½È¹Õ‰ÕÉ¸€ôø äÐ°€Ðà°€ÌØ¤°(€€€€€€€€€€€e…ÕÑ©…É•…‘½±½È¹Í €ôø ÄÀÔ°€ÄÀÔ°€ÄÀÀ¤°(€€€€€€€€€€€e…ÕÑ©…É•…‘½±½È¹	½¹”€ôø ÄàÔ°€ÄÜÐ°€ÄÐÔ¤°(€€€€€€€€€€€|€ôøÍ­¥¹½±½È¹]¥Ñ¡±Á¡„ Å˜¤°(€€€€€€€ôì(€€€ô((€€€ÁÕ‰±¥ŒÍÑ…Ñ¥Œ½±½È•Ñ±½Í•ÍÑå•½±½É½±½È¡½±½È½±½È¤(€€€ì(€€€€€€€É•ÑÕÉ¸•Ñå•½±½É½±½È¡•Ñ±½Í•ÍÑå•½±½È¡½±½È¤¤ì(€€€ô((€€€ÁÕ‰±¥ŒÍÑ…Ñ¥ŒÍÑÉ¥¹œ•ÑEÕ¥±±5…É­¥¹%¡e…ÕÑ©…EÕ¥±±MÑå±”ÍÑå±”¤(€€€ì(€€€€€€€É•ÑÕÉ¸ÍÑå±”ÍÝ¥Ñ (€€€€€€€ì(€€€€€€€€€€€e…ÕÑ©…EÕ¥±±MÑå±”¹M¡½ÉÑQ¡¥¬€ôø€‰íEÕ¥±±5…É­¥¹AÉ•™¥áõM¡½ÉÑQ¡¥¬ˆ°(€€€€€€€€€€€e…ÕÑ©…EÕ¥±±MÑå±”¹MÑÉ…¥¡ÑQ¡¥¸€ôø€‰íEÕ¥±±5…É­¥¹AÉ•™¥áõMÑÉ…¥¡ÑQ¡¥¸ˆ°(€€€€€€€€€€€e…ÕÑ©…EÕ¥±±MÑå±”¹1½¹Q¥•€ôø€‰íEÕ¥±±5…É­¥¹AÉ•™¥áõ1½¹Q¥•ˆ°(€€€€€€€€€€€e…ÕÑ©…EÕ¥±±MÑå±”¹M¡½ÉÑQ¡¥¸€ôø€‰íEÕ¥±±5…É­¥¹AÉ•™¥áõM¡½ÉÑQ¡¥¸ˆ°(€€€€€€€€€€€e…ÕÑ©…EÕ¥±±MÑå±”¹1½¹ÕÉÙ•€ôø€‰íEÕ¥±±5…É­¥¹AÉ•™¥áõ1½¹ÕÉÙ•ˆ°(€€€€€€€€€€€e…ÕÑ©…EÕ¥±±MÑå±”¹1½¹MÑÉ…¥¡Ð€ôø€‰íEÕ¥±±5…É­¥¹AÉ•™¥áõ1½¹MÑÉ…¥¡Ðˆ°(€€€€€€€€€€€e…ÕÑ©…EÕ¥±±MÑå±”¹1½¹]¥‘”€ôø€‰íEÕ¥±±5…É­¥¹AÉ•™¥áõ1½¹]¥‘”ˆ°(€€€€€€€€€€€e…ÕÑ©…EÕ¥±±MÑå±”¹M¡½ÉÑ]¥‘”€ôø€‰íEÕ¥±±5…É­¥¹AÉ•™¥áõM¡½ÉÑ]¥‘”ˆ°(€€€€€€€€€€€|€ôø€‰íEÕ¥±±5…É­¥¹AÉ•™¥áõMÑ…¹‘…Éˆ°(€€€€€€€ôì(€€€ô((€€€ÁÉ¥Ù…Ñ”ÍÑ…Ñ¥Œ!Õµ…¹½¥‘¡…É…Ñ•ÉÁÁ•…É…¹”	Õ¥±‘•™…Õ±ÑÁÁ•…É…¹” ¤(€€€ì(€€€€€€€Ù…ÈÍ­¥¸€ô•ÑM­¥¹½±½É½±½È¡e…ÕÑ©…M­¥¹½±½È¹É••¸¤ì(€€€€€€€É•ÑÕÉ¸¹•Ü!Õµ…¹½¥‘¡…É…Ñ•ÉÁÁ•…É…¹” (€€€€€€€€€€€!…¥ÉMÑå±•Ì¹•™…Õ±Ñ!…¥ÉMÑå±”°(€€€€€€€€€€€Í­¥¸°(€€€€€€€€€€€!…¥ÉMÑå±•Ì¹•™…Õ±Ñ…¥…±!…¥ÉMÑå±”°(€€€€€€€€€€€½±½È¹	±…¬°(€€€€€€€€€€€•Ñå•½±½É½±½È¡e…ÕÑ©…å•½±½È¹	±…¬¤°(€€€€€€€€€€€Í­¥¸°(€€€€€€€€€€€¹•Ü1¥ÍÐñ5…É­¥¹œø(€€€€€€€€€€€ì(€€€€€€€€€€€€€€€¹•Ü¡•ÑEÕ¥±±5…É­¥¹%¡e…ÕÑ©…EÕ¥±±MÑå±”¹MÑ…¹‘…É¤°¹•Ü1¥ÍÐñ½±½ÈøìÍ­¥¸ô¤°(€€€€€€€€€€€ô°(€€€€€€€€€€€!…¥ÉMÑå±•Ì¹•™…Õ±Ñ!…¥ÉMÑå±”°(€€€€€€€€€€€½±½È¹	±…¬°(€€€€€€€€€€€!…¥ÉMÑå±•Ì¹•™…Õ±Ñ…¥…±!…¥ÉMÑå±”°(€€€€€€€€€€€½±½È¹	±…¬¤ì(€€€ô((€€€ÁÉ¥Ù…Ñ”ÍÑ…Ñ¥Œ!Õµ…¹½¥‘¡…É…Ñ•ÉÁÁ•…É…¹”M…¹¥Ñ¥é•ÁÁ•…É…¹” (€€€€€€€!Õµ…¹½¥‘¡…É…Ñ•ÉÁÁ•…É…¹”…ÁÁ•…É…¹”°(€€€€€€€e…ÕÑ©…É•…‘½±½È‘É•…‘½±½È¤(€€€ì(€€€€€€€Ù…ÈÍ­¥¹½±½È€ô•Ñ±½Í•ÍÑM­¥¹Q½¹•½±½È¡…ÁÁ•…É…¹”¹M­¥¹½±½È¤ì(€€€€€€€Ù…È¡…¥É½±½È€ô•ÑÉ•…‘½±½É½±½È¡M…¹¥Ñ¥é•É•…‘½±½È¡‘É•…‘½±½È¤°Í­¥¹½±½È¤ì(€€€€€€€É•ÑÕÉ¸ÁÁ±åEÕ¥±±MÑå±” (€€€€€€€€€€€…ÁÁ•…É…¹”¹±½¹” ¤(€€€€€€€€€€€€€€€€¹]¥Ñ¡M­¥¹½±½È¡Í­¥¹½±½È¤(€€€€€€€€€€€€€€€€¹]¥Ñ¡!…¥É½±½È¡¡…¥É½±½È¤(€€€€€€€€€€€€€€€€¹]¥Ñ¡å•½±½È¡•Ñ±½Í•ÍÑå•½±½É½±½È¡…ÁÁ•…É…¹”¹å•½±½È¤¤°(€€€€€€€€€€€•ÑEÕ¥±±MÑå±”¡…ÁÁ•…É…¹”¤¤ì(€€€ô((€€€ÁÉ¥Ù…Ñ”ÍÑ…Ñ¥Œe…ÕÑ©…É•…‘½±½ÈM…¹¥Ñ¥é•É•…‘½±½È¡e…ÕÑ©…É•…‘½±½È‘É•…‘½±½È¤(€€€ì(€€€€€€€É•ÑÕÉ¸¹Õ´¹%Í•™¥¹•¡‘É•…‘½±½È¤€ü‘É•…‘½±½È€èe…ÕÑ©…É•…‘½±½È¹5…Ñ¡M­¥¸ì(€€€ô((€€€ÁÉ¥Ù…Ñ”ÍÑ…Ñ¥ŒPM…¹¥Ñ¥é•¹Õ´ñPø¡PÙ…±Õ”°P™…±±‰…¬¤Ý¡•É”P€èÍÑÉÕÐ°¹Õ´(€€€ì(€€€€€€€É•ÑÕÉ¸¹Õ´¹%Í•™¥¹•¡Ù…±Õ”¤€üÙ…±Õ”€è™…±±‰…¬ì(€€€ô((€€€ÁÉ¥Ù…Ñ”ÍÑ…Ñ¥Œ!Õµ…¹½¥‘¡…É…Ñ•ÉÁÁ•…É…¹”ÁÁ±åEÕ¥±±MÑå±”¡!Õµ…¹½¥‘¡…É…Ñ•ÉÁÁ•…É…¹”…ÁÁ•…É…¹”°e…ÕÑ©…EÕ¥±±MÑå±”ÍÑå±”¤(€€€ì(€€€€€€€Ù…Èµ…É­¥¹Ì€ô¹•Ü1¥ÍÐñ5…É­¥¹œø ¤ì(€€€€€€€™½É•… €¡Ù…Èµ…É­¥¹œ¥¸…ÁÁ•…É…¹”¹5…É­¥¹Ì¤(€€€€€€€ì(€€€€€€€€€€€¥˜€¡%ÍEÕ¥±±5…É­¥¹œ¡µ…É­¥¹œ¹5…É­¥¹%¤¤(€€€€€€€€€€€€€€€½¹Ñ¥¹Õ”ì((€€€€€€€€€€€µ…É­¥¹Ì¹‘¡¹•Ü5…É­¥¹œ¡µ…É­¥¹œ¤¤ì(€€€€€€€ô((€€€€€€€µ…É­¥¹Ì¹‘¡¹•Ü5…É­¥¹œ¡•ÑEÕ¥±±5…É­¥¹%¡ÍÑå±”¤°¹•Ü1¥ÍÐñ½±½Èøì…ÁÁ•…É…¹”¹!…¥É½±½Èô¤¤ì(€€€€€€€É•ÑÕÉ¸…ÁÁ•…É…¹”¹]¥Ñ¡5…É­¥¹Ì¡µ…É­¥¹Ì¤ì(€€€ô((€€€ÁÉ¥Ù…Ñ”ÍÑ…Ñ¥Œe…ÕÑ©…EÕ¥±±MÑå±”•ÑEÕ¥±±MÑå±”¡!Õµ…¹½¥‘¡…É…Ñ•ÉÁÁ•…É…¹”…ÁÁ•…É…¹”¤(€€€ì(€€€€€€€™½É•… €¡Ù…Èµ…É­¥¹œ¥¸…ÁÁ•…É…¹”¹5…É­¥¹Ì¤(€€€€€€€ì(€€€€€€€€€€€¥˜€ …%ÍEÕ¥±±5…É­¥¹œ¡µ…É­¥¹œ¹5…É­¥¹%¤¤(€€€€€€€€€€€€€€€½¹Ñ¥¹Õ”ì((€€€€€€€€€€€™½É•… €¡Ù…ÈÍÑå±”¥¸EÕ¥±±MÑå±•=É‘•È¤(€€€€€€€€€€€ì(€€€€€€€€€€€€€€€¥˜€¡µ…É­¥¹œ¹5…É­¥¹%€ôô•ÑEÕ¥±±5…É­¥¹%¡ÍÑå±”¤¤(€€€€€€€€€€€€€€€€€€€É•ÑÕÉ¸ÍÑå±”ì(€€€€€€€€€€€ô(€€€€€€€ô((€€€€€€€É•ÑÕÉ¸e…ÕÑ©…EÕ¥±±MÑå±”¹MÑ…¹‘…Éì(€€€ô((€€€ÁÉ¥Ù…Ñ”ÍÑ…Ñ¥Œ‰½½°%ÍEÕ¥±±5…É­¥¹œ¡ÍÑÉ¥¹œµ…É­¥¹%¤(€€€ì(€€€€€€€É•ÑÕÉ¸µ…É­¥¹%¹MÑ…ÉÑÍ]¥Ñ ¡EÕ¥±±5…É­¥¹AÉ•™¥à°MÑÉ¥¹½µÁ…É¥Í½¸¹=É‘¥¹…°¤ì(€€€ô((€€€ÁÉ¥Ù…Ñ”ÍÑ…Ñ¥Œe…ÕÑ©…M­¥¹½±½È•Ñ±½Í•ÍÑM­¥¹½±½È¡½±½È½±½È¤(€€€ì(€€€€€€€Ù…È‰•ÍÑ½±½È€ôe…ÕÑ©…M­¥¹½±½È¹É••¸ì(€€€€€€€Ù…È‰•ÍÑ¥ÍÑ…¹”€ô¥¹Ð¹5…áY…±Õ”ì((€€€€€€€™½É•… €¡Ù…ÈÍ­¥¹½±½È¥¸M­¥¹½±½É=É‘•È¤(€€€€€€€ì(€€€€€€€€€€€Ù…ÈÑ½¹”€ô•ÑM­¥¹½±½É½±½È¡Í­¥¹½±½È¤ì(€€€€€€€€€€€Ù…ÈÉ•€ô½±½È¹I	åÑ”€´Ñ½¹”¹I	åÑ”ì(€€€€€€€€€€€Ù…ÈÉ••¸€ô½±½È¹	åÑ”€´Ñ½¹”¹	åÑ”ì(€€€€€€€€€€€Ù…È‰±Õ”€ô½±½È¹		åÑ”€´Ñ½¹”¹		åÑ”ì(€€€€€€€€€€€Ù…È‘¥ÍÑ…¹”€ôÉ•€¨É•€¬É••¸€¨É••¸€¬‰±Õ”€¨‰±Õ”ì((€€€€€€€€€€€¥˜€¡‘¥ÍÑ…¹”€øô‰•ÍÑ¥ÍÑ…¹”¤(€€€€€€€€€€€€€€€½¹Ñ¥¹Õ”ì((€€€€€€€€€€€‰•ÍÑ¥ÍÑ…¹”€ô‘¥ÍÑ…¹”ì(€€€€€€€€€€€‰•ÍÑ½±½È€ôÍ­¥¹½±½Èì(€€€€€€€ô((€€€€€€€É•ÑÕÉ¸‰•ÍÑ½±½Èì(€€€ô((€€€ÁÉ¥Ù…Ñ”ÍÑ…Ñ¥Œe…ÕÑ©…å•½±½È•Ñ±½Í•ÍÑå•½±½È¡½±½È½±½È¤(€€€ì(€€€€€€€Ù…È‰•ÍÑ½±½È€ôe…ÕÑ©…å•½±½È¹	±…¬ì(€€€€€€€Ù…È‰•ÍÑ¥ÍÑ…¹”€ô¥¹Ð¹5…áY…±Õ”ì((€€€€€€€™½É•… €¡Ù…È•å•½±½È¥¸å•½±½É=É‘•È¤(€€€€€€€ì(€€€€€€€€€€€Ù…ÈÑ½¹”€ô•Ñå•½±½É½±½È¡•å•½±½È¤ì(€€€€€€€€€€€Ù…ÈÉ•€ô½±½È¹I	åÑ”€´Ñ½¹”¹I	åÑ”ì(€€€€€€€€€€€Ù…ÈÉ••¸€ô½±½È¹	åÑ”€´Ñ½¹”¹	åÑ”ì(€€€€€€€€€€€Ù…È‰±Õ”€ô½±½È¹		åÑ”€´Ñ½¹”¹		åÑ”ì(€€€€€€€€€€€Ù…È‘¥ÍÑ…¹”€ôÉ•€¨É•€¬É••¸€¨É••¸€¬‰±Õ”€¨‰±Õ”ì((€€€€€€€€€€€¥˜€¡‘¥ÍÑ…¹”€øô‰•ÍÑ¥ÍÑ…¹”¤(€€€€€€€€€€€€€€€½¹Ñ¥¹Õ”ì((€€€€€€€€€€€‰•ÍÑ¥ÍÑ…¹”€ô‘¥ÍÑ…¹”ì(€€€€€€€€€€€‰•ÍÑ½±½È€ô•å•½±½Èì(€€€€€€€ô((€€€€€€€É•ÑÕÉ¸‰•ÍÑ½±½Èì(€€€ô((€€€ÁÉ¥Ù…Ñ”ÍÑ…Ñ¥ŒÍÑÉ¥¹œ±…¹AÉ½Ñ½ÑåÁ”¡ÍÑÉ¥¹œÁÉ•™¥à°e…ÕÑ©…•…É5…Ñ•É¥…°µ…Ñ•É¥…°°¥¹ÐÍÑå±”¤(€€€ì(€€€€€€€Ù…ÈÍÕ™™¥à€ô5…Ñ•É¥…±MÕ™™¥à¡µ…Ñ•É¥…°¤ì(€€€€€€€¥˜€¡µ…Ñ•É¥…°€ôôe…ÕÑ©…•…É5…Ñ•É¥…°¹‰½¹ä¤(€€€€€€€€€€€É•ÑÕÉ¸ÍÑå±”€ôô€Ä€üÁÉ•™¥à€è€‰íÁÉ•™¥áõíÍÑå±•ôˆì((€€€€€€€É•ÑÕÉ¸ÍÑå±”€ôô€Ä€ü€‰íÁÉ•™¥áõíÍÕ™™¥áôˆ€è€‰íÁÉ•™¥áõíÍÕ™™¥áõíÍÑå±•ôˆì(€€€ô((€€€ÁÉ¥Ù…Ñ”ÍÑ…Ñ¥ŒÍÑÉ¥¹œ5…Ñ•É¥…±MÕ™™¥à¡e…ÕÑ©…•…É5…Ñ•É¥…°µ…Ñ•É¥…°¤(€€€ì(€€€€€€€É•ÑÕÉ¸µ…Ñ•É¥…°ÍÝ¥Ñ (€€€€€€€ì(€€€€€€€€€€€e…ÕÑ©…•…É5…Ñ•É¥…°¹	É½¹é”€ôø€‰	É½¹é”ˆ°(€€€€€€€€€€€e…ÕÑ©…•…É5…Ñ•É¥…°¹M¥±Ù•È€ôø€‰M¥±Ù•Èˆ°(€€€€€€€€€€€e…ÕÑ©…•…É5…Ñ•É¥…°¹É¥µÍ½¸€ôø€‰É¥µÍ½¸ˆ°(€€€€€€€€€€€e…ÕÑ©…•…É5…Ñ•É¥…°¹	½¹”€ôø€‰	½¹”ˆ°(€€€€€€€€€€€|€ôø€‰‰½¹äˆ°(€€€€€€€ôì(€€€ô((€€€ÁÉ¥Ù…Ñ”ÍÑ…Ñ¥ŒÍÑÉ¥¹œ•…É¥ÍÁ±…å9…µ”¡e…ÕÑ©…•…É5…Ñ•É¥…°µ…Ñ•É¥…°°ÍÑÉ¥¹œ¥Ñ•µ9…µ”°¥¹ÐÍÑå±”¤(€€€ì(€€€€€€€É•ÑÕÉ¸€‰µÔµå…ÕÑ©„µÁÉ½™¥±”µí¥Ñ•µ9…µ•ôµí5…Ñ•É¥…±-•ä¡µ…Ñ•É¥…°¥ôµíÍÑå±•ôˆì(€€€ô((€€€ÁÉ¥Ù…Ñ”ÍÑ…Ñ¥ŒÍÑÉ¥¹œ5…Ñ•É¥…±-•ä¡e…ÕÑ©…•…É5…Ñ•É¥…°µ…Ñ•É¥…°¤(€€€ì(€€€€€€€É•ÑÕÉ¸µ…Ñ•É¥…°ÍÝ¥Ñ (€€€€€€€ì(€€€€€€€€€€€e…ÕÑ©…•…É5…Ñ•É¥…°¹	É½¹é”€ôø€‰‰É½¹é”ˆ°(€€€€€€€€€€€e…ÕÑ©…•…É5…Ñ•É¥…°¹M¥±Ù•È€ôø€‰Í¥±Ù•Èˆ°(€€€€€€€€€€€e…ÕÑ©…•…É5…Ñ•É¥…°¹É¥µÍ½¸€ôø€‰É¥µÍ½¸ˆ°(€€€€€€€€€€€e…ÕÑ©…•…É5…Ñ•É¥…°¹	½¹”€ôø€‰‰½¹”ˆ°(€€€€€€€€€€€|€ôø€‰•‰½¹äˆ°(€€€€€€€ôì(€€€ô((€€€ÁÉ¥Ù…Ñ”ÍÑ…Ñ¥ŒÍÑÉ¥¹œ	É…•É5…Ñ•É¥…±-•ä¡e…ÕÑ©…	É…•É5…Ñ•É¥…°µ…Ñ•É¥…°¤(€€€ì(€€€€€€€É•ÑÕÉ¸µ…Ñ•É¥…°ÍÝ¥Ñ (€€€€€€€ì(€€€€€€€€€€€e…ÕÑ©…	É…•É5…Ñ•É¥…°¹I•ÑÉ¼€ôø€‰É•ÑÉ¼ˆ°(€€€€€€€€€€€e…ÕÑ©…	É…•É5…Ñ•É¥…°¹M¥±Ù•È€ôø€‰Í¥±Ù•Èˆ°(€€€€€€€€€€€e…ÕÑ©…	É…•É5…Ñ•É¥…°¹	É½¹é”€ôø€‰‰É½¹é”ˆ°(€€€€€€€€€€€e…ÕÑ©…	É…•É5…Ñ•É¥…°¹É¥µÍ½¸€ôø€‰É¥µÍ½¸ˆ°(€€€€€€€€€€€e…ÕÑ©…	É…•É5…Ñ•É¥…°¹	½¹”€ôø€‰‰½¹”ˆ°(€€€€€€€€€€€e…ÕÑ©…	É…•É5…Ñ•É¥…°¹É…½¸€ôø€‰‘É…½¸ˆ°(€€€€€€€€€€€e…ÕÑ©…	É…•É5…Ñ•É¥…°¹MÝ…µÀ€ôø€‰ÍÝ…µÀˆ°(€€€€€€€€€€€e…ÕÑ©…	É…•É5…Ñ•É¥…°¹¹™½É•È€ôø€‰•¹™½É•Èˆ°(€€€€€€€€€€€e…ÕÑ©…	É…•É5…Ñ•É¥…°¹½±±•Ñ½È€ôø€‰½±±•Ñ½Èˆ°(€€€€€€€€€€€|€ôø€‰•‰½¹äˆ°(€€€€€€€ôì(€€€ô((€€€ÁÉ¥Ù…Ñ”ÍÑ…Ñ¥ŒÍÑÉ¥¹œ1•…å-•ä¡e…ÕÑ©…1•…åM•Ð±•…ä¤(€€€ì(€€€€€€€É•ÑÕÉ¸±•…äÍÝ¥Ñ (€€€€€€€ì(€€€€€€€€€€€e…ÕÑ©…1•…åM•Ð¹É…½¸€ôø€‰‘É…½¸ˆ°(€€€€€€€€€€€e…ÕÑ©…1•…åM•Ð¹MÝ…µÀ€ôø€‰ÍÝ…µÀˆ°(€€€€€€€€€€€e…ÕÑ©…1•…åM•Ð¹¹™½É•È€ôø€‰•¹™½É•Èˆ°(€€€€€€€€€€€e…ÕÑ©…1•…åM•Ð¹½±±•Ñ½È€ôø€‰½±±•Ñ½Èˆ°(€€€€€€€€€€€|€ôø€‰¹½¹”ˆ°(€€€€€€€ôì(€€€ô((€€€ÁÉ¥Ù…Ñ”ÍÑ…Ñ¥ŒÍÑÉ¥¹œU¹¥ÅÕ•-•ä¡e…ÕÑ©…U¹¥ÅÕ•M•ÐÕ¹¥ÅÕ”¤(€€€ì(€€€€€€€É•ÑÕÉ¸Õ¹¥ÅÕ”ÍÝ¥Ñ (€€€€€€€ì(€€€€€€€€€€€e…ÕÑ©…U¹¥ÅÕ•M•Ð¹¹Õ‰åÌ€ôø€‰…¹Õ‰åÌˆ°(€€€€€€€€€€€e…ÕÑ©…U¹¥ÅÕ•M•Ð¹±•½Á…ÑÉ„€ôø€‰±•½Á…ÑÉ„ˆ°(€€€€€€€€€€€e…ÕÑ©…U¹¥ÅÕ•M•Ð¹A±…Ñ•€ôø€‰Á±…Ñ•ˆ°(€€€€€€€€€€€e…ÕÑ©…U¹¥ÅÕ•M•Ð¹I½¹¥¸€ôø€‰É½¹¥¸ˆ°(€€€€€€€€€€€|€ôø€‰¹½¹”ˆ°(€€€€€€€ôì(€€€ô((€€€ÁÉ¥Ù…Ñ”ÍÑ…Ñ¥ŒÍÑÉ¥¹œM­¥¹½±½É-•ä¡e…ÕÑ©…M­¥¹½±½ÈÍ­¥¹½±½È¤(€€€ì(€€€€€€€É•ÑÕÉ¸Í­¥¹½±½ÈÍÝ¥Ñ (€€€€€€€ì(€€€€€€€€€€€e…ÕÑ©…M­¥¹½±½È¹É••¸€ôø€‰É••¸ˆ°(€€€€€€€€€€€e…ÕÑ©…M­¥¹½±½È¹AÕÉÁ±”€ôø€‰ÁÕÉÁ±”ˆ°(€€€€€€€€€€€e…ÕÑ©…M­¥¹½±½È¹	±Õ”€ôø€‰‰±Õ”ˆ°(€€€€€€€€€€€e…ÕÑ©…M­¥¹½±½È¹I•€ôø€‰É•ˆ°(€€€€€€€€€€€e…ÕÑ©…M­¥¹½±½È¹	±…¬€ôø€‰‰±…¬ˆ°(€€€€€€€€€€€|€ôø€‰Ñ…¸ˆ°(€€€€€€€ôì(€€€ô((€€€ÁÉ¥Ù…Ñ”ÍÑ…Ñ¥ŒÍÑÉ¥¹œå•½±½É-•ä¡e…ÕÑ©…å•½±½È•å•½±½È¤(€€€ì(€€€€€€€É•ÑÕÉ¸•å•½±½ÈÍÝ¥Ñ (€€€€€€€ì(€€€€€€€€€€€e…ÕÑ©…å•½±½È¹½±€ôø€‰½±ˆ°(€€€€€€€€€€€e…ÕÑ©…å•½±½È¹µ‰•È€ôø€‰…µ‰•Èˆ°(€€€€€€€€€€€e…ÕÑ©…å•½±½È¹½ÁÁ•È€ôø€‰½ÁÁ•Èˆ°(€€€€€€€€€€€e…ÕÑ©…å•½±½È¹I•€ôø€‰É•ˆ°(€€€€€€€€€€€e…ÕÑ©…å•½±½È¹)…‘”€ôø€‰©…‘”ˆ°(€€€€€€€€€€€e…ÕÑ©…å•½±½È¹M±…Ñ”€ôø€‰Í±…Ñ”ˆ°(€€€€€€€€€€€|€ôø€‰‰±…¬ˆ°(€€€€€€€ôì(€€€ô((€€€ÁÉ¥Ù…Ñ”ÍÑ…Ñ¥ŒÍÑÉ¥¹œÉ•…‘½±½É-•ä¡e…ÕÑ©…É•…‘½±½È‘É•…‘½±½È¤(€€€ì(€€€€€€€É•ÑÕÉ¸‘É•…‘½±½ÈÍÝ¥Ñ (€€€€€€€ì(€€€€€€€€€€€e…ÕÑ©…É•…‘½±½È¹	±…¬€ôø€‰‰±…¬ˆ°(€€€€€€€€€€€e…ÕÑ©…É•…‘½±½È¹…É­	É½Ý¸€ôø€‰‘…É¬µ‰É½Ý¸ˆ°(€€€€€€€€€€€e…ÕÑ©…É•…‘½±½È¹	É½Ý¸€ôø€‰‰É½Ý¸ˆ°(€€€€€€€€€€€e…ÕÑ©…É•…‘½±½È¹Õ‰ÕÉ¸€ôø€‰…Õ‰ÕÉ¸ˆ°(€€€€€€€€€€€e…ÕÑ©…É•…‘½±½È¹Í €ôø€‰…Í ˆ°(€€€€€€€€€€€e…ÕÑ©…É•…‘½±½È¹	½¹”€ôø€‰‰½¹”ˆ°(€€€€€€€€€€€|€ôø€‰µ…Ñ µÍ­¥¸ˆ°(€€€€€€€ôì(€€€ô((€€€ÁÉ¥Ù…Ñ”ÍÑ…Ñ¥Œ¥¹Ð±…µÀ¡¥¹ÐÙ…±Õ”°¥¹Ðµ¥¸°¥¹Ðµ…à¤(€€€ì(€€€€€€€É•ÑÕÉ¸5…Ñ ¹±…µÀ¡Ù…±Õ”°µ¥¸°µ…à¤ì(€€€ô((€€€ÁÉ¥Ù…Ñ”ÍÑ…Ñ¥Œ½±½È¡‰åÑ”É•°‰åÑ”É••¸°‰åÑ”‰±Õ”¤(€€€ì(€€€€€€€É•ÑÕÉ¸¹•Ü½±½È¡É•°É••¸°‰±Õ”¤ì(€€€ô)ô(
