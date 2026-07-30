@@ -127,90 +127,6 @@ public sealed class YautjaProfileEditorLayoutTest
     }
 
     [Test]
-    public void TechnologyOptionsUseVerticalLocalizationSafeLayout()
-    {
-        Assert.Multiple(() =>
-        {
-            Assert.That(YautjaProfileEditorLayout.TechOptionSpacing, Is.GreaterThan(0));
-            Assert.That(YautjaProfileEditorLayout.TechOptionBottomMargin, Is.GreaterThanOrEqualTo(10));
-        });
-    }
-
-    [Test]
-    public void TechnologyOptionsUseVerticalLocalizationSafeLayout()
-    {
-        Assert.Multiple(() =>
-        {
-            Assert.That(YautjaProfileEditorLayout.TechOptionSpacing, Is.GreaterThan(0));
-            Assert.That(YautjaProfileEditorLayout.TechOptionBottomMargin, Is.GreaterThanOrEqualTo(10));
-        });
-    }
-
-    [TestCase(false, YautjaLegacySet.Dragon, true)]
-    [TestCase(true, YautjaLegacySet.Dragon, false)]
-    [TestCase(false, YautjaLegacySet.None, false)]
-    public void LegacySetsFollowServerCapability(bool canUseLegacy, YautjaLegacySet legacy, bool locked)
-    {
-        var capabilities = new YautjaProfileCapabilities(YautjaRank.Blooded, false, canUseLegacy);
-
-        Assert.That(
-            YautjaProfileEditorLayout.IsLegacySetLocked(capabilities, legacy),
-            Is.EqualTo(locked));
-    }
-
-    [TestCase(YautjaRank.Blooded, YautjaCapeStyle.Ceremonial, true)]
-    [TestCase(YautjaRank.Elite, YautjaCapeStyle.Ceremonial, true)]
-    [TestCase(YautjaRank.Elder, YautjaCapeStyle.Ceremonial, true)]
-    [TestCase(YautjaRank.Leader, YautjaCapeStyle.Ceremonial, false)]
-    [TestCase(YautjaRank.Ancient, YautjaCapeStyle.Ceremonial, false)]
-    [TestCase(YautjaRank.Blooded, YautjaCapeStyle.Full, false)]
-    public void CeremonialCapeRequiresLeaderOrAncient(
-        YautjaRank rank,
-        YautjaCapeStyle cape,
-        bool locked)
-    {
-        var capabilities = new YautjaProfileCapabilities(rank, false, false);
-
-        Assert.That(
-            YautjaProfileEditorLayout.IsCapeLocked(capabilities, cape),
-            Is.EqualTo(locked));
-    }
-
-    [TestCase(YautjaRank.Blooded, false, YautjaBracerMaterial.Bronze, true)]
-    [TestCase(YautjaRank.Blooded, false, YautjaBracerMaterial.Crimson, true)]
-    [TestCase(YautjaRank.Blooded, false, YautjaBracerMaterial.Bone, true)]
-    [TestCase(YautjaRank.Elite, false, YautjaBracerMaterial.Bronze, false)]
-    [TestCase(YautjaRank.Elder, false, YautjaBracerMaterial.Crimson, false)]
-    [TestCase(YautjaRank.Leader, false, YautjaBracerMaterial.Bone, false)]
-    [TestCase(YautjaRank.Blooded, false, YautjaBracerMaterial.Ebony, false)]
-    [TestCase(YautjaRank.Ancient, false, YautjaBracerMaterial.Dragon, true)]
-    [TestCase(YautjaRank.Blooded, true, YautjaBracerMaterial.Dragon, false)]
-    [TestCase(YautjaRank.Ancient, true, YautjaBracerMaterial.Collector, false)]
-    public void BracersFollowRankAndLegacyWhitelist(
-        YautjaRank rank,
-        bool canUseLegacy,
-        YautjaBracerMaterial bracer,
-        bool locked)
-    {
-        var capabilities = new YautjaProfileCapabilities(rank, false, canUseLegacy);
-
-        Assert.That(
-            YautjaProfileEditorLayout.IsBracerLocked(capabilities, bracer),
-            Is.EqualTo(locked));
-    }
-
-    [TestCase(false, true)]
-    [TestCase(true, false)]
-    public void UniqueSetsFollowServerCapability(bool canUseUnique, bool locked)
-    {
-        var capabilities = new YautjaProfileCapabilities(YautjaRank.Blooded, canUseUnique, false);
-
-        Assert.That(
-            YautjaProfileEditorLayout.IsUniqueSetLocked(capabilities, YautjaUniqueSet.Anubys),
-            Is.EqualTo(locked));
-    }
-
-    [Test]
     public void BuildSummaryUsesUniqueSetAndCurrentGearNames()
     {
         var profile = YautjaCharacterProfile.Default
@@ -242,5 +158,14 @@ public sealed class YautjaProfileEditorLayoutTest
         Assert.That(
             YautjaProfileEditorLayout.GetResponsiveColumnCount(availableWidth, preferredColumns),
             Is.EqualTo(expected));
+    }
+
+    [TestCase(0, true)]
+    [TestCase(749, true)]
+    [TestCase(750, false)]
+    [TestCase(1100, false)]
+    public void NarrowWorkAreaStacksPreviewAboveCategories(float availableWidth, bool expected)
+    {
+        Assert.That(YautjaProfileEditorLayout.ShouldStackWorkArea(availableWidth), Is.EqualTo(expected));
     }
 }

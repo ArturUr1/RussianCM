@@ -85,8 +85,8 @@ public sealed partial class YautjaProfileApplySystem : EntitySystem
         var humanoidProfile = HumanoidCharacterProfile.DefaultWithSpecies("Yautja")
             .WithName(profile.Name)
             .WithAge(profile.Age)
-            .WithSex(Sex.Male)
-            .WithGender(Gender.Male)
+            .WithSex(profile.Sex)
+            .WithGender(profile.Gender)
             .WithCharacterAppearance(profile.Appearance);
 
         _humanoid.LoadProfile(uid, humanoidProfile, humanoid);

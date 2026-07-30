@@ -299,7 +299,6 @@ public sealed class YautjaPredatorRoleTest
                     "CMUMobYautja must remain the visible direct F7 spawn prototype.");
                 Assert.That(hunter.Components.ContainsKey("Loadout"), Is.True,
                     "The direct F7 hunter must retain its standard loadout and mask.");
-                    "The direct F7 hunter must retain its original-style minimal loadout.");
 
                 Assert.That(prototypes.TryIndex<EntityPrototype>("CMURandomHumanoidYautjaHunter", out var legacySpawner), Is.True);
                 Assert.That(legacySpawner!.HideSpawnMenu, Is.True,

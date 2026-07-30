@@ -1,6 +1,8 @@
+using Content.Shared._CMU14.Yautja;
 using Content.Shared.Preferences;
 using Content.Shared.Roles;
 using NUnit.Framework;
+using Robust.Shared.Enums;
 using Robust.Shared.Prototypes;
 
 namespace Content.Tests.Shared.Preferences;
@@ -52,5 +54,16 @@ public sealed class HumanoidCharacterProfileTest
         Assert.That(priorities[colonist], Is.EqualTo(JobPriority.High));
         Assert.That(profile.GetJobPriorityForGamemode("ColonyFall", miner), Is.EqualTo(JobPriority.Never));
         Assert.That(priorities.ContainsKey(miner), Is.False);
+    }
+
+    [Test]
+    public void MemberwiseEqualsIncludesNestedYautjaSexAndGender()
+    {
+        var male = HumanoidCharacterProfile.DefaultWithSpecies("Yautja");
+        var female = male.WithYautjaProfile(
+            male.YautjaProfile.WithGender(Gender.Female));
+
+        Assert.That(male.MemberwiseEquals(female), Is.False);
+        Assert.That(female.MemberwiseEquals(female.Clone()), Is.True);
     }
 }

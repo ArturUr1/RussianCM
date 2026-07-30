@@ -29,6 +29,7 @@ public static class YautjaProfileEditorLayout
 {
     public const int TechOptionSpacing = 6;
     public const int TechOptionBottomMargin = 12;
+    public const float HorizontalWorkAreaMinWidth = 750;
 
     public static IReadOnlyList<YautjaProfileEditorCategoryInfo> Categories { get; } =
     [
@@ -87,6 +88,11 @@ public static class YautjaProfileEditorLayout
         YautjaProfileEditorCategory candidate)
     {
         return active == candidate;
+    }
+
+    public static bool ShouldStackWorkArea(float availableWidth)
+    {
+        return availableWidth < HorizontalWorkAreaMinWidth;
     }
 
     public static int GetResponsiveColumnCount(float availableWidth, int preferredColumns)

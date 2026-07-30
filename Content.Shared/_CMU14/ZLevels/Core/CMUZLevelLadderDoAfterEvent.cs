@@ -22,14 +22,4 @@ public sealed partial class CMUZLevelLadderDoAfterEvent : SimpleDoAfterEvent
     {
         return other is CMUZLevelLadderDoAfterEvent ladder && ladder.Offset == Offset;
     }
-    public CMUZLevelLadderDoAfterEvent()
-    {
-    }
-
-    public CMUZLevelLadderDoAfterEvent(int offset)
-    {
-        Offset = offset;
-    }
-
-    public int Offset { get; set; }
 }
