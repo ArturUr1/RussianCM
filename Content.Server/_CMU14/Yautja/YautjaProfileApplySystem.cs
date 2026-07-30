@@ -58,7 +58,6 @@ public sealed partial class YautjaProfileApplySystem : EntitySystem
         EntityUid uid,
         YautjaCharacterProfile yautjaProfile,
         YautjaRank? authoritativeRank = null,
-        YautjaProfileCapabilities? authoritativeCapabilities = null)
         YautjaProfileCapabilities? authoritativeCapabilities = null,
         bool equipProfileGear = true)
     {

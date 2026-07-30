@@ -280,7 +280,6 @@ public sealed partial class StationSpawningSystem : SharedStationSpawningSystem
                         jobEntity,
                         profile.YautjaProfile,
                         authoritativeYautjaRank,
-                        authoritativeYautjaCapabilities);
                         authoritativeYautjaCapabilities,
                         equipProfileGear: false);
             }
