@@ -5,13 +5,13 @@
   description: Heavy reinforced shin guards. Included in the SZ "Kogot" additional equipment.
   components:
   - type: Sprite
-    sprite: _RuMC/Clothing/BEAR/garb/shinguards.rsi
+    sprite: _RuMC14/Clothing/BEAR/garb/shinguards.rsi
     state: icon
   - type: Item
-    sprite: _RuMC/Clothing/BEAR/garb/shinguards.rsi
+    sprite: _RuMC14/Clothing/BEAR/garb/shinguards.rsi
   - type: OuterClothingAccessory
     rsi:
-      sprite: _RuMC/Clothing/BEAR/garb/shinguards.rsi
+      sprite: _RuMC14/Clothing/BEAR/garb/shinguards.rsi
       state: helmet
 
 - type: entity
@@ -21,13 +21,13 @@
   description: Heavy protection of the groin area. Included in the SZ "Kogot" additional equipment.
   components:
   - type: Sprite
-    sprite: _RuMC/Clothing/BEAR/garb/shoulderpads.rsi
+    sprite: _RuMC14/Clothing/BEAR/garb/shoulderpads.rsi
     state: icon
   - type: Item
-    sprite: _RuMC/Clothing/BEAR/garb/shoulderpads.rsi
+    sprite: _RuMC14/Clothing/BEAR/garb/shoulderpads.rsi
   - type: OuterClothingAccessory
     rsi:
-      sprite: _RuMC/Clothing/BEAR/garb/shoulderpads.rsi
+      sprite: _RuMC14/Clothing/BEAR/garb/shoulderpads.rsi
       state: helmet
 
 - type: entity
@@ -37,13 +37,13 @@
   description: They are made in a "scale" pattern, so they don't restrict movement. Included in the SZ "Kogot" additional equipment.
   components:
   - type: Sprite
-    sprite: _RuMC/Clothing/BEAR/garb/crotch.rsi
+    sprite: _RuMC14/Clothing/BEAR/garb/crotch.rsi
     state: icon
   - type: Item
-    sprite: _RuMC/Clothing/BEAR/garb/crotch.rsi
+    sprite: _RuMC14/Clothing/BEAR/garb/crotch.rsi
   - type: OuterClothingAccessory
     rsi:
-      sprite: _RuMC/Clothing/BEAR/garb/crotch.rsi
+      sprite: _RuMC14/Clothing/BEAR/garb/crotch.rsi
       state: helmet
 
 # Universal
@@ -55,13 +55,13 @@
   description: Modular unloading system for BEAR PMC soldiers.
   components:
   - type: Sprite
-    sprite: _RuMC/Clothing/BEAR/garb/magazine_webbing.rsi
+    sprite: _RuMC14/Clothing/BEAR/garb/magazine_webbing.rsi
     state: icon
   - type: Item
-    sprite: _RuMC/Clothing/BEAR/garb/magazine_webbing.rsi
+    sprite: _RuMC14/Clothing/BEAR/garb/magazine_webbing.rsi
   - type: OuterClothingAccessory
     rsi:
-      sprite: _RuMC/Clothing/BEAR/garb/magazine_webbing.rsi
+      sprite: _RuMC14/Clothing/BEAR/garb/magazine_webbing.rsi
       state: helmet
 
 - type: entity
@@ -71,13 +71,13 @@
   description: Modular unloading system for BEAR PMC soldiers.
   components:
   - type: Sprite
-    sprite: _RuMC/Clothing/BEAR/garb/large_webbing.rsi
+    sprite: _RuMC14/Clothing/BEAR/garb/large_webbing.rsi
     state: icon
   - type: Item
-    sprite: _RuMC/Clothing/BEAR/garb/large_webbing.rsi
+    sprite: _RuMC14/Clothing/BEAR/garb/large_webbing.rsi
   - type: OuterClothingAccessory
     rsi:
-      sprite: _RuMC/Clothing/BEAR/garb/large_webbing.rsi
+      sprite: _RuMC14/Clothing/BEAR/garb/large_webbing.rsi
       state: helmet
 
 - type: entity
@@ -87,11 +87,11 @@
   description: Modular unloading system for BEAR PMC soldiers.
   components:
   - type: Sprite
-    sprite: _RuMC/Clothing/BEAR/garb/webbing.rsi
+    sprite: _RuMC14/Clothing/BEAR/garb/webbing.rsi
     state: icon
   - type: Item
-    sprite: _RuMC/Clothing/BEAR/garb/webbing.rsi
+    sprite: _RuMC14/Clothing/BEAR/garb/webbing.rsi
   - type: OuterClothingAccessory
     rsi:
-      sprite: _RuMC/Clothing/BEAR/garb/webbing.rsi
+      sprite: _RuMC14/Clothing/BEAR/garb/webbing.rsi
       state: helmet
