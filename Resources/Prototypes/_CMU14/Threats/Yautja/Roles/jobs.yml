@@ -70,6 +70,40 @@
   startingGear: CMUYautjaBadBloodSpawnGear
   usePlayerProfile: false
 
+- type: job
+  parent: CMJobBase
+  id: CMUYautjaMilitaryCasteSoldier
+  name: cmu-yautja-job-name-military-soldier
+  description: cmu-yautja-job-description-military-soldier
+  playTimeTracker: CMUYautjaMilitaryCasteSoldier
+  icon: CMJobIconEmpty
+  supervisors: cm-job-supervisors-nobody
+  joinNotifyCrew: false
+  hidden: true
+  canBeAntag: false
+  whitelisted: false
+  jobEntity: CMUMobYautjaMilitaryCasteSoldier
+  jobPreviewEntity: CMUMobYautjaMilitaryCasteSoldier
+  startingGear: CMUYautjaMilitaryCasteSoldierGear
+  usePlayerProfile: false
+
+- type: job
+  parent: CMJobBase
+  id: CMUYautjaMilitaryCasteEnforcer
+  name: cmu-yautja-job-name-military-enforcer
+  description: cmu-yautja-job-description-military-enforcer
+  playTimeTracker: CMUYautjaMilitaryCasteEnforcer
+  icon: CMJobIconEmpty
+  supervisors: cm-job-supervisors-nobody
+  joinNotifyCrew: false
+  hidden: true
+  canBeAntag: false
+  whitelisted: false
+  jobEntity: CMUMobYautjaMilitaryCasteEnforcer
+  jobPreviewEntity: CMUMobYautjaMilitaryCasteEnforcer
+  startingGear: CMUYautjaMilitaryCasteEnforcerGear
+  usePlayerProfile: false
+
 - type: startingGear
   id: CMUYautjaMilitaryCasteSoldierGear
   equipment:
@@ -587,6 +621,12 @@
 
 - type: playTimeTracker
   id: CMUYautjaHunter
+
+- type: playTimeTracker
+  id: CMUYautjaMilitaryCasteSoldier
+
+- type: playTimeTracker
+  id: CMUYautjaMilitaryCasteEnforcer
 
 - type: playTimeTracker
   id: CMUYautjaHellhound
