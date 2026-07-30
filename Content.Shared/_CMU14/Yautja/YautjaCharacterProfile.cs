@@ -820,6 +820,16 @@ public sealed partial class YautjaCharacterProfile
         };
     }
 
+    public static string GetStatusDisplayName(YautjaProfileStatus status)
+    {
+        return status switch
+        {
+            YautjaProfileStatus.Council => "Council",
+            YautjaProfileStatus.Leader => "Leader",
+            _ => "Normal",
+        };
+    }
+
     public static string GetUniqueDisplayName(YautjaUniqueSet unique)
     {
         return unique switch
@@ -856,6 +866,20 @@ public sealed partial class YautjaCharacterProfile
             YautjaEyeColor.Slate => Loc.GetString("cmu-yautja-profile-eye-slate"),
             YautjaEyeColor.Black => Loc.GetString("cmu-yautja-profile-eye-black"),
             _ => Loc.GetString("cmu-yautja-profile-eye-gold"),
+        };
+    }
+
+    public static string GetDreadColorDisplayName(YautjaDreadColor dreadColor)
+    {
+        return dreadColor switch
+        {
+            YautjaDreadColor.Black => "black",
+            YautjaDreadColor.DarkBrown => "dark brown",
+            YautjaDreadColor.Brown => "brown",
+            YautjaDreadColor.Auburn => "auburn",
+            YautjaDreadColor.Ash => "ash",
+            YautjaDreadColor.Bone => "bone",
+            _ => "match skin",
         };
     }
 

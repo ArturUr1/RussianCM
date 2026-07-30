@@ -30,6 +30,7 @@ public sealed partial class CMUZLevelLadderComponent : Component
 
     /// <summary>
     /// Whether this ladder can be used to reach a higher Z-level.
+    /// Whether this ladder can move a user to the next higher Z-level.
     /// </summary>
     [DataField, AutoNetworkedField]
     public bool CanMoveUp = true;
@@ -39,6 +40,10 @@ public sealed partial class CMUZLevelLadderComponent : Component
     /// </summary>
     [DataField, AutoNetworkedField]
     public bool CanMoveDown;
+    /// Whether this ladder can move a user to the next lower Z-level.
+    /// </summary>
+    [DataField, AutoNetworkedField]
+    public bool CanMoveDown = true;
 
     /// <summary>
     /// Local Z position to apply after the move. A small positive value lets the user rest on a lower-level ladder top.

@@ -1565,6 +1565,7 @@ public sealed partial class YautjaProfileEditor : ScrollContainer
         help.VerticalExpand = false;
 
         var content = new BoxContainer
+        var block = new BoxContainer
         {
             Orientation = BoxContainer.LayoutOrientation.Vertical,
             HorizontalExpand = true,
@@ -1572,6 +1573,10 @@ public sealed partial class YautjaProfileEditor : ScrollContainer
             Children =
             {
                 YautjaBracerUiStyle.Label(Loc.GetString(label), YautjaBracerUiStyle.HotRed, "LabelHeading"),
+            Margin = new Thickness(0, 0, 0, YautjaProfileEditorLayout.TechOptionBottomMargin),
+            Children =
+            {
+                new Label { Text = Loc.GetString(label), HorizontalExpand = true },
                 option,
             },
         };
@@ -1587,6 +1592,10 @@ public sealed partial class YautjaProfileEditor : ScrollContainer
             new Thickness(10, 8));
         card.Margin = new Thickness(0, 0, 0, YautjaProfileEditorLayout.TechOptionBottomMargin);
         return card;
+            block.AddChild(previewButton);
+
+        block.AddChild(help);
+        return block;
     }
 
     private void UpdateTechHelp(YautjaTranslatorType translatorType, YautjaInvisibilitySound invisibilitySound)

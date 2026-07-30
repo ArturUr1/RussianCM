@@ -59,6 +59,8 @@ public sealed partial class YautjaProfileApplySystem : EntitySystem
         YautjaCharacterProfile yautjaProfile,
         YautjaRank? authoritativeRank = null,
         YautjaProfileCapabilities? authoritativeCapabilities = null)
+        YautjaProfileCapabilities? authoritativeCapabilities = null,
+        bool equipProfileGear = true)
     {
         if (!TryComp(uid, out HumanoidAppearanceComponent? humanoid))
             return;
@@ -96,11 +98,21 @@ public sealed partial class YautjaProfileApplySystem : EntitySystem
         Dirty(uid, yautja);
         _meta.SetEntityName(uid, profile.Name);
 
-        ReplaceEquipped(uid, "outerClothing", profile.ArmorPrototype);
-        var mask = ReplaceEquipped(uid, "mask", profile.MaskPrototype);
-        ReplaceEquipped(uid, "shoes", profile.GreavesPrototype);
-        var bracer = ReplaceEquipped(uid, "gloves", profile.BracerPrototype);
-        var cape = ReplaceEquipped(uid, "back", profile.CapePrototype);
+        EntityUid? mask = null;
+        EntityUid? bracer = null;
+        EntityUid? cape = null;
+        if (equipProfileGear)
+        {
+            ReplaceEquipped(uid, "outerClothing", profile.ArmorPrototype);
+            mask = ReplaceEquipped(uid, "mask", profile.MaskPrototype);
+            ReplaceEquipped(uid, "shoes", profile.GreavesPrototype);
+            bracer = ReplaceEquipped(uid, "gloves", profile.BracerPrototype);
+            cape = ReplaceEquipped(uid, "back", profile.CapePrototype);
+        }
+        else if (_inventory.TryGetSlotEntity(uid, "gloves", out var equippedBracer))
+        {
+            bracer = equippedBracer;
+        }
 
         if (mask != null)
             ApplyMaskAccessory(mask.Value, profile);

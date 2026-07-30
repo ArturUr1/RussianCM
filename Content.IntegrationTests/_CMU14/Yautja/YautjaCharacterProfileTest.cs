@@ -612,6 +612,7 @@ public sealed class YautjaCharacterProfileTest
 
     [Test]
      public void ExternalAncientNormalStatusKeepsEntitledGearAndBloodedActiveRank()
+    public void ExternalAncientNormalStatusKeepsEntitledGearAndBloodedActiveRank()
     {
         var capabilities = new YautjaProfileCapabilities(
             YautjaRank.Ancient,
@@ -640,6 +641,8 @@ public sealed class YautjaCharacterProfileTest
 
      [Test]
      public void ProfileSanitizerEnforcesEquipmentAccessPolicy()
+    [Test]
+    public void ProfileSanitizerEnforcesEquipmentAccessPolicy()
     {
         var ordinaryCapabilities = new YautjaProfileCapabilities(YautjaRank.Blooded, false, false);
         var eliteCapabilities = new YautjaProfileCapabilities(YautjaRank.Elite, true, false);
