@@ -853,10 +853,12 @@
         amount: 1
     - name: au14-vendor-section-weapon-ammunition
       entries:
+      - id: RuMCMagazinePP13M
+        amount: 60
       - id: RMCMagazineRifleAK4047
         amount: 60
       - id: RuMCMagazineVAL
-        amount: 60
+        amount: 10
     - name: au14-vendor-section-handguns
       choices: { CMUHandgunsWeapon: 1 }
       entries:
@@ -944,13 +946,13 @@
     sections:
     - name: au14-vendor-section-weapons
       entries:
-      - id: RuMCWeaponRifleAK13
+      - id: RuMCWeaponSMGsPP13M
         amount: 2
       - id: RMCWeaponPistolNP92Empty
         amount: 2
     - name: au14-vendor-section-ammunition
       entries:
-      - id: RMCMagazineRifleAK4047
+      - id: RuMCMagazinePP13M
         amount: 12
       - id: RMCMagazinePistolNP92
         amount: 12
@@ -1162,6 +1164,8 @@
       entries:
       - id: RuMCWeaponRifleAK13
         amount: 30
+      - id: RuMCWeaponSMGsPP13M
+        amount: 30
       - id: RuMCRifleVAL
         amount: 3
       #- id: RMCWeaponSMGType64
@@ -1208,6 +1212,12 @@
         amount: 30
       - id: RuMCMagazineRifleAK4047Tracer
         amount: 200
+      - id: RuMCMagazinePP13M
+        amount: 200
+      - id: RuMCMagazinePP13MAP
+        amount: 30
+      #- id: RuMCMagazineRifleAK4047Tracer
+      #  amount: 200
       - id: RuMCMagazineVAL
         amount: 60
       - id: RuMCMagazineVALAP
