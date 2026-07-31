@@ -132,8 +132,6 @@
         amount: 3
       - id: RuMCUPPPouchMagazine
         amount: 50
-      - id: RuMCUPPPouchMagazineLarge
-        amount: 8
       - id: RuMCUPPPouchShotgun
         amount: 50
       - id: RuMCUPPPouchShotgunLarge
@@ -142,8 +140,6 @@
         amount: 4
       - id: RuMCUPPPouchMagazinePistol
         amount: 25
-      - id: RuMCUPPPouchMagazinePistolLarge
-        amount: 3
       - id: RuMCUPPPouchPistolAlt
         amount: 20
       - id: RuMCUPPPouchIFAKFill
@@ -852,9 +848,13 @@
       choices: { CMUPrimaryWeapon: 1 }
       entries:
       - id: RuMCWeaponRifleAK13
+      - id: RuMCRifleVAL
+        amount: 1
     - name: au14-vendor-section-weapon-ammunition
       entries:
       - id: RMCMagazineRifleAK4047
+        amount: 60
+      - id: RuMCMagazineVAL
         amount: 60
     - name: au14-vendor-section-handguns
       choices: { CMUHandgunsWeapon: 1 }
@@ -1151,28 +1151,32 @@
     sections:
     - name: au14-vendor-section-standard-primaries
       entries:
-      - id: AU14WeaponRifleAG80
+      - id: RuMCWeaponRifleAK13
         amount: 30
-      - id: RMCWeaponSMGType64
-        amount: 20
+      - id: RuMCRifleVAL
+        amount: 3
+      #- id: RMCWeaponSMGType64
+      #  amount: 20
     - name: au14-vendor-section-standard-secondaries
       entries:
-      - id: RMCWeaponPistolT73Empty
-        amount: 20
-      - id: RMCWeaponPistolT74
-        amount: 10
+      - id: RMCWeaponPistolNP92Empty
+        amount: 40
     - name: au14-vendor-section-special-firearms
       entries:
       - id: RMCWeaponRifleType71
-        amount: 6
+        amount: 2
       - id: RMCWeaponRifleType71C
-        amount: 3
+        amount: 1
       - id: RMCWeaponRifleAK4047
+        amount: 3
+      - id: AU14WeaponRifleAG80
+        amount: 3
+      - id: RMCWeaponSMGType64
+        amount: 3
+      - id: RMCWeaponPistolT73Empty
         amount: 2
-      - id: RuMCRifleVAL
+      - id: RMCWeaponPistolT74
         amount: 2
-      - id: RMCWeaponPistolNP92Empty
-        amount: 15
       - id: RMCWeaponPistolNPZ92
         amount: 2
       - id: RMCWeaponRevolverZHNK72Empty
@@ -1180,59 +1184,57 @@
       - id: RMCWeaponSMGType19
         amount: 3
       - id: RMCWeaponShotgunType23
-        amount: 3
+        amount: 5
       - id: RuMCMachineGunTachankaCase
         amount: 1
       - id: RuMCGunAH12Case
-        amount: 1
+        amount: 2
       - id: RuMCUTES-CCase
         amount: 1
     - name: au14-vendor-section-primary-ammunition
       entries:
-      - id: AU14MagazineSmartGunUPP
-        amount: 40
-      - id: AU14MagazineRifleAG80
-        amount: 200
-      - id: AU14MagazineRifleAG80AP
-        amount: 15
-      - id: AU14MagazineRifleAG80Ext
-        amount: 10
-      - id: RuMCMagazineRifleAG80Tracer
-        amount: 10
       - id: RMCMagazineRifleAK4047
-        amount: 60
+        amount: 200
       - id: RMCMagazineRifleAK4047AP
-        amount: 15
+        amount: 30
       - id: RuMCMagazineRifleAK4047Tracer
-        amount: 15
+        amount: 200
       - id: RuMCMagazineVAL
         amount: 60
       - id: RuMCMagazineVALAP
         amount: 15
       - id: RuMCMagazineAH12
-        amount: 10
+        amount: 20
       - id: RuMCMagazineAH12Tracer
-        amount: 5
+        amount: 20
+      - id: RuMCMagazinePKP_MS
+        amount: 40
+      - id: RuMCMachineMagazineTracerPKP_MS
+        amount: 40
       - id: RMCMagazineRifleType71
         amount: 150
       - id: RMCMagazineRifleType71AP
         amount: 15
       - id: RuMCMagazineRifleType71Tracer
         amount: 15
+      - id: AU14MagazineRifleAG80
+        amount: 10
+      - id: AU14MagazineRifleAG80AP
+        amount: 3
+      - id: AU14MagazineRifleAG80Ext
+        amount: 3
+      - id: RuMCMagazineRifleAG80Tracer
+        amount: 10
       - id: RMCBoxShotgunHeavyBuckshot
         amount: 20
       - id: RMCBoxShotgunHeavyFlechette
         amount: 20
       - id: RMCBoxShotgunHeavySlugs
         amount: 20
-      - id: RMCMagazineLMGQYJ72
-        amount: 25
-      - id: RMCMagazineSMGType64
-        amount: 200
       - id: RuMCMagazineTachanka
-        amount: 25
+        amount: 5
       - id: RuMCMagazineTracerTachanka
-        amount: 25
+        amount: 5
       - id: RuMCMagazineTachankaLarge
         amount: 1
       - id: RuMCMagazineTachankaLargeTracer
@@ -1240,11 +1242,11 @@
     - name: au14-vendor-section-secondary-ammunition
       entries:
       - id: RMCMagazinePistolT73
-        amount: 200
+        amount: 100
       - id: RMCMagazinePistolT74Impact
         amount: 2
       - id: RMCMagazinePistolNP92
-        amount: 100
+        amount: 200
       - id: RMCSpeedLoaderZHNK72
         amount: 40
       - id: RMCMagazineSMGType19
@@ -1253,28 +1255,28 @@
         amount: 40
     - name: au14-vendor-section-magazine-bullets
       entries:
+      - id: RuMCBoxMagazineRifleAK4047
+        amount: 10
+      - id: RuMCBoxBulletsRifle10x24mm
+        amount: 5
+      - id: RuMCBoxMagazineRifleAK4047AP
+        amount: 1
+      - id: RuMCBoxBulletsRifle10x24mmAP
+        amount: 1
       - id: RuMCBoxMagazineSMGType64
         amount: 10
       - id: RuMCBoxBulletsSMG10x20mm
-        amount: 2
+        amount: 5
       - id: RuMCBoxMagazineRifleAG80
         amount: 10
       - id: RuMCBoxBulletsRifleAG80
-        amount: 2
+        amount: 1
 #      - id: RuMCBoxMagazineRifleAG80EXT
 #        amount: 1
 #      - id: RuMCBoxMagazineRifleAG80AP
 #        amount: 1
-      - id: RuMCBoxBulletsRifleAG80AP
-        amount: 1
-      - id: RuMCBoxMagazineRifleAK4047
-        amount: 10
-      - id: RuMCBoxBulletsRifle10x24mm
-        amount: 2
-#      - id: RuMCBoxMagazineRifleAK4047AP
+#      - id: RuMCBoxBulletsRifleAG80AP
 #        amount: 1
-      - id: RuMCBoxBulletsRifle10x24mmAP
-        amount: 1
       - id: RuMCBoxMagazineRifleType71
         amount: 10
       - id: RuMCBoxBulletsRifleType71
@@ -1294,11 +1296,11 @@
       - id: AU14PacketGrenadeHighExplosiveUPPFilled
         amount: 10
       - id: AU14PacketGrenadeIncendiaryUPPFilled
-        amount: 4
-      - id: AU14PacketGrenadeSmokeUPPFilled
         amount: 6
+      - id: AU14PacketGrenadeSmokeUPPFilled
+        amount: 10
       - id: RMCPacketGrenadeWhitePhosphorusFilled
-        amount: 3
+        amount: 6
       - id: AU14PacketGrenadeTearGasFilled
         amount: 3
       - id: RMCBoxClaymoreMineFilled
@@ -1306,13 +1308,13 @@
       - id: AU14BoxClaymoreMineIncendiaryFilled
         amount: 1
       - id: RMCExplosiveBreachingCharge
-        amount: 6
+        amount: 15
       - id: RMCExplosivePlastic
-        amount: 8
+        amount: 3
       - id: RuMCWeaponLauncherDisposableFolded
-        amount: 2
+        amount: 4
       - id: RuMCWeaponLauncherDisposableFoldedIncen
-        amount: 1
+        amount: 2
       - id: RMCRocketM5510Brute
         amount: 12
     - name: au14-vendor-section-barrel-attachments
@@ -1345,14 +1347,12 @@
         amount: 4
     - name: au14-vendor-section-pouches
       entries:
-      - id: RMCPouchMagazineLarge
+      - id: RuMCUPPPouchMagazineLarge
         amount: 10
-      - id: RMCPouchMagazinePistolLarge
+      - id: RuMCUPPPouchMagazinePistolLarge
         amount: 10
     - name: au14-vendor-section-devices
       entries:
-      - id: AU14PowerCellSmartgunUPP
-        amount: 20
       - id: RMCIntelDetector
         amount: 4
       - id: RMCFulton20
@@ -1409,10 +1409,10 @@
         amount: 1
       - id: RMCTentUNMCExtendedMessFolded
         amount: 1
-    - name: au14-vendor-section-flag
-      entries:
-      - id: AU14FlagCarriableUPP
-        amount: 1
+    #- name: au14-vendor-section-flag
+    #  entries:
+    #  - id: AU14FlagCarriableUPP
+    #    amount: 1
 
 - type: entity
   parent: ColMarTechBase
