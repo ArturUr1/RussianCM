@@ -56,6 +56,38 @@
     - RMCAttachmentStock
     - RuMCAttachmentPKPStockCollapsible
 
+- type: entity
+  parent: RMCAttachmentM54CStockCollapsible
+  id: RuMCAttachmentPP13MStockCollapsible
+  name: PP13-M folding stock
+  description: The standard back end of any gun starting with PP13-M.
+  components:
+  - type: AttachableVisuals
+    suffix: ""
+  - type: ItemCamouflage
+    camouflageVariations: { }
+  - type: Sprite
+    sprite: _RuMC14/Objects/Weapons/Guns/Attachments/Stock/rumc_NewK_stock.rsi
+    state: stock_Mini
+  - type: AttachableToggleable
+    active: true
+    doAfterBreakOnMove: false
+    doAfter: 0.5
+    icon:
+      sprite: _RuMC14/Objects/Weapons/Guns/Attachments/Stock/rumc_NewK_stock.rsi
+      state: stock_Mini
+    iconActive:
+      sprite: _RuMC14/Objects/Weapons/Guns/Attachments/Stock/rumc_NewK_stock.rsi
+      state: stock_Mini-on
+    actionName: Toggle PP13-M Folding Stock
+  - type: Tag
+    tags:
+    - RMCAttachmentStock
+    - RuMCAttachmentPP13MStockCollapsible
+
+- type: Tag
+  id: RuMCAttachmentPP13MStockCollapsible
+
 - type: Tag
   id: RuMCAttachmentPKPStockCollapsible
 

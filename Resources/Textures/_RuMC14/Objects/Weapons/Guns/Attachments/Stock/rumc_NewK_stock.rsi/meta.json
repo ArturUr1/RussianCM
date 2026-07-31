@@ -18,6 +18,12 @@
     },
     {
       "name": "stock_Medium-on"
+    },
+    {
+      "name": "stock_Mini"
+    },
+    {
+      "name": "stock_Mini-on"
     }
   ]
 }

@@ -848,6 +848,7 @@
       choices: { CMUPrimaryWeapon: 1 }
       entries:
       - id: RuMCWeaponRifleAK13
+      - id: RuMCWeaponSMGsPP13M
       - id: RuMCRifleVAL
         amount: 1
     - name: au14-vendor-section-weapon-ammunition
@@ -864,6 +865,14 @@
       entries:
       - id: RMCMagazinePistolNP92
         amount: 60
+    - name: au14-vendor-section-attachments
+      entries:
+      - id: RuMCAttachmentAK13StockCollapsible
+        amount: 10
+      - id: RuMCAttachmentPKPStockCollapsible
+        amount: 10
+      - id: RuMCAttachmentPP13MStockCollapsible
+        amount: 10
     - name: au14-vendor-section-attachments
       choices: { CMUAttachmentsVendor: 3 }
       entries:

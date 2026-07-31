@@ -89,6 +89,7 @@
         startingAttachable: RuMCAttachmentPKPStockCollapsible
         whitelist:
           tags:
+          - RuMCAttachmentPP13MStockCollapsible
           - RuMCAttachmentAK13StockCollapsible
           - RuMCAttachmentPKPStockCollapsible
       rmc-aslot-underbarrel:

@@ -1,22 +1,22 @@
 - type: entity
   parent: RMCWeaponRifleAK4047
-  name: AK-13 assault rifle
-  id: RuMCWeaponRifleAK13
-  description: The UPP assault rifle was developed for advanced assault units. Many U.S. Marines dislike it because it is superior to the M41A models.
+  name: PP-13-M assault SMG
+  id: RuMCWeaponSMGsPP13M
+  description: The UPP assault SMG was designed for advanced assault units. The M in the name stands for "many," as there were many of them produced.
   components:
   - type: Sprite
-    sprite: _RuMC14/Objects/Weapons/Guns/Rifles/AK13/AK13_inhands.rsi
+    sprite: _RuMC14/Objects/Weapons/Guns/SMGs/PP13M/PP13M_inhands.rsi
     layers:
     - state: base
-      sprite: _RuMC14/Objects/Weapons/Guns/Rifles/AK13/AK13.rsi
+      sprite: _RuMC14/Objects/Weapons/Guns/SMGs/PP13M/PP13M.rsi
     - state: bolt-open
-      sprite: _RuMC14/Objects/Weapons/Guns/Rifles/AK13/AK13.rsi
+      sprite: _RuMC14/Objects/Weapons/Guns/SMGs/PP13M/PP13M.rsi
       map: [ "enum.GunVisualLayers.Base" ]
     - state: mag-0
-      sprite: _RuMC14/Objects/Weapons/Guns/Rifles/AK13/AK13.rsi
+      sprite: _RuMC14/Objects/Weapons/Guns/SMGs/PP13M/PP13M.rsi
       map: [ "enum.GunVisualLayers.Mag" ]
   - type: Clothing
-    sprite: _RuMC14/Objects/Weapons/Guns/Rifles/AK13/AK13_inhands.rsi
+    sprite: _RuMC14/Objects/Weapons/Guns/SMGs/PP13M/PP13M_inhands.rsi
   - type: ContainerContainer
     containers:
       gun_magazine: !type:ContainerSlot
@@ -24,19 +24,18 @@
   - type: Gun
     shotsPerBurst: 3
     soundGunshot:
-      path: /Audio/_RMC14/Weapons/Guns/Gunshots/gun_m60.ogg
-      params:
-        volume: -4
+      path: /Audio/_RMC14/Weapons/Guns/Gunshots/gun_type64.ogg
   - type: RMCSelectiveFire
     baseFireModes:
     - SemiAuto
     - Burst
     - FullAuto
-    recoilUnwielded: 3.5
-    scatterWielded: 3.8
-    scatterUnwielded: 10
-    baseFireRate: 5
-    burstScatterMult: 1
+    recoilWielded: 1
+    recoilUnwielded: 1
+    scatterWielded: 14
+    scatterUnwielded: 14
+    baseFireRate: 7.6
+    burstScatterMult: 4
     modifiers:
       Burst:
         fireDelay: 0.0999
@@ -50,23 +49,19 @@
         unwieldedScatterMultiplier: 2
         shotsToMaxScatter: 4
   - type: RMCWeaponAccuracy
-    accuracyMultiplier: 1.35
-    accuracyMultiplierUnwielded: 0.6
+    accuracyMultiplier: 1.1
+    accuracyMultiplierUnwielded: 0.75
   - type: ItemSlots
     slots:
       gun_magazine:
         name: Magazine
-        startingItem: RMCMagazineRifleAK4047
+        startingItem: RuMCMagazinePP13M
         insertSound: /Audio/_RMC14/Weapons/Guns/Reload/m41_reload.ogg
         ejectSound: /Audio/_RMC14/Weapons/Guns/Reload/m41_unload.ogg
         priority: 2
         whitelist:
           tags:
-          - RMCMagazineRifleAK4047
-          - RMCMagazineRifleAK4047AP
-          - RMCMagazineRifleAK4047Incendiary
-          - RMCMagazineRifleAK4047HEAP
-          - RuMCMagazineAK13
+          - RuMCMagazinePP13M
   - type: GunDamageModifier
     multiplier: 1.15
   - type: AttachableHolder
@@ -90,7 +85,7 @@
           - RMCAttachmentS42xTelescopicMiniscope
       rmc-aslot-stock:
         locked: true
-        startingAttachable: RuMCAttachmentAK13StockCollapsible
+        startingAttachable: RuMCAttachmentPP13MStockCollapsible
         whitelist:
           tags:
           - RuMCAttachmentPP13MStockCollapsible
@@ -111,21 +106,81 @@
           - RMCAttachmentFlamer
   - type: AttachableHolderVisuals
     offsets:
-      rmc-aslot-barrel: 0.7, 0
-      rmc-aslot-rail: -0.3, 0.09
-      rmc-aslot-stock: -0.5655, -0.04
-      rmc-aslot-underbarrel: 0.25, -0.33
+      rmc-aslot-barrel: 0.7, 0.095
+      rmc-aslot-rail: -0.25, 0.15
+      rmc-aslot-stock: -0.4355, 0.07
+      rmc-aslot-underbarrel: 0.22, -0.21
   - type: Tag
     tags:
-    - RMCWeaponRifleAK4047
-    - RuMCWeaponRifleAK13
+    - RMCWeaponSMG
+    - RuMCWeaponSMGPP13M
   - type: WieldDelay
     baseDelay: 0.22
   - type: GunRequiresWield
 
+- type: entity
+  parent: CMMagazineRifleBase
+  id: RuMCMagazinePP13M
+  name: PP13M magazine (10x20mm)
+  description: Magazine for PP13M with 54 rounds.
+  components:
+  - type: Tag
+    tags:
+    - RuMCMagazinePP13M
+    - CMMagazineSmg
+  - type: BallisticAmmoProvider
+    whitelist:
+      tags:
+      - RMCCartridgeType64
+    proto: RMCCartridgeType64
+    capacity: 54
+    deleteWhenEmpty: false
+  - type: Sprite
+    sprite: _RuMC14/Objects/Weapons/Guns/SMGs/PP13M/mag.rsi
+    layers:
+    - state: base
+      map: ["enum.GunVisualLayers.Base"]
+    - state: mag-1
+      map: ["enum.GunVisualLayers.Mag"]
+    #- state: ammo_band
+    #  color: "#e5b13c"
+  - type: Clothing
+    slots:
+    - suitStorage
+
+- type: entity
+  parent: CMMagazineRifleBase
+  id: RuMCMagazinePP13MAP
+  name: PP13M AP magazine (10x20mm)
+  description: Magazine for PP13M with 54 AP rounds.
+  components:
+  - type: Tag
+    tags:
+    - RuMCMagazinePP13M
+    - CMMagazineSmg
+  - type: BallisticAmmoProvider
+    whitelist:
+      tags:
+      - CMCartridge10x20mmAP
+    proto: CMCartridge10x20mmAP
+    capacity: 54
+    deleteWhenEmpty: false
+  - type: Sprite
+    sprite: _RuMC14/Objects/Weapons/Guns/SMGs/PP13M/mag.rsi
+    layers:
+    - state: base
+      map: ["enum.GunVisualLayers.Base"]
+    - state: mag-1
+      map: ["enum.GunVisualLayers.Mag"]
+    - state: ammo_band
+      color: "#212121"
+  - type: Clothing
+    slots:
+    - suitStorage
 
 - type: Tag
-  id: RuMCWeaponRifleAK13
+  id: RuMCWeaponSMGPP13M
 
 - type: Tag
-  id: RuMCMagazineAK13
+  id: RuMCMagazinePP13M
+
