@@ -115,7 +115,7 @@
   - type: GunRequiresWield
 
 - type: entity
-  parent: CMMagazineSniperM96S
+  parent: RMCMagazineRifleAK4047
   id: RuMCMagazineVAL
   name: "TOPS VAL-S magazine (10x24mm)"
   description: A 25-round magazine of 10x24mm cartridges.
@@ -141,7 +141,7 @@
     deleteWhenEmpty: false
 
 - type: entity
-  parent: CMMagazineSniperM96S
+  parent: RMCMagazineRifleAK4047
   id: RuMCMagazineVALAP
   name: "TOPS VAL-S magazine (10x24mm AP)"
   description: A 25-round magazine of 10x24mm (AP) cartridges.

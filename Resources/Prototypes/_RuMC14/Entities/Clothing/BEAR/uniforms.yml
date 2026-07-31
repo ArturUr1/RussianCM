@@ -21,7 +21,7 @@
 
 - type: entity
   parent: RuMCUniformBEAR
-  id: RuMCJumpsuitBEAR_Black
+  id: RuMCUniformBEAR_Black
   name: uniform BEAR
   description: Standardized uniform for the BEAR PMC operator.
   components:
@@ -30,7 +30,7 @@
 
 - type: entity
   parent: RuMCUniformBEAR
-  id: RuMCJumpsuitBEAR_Gray
+  id: RuMCUniformBEAR_Gray
   name: uniform BEAR
   description: Standardized uniform for the BEAR PMC operator.
   components:

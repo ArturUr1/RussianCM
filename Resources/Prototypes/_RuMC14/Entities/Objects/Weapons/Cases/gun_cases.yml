@@ -86,6 +86,38 @@
     - id: RuMCMagazineAH12Tracer
     - id: RuMCMagazineAH12JHP
 
+- type: entity
+  parent: RMCGunCaseBase
+  id: RuMCGunVALCase
+  name: VAL gun case
+  description: Case for the VAL rifle.
+  components:
+  - type: Storage
+    grid:
+    - 0,0,13,5
+    whitelist:
+      tags:
+      - RuMCRifleVAL
+      - RuMCMagazineVAL
+  - type: StorageFill
+    contents:
+    - id: RuMCRifleVAL
+    - id: RuMCMagazineVAL
+    - id: RuMCMagazineVAL
+    - id: RuMCMagazineVAL
+    - id: RuMCMagazineVAL
+    - id: RuMCMagazineVAL
+    - id: RuMCMagazineVAL
+    - id: RuMCMagazineVAL
+    - id: RuMCMagazineVAL
+    - id: RuMCMagazineVAL
+    - id: RuMCMagazineVALAP
+    - id: RuMCMagazineVALAP
+    - id: RuMCMagazineVALAP
+    - id: RuMCMagazineVALAP
+    - id: RuMCMagazineVALAP
+    - id: RuMCMagazineVALAP
+
 #- type: entity
 #  parent: RMCGunCaseBase
 #  id: RuMCRPG_36Case
