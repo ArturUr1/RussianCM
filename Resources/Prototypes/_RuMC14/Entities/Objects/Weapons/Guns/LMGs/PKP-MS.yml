@@ -6,9 +6,9 @@
   components:
   - type: Item
     size: Huge
-#  - type: Appearance
-#  - type: Corrodible
-#    isCorrodible: false
+  - type: Appearance
+  - type: Corrodible
+    isCorrodible: false
   - type: Sprite
     sprite: _RuMC14/Objects/Weapons/Guns/LMGs/PKP-MS/PKP_inhands.rsi
     layers:
@@ -56,7 +56,7 @@
     slots:
       gun_magazine:
         name: Magazine
-        startingItem: RuMCMagazineTachankaLarge
+        startingItem: RuMCMagazinePKP_MS
         insertSound: /Audio/_RMC14/Weapons/Guns/Reload/smg_reload.ogg
         ejectSound: /Audio/_RMC14/Weapons/Guns/Reload/smg_unload.ogg
         priority: 2
@@ -92,6 +92,7 @@
           - RuMCAttachmentAK13StockCollapsible
           - RuMCAttachmentPKPStockCollapsible
       rmc-aslot-underbarrel:
+        startingAttachable: RMCAttachmentBipod
         whitelist:
           tags:
           - RMCAttachmentAngledGrip
@@ -135,7 +136,7 @@
       tags:
       - RMCCartridgeLMGQYJ72
     proto: RMCCartridgeLMGQYJ72
-    capacity: 150
+    capacity: 200
     deleteWhenEmpty: false
   - type: Sprite
     sprite: _RuMC14/Objects/Weapons/Guns/LMGs/PKP-MS/mag.rsi
@@ -168,7 +169,7 @@
       - RuMCCartridge762x54RTracer
       - RMCCartridgeLMGQYJ72
     proto: RuMCCartridge762x54RTracer
-    capacity: 150
+    capacity: 200
     deleteWhenEmpty: false
   - type: Sprite
     sprite: _RuMC14/Objects/Weapons/Guns/LMGs/PKP-MS/mag.rsi
