@@ -1,4 +1,5 @@
 using Content.Shared._CMU14.Yautja;
+using Content.Shared.Item;
 using Robust.Client.GameObjects;
 using Robust.Shared.Utility;
 
@@ -7,6 +8,7 @@ namespace Content.Client._CMU14.Yautja;
 public sealed class YautjaHealingGunVisualizerSystem : EntitySystem
 {
     [Dependency] private SpriteSystem _sprite = default!;
+    [Dependency] private SharedItemSystem _item = default!;
 
     public override void Initialize()
     {
@@ -35,5 +37,6 @@ public sealed class YautjaHealingGunVisualizerSystem : EntitySystem
             (ent.Owner, sprite),
             0,
             new SpriteSpecifier.Rsi(new ResPath("_CMU14/Yautja/medical.rsi"), state));
+        _item.VisualsChanged(ent.Owner);
     }
 }

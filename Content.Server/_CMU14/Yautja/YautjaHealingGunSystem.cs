@@ -112,13 +112,15 @@ public sealed partial class YautjaHealingGunSystem : EntitySystem
             return false;
         }
 
+        var changed = false;
         if (TryComp(target, out BloodstreamComponent? bloodstream))
         {
             if (gun.Comp.BloodlossModifier != 0)
             {
-                var wasBleeding = bloodstream.BleedAmount > 0;
+                var previousBleedAmount = bloodstream.BleedAmount;
                 _bloodstream.TryModifyBleedAmount((target, bloodstream), gun.Comp.BloodlossModifier);
-                if (wasBleeding && bloodstream.BleedAmount <= 0)
+                changed |= bloodstream.BleedAmount != previousBleedAmount;
+                if (previousBleedAmount > 0 && bloodstream.BleedAmount <= 0)
                 {
                     var popup = user == target
                         ? Loc.GetString("medical-item-stop-bleeding-self")
@@ -128,16 +130,23 @@ public sealed partial class YautjaHealingGunSystem : EntitySystem
             }
 
             if (gun.Comp.ModifyBloodLevel != 0)
-                _bloodstream.TryModifyBloodLevel((target, bloodstream), gun.Comp.ModifyBloodLevel);
+                changed |= _bloodstream.TryModifyBloodLevel((target, bloodstream), gun.Comp.ModifyBloodLevel);
         }
 
         if (gun.Comp.TreatsWounds)
-            TreatWounds(target);
+            changed |= TreatWounds(target);
 
         if (gun.Comp.RepairsFractures)
-            RepairFractures(target);
+            changed |= RepairFractures(target);
         var healed = _damageable.TryChangeDamage(target, gun.Comp.Damage * _damageable.UniversalTopicalsHealModifier, true, origin: user);
         var total = healed?.GetTotal() ?? FixedPoint2.Zero;
+        changed |= healed is { DamageDict.Count: > 0 };
+
+        if (!changed)
+        {
+            _popup.PopupClient(Loc.GetString("medical-item-cant-use", ("item", gun.Owner)), gun.Owner, user);
+            return false;
+        }
 
         _audio.PlayPredicted(gun.Comp.HealSound, gun.Owner, user);
 

@@ -3307,6 +3307,21 @@
       visibleToGovfor: true
       visibleToClf: true
       visibleToYautja: true
+    - type: ActivatableUI
+      key: enum.TacticalMapComputerUi.Key
+    - type: UserInterface
+      interfaces:
+        enum.TacticalMapComputerUi.Key:
+          type: TacticalMapComputerBui
+    - type: TacticalMapComputer
+      allowCanvas: false
+    - type: ApcPowerReceiver
+      powerLoad: 250
+      needsPower: true
+    - type: RMCPowerReceiver
+      idleLoad: 5
+      activeLoad: 10
+      channel: Equipment
 
 - type: entity
   parent: CMUYautjaStructureBase
