@@ -33,7 +33,7 @@
 - type: entity
   parent: [BaseItem, RMCBaseMeleeWeapon]
   id: RuMCWeaponLauncherDisposableTermobaricFolded
-  name: RPG-36
+  name: RPG-36-T
   description: "The RPG-36 is a shot with no second chance. The tube, the charge, and the primer are three elements that come together only to fly apart. Disposability is not a flaw, but a philosophy: it is designed for a single strike, but that strike is enough."
   suffix: Folded
   components:
