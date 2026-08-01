@@ -55,17 +55,12 @@
   components:
   - type: Storage
     grid:
-    - 0,0,13,5
-    whitelist:
-      tags:
-      - RuMCRifleAH12
-      - RuMCMagazineAH12
-      - RuMCMachineGunnerRig
-      - RuMCUPPPouchDrum
+    - 0,0,13,7
   - type: StorageFill
     contents:
     - id: RuMCRifleAH12
     - id: RuMCUPPNavalInfantryBeltMachinegunner
+    - id: RuMCUPPNavalInfantryHeavyHelmet2
     - id: RuMCUPPPouchDrum
       amount: 2
     - id: RuMCMagazineAH12Large
