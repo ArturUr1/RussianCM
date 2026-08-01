@@ -143,7 +143,7 @@
   id: RuMCGunVALCase_alt
   name: VAL gun case
   description: Case for the VAL rifle.
-  suffix: (mini)
+  suffix: mini
   components:
   - type: Storage
     grid:
@@ -179,10 +179,10 @@
       - RuMCWeaponRifleAK13
       - RuMCMagazineAK13
       - RMCMagazineRifleAK4047
+      - RMCMagazineRifleAK4047AP
   - type: StorageFill
     contents:
     - id: RuMCWeaponRifleAK13
-    - id: RMCMagazineRifleAK4047
     - id: RMCMagazineRifleAK4047
     - id: RMCMagazineRifleAK4047
     - id: RMCMagazineRifleAK4047
@@ -203,12 +203,11 @@
     - 0,0,13,1
     whitelist:
       tags:
-      - RuMCWeaponSMGsPP13M
+      - RuMCWeaponSMGPP13M
       - RuMCMagazinePP13M
   - type: StorageFill
     contents:
     - id: RuMCWeaponSMGsPP13M
-    - id: RuMCMagazinePP13M
     - id: RuMCMagazinePP13M
     - id: RuMCMagazinePP13M
     - id: RuMCMagazinePP13M
