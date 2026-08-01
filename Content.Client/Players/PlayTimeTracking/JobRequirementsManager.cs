@@ -148,7 +148,7 @@ public sealed partial class JobRequirementsManager : ISharedPlaytimeManager
             return false;
         }
 
-        if (!_cfg.GetCVar(CCVars.GameRoleWhitelist))
+        if (!_cfg.GetCVar(CCVars.GameRoleWhitelist) && jobId != BoostyYautjaWhitelist.JobId)
             return true;
 
         return !jobPrototype.Whitelisted || IsWhitelistedInternal(jobId);
@@ -207,7 +207,7 @@ public sealed partial class JobRequirementsManager : ISharedPlaytimeManager
     public bool CheckWhitelist(JobPrototype job, [NotNullWhen(false)] out FormattedMessage? reason)
     {
         reason = default;
-        if (!_cfg.GetCVar(CCVars.GameRoleWhitelist))
+        if (!_cfg.GetCVar(CCVars.GameRoleWhitelist) && job.ID != BoostyYautjaWhitelist.JobId)
             return true;
 
         // RMC14-Whitelist-Tweak-Start

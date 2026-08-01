@@ -1066,10 +1066,24 @@ namespace Content.Server.Database.Migrations.Sqlite
                         .HasColumnType("TEXT")
                         .HasColumnName("armor_preference");
 
+                    b.Property<string>("Build")
+                        .IsRequired()
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("TEXT")
+                        .HasDefaultValue("")
+                        .HasColumnName("build");
+
                     b.Property<string>("CharacterName")
                         .IsRequired()
                         .HasColumnType("TEXT")
                         .HasColumnName("char_name");
+
+                    b.Property<string>("CriminalRecord")
+                        .IsRequired()
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("TEXT")
+                        .HasDefaultValue("")
+                        .HasColumnName("criminal_record");
 
                     b.Property<string>("EyeColor")
                         .IsRequired()
@@ -1091,6 +1105,13 @@ namespace Content.Server.Database.Migrations.Sqlite
                         .HasColumnType("TEXT")
                         .HasColumnName("flavor_text");
 
+                    b.Property<string>("FullDescription")
+                        .IsRequired()
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("TEXT")
+                        .HasDefaultValue("")
+                        .HasColumnName("full_description");
+
                     b.Property<string>("GamemodeAntagPreferences")
                         .HasColumnType("TEXT")
                         .HasColumnName("gamemode_antag_preferences");
@@ -1108,6 +1129,13 @@ namespace Content.Server.Database.Migrations.Sqlite
                         .HasColumnType("TEXT")
                         .HasColumnName("gender");
 
+                    b.Property<string>("GeneralRecord")
+                        .IsRequired()
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("TEXT")
+                        .HasDefaultValue("")
+                        .HasColumnName("general_record");
+
                     b.Property<string>("HairColor")
                         .IsRequired()
                         .HasColumnType("TEXT")
@@ -1118,9 +1146,29 @@ namespace Content.Server.Database.Migrations.Sqlite
                         .HasColumnType("TEXT")
                         .HasColumnName("hair_name");
 
+                    b.Property<string>("Height")
+                        .IsRequired()
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("TEXT")
+                        .HasDefaultValue("")
+                        .HasColumnName("height");
+
+                    b.Property<bool>("HideMetaInformation")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER")
+                        .HasDefaultValue(false)
+                        .HasColumnName("hide_meta_information");
+
                     b.Property<byte[]>("Markings")
                         .HasColumnType("jsonb")
                         .HasColumnName("markings");
+
+                    b.Property<string>("MedicalRecord")
+                        .IsRequired()
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("TEXT")
+                        .HasDefaultValue("")
+                        .HasColumnName("medical_record");
 
                     b.Property<string>("Origin")
                         .HasColumnType("TEXT")
@@ -1165,6 +1213,13 @@ namespace Content.Server.Database.Migrations.Sqlite
                         .HasColumnType("TEXT")
                         .HasColumnName("sex");
 
+                    b.Property<string>("ShortExamine")
+                        .IsRequired()
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("TEXT")
+                        .HasDefaultValue("")
+                        .HasColumnName("short_examine");
+
                     b.Property<string>("SkinColor")
                         .IsRequired()
                         .HasColumnType("TEXT")
@@ -1199,6 +1254,12 @@ namespace Content.Server.Database.Migrations.Sqlite
                     b.Property<string>("ThreatPreference")
                         .HasColumnType("TEXT")
                         .HasColumnName("threat_preference");
+
+                    b.Property<int>("Weight")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER")
+                        .HasDefaultValue(160)
+                        .HasColumnName("weight");
 
                     b.Property<string>("XenoPostfix")
                         .IsRequired()

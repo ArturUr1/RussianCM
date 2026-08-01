@@ -1,3 +1,4 @@
+using Content.Shared._CMU14.Hiveless; // RuMC edit
 using Content.Shared._RMC14.Dropship;
 using Content.Shared._RMC14.Marines;
 using Content.Shared._RMC14.NightVision;
@@ -159,8 +160,14 @@ public abstract partial class SharedXenoHiveSystem : EntitySystem
             if (!prototype.TryComp(out XenoComponent? xeno, _compFactory))
                 continue;
 
-            if (xeno.UnlockAt == TimeSpan.Zero || prototype.HasComponent<XenoHiddenComponent>(_compFactory))
+            // RuMC edit start
+            if (xeno.UnlockAt == TimeSpan.Zero ||
+                prototype.HasComponent<XenoHiddenComponent>(_compFactory) ||
+                prototype.HasComponent<HivelessComponent>(_compFactory))
+            {
                 continue;
+            }
+            // RuMC edit end
 
             ent.Comp.Unlocks.GetOrNew(xeno.UnlockAt).Add(prototype.ID);
 
@@ -505,8 +512,7 @@ public abstract partial class SharedXenoHiveSystem : EntitySystem
         hive.Comp.GotOvipositorPopup = true;
         Dirty(hive);
 
-        // TODO: loc
-        var msg = "Enough time has passed, we require the Queen in oviposition for evolution.";
+        var msg = Loc.GetString("rmc-xeno-hive-needs-ovipositor-announce"); // RuMC edit
         var xenos = EntityQueryEnumerator<XenoComponent, HiveMemberComponent, ActorComponent>();
         while (xenos.MoveNext(out var uid, out _, out var member, out _))
         {

@@ -41,5 +41,16 @@ namespace Content.Tests.Shared.Administration
 
             Assert.That(AdminFlagsHelper.FlagsToNames(flags), Is.EquivalentTo(names));
         }
+
+        [TestCase(AdminFlags.Host, AdminFlags.Clans, true)]
+        [TestCase(AdminFlags.Host | AdminFlags.Permissions,
+            AdminFlags.Clans | AdminFlags.Permissions, true)]
+        [TestCase(AdminFlags.Host, AdminFlags.Clans | AdminFlags.Ban, false)]
+        [TestCase(AdminFlags.Permissions, AdminFlags.Clans, false)]
+        [TestCase(AdminFlags.Clans, AdminFlags.Clans, true)]
+        public void HostCanGrantOnlyTheClansFlag(AdminFlags actorFlags, AdminFlags requestedFlags, bool expected)
+        {
+            Assert.That(AdminFlagsHelper.CanGrant(actorFlags, requestedFlags), Is.EqualTo(expected));
+        }
     }
 }

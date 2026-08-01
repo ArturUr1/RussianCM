@@ -1,5 +1,6 @@
 using System.Linq;
 using System.Numerics;
+using Content.Client._CMU14.Yautja;
 using Content.Client.Lobby;
 using Content.Client.Humanoid;
 using Content.Client.Stylesheets;
@@ -52,8 +53,8 @@ public sealed partial class YautjaProfileEditor : ScrollContainer
     private readonly Label _summaryCaster = new();
     private readonly OptionButton _translatorType = new();
     private readonly OptionButton _invisibilitySound = new();
-    private readonly Label _translatorHelp = new();
-    private readonly Label _invisibilityHelp = new();
+    private readonly RichTextLabel _translatorHelp = new();
+    private readonly RichTextLabel _invisibilityHelp = new();
     private readonly Label _flavorLimit = new();
     private readonly TextEdit _flavorText = new()
     {
@@ -1434,6 +1435,7 @@ public sealed partial class YautjaProfileEditor : ScrollContainer
         {
             Orientation = BoxContainer.LayoutOrientation.Vertical,
             HorizontalExpand = true,
+            SeparationOverride = 8,
             Children =
             {
                 TechOptionBlock(
@@ -1542,9 +1544,10 @@ public sealed partial class YautjaProfileEditor : ScrollContainer
             ("max", YautjaCharacterProfile.MaxFlavorTextLength));
     }
 
-    private Control TechOptionBlock(string label, OptionButton option, Label help, Action? preview)
+    private Control TechOptionBlock(string label, OptionButton option, RichTextLabel help, Action? preview)
     {
         option.HorizontalExpand = true;
+        option.MinHeight = 34;
 
         Button? previewButton = null;
         if (preview != null)
@@ -1553,44 +1556,50 @@ public sealed partial class YautjaProfileEditor : ScrollContainer
             {
                 Text = Loc.GetString("cmu-yautja-lobby-preview-sound"),
                 HorizontalExpand = true,
+                MinHeight = 32,
             };
             previewButton.OnPressed += _ => preview();
         }
 
         help.HorizontalExpand = true;
-        help.FontColorOverride = Color.FromHex("#b8aaa0");
+        help.VerticalExpand = false;
 
-        var block = new BoxContainer
+        var content = new BoxContainer
         {
             Orientation = BoxContainer.LayoutOrientation.Vertical,
             HorizontalExpand = true,
             SeparationOverride = YautjaProfileEditorLayout.TechOptionSpacing,
-            Margin = new Thickness(0, 0, 0, YautjaProfileEditorLayout.TechOptionBottomMargin),
             Children =
             {
-                new Label { Text = Loc.GetString(label), HorizontalExpand = true },
+                YautjaBracerUiStyle.Label(Loc.GetString(label), YautjaBracerUiStyle.HotRed, "LabelHeading"),
                 option,
             },
         };
 
         if (previewButton != null)
-            block.AddChild(previewButton);
+            content.AddChild(previewButton);
 
-        block.AddChild(help);
-        return block;
+        content.AddChild(help);
+        var card = YautjaBracerUiStyle.Wrap(
+            content,
+            YautjaBracerUiStyle.Card,
+            YautjaBracerUiStyle.Border,
+            new Thickness(10, 8));
+        card.Margin = new Thickness(0, 0, 0, YautjaProfileEditorLayout.TechOptionBottomMargin);
+        return card;
     }
 
     private void UpdateTechHelp(YautjaTranslatorType translatorType, YautjaInvisibilitySound invisibilitySound)
     {
-        _translatorHelp.Text = Loc.GetString(translatorType switch
+        _translatorHelp.SetMessage(Loc.GetString(translatorType switch
         {
             YautjaTranslatorType.Retro => "cmu-yautja-lobby-translator-help-retro",
             YautjaTranslatorType.Combo => "cmu-yautja-lobby-translator-help-combo",
             _ => "cmu-yautja-lobby-translator-help-modern",
-        });
-        _invisibilityHelp.Text = Loc.GetString(invisibilitySound == YautjaInvisibilitySound.Retro
+        }), YautjaBracerUiStyle.Muted);
+        _invisibilityHelp.SetMessage(Loc.GetString(invisibilitySound == YautjaInvisibilitySound.Retro
             ? "cmu-yautja-lobby-invisibility-help-retro"
-            : "cmu-yautja-lobby-invisibility-help-modern");
+            : "cmu-yautja-lobby-invisibility-help-modern"), YautjaBracerUiStyle.Muted);
     }
 
     private static SoundPathSpecifier GetInvisibilityPreviewSound(int id)
