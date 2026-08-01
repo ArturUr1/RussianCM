@@ -56,7 +56,6 @@
   - type: Tag
     tags:
     - CMSurgicalCase
-    - CMUYautjaMedicompItem
   - type: GenericVisualizer
     visuals:
       enum.SharedBagOpenVisuals.BagState:

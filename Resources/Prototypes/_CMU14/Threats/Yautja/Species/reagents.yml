@@ -8,3 +8,18 @@
   color: "#2cf274"
   recognizable: true
   physicalDesc: reagent-physical-desc-ferrous
+
+- type: reagent
+  parent: CMReagentMedicine
+  id: thwei
+  name: reagent-name-yautja-thwei
+  desc: reagent-desc-yautja-thwei
+  physicalDesc: reagent-physical-desc-translucent
+  color: "#41c498"
+
+- type: reagent
+  parent: thwei
+  id: dathwei
+  name: reagent-name-yautja-dathwei
+  desc: reagent-desc-yautja-dathwei
+  color: "#c46b41"

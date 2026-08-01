@@ -462,6 +462,10 @@ chat-radio-cmu-yautja-badblood = Дурная кровь
 species-name-yautja = Яутжа
 reagent-name-cmu-yautja-blood = кровь яутжа
 reagent-desc-cmu-yautja-blood = Ярко-зелёная чужая кровь с резким металлическим запахом.
+reagent-name-yautja-thwei = тхвей
+reagent-desc-yautja-thwei = Странная жидкость инопланетного происхождения.
+reagent-name-yautja-dathwei = датхвей
+reagent-desc-yautja-dathwei = Стабилизирующая инопланетная жидкость для рабов яутжа.
 
 cmu-yautja-emote-name-click = Щелчки
 cmu-yautja-emote-msg-click = щёлкает жвалами.

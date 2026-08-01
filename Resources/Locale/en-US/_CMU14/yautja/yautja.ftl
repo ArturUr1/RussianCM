@@ -734,6 +734,10 @@ chat-radio-cmu-yautja-military = YSPEC
 species-name-yautja = Yautja
 reagent-name-cmu-yautja-blood = Yautja blood
 reagent-desc-cmu-yautja-blood = Vivid green alien blood with a sharp metallic smell.
+reagent-name-yautja-thwei = Thwei
+reagent-desc-yautja-thwei = A strange, alien liquid.
+reagent-name-yautja-dathwei = Dathwei
+reagent-desc-yautja-dathwei = A stabilizing alien liquid used by Yautja thralls.
 
 cmu-yautja-emote-name-click = Clicks
 cmu-yautja-emote-msg-click = clicks mandibles together.
