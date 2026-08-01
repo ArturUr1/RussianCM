@@ -38,21 +38,14 @@
     range: 2
 
 - type: entity
-  parent: CMPacketBase
-  id: RuCMPacketGrenadeeTermobaricUPP
+  parent: RMCPacketGrenadeWhitePhosphorusCompound
+  id: RuCMPacketGrenadeTermobaricUPP
   name: RG35F Termobaric grenade packet
   description: It contains three RG35F Termobaric grenades.
-  components:
-  - type: Sprite
-    layers:
-    - state: hidp_packet
-      map: [ "closedLayer" ]
-    - state: hidp_packet_e
-      map: [ "openLayer", "emptyLayer"]
 
 - type: entity
   parent: RuCMPacketGrenadeeTermobaricUPP
-  id: RuMCPacketGrenadeeTermobaricUPPFilled
+  id: RuMCPacketGrenadeTermobaricUPPFilled
   suffix: Filled
   components:
   - type: StorageFill

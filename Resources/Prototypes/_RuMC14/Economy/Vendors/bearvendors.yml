@@ -1322,11 +1322,13 @@
       - id: AU14PacketGrenadeHighExplosiveUPPFilled
         amount: 10
       - id: AU14PacketGrenadeIncendiaryUPPFilled
-        amount: 6
+        amount: 2
+      - id: RuMCPacketGrenadeTermobaricUPPFilled
+        amount: 2
       - id: AU14PacketGrenadeSmokeUPPFilled
-        amount: 10
+        amount: 15
       - id: RMCPacketGrenadeWhitePhosphorusFilled
-        amount: 6
+        amount: 2
       - id: AU14PacketGrenadeTearGasFilled
         amount: 3
       - id: RMCBoxClaymoreMineFilled
@@ -1336,7 +1338,7 @@
       - id: RMCExplosiveBreachingCharge
         amount: 15
       - id: RMCExplosivePlastic
-        amount: 3
+        amount: 2
       - id: RuMCWeaponLauncherDisposableFolded
         amount: 2
       - id: RuMCWeaponLauncherDisposableFoldedIncen

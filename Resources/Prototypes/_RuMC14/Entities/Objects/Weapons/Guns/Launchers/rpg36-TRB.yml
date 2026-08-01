@@ -91,6 +91,7 @@
   id: RuMCRocketRPG36_Termobaric
   name: RPG36 Termobaric rocket
   description: Rocket for the UPP assault units.
+  suffix: NO SPAWN
   components:
   - type: Tag
     tags:

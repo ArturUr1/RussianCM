@@ -63,6 +63,36 @@
 
 - type: entity
   parent: RMCCrateWeapons
+  id: RuMCCrateRPG_36_T
+  name: contains the RPG-36-T.
+  components:
+  - type: StorageFill
+    contents:
+    - id: RuMCWeaponLauncherDisposableTermobaricFolded
+      amount: 4
+
+- type: entity
+  parent: RMCCrateWeapons
+  id: RuMCCrateRPG_32
+  name: contains the termobaric rocket for RPG-32.
+  components:
+  - type: StorageFill
+    contents:
+    - id: RuMCRocketRPG_Termobaric
+      amount: 4
+
+- type: entity
+  parent: RMCCrateWeapons
+  id: RuMCCrateRG35F
+  name: contains the termobaric grenade RG35F.
+  components:
+  - type: StorageFill
+    contents:
+    - id: RuMCPacketGrenadeTermobaricUPPFilled
+      amount: 1
+
+- type: entity
+  parent: RMCCrateWeapons
   id: RuMCCrateBoxBulletsRifleAG80
   name: crate 9.7x16mm ammunition box
   description: A 9.7x16mm ammunition box.
