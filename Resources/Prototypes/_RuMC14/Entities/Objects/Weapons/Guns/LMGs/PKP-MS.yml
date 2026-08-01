@@ -43,7 +43,7 @@
     recoilUnwielded: 2
     scatterWielded: 2.5
     scatterUnwielded: 4
-    baseFireRate: 5
+    baseFireRate: 5.45
     modifiers:
       FullAuto:
         fireDelay: 0.018

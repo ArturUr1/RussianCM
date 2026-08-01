@@ -1,0 +1,45 @@
+- type: entity
+  parent:
+  - RMCM40DPTags
+  - CMGrenadeBase
+  id: RuMCGrenadeWhitePhosphorus
+  name: RG35F grenade
+  description: The RG35F hand grenade is filled with phosphorus.
+  components:
+  - type: Sprite
+    sprite: _RuMC14/Objects/Weapons/Grenades/RG35F.rsi
+  - type: OnUseTimerTrigger
+    delay: 2
+    beepSound: null
+  - type: CMVocalizeTrigger
+  - type: DeleteOnTrigger
+  - type: TimerTriggerVisuals
+    primingSound:
+      path: /Audio/Effects/Smoke-grenade.ogg
+  - type: SpawnOnTrigger
+    proto: RMCSmokePhosphorusWeak
+  - type: SoundOnTrigger
+    sound: /Audio/Effects/smoke.ogg
+
+- type: entity
+  parent: CMPacketBase
+  id: RuCMPacketGrenadeeWhitePhosphorusUPP
+  name: RG35F phosphorus grenade packet
+  description: It contains three RG35F white phosphorus grenades.
+  components:
+  - type: Sprite
+    layers:
+    - state: hidp_packet
+      map: [ "closedLayer" ]
+    - state: hidp_packet_e
+      map: [ "openLayer", "emptyLayer"]
+
+- type: entity
+  parent: RuCMPacketGrenadeeWhitePhosphorusUPP
+  id: RuMCPacketGrenadeeWhitePhosphorusUPPFilled
+  suffix: Filled
+  components:
+  - type: StorageFill
+    contents:
+    - id: RuMCGrenadeWhitePhosphorus
+      amount: 6
