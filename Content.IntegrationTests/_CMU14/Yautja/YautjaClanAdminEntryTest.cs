@@ -27,7 +27,7 @@ public sealed class YautjaClanAdminEntryTest
             typeof(YautjaClanAdminCommand),
             typeof(YautjaClanInfoCommand),
             typeof(YautjaPredatorAdminEditorCommand),
-            typeof(YautjaYoungbloodCallCommand),
+            typeof(YautjaYoungbloodAdminCommand),
             typeof(YautjaClanSetMemberCommand),
             typeof(YautjaClanCreateCommand),
             typeof(YautjaClanWhitelistCommand),
