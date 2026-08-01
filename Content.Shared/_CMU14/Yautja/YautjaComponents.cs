@@ -931,8 +931,28 @@ public sealed partial class YautjaCannonPackProjectileRefundComponent : Componen
 [RegisterComponent, NetworkedComponent]
 public sealed partial class YautjaHudViewerComponent : Component;
 
-[RegisterComponent]
-public sealed partial class YautjaMaskVisorGlassesComponent : Component;
+[RegisterComponent, NetworkedComponent, AutoGenerateComponentState]
+[Access(typeof(YautjaMaskSystem))]
+public sealed partial class YautjaMaskVisorGlassesComponent : Component
+{
+    /// <summary>
+    /// Mask that created this visor. A loose pair of glasses must not grant thermal wall vision.
+    /// </summary>
+    [DataField, AutoNetworkedField]
+    public EntityUid? Mask;
+
+    /// <summary>
+    /// Wearer currently receiving this visor's thermal sight.
+    /// </summary>
+    [DataField, AutoNetworkedField]
+    public EntityUid? User;
+
+    /// <summary>
+    /// Server-authoritative thermal source state for the wall-vision overlay.
+    /// </summary>
+    [DataField, AutoNetworkedField]
+    public bool ThermalVisionEnabled;
+}
 
 [RegisterComponent]
 public sealed partial class YautjaCommunicatorComponent : Component

@@ -9,6 +9,8 @@ using Content.Shared.Stacks;
 using Content.Shared.Storage;
 using Content.Shared.Storage.EntitySystems;
 using Robust.Client.GameObjects;
+using Robust.Client.Graphics;
+using Robust.Client.ResourceManagement;
 using Robust.Shared.GameObjects;
 using Robust.Shared.Map;
 using Robust.Shared.Maths;
@@ -209,6 +211,16 @@ public sealed class YautjaMedicompCmss13ParityTest
         {
             var prototypes = client.ResolveDependency<IPrototypeManager>();
             var factory = client.EntMan.ComponentFactory;
+            var cache = client.ResolveDependency<IResourceCache>();
+            var rsi = cache.GetResource<RSIResource>(new ResPath("/Textures/_CMU14/Yautja/medical.rsi")).RSI;
+
+            Assert.That(rsi.Size, Is.EqualTo(new Vector2i(32, 32)));
+            Assert.That(rsi.TryGetState("thwei_1", out var thwei), Is.True);
+            Assert.That(thwei!.DelayCount, Is.EqualTo(4));
+            Assert.That(thwei.GetDelays(), Is.EqualTo(new[] { 6f, 1f, 1f, 1f }));
+            Assert.That(rsi.TryGetState("healing_gun_on", out var healingGunOn), Is.True);
+            Assert.That(healingGunOn!.DelayCount, Is.EqualTo(9));
+            Assert.That(healingGunOn.GetDelays(), Is.EqualTo(new[] { 19f, 19f, 19f, 19f, 19f, 19f, 19f, 19f, 19f }));
 
             AssertPrototypeSprite(prototypes, factory, "CMUYautjaHealingGel", "/Textures/_CMU14/Yautja/medical.rsi", "healing_gel");
             AssertPrototypeSprite(prototypes, factory, "CMUYautjaStabilizerGel", "/Textures/_CMU14/Yautja/medical.rsi", "stabilizer_gel");
