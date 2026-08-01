@@ -847,9 +847,9 @@
     - name: au14-vendor-section-weapons
       choices: { CMUPrimaryWeapon: 1 }
       entries:
-      - id: RuMCWeaponRifleAK13
-      - id: RuMCWeaponSMGsPP13M
-      - id: RuMCRifleVAL
+      - id: RuMCGunAK13Case
+      - id: RuMCGunPP13MCase
+      - id: RuMCGunVALCase_alt
         amount: 1
     - name: au14-vendor-section-weapon-ammunition
       entries:

@@ -88,6 +88,43 @@
 
 - type: entity
   parent: RMCGunCaseBase
+  id: RuMCGunAH12Case_alt
+  name: AH12 gun case
+  description: Case for the AH12 rifle.
+  suffix: (mini)
+  components:
+  - type: Storage
+    grid:
+    - 0,0,13,5
+    whitelist:
+      tags:
+      - RuMCRifleAH12
+      - RuMCMagazineAH12
+      - RuMCMachineGunnerRig
+      - RuMCUPPPouchDrum
+  - type: StorageFill
+    contents:
+    - id: RuMCRifleAH12
+    - id: RuMCUPPNavalInfantryBeltMachinegunner
+    - id: RuMCUPPPouchDrum
+    - id: RuMCMagazineAH12
+    - id: RuMCMagazineAH12
+    - id: RuMCMagazineAH12
+    - id: RuMCMagazineAH12
+    - id: RuMCMagazineAH12
+    - id: RuMCMagazineAH12
+    - id: RuMCMagazineAH12
+    - id: RuMCMagazineAH12
+    - id: RuMCMagazineAH12
+    - id: RuMCMagazineAH12
+    - id: RuMCMagazineAH12Large
+    - id: RuMCMagazineAH12Tracer
+    - id: RuMCMagazineAH12Tracer
+    - id: RuMCMagazineAH12Tracer
+    - id: RuMCMagazineAH12Tracer
+
+- type: entity
+  parent: RMCGunCaseBase
   id: RuMCGunVALCase
   name: VAL gun case
   description: Case for the VAL rifle.
@@ -117,6 +154,86 @@
     - id: RuMCMagazineVALAP
     - id: RuMCMagazineVALAP
     - id: RuMCMagazineVALAP
+
+- type: entity
+  parent: RMCGunCaseBase
+  id: RuMCGunVALCase_alt
+  name: VAL gun case
+  description: Case for the VAL rifle.
+  suffix: (mini)
+  components:
+  - type: Storage
+    grid:
+    - 0,0,13,1
+    whitelist:
+      tags:
+      - RuMCRifleVAL
+      - RuMCMagazineVAL
+  - type: StorageFill
+    contents:
+    - id: RuMCRifleVAL
+    - id: RuMCMagazineVAL
+    - id: RuMCMagazineVAL
+    - id: RuMCMagazineVAL
+    - id: RuMCMagazineVAL
+    - id: RuMCMagazineVAL
+    - id: RuMCMagazineVAL
+    - id: RuMCMagazineVAL
+    - id: RuMCMagazineVAL
+    - id: RuMCMagazineVALAP
+
+- type: entity
+  parent: RMCGunCaseBase
+  id: RuMCGunAK13Case
+  name: AK13 gun case
+  description: Case for the AK13 rifle.
+  components:
+  - type: Storage
+    grid:
+    - 0,0,13,1
+    whitelist:
+      tags:
+      - RuMCWeaponRifleAK13
+      - RuMCMagazineAK13
+      - RMCMagazineRifleAK4047
+  - type: StorageFill
+    contents:
+    - id: RuMCWeaponRifleAK13
+    - id: RMCMagazineRifleAK4047
+    - id: RMCMagazineRifleAK4047
+    - id: RMCMagazineRifleAK4047
+    - id: RMCMagazineRifleAK4047
+    - id: RMCMagazineRifleAK4047
+    - id: RMCMagazineRifleAK4047
+    - id: RMCMagazineRifleAK4047
+    - id: RMCMagazineRifleAK4047
+    - id: RMCMagazineRifleAK4047AP
+
+- type: entity
+  parent: RMCGunCaseBase
+  id: RuMCGunPP13MCase
+  name: PP13-M gun case
+  description: Case for the PP13-M rifle.
+  components:
+  - type: Storage
+    grid:
+    - 0,0,13,1
+    whitelist:
+      tags:
+      - RuMCWeaponSMGsPP13M
+      - RuMCMagazinePP13M
+  - type: StorageFill
+    contents:
+    - id: RuMCWeaponSMGsPP13M
+    - id: RuMCMagazinePP13M
+    - id: RuMCMagazinePP13M
+    - id: RuMCMagazinePP13M
+    - id: RuMCMagazinePP13M
+    - id: RuMCMagazinePP13M
+    - id: RuMCMagazinePP13M
+    - id: RuMCMagazinePP13M
+    - id: RuMCMagazinePP13M
+    - id: RuMCMagazinePP13MAP
 
 #- type: entity
 #  parent: RMCGunCaseBase
