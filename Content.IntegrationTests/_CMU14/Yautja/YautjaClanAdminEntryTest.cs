@@ -4,6 +4,7 @@ using Content.Client.Administration.UI.CustomControls;
 using Content.Client.Administration.UI.Tabs.AdminTab;
 using Content.IntegrationTests.Pair;
 using Content.Server.Administration;
+using Content.Server.Administration.Commands;
 using Content.Server.Administration.Managers;
 using Content.Server.Database;
 using Content.Server.EUI;
