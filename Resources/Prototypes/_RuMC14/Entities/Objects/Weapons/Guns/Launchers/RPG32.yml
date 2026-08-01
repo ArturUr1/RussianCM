@@ -67,15 +67,15 @@
 
 - type: entity
   parent: BaseItem
-  id: RuMCRocketRPG_Phosphorus
-  name: RPG32 phosphorus rocket
+  id: RuMCRocketRPG_Termobaric
+  name: RPG32 Termobaric rocket
   description: Rocket for the UPP assault units.
   components:
   - type: Tag
     tags:
     - RMCProjectileRocketHJRA12
   - type: CartridgeAmmo
-    proto: RuMCProjectileRocketRPG_Phosphorus
+    proto: RuMCProjectileRocketRPG_Termobaric
     deleteOnSpawn: false
   - type: Sprite
     sprite: _RuMC14/Objects/Weapons/Guns/RocketLaunchers/RPG32/rpg_rocket.rsi
@@ -94,8 +94,9 @@
 
 - type: entity
   categories: [ HideSpawnMenu ]
-  id: RuMCProjectileRocketRPG_Phosphorus
-  name: RPG32 phosphorus rocket
+  parent: RMCProjectileRocket84mm
+  id: RuMCProjectileRocketRPG_Termobaric
+  name: RPG32 Termobaric rocket
   description: Rocket for the UPP assault units.
   components:
   - type: Sprite
@@ -110,17 +111,53 @@
     impactEffect: BulletImpactEffect
     damage:
       types:
-        Heat: 90
+        Heat: 50
     maxFixedRange: 7
-  - type: TileFireOnTrigger
-    spawn: RMCTileFireBlue
-    range: 3
-    sound:
-      path: /Audio/_RMC14/Weapons/Guns/Flamer/gun_flamethrower3.ogg
+  - type: Explosive
+    maxIntensity: 10
+    intensitySlope: 20
+    totalIntensity: 5
+    canCreateVacuum: false
   - type: DeleteOnTrigger
+  - type: CMExplosionEffect
+  - type: RMCScorchEffect
   - type: SpawnOnTerminate
-    spawn: RMCSmokeWhitePhosphorus
+    spawn: RuMCSmokeTermobaric
     spawnOffset: -0.5
   - type: RMCAreaDamage
     damageArea: 3.5
     falloffDistance: 3.5
+
+- type: entity
+  parent: Smoke
+  id: RuMCSmokeTermobaricNoSpread
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: Transform
+    anchored: true
+  - type: Occluder
+  - type: Sprite
+    sprite: _RMC14/Effects/smoke.rsi
+    state: smoke2
+  - type: TimedDespawn
+    lifetime: 0.3
+  - type: Tag
+    tags:
+    - HideContextMenu
+  - type: Appearance
+  - type: DeleteOnExplosion
+  - type: RMCIgniteOnCollide
+    maxStacks: 1
+    intensity: 150
+    burnColor: "#b55e28"
+  - type: EdgeSpreader
+    id: Smoke
+
+- type: entity
+  parent: RuMCSmokeTermobaricNoSpread
+  id: RuMCSmokeTermobaric
+  components:
+  - type: EvenSmoke
+    spawn: RuMCSmokeTermobaricNoSpread
+    initialSpread: 3
+    range: 3

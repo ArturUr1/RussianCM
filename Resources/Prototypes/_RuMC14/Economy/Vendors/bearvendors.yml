@@ -1338,8 +1338,10 @@
       - id: RMCExplosivePlastic
         amount: 3
       - id: RuMCWeaponLauncherDisposableFolded
-        amount: 4
+        amount: 2
       - id: RuMCWeaponLauncherDisposableFoldedIncen
+        amount: 2
+      - id: RuMCWeaponLauncherDisposableTermobaric
         amount: 2
       - id: RMCRocketM5510Brute
         amount: 12

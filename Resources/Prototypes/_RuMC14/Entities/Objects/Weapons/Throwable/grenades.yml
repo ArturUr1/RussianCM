@@ -1,31 +1,47 @@
 - type: entity
   parent:
-  - RMCM40DPTags
+  - CMGrenadeHighExplosive
   - CMGrenadeBase
-  id: RuMCGrenadeWhitePhosphorus
+  id: RuMCGrenadeTermobaric
   name: RG35F grenade
-  description: The RG35F hand grenade is filled with phosphorus.
+  description: The RG35F hand grenade is filled with Termobaric.
   components:
   - type: Sprite
     sprite: _RuMC14/Objects/Weapons/Grenades/RG35F.rsi
   - type: OnUseTimerTrigger
     delay: 2
-    beepSound: null
+    initialBeepDelay: 0
+    beepInterval: 10
+    doPopup: false
+  - type: Explosive
+    maxIntensity: 10
+    intensitySlope: 20
+    totalIntensity: 5
+    canCreateVacuum: false
   - type: CMVocalizeTrigger
   - type: DeleteOnTrigger
   - type: TimerTriggerVisuals
     primingSound:
       path: /Audio/Effects/Smoke-grenade.ogg
   - type: SpawnOnTrigger
-    proto: RMCSmokePhosphorusWeak
+    proto: RuMCSmokeTermobaricMini
   - type: SoundOnTrigger
     sound: /Audio/Effects/smoke.ogg
 
 - type: entity
+  parent: RuMCSmokeTermobaricNoSpread
+  id: RuMCSmokeTermobaricMini
+  components:
+  - type: EvenSmoke
+    spawn: RuMCSmokeTermobaricNoSpread
+    initialSpread: 2
+    range: 2
+
+- type: entity
   parent: CMPacketBase
-  id: RuCMPacketGrenadeeWhitePhosphorusUPP
-  name: RG35F phosphorus grenade packet
-  description: It contains three RG35F white phosphorus grenades.
+  id: RuCMPacketGrenadeeTermobaricUPP
+  name: RG35F Termobaric grenade packet
+  description: It contains three RG35F Termobaric grenades.
   components:
   - type: Sprite
     layers:
@@ -35,11 +51,11 @@
       map: [ "openLayer", "emptyLayer"]
 
 - type: entity
-  parent: RuCMPacketGrenadeeWhitePhosphorusUPP
-  id: RuMCPacketGrenadeeWhitePhosphorusUPPFilled
+  parent: RuCMPacketGrenadeeTermobaricUPP
+  id: RuMCPacketGrenadeeTermobaricUPPFilled
   suffix: Filled
   components:
   - type: StorageFill
     contents:
-    - id: RuMCGrenadeWhitePhosphorus
+    - id: RuMCGrenadeTermobaric
       amount: 6
