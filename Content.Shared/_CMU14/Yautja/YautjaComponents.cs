@@ -1053,9 +1053,12 @@ public sealed partial class YautjaHivebrokenXenoComponent : Component;
 [RegisterComponent]
 public sealed partial class YautjaMedicalItemComponent : Component;
 
-[RegisterComponent]
+[RegisterComponent, NetworkedComponent, AutoGenerateComponentState(raiseAfterAutoHandleState: true)]
 public sealed partial class YautjaHealingGunComponent : Component
 {
+    [DataField, AutoNetworkedField]
+    public bool Loaded = true;
+
     [DataField(required: true)]
     public DamageSpecifier Damage = default!;
 

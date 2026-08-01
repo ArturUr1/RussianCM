@@ -37,6 +37,7 @@ public sealed partial class YautjaHealingGunSystem : EntitySystem
     {
         SubscribeLocalEvent<YautjaHealingGunComponent, UseInHandEvent>(OnUseInHand);
         SubscribeLocalEvent<YautjaHealingGunComponent, AfterInteractEvent>(OnAfterInteract);
+        SubscribeLocalEvent<YautjaHealingGunComponent, AfterInteractUsingEvent>(OnAfterInteractUsing);
     }
 
     private void OnUseInHand(Entity<YautjaHealingGunComponent> ent, ref UseInHandEvent args)
@@ -57,8 +58,34 @@ public sealed partial class YautjaHealingGunSystem : EntitySystem
             args.Handled = true;
     }
 
+    private void OnAfterInteractUsing(Entity<YautjaHealingGunComponent> ent, ref AfterInteractUsingEvent args)
+    {
+        if (args.Handled || !args.CanReach || args.Target != ent.Owner ||
+            MetaData(args.Used).EntityPrototype?.ID != "CMUYautjaHealingCapsule")
+        {
+            return;
+        }
+
+        if (ent.Comp.Loaded)
+        {
+            _popup.PopupClient("The healing gun is already loaded.", ent.Owner, args.User);
+            return;
+        }
+
+        Del(args.Used);
+        ent.Comp.Loaded = true;
+        Dirty(ent);
+        args.Handled = true;
+    }
+
     private bool TryHeal(Entity<YautjaHealingGunComponent> gun, EntityUid target, EntityUid user, bool resetDelay)
     {
+        if (!gun.Comp.Loaded)
+        {
+            _popup.PopupClient("The healing gun is empty.", gun.Owner, user);
+            return false;
+        }
+
         if (!TryComp(target, out DamageableComponent? damageable))
             return false;
 
@@ -128,6 +155,8 @@ public sealed partial class YautjaHealingGunSystem : EntitySystem
             _adminLogger.Add(LogType.Healed, $"{ToPrettyString(user):user} healed themselves for {total:damage} damage with {ToPrettyString(gun.Owner):item}");
         }
 
+        gun.Comp.Loaded = false;
+        Dirty(gun);
         return true;
     }
 

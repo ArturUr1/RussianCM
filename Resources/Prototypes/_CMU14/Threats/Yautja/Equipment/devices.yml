@@ -1640,6 +1640,7 @@
     size: Small
     sprite: _CMU14/Yautja/medical.rsi
   - type: YautjaHealingGun
+    loaded: true
     repairsFractures: true
     damageContainers:
     - Biological
