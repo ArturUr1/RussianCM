@@ -64,3 +64,63 @@
     rsi:
       sprite: _RMC14/Interface/MousePointer/explosive_mouse.rsi
       state: all
+
+- type: entity
+  parent: BaseItem
+  id: RuMCRocketRPG_Phosphorus
+  name: RPG32 phosphorus rocket
+  description: Rocket for the UPP assault units.
+  components:
+  - type: Tag
+    tags:
+    - RMCProjectileRocketHJRA12
+  - type: CartridgeAmmo
+    proto: RuMCProjectileRocketRPG_Phosphorus
+    deleteOnSpawn: false
+  - type: Sprite
+    sprite: _RuMC14/Objects/Weapons/Guns/RocketLaunchers/RPG32/rpg_rocket.rsi
+    layers:
+    - state: rpg_Phosphorus
+      map: ["enum.AmmoVisualLayers.Base"]
+  - type: Item
+    size: Normal
+  - type: Appearance
+  - type: SpentAmmoVisuals
+    state: rpg_Phosphorus
+    suffix: false
+  - type: IgnorePredictionHide
+  - type: RMCLoreExaminable
+    content: rmc-lore-examinable-hjra-12-extreme-intensity-incendiary-rocket
+
+- type: entity
+  categories: [ HideSpawnMenu ]
+  id: RuMCProjectileRocketRPG_Phosphorus
+  name: RPG32 phosphorus rocket
+  description: Rocket for the UPP assault units.
+  components:
+  - type: Sprite
+    sprite: _RuMC14/Objects/Weapons/Guns/RocketLaunchers/RPG32/rpg_rocket.rsi
+    layers:
+    - state: rpg_Phosphorus
+      map: ["enum.AmmoVisualLayers.Base"]
+  - type: TriggerOnCollide
+    fixtureID: projectile
+  - type: Projectile
+    deleteOnCollide: false
+    impactEffect: BulletImpactEffect
+    damage:
+      types:
+        Heat: 90
+    maxFixedRange: 7
+  - type: TileFireOnTrigger
+    spawn: RMCTileFireBlue
+    range: 3
+    sound:
+      path: /Audio/_RMC14/Weapons/Guns/Flamer/gun_flamethrower3.ogg
+  - type: DeleteOnTrigger
+  - type: SpawnOnTerminate
+    spawn: RMCSmokeWhitePhosphorus
+    spawnOffset: -0.5
+  - type: RMCAreaDamage
+    damageArea: 3.5
+    falloffDistance: 3.5

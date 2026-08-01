@@ -910,12 +910,17 @@
       takeOne: SquadSpecKit
       sharedSpecLimit: 1
       entries:
+      - id: RuMCGunAH12Case
+        giveSquadRoleName: au14-job-name-govforspecialist-pointmanUPP
+        givePrefix: au14-job-prefix-govforspecialist-pointmanUPP
+        isAppendSquadRoleName: false
+        isAppendPrefix: true
       - id: CMUType23ShotgunCase
         giveSquadRoleName: au14-job-name-govforspecialist-pointmanUPP
         givePrefix: au14-job-prefix-govforspecialist-pointmanUPP
         isAppendSquadRoleName: false
         isAppendPrefix: true
-      - id: CMUDemoSpecEquipmentCaseUPP
+      - id: RuMCKitUPPHATRPG32
         giveSquadRoleName: au14-job-name-govforspecialist-heavyantitankUPP
         givePrefix: au14-job-prefix-govforspecialist-heavyantitankUPP
         isAppendSquadRoleName: false
@@ -1200,8 +1205,8 @@
         amount: 5
       - id: RuMCMachineGunTachankaCase
         amount: 1
-      - id: RuMCGunAH12Case
-        amount: 2
+      - id: RuMCGunAH12Case_alt
+        amount: 1
       - id: RuMCUTES-CCase
         amount: 1
     - name: au14-vendor-section-primary-ammunition
