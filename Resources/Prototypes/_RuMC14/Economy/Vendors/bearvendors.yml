@@ -1216,8 +1216,8 @@
         amount: 200
       - id: RuMCMagazinePP13MAP
         amount: 30
-      #- id: RuMCMagazineRifleAK4047Tracer
-      #  amount: 200
+      - id: RuMCMagazinePP13MTracer
+        amount: 200
       - id: RuMCMagazineVAL
         amount: 60
       - id: RuMCMagazineVALAP

@@ -150,6 +150,36 @@
 
 - type: entity
   parent: CMMagazineRifleBase
+  id: RuMCMagazinePP13MTracer
+  name: PP13M tracer magazine (10x20mm)
+  description: Magazine for PP13M with 54 tracer rounds.
+  components:
+  - type: Tag
+    tags:
+    - RuMCMagazinePP13M
+    - CMMagazineSmg
+  - type: BallisticAmmoProvider
+    whitelist:
+      tags:
+      - RuMCCartridgeSMG10x20Tracer
+    proto: RuMCCartridgeSMG10x20Tracer
+    capacity: 54
+    deleteWhenEmpty: false
+  - type: Sprite
+    sprite: _RuMC14/Objects/Weapons/Guns/SMGs/PP13M/mag.rsi
+    layers:
+    - state: base
+      map: ["enum.GunVisualLayers.Base"]
+    - state: mag-1
+      map: ["enum.GunVisualLayers.Mag"]
+    - state: ammo_band
+      color: "#1F951F"
+  - type: Clothing
+    slots:
+    - suitStorage
+
+- type: entity
+  parent: CMMagazineRifleBase
   id: RuMCMagazinePP13MAP
   name: PP13M AP magazine (10x20mm)
   description: Magazine for PP13M with 54 AP rounds.
@@ -161,8 +191,8 @@
   - type: BallisticAmmoProvider
     whitelist:
       tags:
-      - CMCartridge10x20mmAP
-    proto: CMCartridge10x20mmAP
+      - RuMCCartridgeSMG10x20AP
+    proto: RuMCCartridgeSMG10x20AP
     capacity: 54
     deleteWhenEmpty: false
   - type: Sprite
