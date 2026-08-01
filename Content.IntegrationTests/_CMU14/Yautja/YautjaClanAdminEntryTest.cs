@@ -23,7 +23,7 @@ public sealed class YautjaClanAdminEntryTest
     [Test]
     public void EveryYautjaConsoleCommandRequiresClanPermission()
     {
-        var commandTypes =
+        Type[] commandTypes =
         [
             typeof(YautjaClanAdminCommand),
             typeof(YautjaClanInfoCommand),
