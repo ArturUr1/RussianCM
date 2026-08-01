@@ -5905,47 +5905,74 @@ public sealed class YautjaSmokeTest
     }
 
     [Test]
-    public void BracerTrackerReadoutFormatsCmss13TrackGearInternalText()
+    public async Task BracerTrackerReadoutFormatsCmss13TrackGearInternalText()
     {
-        var readout = new YautjaTrackerReadout(
-            1,
-            2,
-            3,
-            4,
-            5,
-            6,
-            true,
-            "smart-disc",
-            17,
-            1,
-            30,
-            "Briefing");
+        await using var pair = await PoolManager.GetServerClient();
+        var server = pair.Server;
+        CultureInfo? previousCulture = null;
 
-        var lines = readout.GetCmss13ReadoutLines();
-
-        Assert.Multiple(() =>
+        try
         {
-            Assert.That(lines, Has.Count.EqualTo(3));
-            Assert.That(lines[0], Is.EqualTo("Your bracer shows a readout of deceased Yautja bio signatures, <b>1</b> in the hunting grounds, <b>2</b> in orbit, <b>3</b> in low orbit."));
-            Assert.That(lines[1], Is.EqualTo("Your bracer shows a readout of Yautja technology signatures, <b>4</b> in the hunting grounds, <b>5</b> in orbit, <b>6</b> in low orbit."));
-            Assert.That(lines[2], Is.EqualTo("The closest signature, a <b>smart-disc</b>, is approximately <b>10</b> paces <b>northeast</b> in <b>Briefing</b>."));
-        });
+            await server.WaitPost(() =>
+            {
+                var loc = server.ResolveDependency<ILocalizationManager>();
+                previousCulture = loc.DefaultCulture;
+                loc.SetCulture(CultureInfo.GetCultureInfo("en-US"));
+            });
 
-        var direct = new YautjaTrackerReadout(0, 0, 0, 0, 0, 0, true, null, 0, 0, 0, null)
-            .GetCmss13ReadoutLines();
-        Assert.That(direct.Single(), Is.EqualTo("You are directly on top of the signature."));
+            await server.WaitAssertion(() =>
+            {
+                var readout = new YautjaTrackerReadout(
+                    1,
+                    2,
+                    3,
+                    4,
+                    5,
+                    6,
+                    true,
+                    "smart-disc",
+                    17,
+                    1,
+                    30,
+                    "Briefing");
 
-        var empty = new YautjaTrackerReadout(0, 0, 0, 0, 0, 0, false, null, 0, 0, 0, null)
-            .GetCmss13ReadoutLines();
-        Assert.That(empty.Single(), Is.EqualTo("There are no signatures that require your attention."));
+                var lines = readout.GetCmss13ReadoutLines();
 
-        var deadLowOrbitOnly = new YautjaTrackerReadout(0, 0, 2, 0, 0, 0, false, null, 0, 0, 0, null)
-            .GetCmss13ReadoutLines();
-        Assert.That(deadLowOrbitOnly.Single(), Is.EqualTo("Your bracer shows a readout of deceased Yautja bio signatures, <b>2</b> in low orbit."));
+                Assert.Multiple(() =>
+                {
+                    Assert.That(lines, Has.Count.EqualTo(3));
+                    Assert.That(lines[0], Is.EqualTo("Your bracer shows a readout of deceased Yautja bio signatures, <b>1</b> in the hunting grounds, <b>2</b> in orbit, <b>3</b> in low orbit."));
+                    Assert.That(lines[1], Is.EqualTo("Your bracer shows a readout of Yautja technology signatures, <b>4</b> in the hunting grounds, <b>5</b> in orbit, <b>6</b> in low orbit."));
+                    Assert.That(lines[2], Is.EqualTo("The closest signature, a <b>smart-disc</b>, is approximately <b>10</b> paces <b>northeast</b> in <b>Briefing</b>."));
+                });
 
-        var gearOrbitOnly = new YautjaTrackerReadout(0, 0, 0, 0, 2, 0, false, null, 0, 0, 0, null)
-            .GetCmss13ReadoutLines();
-        Assert.That(gearOrbitOnly.Single(), Is.EqualTo("Your bracer shows a readout of Yautja technology signatures, <b>2</b> in orbit."));
+                var direct = new YautjaTrackerReadout(0, 0, 0, 0, 0, 0, true, null, 0, 0, 0, null)
+                    .GetCmss13ReadoutLines();
+                Assert.That(direct.Single(), Is.EqualTo("You are directly on top of the signature."));
+
+                var empty = new YautjaTrackerReadout(0, 0, 0, 0, 0, 0, false, null, 0, 0, 0, null)
+                    .GetCmss13ReadoutLines();
+                Assert.That(empty.Single(), Is.EqualTo("There are no signatures that require your attention."));
+
+                var deadLowOrbitOnly = new YautjaTrackerReadout(0, 0, 2, 0, 0, 0, false, null, 0, 0, 0, null)
+                    .GetCmss13ReadoutLines();
+                Assert.That(deadLowOrbitOnly.Single(), Is.EqualTo("Your bracer shows a readout of deceased Yautja bio signatures, <b>2</b> in low orbit."));
+
+                var gearOrbitOnly = new YautjaTrackerReadout(0, 0, 0, 0, 2, 0, false, null, 0, 0, 0, null)
+                    .GetCmss13ReadoutLines();
+                Assert.That(gearOrbitOnly.Single(), Is.EqualTo("Your bracer shows a readout of Yautja technology signatures, <b>2</b> in orbit."));
+            });
+        }
+        finally
+        {
+            await server.WaitPost(() =>
+            {
+                if (previousCulture != null)
+                    server.ResolveDependency<ILocalizationManager>().SetCulture(previousCulture);
+            });
+        }
+
+        await pair.CleanReturnAsync();
     }
 
     [Test]
@@ -15753,15 +15780,15 @@ public sealed class YautjaSmokeTest
                 var cameraComputer = entMan.GetComponent<RMCCameraComputerComponent>(internalCamera);
                 Assert.That(cameraComputer.Title, Is.EqualTo("cmu-yautja-houndpad-interface-title"));
                 Assert.That(cameraComputer.ViewportSize, Is.EqualTo(new Vector2i(672, 480)));
-                Assert.That(cameraComputer.ProtoIds, Does.Contain("CMUYautjaHellhoundCamera"));
+                Assert.That(cameraComputer.ProtoIds, Does.Contain("CMUMobYautjaHellhound"));
                 Assert.That(cameraComputer.CameraIds, Does.Contain(entMan.GetNetEntity(hellhound)));
                 Assert.That(cameraComputer.CameraIds, Does.Contain(entMan.GetNetEntity(otherHellhound)));
                 Assert.That(cameraComputer.CameraIds, Does.Not.Contain(entMan.GetNetEntity(deadHellhound)));
 
                 var firstCamera = entMan.GetComponent<RMCCameraComponent>(hellhound);
                 var secondCamera = entMan.GetComponent<RMCCameraComponent>(otherHellhound);
-                Assert.That(firstCamera.Id, Is.EqualTo("CMUYautjaHellhoundCamera"));
-                Assert.That(secondCamera.Id, Is.EqualTo("CMUYautjaHellhoundCamera"));
+                Assert.That(firstCamera.Id, Is.EqualTo("CMUMobYautjaHellhound"));
+                Assert.That(secondCamera.Id, Is.EqualTo("CMUMobYautjaHellhound"));
 
                 entMan.EventBus.RaiseLocalEvent(pad, new UseInHandEvent(ordinaryUser));
                 Assert.That(ui.IsUiOpen(internalCamera, RMCCameraUiKey.Key, ordinaryUser), Is.False,
@@ -15958,7 +15985,7 @@ public sealed class YautjaSmokeTest
                     "CMSS13 houndcam reads the live Hellhound set each time; a Hellhound returning to a live state must expose a live camera feed again.");
                 Assert.Multiple(() =>
                 {
-                    Assert.That(revivedCamera!.Id, Is.EqualTo("CMUYautjaHellhoundCamera"));
+                    Assert.That(revivedCamera!.Id, Is.EqualTo("CMUMobYautjaHellhound"));
                     Assert.That(revivedCamera.Rename, Is.False,
                         "Houndcam feeds should use the Hellhound mob name, not area-renamed security-camera labels.");
                 });
@@ -16109,7 +16136,7 @@ public sealed class YautjaSmokeTest
                 var cameraComputer = entMan.GetComponent<RMCCameraComputerComponent>(internalCamera);
                 Assert.That(cameraComputer.Title, Is.EqualTo("cmu-yautja-houndpad-interface-title"));
                 Assert.That(cameraComputer.ViewportSize, Is.EqualTo(new Vector2i(672, 480)));
-                Assert.That(cameraComputer.ProtoIds, Does.Contain("CMUYautjaHellhoundCamera"));
+                Assert.That(cameraComputer.ProtoIds, Does.Contain("CMUMobYautjaHellhound"));
 
                 entMan.EventBus.RaiseLocalEvent(pad, new UseInHandEvent(hunter));
                 Assert.That(cameraComputer.CameraIds, Does.Contain(entMan.GetNetEntity(hellhound)));

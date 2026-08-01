@@ -745,9 +745,7 @@
         type: RMCCameraBui
   - type: RMCCameraComputer
     protoIds:
-    - CMUYautjaHellhoundCamera
-    networks:
-    - Yautja
+    - CMUMobYautjaHellhound
     title: cmu-yautja-houndpad-interface-title
     viewportSize: 672, 480
 
