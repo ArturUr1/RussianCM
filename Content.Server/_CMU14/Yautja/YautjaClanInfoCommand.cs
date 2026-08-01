@@ -6,11 +6,11 @@ using Robust.Shared.Console;
 namespace Content.Server._CMU14.Yautja;
 
 [AdminCommand(AdminFlags.Clans)]
-public sealed partial class YautjaClanAdminCommand : LocalizedCommands
+public sealed partial class YautjaClanInfoCommand : LocalizedCommands
 {
     [Dependency] private EuiManager _eui = default!;
 
-    public override string Command => "yautja_clan_admin";
+    public override string Command => "yautja_clan_info";
 
     public override void Execute(IConsoleShell shell, string argStr, string[] args)
     {
@@ -20,6 +20,6 @@ public sealed partial class YautjaClanAdminCommand : LocalizedCommands
             return;
         }
 
-        _eui.OpenEui(new YautjaClanAdminEui(), player);
+        _eui.OpenEui(new YautjaClanInfoEui(), player);
     }
 }
