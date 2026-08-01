@@ -137,7 +137,7 @@ public sealed class YautjaProfileEditorLayoutTest
     }
 
     [Test]
-    public void BuildSummaryUsesUniqueSetAndCurrentGearNames()
+    public void SummarySelectionUsesUniqueSetAndCurrentGear()
     {
         var profile = YautjaCharacterProfile.Default
             .WithRank(YautjaRank.Elite)
@@ -149,15 +149,19 @@ public sealed class YautjaProfileEditorLayoutTest
             .WithBracer(YautjaBracerMaterial.Crimson)
             .WithCaster(YautjaBracerMaterial.Silver);
 
-        var summary = YautjaProfileEditorLayout.BuildSummary(profile);
+        var selection = YautjaProfileEditorLayout.GetSummarySelection(profile);
 
-        Assert.That(summary.Set, Is.EqualTo(YautjaCharacterProfile.GetUniqueDisplayName(YautjaUniqueSet.Anubys)));
-        Assert.That(summary.Armor, Is.EqualTo(YautjaCharacterProfile.GetArmorStyleDisplayName(YautjaGearMaterial.Silver, 2)));
-        Assert.That(summary.Mask, Is.EqualTo(YautjaCharacterProfile.GetMaskStyleDisplayName(YautjaGearMaterial.Bronze, 3)));
-        Assert.That(summary.Greaves, Is.EqualTo(YautjaCharacterProfile.GetGreavesStyleDisplayName(YautjaGearMaterial.Bone, 1)));
-        Assert.That(summary.Cape, Is.EqualTo(YautjaCharacterProfile.GetCapeDisplayName(YautjaCapeStyle.Full)));
-        Assert.That(summary.Bracer, Is.EqualTo(YautjaCharacterProfile.GetBracerDisplayName(YautjaBracerMaterial.Crimson)));
-        Assert.That(summary.Caster, Is.EqualTo(YautjaCharacterProfile.GetCasterDisplayName(YautjaBracerMaterial.Silver)));
+        Assert.That(selection.Unique, Is.EqualTo(YautjaUniqueSet.Anubys));
+        Assert.That(selection.Legacy, Is.EqualTo(YautjaLegacySet.None));
+        Assert.That(selection.ArmorMaterial, Is.EqualTo(YautjaGearMaterial.Silver));
+        Assert.That(selection.ArmorStyle, Is.EqualTo(2));
+        Assert.That(selection.MaskMaterial, Is.EqualTo(YautjaGearMaterial.Bronze));
+        Assert.That(selection.MaskStyle, Is.EqualTo(3));
+        Assert.That(selection.GreavesMaterial, Is.EqualTo(YautjaGearMaterial.Bone));
+        Assert.That(selection.GreavesStyle, Is.EqualTo(1));
+        Assert.That(selection.CapeStyle, Is.EqualTo(YautjaCapeStyle.Full));
+        Assert.That(selection.BracerMaterial, Is.EqualTo(YautjaBracerMaterial.Crimson));
+        Assert.That(selection.CasterMaterial, Is.EqualTo(YautjaBracerMaterial.Silver));
     }
 
     [TestCase(760, 6, 6)]
