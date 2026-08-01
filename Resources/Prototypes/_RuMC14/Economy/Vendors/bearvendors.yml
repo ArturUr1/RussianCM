@@ -1222,6 +1222,8 @@
         amount: 60
       - id: RuMCMagazineVALAP
         amount: 15
+      - id: RuMCMagazineVALTracer
+        amount: 60
       - id: RuMCMagazineAH12
         amount: 20
       - id: RuMCMagazineAH12Tracer
