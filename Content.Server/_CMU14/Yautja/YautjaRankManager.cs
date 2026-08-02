@@ -1,16 +1,20 @@
 using System;
+using System.Threading;
 using System.Threading.Tasks;
+using Content.Server.Database;
 using Content.Shared._CMU14.Yautja;
 using Robust.Shared.Network;
+using Robust.Shared.Player;
 
 namespace Content.Server._CMU14.Yautja;
 
 /// <summary>
 /// Resolves the server-owned clan rank without allowing the client profile to grant Young Blood status.
 /// </summary>
-public sealed partial class YautjaRankManager
+public sealed partial class YautjaRankManager : IPostInjectInit
 {
     [Dependency] private YautjaClanManager _clanManager = default!;
+    [Dependency] private UserDbDataManager _userDb = default!;
     private readonly Dictionary<NetUserId, YautjaRank> _cache = new();
     private readonly Dictionary<NetUserId, long> _cacheVersions = new();
 
@@ -40,10 +44,35 @@ public sealed partial class YautjaRankManager
         if (_cache.TryGetValue(userId, out var rank))
             return rank;
 
-        // Spawn and job-selection events are synchronous. A cache miss must
-        // still resolve the authoritative DB value before they grant a role,
-        // otherwise a slow lobby prime can silently downgrade a senior rank.
-        return Resolve(userId).GetAwaiter().GetResult();
+        return YautjaRank.Blooded;
+    }
+
+    public YautjaProfileCapabilities ResolveProfileCapabilitiesCached(
+        NetUserId userId,
+        bool youngbloodRole = false)
+    {
+        var resolution = _clanManager.ResolveCached(userId, youngbloodRole);
+        var rank = youngbloodRole
+            ? YautjaRank.YoungBlood
+            : CanonicalHunterSpawnRank(resolution.Rank);
+        var externalCouncil = resolution.ClanId == null && rank == YautjaRank.Ancient;
+        var externalLeader = resolution.ClanId == null && rank == YautjaRank.Leader;
+
+        return new(
+            rank,
+            YautjaRankResolver.CanUseUnique(rank),
+            resolution.WhitelistFlags.HasFlag(YautjaWhitelistFlags.Legacy) ||
+            resolution.WhitelistFlags.HasFlag(YautjaWhitelistFlags.CouncilLegacy),
+            resolution.WhitelistFlags.HasFlag(YautjaWhitelistFlags.Council) ||
+            resolution.WhitelistFlags.HasFlag(YautjaWhitelistFlags.CouncilLegacy) ||
+            externalCouncil,
+            resolution.WhitelistFlags.HasFlag(YautjaWhitelistFlags.Leader) ||
+            externalLeader);
+    }
+
+    public static YautjaRank CanonicalHunterSpawnRank(YautjaRank rank)
+    {
+        return rank == YautjaRank.Unblooded ? YautjaRank.Blooded : Sanitize(rank);
     }
 
     public async Task Set(NetUserId userId, YautjaRank rank)
@@ -51,12 +80,18 @@ public sealed partial class YautjaRankManager
         if (!IsPersistentRank(rank))
             throw new ArgumentException("Young Blood is reserved for the special hunt role.", nameof(rank));
 
-        var writeVersion = NextCacheVersion(userId);
+        InvalidateCached(userId);
         if (!await _clanManager.SetMaintenanceRank(userId, rank))
             throw new InvalidOperationException("The player's Yautja clan no longer exists or is inactive.");
 
-        if (IsCacheVersionCurrent(writeVersion, GetCacheVersion(userId)))
-            _cache[userId] = rank;
+        await Refresh(userId);
+    }
+
+    public async Task Refresh(NetUserId userId)
+    {
+        _clanManager.InvalidateCache(userId);
+        InvalidateCached(userId);
+        await Prime(userId);
     }
 
     public void InvalidateCached(NetUserId userId)
@@ -93,5 +128,17 @@ public sealed partial class YautjaRankManager
     public static bool IsCacheVersionCurrent(long requestVersion, long currentVersion)
     {
         return requestVersion == currentVersion;
+    }
+
+    private async Task LoadData(ICommonSession session, CancellationToken cancel)
+    {
+        cancel.ThrowIfCancellationRequested();
+        await Prime(session.UserId);
+        cancel.ThrowIfCancellationRequested();
+    }
+
+    void IPostInjectInit.PostInject()
+    {
+        _userDb.AddOnLoadPlayer(LoadData);
     }
 }

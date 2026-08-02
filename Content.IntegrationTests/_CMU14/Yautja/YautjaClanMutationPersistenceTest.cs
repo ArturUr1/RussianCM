@@ -1,6 +1,8 @@
 using System.Linq;
+using Content.Server._CMU14.Yautja;
 using Content.Server.Database;
 using Content.Shared._CMU14.Yautja;
+using Robust.Shared.Network;
 
 namespace Content.IntegrationTests._CMU14.Yautja;
 
@@ -58,7 +60,57 @@ public sealed class YautjaClanMutationPersistenceTest
     }
 
     [Test]
-    public async Task DeleteDeactivatesClanAndDetachesMemberWithoutChangingPersistentData()
+    public async Task ClearingWhitelistRemovesMembershipAndPersistentYautjaRank()
+    {
+        await using var pair = await PoolManager.GetServerClient(new PoolSettings { Connected = true });
+        var db = pair.Server.ResolveDependency<IServerDbManager>();
+        var playerId = pair.Player!.UserId.UserId;
+        var clanId = await db.CreateYautjaClanAsync("Whitelist reset", "Whitelist reset test", 0, "#123456");
+
+        await db.UpsertYautjaClanMemberAsync(new YautjaClanMemberRecord(
+            playerId,
+            clanId,
+            (int) YautjaRank.Elder,
+            (int) (YautjaClanPermission.UserModify | YautjaClanPermission.UserView),
+            0,
+            false));
+        await db.SetYautjaWhitelistFlagsAsync(playerId, (int) YautjaWhitelistFlags.Council);
+
+        await db.SetYautjaWhitelistFlagsAsync(playerId, (int) YautjaWhitelistFlags.None);
+
+        var member = await db.GetYautjaClanMemberAsync(playerId);
+        var playerRank = await db.GetYautjaRank(playerId);
+        var flags = await db.GetYautjaWhitelistFlagsAsync(playerId);
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(flags, Is.EqualTo((int) YautjaWhitelistFlags.None));
+            Assert.That(playerRank, Is.Null);
+            Assert.That(member, Is.Null);
+        });
+
+        await pair.CleanReturnAsync();
+    }
+
+    [Test]
+    public async Task ClearingWhitelistRemovesLegacyRankWithoutClanMembership()
+    {
+        await using var pair = await PoolManager.GetServerClient(new PoolSettings { Connected = true });
+        var db = pair.Server.ResolveDependency<IServerDbManager>();
+        var playerId = pair.Player!.UserId.UserId;
+
+        await db.SetYautjaRank(playerId, YautjaRank.Elder);
+        await db.SetYautjaWhitelistFlagsAsync(playerId, (int) YautjaWhitelistFlags.Council);
+
+        await db.SetYautjaWhitelistFlagsAsync(playerId, (int) YautjaWhitelistFlags.None);
+
+        Assert.That(await db.GetYautjaRank(playerId), Is.Null);
+
+        await pair.CleanReturnAsync();
+    }
+
+    [Test]
+    public async Task DeleteDeactivatesClanAndResetsDetachedMember()
     {
         await using var pair = await PoolManager.GetServerClient(new PoolSettings { Connected = true });
         var db = pair.Server.ResolveDependency<IServerDbManager>();
@@ -87,11 +139,10 @@ public sealed class YautjaClanMutationPersistenceTest
             Assert.That(clan!.Active, Is.False);
             Assert.That(activeClans.All(entry => entry.Id != clanId), Is.True);
             Assert.That(member!.ClanId, Is.Null);
-            Assert.That(member.Rank, Is.EqualTo((int) YautjaRank.Elder));
-            Assert.That(member.Permissions,
-                Is.EqualTo((int) (YautjaClanPermission.UserModify | YautjaClanPermission.UserView)));
+            Assert.That(member.Rank, Is.EqualTo((int) YautjaRank.Blooded));
+            Assert.That(member.Permissions, Is.EqualTo((int) YautjaClanPermission.UserAll));
             Assert.That(member.Honor, Is.EqualTo(13));
-            Assert.That(member.IsLegacy, Is.True);
+            Assert.That(member.IsLegacy, Is.False);
         });
 
         await pair.CleanReturnAsync();
@@ -119,6 +170,89 @@ public sealed class YautjaClanMutationPersistenceTest
             Assert.That(inactiveAssigned, Is.False);
             Assert.That(missingAssigned, Is.False);
             Assert.That(member, Is.Null);
+        });
+
+        await pair.CleanReturnAsync();
+    }
+
+    [Test]
+    public async Task DeleteMemberClearsCompatibilityProjectionAtomically()
+    {
+        await using var pair = await PoolManager.GetServerClient(new PoolSettings { Connected = true });
+        var db = pair.Server.ResolveDependency<IServerDbManager>();
+        var playerId = pair.Player!.UserId.UserId;
+        var clanId = await db.CreateYautjaClanAsync("Purge", "Purge test", 0, "#123456");
+
+        await db.UpsertYautjaClanMemberAsync(new YautjaClanMemberRecord(
+            playerId,
+            clanId,
+            (int) YautjaRank.Leader,
+            (int) YautjaClanPermission.UserAll,
+            4,
+            false));
+
+        var deleted = await db.DeleteYautjaClanMemberAsync(playerId);
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(deleted, Is.True);
+            Assert.That(db.GetYautjaClanMemberAsync(playerId).GetAwaiter().GetResult(), Is.Null);
+            Assert.That(db.GetYautjaRank(playerId).GetAwaiter().GetResult(), Is.Null);
+        });
+
+        await pair.CleanReturnAsync();
+    }
+
+    [Test]
+    public async Task HonorUpdatePreservesOtherClanFields()
+    {
+        await using var pair = await PoolManager.GetServerClient();
+        var db = pair.Server.ResolveDependency<IServerDbManager>();
+        var clanId = await db.CreateYautjaClanAsync("Honor", "Description", 3, "#123456");
+
+        var updated = await db.UpdateYautjaClanHonorAsync(clanId, 99);
+        var clan = await db.GetYautjaClanAsync(clanId);
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(updated, Is.True);
+            Assert.That(clan!.Honor, Is.EqualTo(99));
+            Assert.That(clan.Name, Is.EqualTo("Honor"));
+            Assert.That(clan.Description, Is.EqualTo("Description"));
+            Assert.That(clan.Color, Is.EqualTo("#123456"));
+        });
+
+        await pair.CleanReturnAsync();
+    }
+
+    [Test]
+    public async Task WhitelistLeaderResolutionKeepsPersistentClanScope()
+    {
+        await using var pair = await PoolManager.GetServerClient(new PoolSettings { Connected = true });
+        var db = pair.Server.ResolveDependency<IServerDbManager>();
+        var manager = pair.Server.ResolveDependency<YautjaClanManager>();
+        var playerId = pair.Player!.UserId;
+        var clanId = await db.CreateYautjaClanAsync("Scope", "Scope test", 0, "#123456");
+
+        await db.UpsertYautjaClanMemberAsync(new YautjaClanMemberRecord(
+            playerId.UserId,
+            clanId,
+            (int) YautjaRank.Leader,
+            (int) YautjaClanPermission.UserAll,
+            17,
+            true));
+        await db.SetYautjaWhitelistFlagsAsync(playerId.UserId, (int) YautjaWhitelistFlags.Leader);
+        manager.InvalidateCache(playerId);
+
+        var resolution = await manager.Resolve(playerId);
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(resolution.Rank, Is.EqualTo(YautjaRank.Ancient));
+            Assert.That(resolution.Permissions, Is.EqualTo(YautjaClanPermission.All));
+            Assert.That(resolution.ClanId, Is.EqualTo(clanId));
+            Assert.That(resolution.Honor, Is.EqualTo(17));
+            Assert.That(resolution.IsLegacy, Is.True);
         });
 
         await pair.CleanReturnAsync();

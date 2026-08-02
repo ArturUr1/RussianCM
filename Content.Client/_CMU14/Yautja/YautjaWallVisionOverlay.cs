@@ -80,14 +80,17 @@ public sealed class YautjaWallVisionOverlay : Overlay
         if (!_inventory.TryGetSlotEntity(viewer, "eyes", out var glasses) ||
             glasses is not { } glassesUid ||
             !_entity.TryGetComponent(glassesUid, out YautjaMaskVisorGlassesComponent? visor) ||
-            !visor.ThermalVisionEnabled ||
-            visor.User != viewer ||
             visor.Mask is not { } maskUid ||
             !_entity.TryGetComponent(maskUid, out YautjaMaskComponent? mask))
         {
             return false;
         }
 
-        return mask.VisorEnabled && mask.User == viewer;
+        return YautjaWallVisionTargeting.IsActiveSource(
+            visorIsEquipped: true,
+            thermalVisionEnabled: visor.ThermalVisionEnabled,
+            visorOwnedByViewer: visor.User == viewer,
+            visorLinkedToMask: true,
+            maskVisorEnabled: mask.VisorEnabled);
     }
 }

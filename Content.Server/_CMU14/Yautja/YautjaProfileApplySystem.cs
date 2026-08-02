@@ -57,15 +57,24 @@ public sealed partial class YautjaProfileApplySystem : EntitySystem
     public void ApplyProfile(
         EntityUid uid,
         YautjaCharacterProfile yautjaProfile,
-        YautjaRank? authoritativeRank = null)
+        YautjaRank? authoritativeRank = null,
+        YautjaProfileCapabilities? authoritativeCapabilities = null,
+        bool equipProfileGear = true)
     {
         if (!TryComp(uid, out HumanoidAppearanceComponent? humanoid))
             return;
 
         // A client-supplied profile is never an authority for clan rank. Ordinary
         // spawns stay Blooded until the server passes the persisted rank explicitly.
-        var rank = YautjaRankManager.Sanitize(authoritativeRank);
-        var profile = yautjaProfile.WithRank(rank);
+        var authoritativeBaseRank = authoritativeCapabilities?.Rank ??
+                                    YautjaRankManager.CanonicalHunterSpawnRank(
+                                        authoritativeRank ?? YautjaRank.Blooded);
+        var capabilities = authoritativeCapabilities ?? new YautjaProfileCapabilities(
+            authoritativeBaseRank,
+            YautjaRankResolver.CanUseUnique(authoritativeBaseRank),
+            false);
+        var profile = yautjaProfile.SanitizeForCapabilities(capabilities);
+        var rank = capabilities.ForStatus(profile.Status).Rank;
         EnsureComp<YautjaAppliedProfileComponent>(uid).Profile = profile.Clone();
 
         var yautja = EnsureComp<YautjaComponent>(uid);
@@ -75,18 +84,28 @@ public sealed partial class YautjaProfileApplySystem : EntitySystem
         var humanoidProfile = HumanoidCharacterProfile.DefaultWithSpecies("Yautja")
             .WithName(profile.Name)
             .WithAge(profile.Age)
-            .WithSex(Sex.Male)
-            .WithGender(Gender.Male)
+            .WithSex(profile.Sex)
+            .WithGender(profile.Gender)
             .WithCharacterAppearance(profile.Appearance);
 
         _humanoid.LoadProfile(uid, humanoidProfile, humanoid);
         _meta.SetEntityName(uid, profile.Name);
 
-        ReplaceEquipped(uid, "outerClothing", profile.ArmorPrototype);
-        var mask = ReplaceEquipped(uid, "mask", profile.MaskPrototype);
-        ReplaceEquipped(uid, "shoes", profile.GreavesPrototype);
-        var bracer = ReplaceEquipped(uid, "gloves", profile.BracerPrototype);
-        var cape = ReplaceEquipped(uid, "back", profile.CapePrototype);
+        EntityUid? mask = null;
+        EntityUid? bracer = null;
+        EntityUid? cape = null;
+        if (equipProfileGear)
+        {
+            ReplaceEquipped(uid, "outerClothing", profile.ArmorPrototype);
+            mask = ReplaceEquipped(uid, "mask", profile.MaskPrototype);
+            ReplaceEquipped(uid, "shoes", profile.GreavesPrototype);
+            bracer = ReplaceEquipped(uid, "gloves", profile.BracerPrototype);
+            cape = ReplaceEquipped(uid, "back", profile.CapePrototype);
+        }
+        else if (_inventory.TryGetSlotEntity(uid, "gloves", out var equippedBracer))
+        {
+            bracer = equippedBracer;
+        }
 
         if (mask != null)
             ApplyMaskAccessory(mask.Value, profile);

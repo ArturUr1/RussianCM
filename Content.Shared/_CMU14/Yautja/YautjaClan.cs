@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Robust.Shared.Network;
+using Robust.Shared.Serialization;
 
 namespace Content.Shared._CMU14.Yautja;
 
@@ -16,7 +17,7 @@ public enum YautjaClanPermission : byte
     AdminManager = 1 << 5,
     UserAll = UserView | UserModify,
     AdminAncient = AdminView | AdminModify | AdminMove,
-    All = AdminAncient | AdminManager,
+    All = UserAll | AdminAncient | AdminManager,
 }
 
 [Flags]
@@ -24,8 +25,10 @@ public enum YautjaWhitelistFlags : byte
 {
     None = 0,
     Yautja = 1 << 0,
-    Council = 1 << 1,
-    Leader = 1 << 2,
+    Legacy = 1 << 1,
+    Council = 1 << 2,
+    CouncilLegacy = 1 << 3,
+    Leader = 1 << 4,
 }
 
 public sealed record YautjaClanMemberSnapshot(
@@ -44,6 +47,9 @@ public sealed record YautjaClanResolution(
     int Honor,
     YautjaWhitelistFlags WhitelistFlags);
 
+[Serializable, NetSerializable]
+public sealed record YautjaClanInfoOption(int? ClanId, string Name);
+
 public sealed record YautjaClanView(
     YautjaClanResolution Viewer,
     int? ClanId,
@@ -51,7 +57,8 @@ public sealed record YautjaClanView(
     string ClanDescription,
     int ClanHonor,
     string ClanColor,
-    IReadOnlyList<YautjaClanMemberSnapshot> Members);
+    IReadOnlyList<YautjaClanMemberSnapshot> Members,
+    IReadOnlyList<YautjaClanInfoOption> AvailableClans);
 
 public sealed record YautjaClanRankRule(
     YautjaRank Rank,
@@ -68,7 +75,7 @@ public static class YautjaClanPolicy
         new(YautjaRank.Blooded, YautjaClanPermission.UserModify, null, null),
         new(YautjaRank.Elite, YautjaClanPermission.UserModify, 5, null),
         new(YautjaRank.Elder, YautjaClanPermission.UserModify, null, 12),
-        new(YautjaRank.Leader, YautjaClanPermission.UserAll | YautjaClanPermission.AdminModify, 1, null),
+        new(YautjaRank.Leader, YautjaClanPermission.AdminModify, 1, null),
         new(YautjaRank.Ancient, YautjaClanPermission.AdminAncient, null, null),
     ];
 
@@ -94,7 +101,31 @@ public static class YautjaClanPolicy
 
     public static bool CanView(YautjaClanMemberSnapshot actor)
     {
-        return HasPermissions(actor.Permissions, YautjaClanPermission.UserView);
+        return HasPermission(actor.Permissions, YautjaClanPermission.UserView) ||
+               HasPermission(actor.Permissions, YautjaClanPermission.AdminView);
+    }
+
+    public static bool CanManageClan(
+        YautjaClanMemberSnapshot actor,
+        int? clanId,
+        YautjaClanPermission permission)
+    {
+        if (clanId == null)
+            return false;
+
+        if (permission == YautjaClanPermission.UserModify)
+        {
+            if (HasPermission(actor.Permissions, YautjaClanPermission.AdminView) &&
+                HasPermission(actor.Permissions, YautjaClanPermission.AdminModify))
+            {
+                return true;
+            }
+
+            return actor.ClanId == clanId &&
+                   HasPermission(actor.Permissions, YautjaClanPermission.UserModify);
+        }
+
+        return HasPermission(actor.Permissions, permission);
     }
 
     public static bool CanTarget(
@@ -105,13 +136,13 @@ public static class YautjaClanPolicy
             return false;
 
         if (target.Rank == YautjaRank.Ancient ||
-            HasPermissions(target.Permissions, YautjaClanPermission.AdminAncient) ||
-            HasPermissions(target.Permissions, YautjaClanPermission.AdminManager))
+            HasPermission(target.Permissions, YautjaClanPermission.AdminAncient) ||
+            HasPermission(target.Permissions, YautjaClanPermission.AdminManager))
         {
             return false;
         }
 
-        if (HasPermissions(actor.Permissions, YautjaClanPermission.AdminManager))
+        if (HasPermission(actor.Permissions, YautjaClanPermission.AdminManager))
             return true;
 
         return actor.Rank > target.Rank;
@@ -124,14 +155,20 @@ public static class YautjaClanPolicy
         int clanSize,
         int currentRankOccupancy)
     {
-        if (!CanTarget(actor, target) || actor.ClanId == null || target.ClanId != actor.ClanId)
+        var hasGlobalModify = HasPermission(actor.Permissions, YautjaClanPermission.AdminView) &&
+                              HasPermission(actor.Permissions, YautjaClanPermission.AdminModify);
+        var hasSameClan = actor.ClanId != null && target.ClanId == actor.ClanId;
+        if (!CanTarget(actor, target) || (!hasSameClan && !hasGlobalModify) || target.ClanId == null)
             return false;
 
         if (!NormalAssignableRanks.Contains(requestedRank))
             return false;
 
         var rule = GetRule(requestedRank);
-        if (!HasPermissions(actor.Permissions, rule.RequiredPermission))
+        var requiredPermission = hasGlobalModify
+            ? YautjaClanPermission.AdminModify
+            : rule.RequiredPermission;
+        if (!HasPermission(actor.Permissions, requiredPermission))
             return false;
 
         var occupancyAfterChange = currentRankOccupancy + (target.Rank == requestedRank ? 0 : 1);
@@ -155,8 +192,17 @@ public static class YautjaClanPolicy
         YautjaClanMemberSnapshot actor,
         YautjaClanMemberSnapshot target)
     {
-        return HasPermissions(actor.Permissions, YautjaClanPermission.AdminMove) &&
-               CanTarget(actor, target);
+        if (!HasPermission(actor.Permissions, YautjaClanPermission.AdminMove) ||
+            actor.PlayerId == target.PlayerId ||
+            HasPermission(target.Permissions, YautjaClanPermission.AdminManager))
+        {
+            return false;
+        }
+
+        return CanTarget(actor, target) ||
+               HasPermission(actor.Permissions, YautjaClanPermission.AdminManager) &&
+               target.Rank == YautjaRank.Ancient &&
+               HasPermission(target.Permissions, YautjaClanPermission.AdminAncient);
     }
 
     public static bool CanSetAncient(
@@ -171,7 +217,7 @@ public static class YautjaClanPolicy
         YautjaClanMemberSnapshot target,
         bool enabled)
     {
-        if (!HasPermissions(actor.Permissions, YautjaClanPermission.AdminManager) ||
+        if (!HasPermission(actor.Permissions, YautjaClanPermission.AdminManager) ||
             actor.PlayerId == target.PlayerId)
         {
             return false;
@@ -182,10 +228,11 @@ public static class YautjaClanPolicy
         return enabled
             ? CanTarget(actor, target)
             : target.Rank == YautjaRank.Ancient &&
-              HasPermissions(target.Permissions, YautjaClanPermission.AdminAncient);
+              !HasPermission(target.Permissions, YautjaClanPermission.AdminManager) &&
+              HasPermission(target.Permissions, YautjaClanPermission.AdminAncient);
     }
 
-    private static bool HasPermissions(
+    public static bool HasPermission(
         YautjaClanPermission actual,
         YautjaClanPermission required)
     {

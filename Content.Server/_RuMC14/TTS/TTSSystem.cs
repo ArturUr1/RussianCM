@@ -99,7 +99,8 @@ public sealed partial class TTSSystem : EntitySystem
 
         RegisterRateLimits();
         _linkAccount.PatronUpdated += OnPatronUpdated;
-        _ = EnsureReferenceVoiceCatalogLoaded();
+        if (_isEnabled)
+            _ = EnsureReferenceVoiceCatalogLoaded();
     }
 
     public override void Shutdown()

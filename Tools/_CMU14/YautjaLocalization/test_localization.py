@@ -10,6 +10,19 @@ from .audit import (
 
 
 class YautjaLocalizationAuditTests(unittest.TestCase):
+    def test_yaml_entities_have_explicit_english_and_russian_entries(self) -> None:
+        from .audit import audit_repository
+
+        root = Path(__file__).resolve().parents[3]
+        result = audit_repository(root)
+        missing_entity_errors = [
+            error
+            for error in result.errors
+            if error.startswith("Missing en-US key: ent-") or error.startswith("Missing ru-RU key: ent-")
+        ]
+
+        self.assertEqual([], missing_entity_errors, "\n".join(missing_entity_errors))
+
     def test_known_runtime_keys_have_both_locales_and_matching_placeholders(self) -> None:
         from .audit import audit_repository
 

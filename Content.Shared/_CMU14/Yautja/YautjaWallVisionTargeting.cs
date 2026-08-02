@@ -5,6 +5,20 @@ namespace Content.Shared._CMU14.Yautja;
 
 public static class YautjaWallVisionTargeting
 {
+    public static bool IsActiveSource(
+        bool visorIsEquipped,
+        bool thermalVisionEnabled,
+        bool visorOwnedByViewer,
+        bool visorLinkedToMask,
+        bool maskVisorEnabled)
+    {
+        return visorIsEquipped &&
+               thermalVisionEnabled &&
+               visorOwnedByViewer &&
+               visorLinkedToMask &&
+               maskVisorEnabled;
+    }
+
     public static bool IsEligible(
         EntityUid viewer,
         EntityUid target,

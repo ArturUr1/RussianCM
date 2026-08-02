@@ -171,7 +171,8 @@ public sealed partial class StationSpawningSystem : SharedStationSpawningSystem
         HumanoidCharacterProfile? profile,
         EntityUid? station,
         EntityUid? entity = null,
-        YautjaRank? authoritativeYautjaRank = null)
+        YautjaRank? authoritativeYautjaRank = null,
+        YautjaProfileCapabilities? authoritativeYautjaCapabilities = null)
     {
         // --- Platoon job override logic start ---
         string? jobId = job?.ToString();
@@ -265,7 +266,12 @@ public sealed partial class StationSpawningSystem : SharedStationSpawningSystem
                 !IsBadBloodFactionMember(jobEntity))
             {
                 if (profile != null)
-                    _yautjaProfile.ApplyProfile(jobEntity, profile.YautjaProfile, authoritativeYautjaRank);
+                    _yautjaProfile.ApplyProfile(
+                        jobEntity,
+                        profile.YautjaProfile,
+                        authoritativeYautjaRank,
+                        authoritativeYautjaCapabilities,
+                        equipProfileGear: false);
             }
 
             // Use originalPrototype for access, ID, and faction

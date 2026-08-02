@@ -23,6 +23,113 @@ public sealed record YautjaRankInfo(
     bool UniqueSetsAllowed,
     bool BypassesPredatorSlotCap);
 
+[Serializable, NetSerializable]
+public enum YautjaProfileStatus : byte
+{
+    Normal,
+    Council,
+    Leader,
+}
+
+[Serializable, NetSerializable]
+public sealed class YautjaProfileCapabilities
+{
+    public YautjaProfileCapabilities(
+        YautjaRank rank,
+        bool canUseUnique,
+        bool canUseLegacy,
+        bool canUseCouncilStatus = false,
+        bool canUseLeaderStatus = false)
+    {
+        Rank = rank;
+        CanUseUnique = canUseUnique;
+        CanUseLegacy = canUseLegacy;
+        CanUseCouncilStatus = canUseCouncilStatus;
+        CanUseLeaderStatus = canUseLeaderStatus;
+    }
+
+    public YautjaRank Rank { get; }
+    public bool CanUseUnique { get; }
+    public bool CanUseLegacy { get; }
+    public bool CanUseCouncilStatus { get; }
+    public bool CanUseLeaderStatus { get; }
+
+    public bool CanUseStatus(YautjaProfileStatus status)
+    {
+        return status switch
+        {
+            YautjaProfileStatus.Normal => true,
+            YautjaProfileStatus.Council => CanUseCouncilStatus,
+            YautjaProfileStatus.Leader => CanUseLeaderStatus,
+            _ => false,
+        };
+    }
+
+    public YautjaProfileStatus SanitizeStatus(YautjaProfileStatus status)
+    {
+        if (CanUseStatus(status))
+            return status;
+
+        if (CanUseCouncilStatus)
+            return YautjaProfileStatus.Council;
+
+        return YautjaProfileStatus.Normal;
+    }
+
+    public YautjaRank ResolveRank(YautjaProfileStatus status)
+    {
+        return status == YautjaProfileStatus.Normal &&
+               (CanUseCouncilStatus || CanUseLeaderStatus)
+            ? YautjaRank.Blooded
+            : Rank;
+    }
+
+    public YautjaProfileCapabilities ForStatus(YautjaProfileStatus status)
+    {
+        var sanitizedStatus = SanitizeStatus(status);
+        var rank = ResolveRank(sanitizedStatus);
+        return new(
+            rank,
+            YautjaRankResolver.CanUseUnique(rank),
+            CanUseLegacy,
+            CanUseCouncilStatus,
+            CanUseLeaderStatus);
+    }
+
+    public bool CanUseCape(YautjaCapeStyle style)
+    {
+        return Enum.IsDefined(style) &&
+               (style != YautjaCapeStyle.Ceremonial ||
+                Rank is YautjaRank.Leader or YautjaRank.Ancient);
+    }
+
+    public bool CanUseBracer(YautjaBracerMaterial material)
+    {
+        if (!Enum.IsDefined(material))
+            return false;
+
+        return material switch
+        {
+            YautjaBracerMaterial.Bronze or
+            YautjaBracerMaterial.Crimson or
+            YautjaBracerMaterial.Bone => Rank >= YautjaRank.Elite,
+            YautjaBracerMaterial.Dragon or
+            YautjaBracerMaterial.Swamp or
+            YautjaBracerMaterial.Enforcer or
+            YautjaBracerMaterial.Collector => CanUseLegacy,
+            _ => true,
+        };
+    }
+
+    public bool CanUseLegacySet(YautjaLegacySet legacy)
+    {
+        return Enum.IsDefined(legacy) && (legacy == YautjaLegacySet.None || CanUseLegacy);
+    }
+
+    public static YautjaProfileCapabilities Default =>
+        new(YautjaRank.Blooded, false, false);
+}
+
 public static class YautjaRankMetadata
 {
     private static readonly ProtoId<AccessLevelPrototype>[] SecureAccess =
@@ -75,14 +182,14 @@ public static class YautjaRankMetadata
     {
         return rank switch
         {
-            YautjaRank.Unblooded => new YautjaRankInfo("cmu-yautja-rank-unblooded", "unblooded", SecureAccess, false, false),
-            YautjaRank.YoungBlood => new YautjaRankInfo("cmu-yautja-rank-youngblood", "youngblood", SecureAccess, false, false),
-            YautjaRank.Blooded => new YautjaRankInfo("cmu-yautja-rank-blooded", "blooded", SecureAccess, false, false),
-            YautjaRank.Elite => new YautjaRankInfo("cmu-yautja-rank-elite", "elite", EliteAccess, true, false),
-            YautjaRank.Elder => new YautjaRankInfo("cmu-yautja-rank-elder", "elder", ElderAccess, true, false),
-            YautjaRank.Leader => new YautjaRankInfo("cmu-yautja-rank-leader", "leader", LeaderAccess, true, true),
-            YautjaRank.Ancient => new YautjaRankInfo("cmu-yautja-rank-ancient", "ancient", AncientAccess, true, true),
-            _ => new YautjaRankInfo("cmu-yautja-rank-blooded", "blooded", SecureAccess, false, false),
+            YautjaRank.Unblooded => new YautjaRankInfo("cmu-yautja-rank-unblooded", "predhud", SecureAccess, false, false),
+            YautjaRank.YoungBlood => new YautjaRankInfo("cmu-yautja-rank-youngblood", "predhud", SecureAccess, false, false),
+            YautjaRank.Blooded => new YautjaRankInfo("cmu-yautja-rank-blooded", "predhud", SecureAccess, false, false),
+            YautjaRank.Elite => new YautjaRankInfo("cmu-yautja-rank-elite", "predhud", EliteAccess, true, false),
+            YautjaRank.Elder => new YautjaRankInfo("cmu-yautja-rank-elder", "predhud", ElderAccess, true, false),
+            YautjaRank.Leader => new YautjaRankInfo("cmu-yautja-rank-leader", "leaderhud", LeaderAccess, true, true),
+            YautjaRank.Ancient => new YautjaRankInfo("cmu-yautja-rank-ancient", "councilhud", AncientAccess, true, true),
+            _ => new YautjaRankInfo("cmu-yautja-rank-blooded", "predhud", SecureAccess, false, false),
         };
     }
 

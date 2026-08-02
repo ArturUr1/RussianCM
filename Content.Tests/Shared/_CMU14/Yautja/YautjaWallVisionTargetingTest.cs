@@ -9,6 +9,44 @@ namespace Content.Tests.Shared._CMU14.Yautja;
 public sealed class YautjaWallVisionTargetingTest
 {
     [Test]
+    public void ClientThermalSourceDoesNotDependOnServerOnlyMaskOwner()
+    {
+        Assert.Multiple(() =>
+        {
+            Assert.That(YautjaWallVisionTargeting.IsActiveSource(
+                visorIsEquipped: true,
+                thermalVisionEnabled: true,
+                visorOwnedByViewer: true,
+                visorLinkedToMask: true,
+                maskVisorEnabled: true), Is.True);
+            Assert.That(YautjaWallVisionTargeting.IsActiveSource(
+                visorIsEquipped: true,
+                thermalVisionEnabled: false,
+                visorOwnedByViewer: true,
+                visorLinkedToMask: true,
+                maskVisorEnabled: true), Is.False);
+            Assert.That(YautjaWallVisionTargeting.IsActiveSource(
+                visorIsEquipped: true,
+                thermalVisionEnabled: true,
+                visorOwnedByViewer: false,
+                visorLinkedToMask: true,
+                maskVisorEnabled: true), Is.False);
+            Assert.That(YautjaWallVisionTargeting.IsActiveSource(
+                visorIsEquipped: true,
+                thermalVisionEnabled: true,
+                visorOwnedByViewer: true,
+                visorLinkedToMask: false,
+                maskVisorEnabled: true), Is.False);
+            Assert.That(YautjaWallVisionTargeting.IsActiveSource(
+                visorIsEquipped: true,
+                thermalVisionEnabled: true,
+                visorOwnedByViewer: true,
+                visorLinkedToMask: true,
+                maskVisorEnabled: false), Is.False);
+        });
+    }
+
+    [Test]
     public void TargetMustBeDifferentVisibleMobOnTheSameMapAndOutsideContainers()
     {
         var viewer = new EntityUid(1);

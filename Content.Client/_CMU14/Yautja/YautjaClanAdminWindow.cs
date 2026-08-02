@@ -40,7 +40,9 @@ public sealed class YautjaClanAdminWindow : DefaultWindow
     private static readonly (YautjaWhitelistFlags Flag, string LocalizationKey)[] WhitelistDisplayFlags =
     [
         (YautjaWhitelistFlags.Yautja, "cmu-yautja-clan-admin-whitelist-yautja"),
+        (YautjaWhitelistFlags.Legacy, "cmu-yautja-clan-admin-whitelist-legacy"),
         (YautjaWhitelistFlags.Council, "cmu-yautja-clan-admin-whitelist-council"),
+        (YautjaWhitelistFlags.CouncilLegacy, "cmu-yautja-clan-admin-whitelist-council-legacy"),
         (YautjaWhitelistFlags.Leader, "cmu-yautja-clan-admin-whitelist-leader"),
     ];
 
@@ -175,7 +177,7 @@ public sealed class YautjaClanAdminWindow : DefaultWindow
         setMembership.MinWidth = 135;
         setMembership.OnPressed += _ => OnSetMembership?.Invoke(
             _player.Text,
-            string.IsNullOrWhiteSpace(_clanId.Text) ? "none" : _clanId.Text,
+            _clanId.Text,
             (YautjaRank) _membershipRank.SelectedId);
         membership.AddChild(setMembership);
         playerBody.AddChild(membership);
@@ -701,7 +703,9 @@ public sealed class YautjaClanAdminWindow : DefaultWindow
         option.OnItemSelected += args => ApplySelectorSelection(option, args);
         option.AddItem(Loc.GetString("cmu-yautja-clan-admin-whitelist-none"), (int) YautjaWhitelistFlags.None);
         option.AddItem(Loc.GetString("cmu-yautja-clan-admin-whitelist-yautja"), (int) YautjaWhitelistFlags.Yautja);
+        option.AddItem(Loc.GetString("cmu-yautja-clan-admin-whitelist-legacy"), (int) YautjaWhitelistFlags.Legacy);
         option.AddItem(Loc.GetString("cmu-yautja-clan-admin-whitelist-council"), (int) YautjaWhitelistFlags.Council);
+        option.AddItem(Loc.GetString("cmu-yautja-clan-admin-whitelist-council-legacy"), (int) YautjaWhitelistFlags.CouncilLegacy);
         option.AddItem(Loc.GetString("cmu-yautja-clan-admin-whitelist-leader"), (int) YautjaWhitelistFlags.Leader);
         option.SelectId((int) YautjaWhitelistFlags.None);
     }

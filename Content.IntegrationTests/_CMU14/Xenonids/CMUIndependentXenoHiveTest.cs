@@ -205,66 +205,90 @@ public sealed class CMUIndependentXenoHiveTest
         var server = pair.Server;
         var map = await pair.CreateTestMap();
 
-        await server.WaitAssertion(() =>
+        EntityUid alphaHive = default;
+        EntityUid forsakenHive = default;
+        EntityUid alphaXeno = default;
+        EntityUid forsakenXeno = default;
+        EntityUid alphaStructure = default;
+        EntityUid forsakenStructure = default;
+
+        try
         {
-            var entMan = server.EntMan;
-            var hives = entMan.System<XenoHiveSystem>();
-            var tacticalMaps = entMan.System<TacticalMapSystem>();
-            var tacticalMap = entMan.EnsureComponent<TacticalMapComponent>(map.Grid);
-
-            var alphaHive = hives.CreateHive("Hunter Ship Alpha Hive", "CMUHunterShipAlphaHive");
-            var forsakenHive = hives.CreateHive("Hunter Ship Forsaken Hive", "CMUHunterShipForsakenHive");
-            var alphaXeno = entMan.SpawnEntity("CMXenoParasite", map.GridCoords);
-            var forsakenXeno = entMan.SpawnEntity("CMXenoParasite", map.GridCoords.Offset(new Vector2(1, 0)));
-            var alphaStructure = entMan.SpawnEntity("HiveCoreXeno", map.GridCoords.Offset(new Vector2(2, 0)));
-            var forsakenStructure = entMan.SpawnEntity("HiveCoreXeno", map.GridCoords.Offset(new Vector2(3, 0)));
-
-            try
+            await server.WaitAssertion(() =>
             {
+                var entMan = server.EntMan;
+                var hives = entMan.System<XenoHiveSystem>();
+                var tacticalMaps = entMan.System<TacticalMapSystem>();
+                entMan.EnsureComponent<TacticalMapComponent>(map.Grid);
+
+                alphaHive = hives.CreateHive("Hunter Ship Alpha Hive", "CMUHunterShipAlphaHive");
+                forsakenHive = hives.CreateHive("Hunter Ship Forsaken Hive", "CMUHunterShipForsakenHive");
+                alphaXeno = entMan.SpawnEntity("CMXenoQueen", map.GridCoords);
+                forsakenXeno = entMan.SpawnEntity("CMXenoQueen", map.GridCoords);
+                alphaStructure = entMan.SpawnEntity("HiveCoreXeno", map.GridCoords);
+                forsakenStructure = entMan.SpawnEntity("HiveCoreXeno", map.GridCoords);
+
                 hives.SetHive(alphaXeno, alphaHive);
                 hives.SetHive(forsakenXeno, forsakenHive);
                 hives.SetHive(alphaStructure, alphaHive);
                 hives.SetHive(forsakenStructure, forsakenHive);
-                entMan.EnsureComponent<TacticalMapAlwaysVisibleComponent>(alphaStructure).VisibleToXenos = true;
-                entMan.EnsureComponent<TacticalMapAlwaysVisibleComponent>(forsakenStructure).VisibleToXenos = true;
 
-                var alphaUser = entMan.EnsureComponent<TacticalMapUserComponent>(alphaXeno);
-                alphaUser.Xenos = true;
-                alphaUser.LiveUpdate = true;
-                var forsakenUser = entMan.EnsureComponent<TacticalMapUserComponent>(forsakenXeno);
-                forsakenUser.Xenos = true;
-                forsakenUser.LiveUpdate = true;
+                tacticalMaps.RefreshTracked(alphaXeno);
+                tacticalMaps.RefreshTracked(forsakenXeno);
+                tacticalMaps.RefreshTracked(alphaStructure);
+                tacticalMaps.RefreshTracked(forsakenStructure);
+            });
 
-                tacticalMap.XenoBlips[alphaXeno.Id] = new();
-                tacticalMap.XenoBlips[forsakenXeno.Id] = new();
-                tacticalMap.XenoStructureBlips[alphaStructure.Id] = new();
-                tacticalMap.XenoStructureBlips[forsakenStructure.Id] = new();
+            await pair.RunTicksSync(1);
+
+            await server.WaitAssertion(() =>
+            {
+                var entMan = server.EntMan;
+                var tacticalMaps = entMan.System<TacticalMapSystem>();
+                var tacticalMap = entMan.GetComponent<TacticalMapComponent>(map.Grid);
+                var alphaUser = entMan.GetComponent<TacticalMapUserComponent>(alphaXeno);
+                var forsakenUser = entMan.GetComponent<TacticalMapUserComponent>(forsakenXeno);
 
                 tacticalMaps.UpdateUserData((alphaXeno, alphaUser), tacticalMap);
                 tacticalMaps.UpdateUserData((forsakenXeno, forsakenUser), tacticalMap);
 
                 Assert.Multiple(() =>
                 {
-                    Assert.That(alphaUser.XenoBlips.ContainsKey(alphaXeno.Id), Is.True);
-                    Assert.That(alphaUser.XenoBlips.ContainsKey(forsakenXeno.Id), Is.False);
-                    Assert.That(alphaUser.XenoStructureBlips.ContainsKey(alphaStructure.Id), Is.True);
-                    Assert.That(alphaUser.XenoStructureBlips.ContainsKey(forsakenStructure.Id), Is.False);
-                    Assert.That(forsakenUser.XenoBlips.ContainsKey(forsakenXeno.Id), Is.True);
-                    Assert.That(forsakenUser.XenoBlips.ContainsKey(alphaXeno.Id), Is.False);
-                    Assert.That(forsakenUser.XenoStructureBlips.ContainsKey(forsakenStructure.Id), Is.True);
-                    Assert.That(forsakenUser.XenoStructureBlips.ContainsKey(alphaStructure.Id), Is.False);
+                    Assert.That(alphaUser.XenoBlips, Does.ContainKey(alphaXeno.Id));
+                    Assert.That(alphaUser.XenoBlips, Does.Not.ContainKey(forsakenXeno.Id));
+                    Assert.That(alphaUser.XenoStructureBlips, Does.ContainKey(alphaStructure.Id));
+                    Assert.That(alphaUser.XenoStructureBlips, Does.Not.ContainKey(forsakenStructure.Id));
+                    Assert.That(forsakenUser.XenoBlips, Does.ContainKey(forsakenXeno.Id));
+                    Assert.That(forsakenUser.XenoBlips, Does.Not.ContainKey(alphaXeno.Id));
+                    Assert.That(forsakenUser.XenoStructureBlips, Does.ContainKey(forsakenStructure.Id));
+                    Assert.That(forsakenUser.XenoStructureBlips, Does.Not.ContainKey(alphaStructure.Id));
                 });
-            }
-            finally
+            });
+        }
+        finally
+        {
+            await server.WaitPost(() =>
             {
-                entMan.DeleteEntity(alphaXeno);
-                entMan.DeleteEntity(forsakenXeno);
-                entMan.DeleteEntity(alphaStructure);
-                entMan.DeleteEntity(forsakenStructure);
-                entMan.DeleteEntity(alphaHive);
-                entMan.DeleteEntity(forsakenHive);
-            }
-        });
+                var entMan = server.EntMan;
+                if (entMan.EntityExists(alphaXeno))
+                    entMan.DeleteEntity(alphaXeno);
+
+                if (entMan.EntityExists(forsakenXeno))
+                    entMan.DeleteEntity(forsakenXeno);
+
+                if (entMan.EntityExists(alphaStructure))
+                    entMan.DeleteEntity(alphaStructure);
+
+                if (entMan.EntityExists(forsakenStructure))
+                    entMan.DeleteEntity(forsakenStructure);
+
+                if (entMan.EntityExists(alphaHive))
+                    entMan.DeleteEntity(alphaHive);
+
+                if (entMan.EntityExists(forsakenHive))
+                    entMan.DeleteEntity(forsakenHive);
+            });
+        }
 
         await pair.CleanReturnAsync();
     }

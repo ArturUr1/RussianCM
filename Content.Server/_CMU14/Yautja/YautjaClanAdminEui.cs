@@ -8,6 +8,7 @@ using Content.Server.Administration.Managers;
 using Content.Server.Administration.Logs;
 using Content.Server.Database;
 using Content.Server.EUI;
+using Content.Server.Players.JobWhitelist;
 using Content.Shared._CMU14.Yautja;
 using Content.Shared.Administration;
 using Content.Shared.Administration.Logs;
@@ -20,10 +21,14 @@ namespace Content.Server._CMU14.Yautja;
 
 public sealed class YautjaClanAdminEui : BaseEui
 {
+    public const AdminFlags RequiredAdminFlag = AdminFlags.Clans;
+
     [Dependency] private IAdminManager _admin = default!;
     [Dependency] private IServerDbManager _db = default!;
     [Dependency] private YautjaClanManager _clanManager = default!;
     [Dependency] private YautjaRankManager _rankManager = default!;
+    [Dependency] private JobWhitelistManager _jobWhitelist = default!;
+    [Dependency] private UserDbDataManager _userDb = default!;
     [Dependency] private IPlayerLocator _playerLocator = default!;
     [Dependency] private IPlayerManager _players = default!;
     [Dependency] private IAdminLogManager _adminLog = default!;
@@ -46,7 +51,7 @@ public sealed class YautjaClanAdminEui : BaseEui
         _closed = false;
         _admin.OnPermsChanged += OnAdminPermsChanged;
 
-        if (!_admin.HasAdminFlag(Player, AdminFlags.Admin))
+        if (!_admin.HasAdminFlag(Player, RequiredAdminFlag))
         {
             Close();
             return;
@@ -69,7 +74,7 @@ public sealed class YautjaClanAdminEui : BaseEui
 
     public override async void HandleMessage(EuiMessageBase msg)
     {
-        if (!_admin.HasAdminFlag(Player, AdminFlags.Admin))
+        if (!_admin.HasAdminFlag(Player, RequiredAdminFlag))
         {
             Close();
             return;
@@ -82,7 +87,7 @@ public sealed class YautjaClanAdminEui : BaseEui
         await _operationGate.WaitAsync();
         try
         {
-            if (!_admin.HasAdminFlag(Player, AdminFlags.Admin))
+            if (!_admin.HasAdminFlag(Player, RequiredAdminFlag))
             {
                 Close();
                 return;
@@ -169,6 +174,7 @@ public sealed class YautjaClanAdminEui : BaseEui
         {
             var clans = await _db.GetYautjaClansAsync();
             var memberRecords = await _db.GetYautjaClanMembersAsync();
+            var whitelistHolders = await _db.GetYautjaWhitelistHoldersAsync();
             var memberStates = new Dictionary<Guid, YautjaClanAdminMemberState>(memberRecords.Count);
             foreach (var member in memberRecords)
             {
@@ -205,6 +211,20 @@ public sealed class YautjaClanAdminEui : BaseEui
             var clanlessPlayers = memberRecords
                 .Where(IsClanless)
                 .Select(member => memberStates[member.PlayerUserId])
+                .ToList();
+            clanlessPlayers.AddRange(whitelistHolders
+                .Where(holder => !memberStates.ContainsKey(holder.PlayerUserId))
+                .Select(holder =>
+                {
+                    var playerId = new NetUserId(holder.PlayerUserId);
+                    return new YautjaClanAdminMemberState(
+                        playerId,
+                        holder.Name,
+                        YautjaClanManager.SanitizeStoredRank(holder.Rank),
+                        _players.TryGetSessionById(playerId, out _),
+                        (YautjaWhitelistFlags) holder.WhitelistFlags);
+                }));
+            clanlessPlayers = clanlessPlayers
                 .OrderByDescending(member => member.Rank)
                 .ThenBy(member => member.Name, StringComparer.OrdinalIgnoreCase)
                 .ToList();
@@ -331,8 +351,8 @@ public sealed class YautjaClanAdminEui : BaseEui
         foreach (var detachedPlayer in result.DetachedPlayers)
         {
             var userId = new NetUserId(detachedPlayer);
-            _clanManager.InvalidateCache(userId);
-            _rankManager.InvalidateCached(userId);
+            await _rankManager.Refresh(userId);
+            await _jobWhitelist.RefreshYautjaWhitelist(userId);
         }
 
         _statusMessage = Loc.GetString(
@@ -361,8 +381,8 @@ public sealed class YautjaClanAdminEui : BaseEui
             return;
         }
 
-        _clanManager.InvalidateCache(message.PlayerId);
-        _rankManager.InvalidateCached(message.PlayerId);
+        await _rankManager.Refresh(message.PlayerId);
+        await _jobWhitelist.RefreshYautjaWhitelist(message.PlayerId);
         var playerName = GetPlayerName(message.PlayerId);
         _statusMessage = Loc.GetString("cmu-yautja-clan-admin-member-removed", ("player", playerName));
         _adminLog.Add(
@@ -373,9 +393,10 @@ public sealed class YautjaClanAdminEui : BaseEui
 
     private async Task ClearWhitelist(YautjaClanAdminClearWhitelistMessage message)
     {
+        await WaitForPlayerDataLoad(message.PlayerId);
         await _db.SetYautjaWhitelistFlagsAsync(message.PlayerId.UserId, (int) YautjaWhitelistFlags.None);
-        _clanManager.InvalidateCache(message.PlayerId);
-        _rankManager.InvalidateCached(message.PlayerId);
+        await _rankManager.Refresh(message.PlayerId);
+        await _jobWhitelist.RefreshYautjaWhitelist(message.PlayerId);
         var playerName = GetPlayerName(message.PlayerId);
         _statusMessage = Loc.GetString("cmu-yautja-clan-admin-whitelist-cleared", ("player", playerName));
         _adminLog.Add(
@@ -395,17 +416,7 @@ public sealed class YautjaClanAdminEui : BaseEui
             return;
         }
 
-        int? clanId;
-        if (message.ClanId.Trim().Equals("none", StringComparison.OrdinalIgnoreCase) ||
-            string.IsNullOrWhiteSpace(message.ClanId))
-        {
-            clanId = null;
-        }
-        else if (int.TryParse(message.ClanId, out var parsed))
-        {
-            clanId = parsed;
-        }
-        else
+        if (!int.TryParse(message.ClanId.Trim(), out var clanId))
         {
             _statusMessage = Loc.GetString("cmu-yautja-clan-admin-invalid-clan-id");
             return;
@@ -424,11 +435,11 @@ public sealed class YautjaClanAdminEui : BaseEui
             return;
         }
 
-        _clanManager.InvalidateCache(player.UserId);
-        _rankManager.InvalidateCached(player.UserId);
+        await _rankManager.Refresh(player.UserId);
+        await _jobWhitelist.RefreshYautjaWhitelist(player.UserId);
         _statusMessage = Loc.GetString("cmu-yautja-clan-admin-membership-updated", ("player", player.Username));
         _adminLog.Add(LogType.AdminCommands, LogImpact.Medium,
-            $"{Player.Name} set Yautja clan membership for {player.Username} ({player.UserId}) to clan {clanId?.ToString() ?? "none"} at rank {message.Rank}.");
+            $"{Player.Name} set Yautja clan membership for {player.Username} ({player.UserId}) to clan {clanId} at rank {message.Rank}.");
     }
 
     private async Task SetRank(YautjaClanAdminSetRankMessage message)
@@ -443,6 +454,7 @@ public sealed class YautjaClanAdminEui : BaseEui
         }
 
         await _rankManager.Set(player.UserId, message.Rank);
+        await _jobWhitelist.RefreshYautjaWhitelist(player.UserId);
         _statusMessage = Loc.GetString("cmu-yautja-clan-admin-rank-updated", ("player", player.Username));
         _adminLog.Add(LogType.AdminCommands, LogImpact.Medium,
             $"{Player.Name} set Yautja rank for {player.Username} ({player.UserId}) to {message.Rank}.");
@@ -453,18 +465,31 @@ public sealed class YautjaClanAdminEui : BaseEui
         var player = await FindPlayer(message.Player);
         if (player == null)
             return;
-        if (!Enum.IsDefined(message.Flags))
+        await WaitForPlayerDataLoad(player.UserId);
+        const YautjaWhitelistFlags knownFlags =
+            YautjaWhitelistFlags.Yautja |
+            YautjaWhitelistFlags.Legacy |
+            YautjaWhitelistFlags.Council |
+            YautjaWhitelistFlags.CouncilLegacy |
+            YautjaWhitelistFlags.Leader;
+        if ((message.Flags & ~knownFlags) != YautjaWhitelistFlags.None)
         {
             _statusMessage = Loc.GetString("cmu-yautja-clan-admin-invalid-whitelist");
             return;
         }
 
         await _db.SetYautjaWhitelistFlagsAsync(player.UserId.UserId, (int) message.Flags);
-        _clanManager.InvalidateCache(player.UserId);
-        _rankManager.InvalidateCached(player.UserId);
+        await _rankManager.Refresh(player.UserId);
+        await _jobWhitelist.RefreshYautjaWhitelist(player.UserId);
         _statusMessage = Loc.GetString("cmu-yautja-clan-admin-whitelist-updated", ("player", player.Username));
         _adminLog.Add(LogType.AdminCommands, LogImpact.Medium,
             $"{Player.Name} set Yautja whitelist flags for {player.Username} ({player.UserId}) to {message.Flags}.");
+    }
+
+    private async Task WaitForPlayerDataLoad(NetUserId userId)
+    {
+        if (_players.TryGetSessionById(userId, out var session) && !_userDb.IsLoadComplete(session))
+            await _userDb.WaitLoadComplete(session);
     }
 
     private async Task Inspect(YautjaClanAdminInspectMessage message)
@@ -508,7 +533,7 @@ public sealed class YautjaClanAdminEui : BaseEui
 
     private void OnAdminPermsChanged(AdminPermsChangedEventArgs args)
     {
-        if (args.Player == Player && !_admin.HasAdminFlag(Player, AdminFlags.Admin))
+        if (args.Player == Player && !_admin.HasAdminFlag(Player, RequiredAdminFlag))
             Close();
     }
 }

@@ -16,6 +16,8 @@ public sealed record YautjaHuntConsoleDialogCancelledEvent(NetEntity User);
 [Serializable, NetSerializable]
 public sealed record YautjaHuntEscapeActionSelectedEvent(NetEntity User, YautjaHuntEscapeAction Action);
 
+public sealed record YautjaPreserveEscapeChoiceEvent(NetEntity User, bool Escape);
+
 [Serializable, NetSerializable]
 public sealed record YautjaYoungbloodDeployConfirmedEvent(NetEntity User);
 

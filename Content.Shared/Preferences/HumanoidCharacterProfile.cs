@@ -925,6 +925,8 @@ namespace Content.Shared.Preferences
             if (!YautjaProfile.Appearance.MemberwiseEquals(other.YautjaProfile.Appearance) ||
                 YautjaProfile.Name != other.YautjaProfile.Name ||
                 YautjaProfile.Age != other.YautjaProfile.Age ||
+                YautjaProfile.Sex != other.YautjaProfile.Sex ||
+                YautjaProfile.Gender != other.YautjaProfile.Gender ||
                 YautjaProfile.ArmorPrototype != other.YautjaProfile.ArmorPrototype ||
                 YautjaProfile.MaskPrototype != other.YautjaProfile.MaskPrototype ||
                 YautjaProfile.MaskAccessoryPrototype != other.YautjaProfile.MaskAccessoryPrototype ||
@@ -933,6 +935,7 @@ namespace Content.Shared.Preferences
                 YautjaProfile.CasterPrototype != other.YautjaProfile.CasterPrototype ||
                 YautjaProfile.ClanRank != other.YautjaProfile.ClanRank ||
                 YautjaProfile.OwnerRank != other.YautjaProfile.OwnerRank ||
+                YautjaProfile.Status != other.YautjaProfile.Status ||
                 YautjaProfile.CapePrototype != other.YautjaProfile.CapePrototype ||
                 YautjaProfile.CapeColor != other.YautjaProfile.CapeColor ||
                 YautjaProfile.TranslatorType != other.YautjaProfile.TranslatorType ||

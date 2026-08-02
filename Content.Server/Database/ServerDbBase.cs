@@ -382,6 +382,7 @@ namespace Content.Server.Database
             public YautjaInvisibilitySound? InvisibilitySound { get; set; }
             public YautjaLegacySet? Legacy { get; set; }
             public YautjaUniqueSet? Unique { get; set; }
+            public YautjaProfileStatus? Status { get; set; }
             public YautjaCapeStyle? CapeStyle { get; set; }
             public string CapeColor { get; set; } = string.Empty;
             public string FlavorText { get; set; } = string.Empty;
@@ -442,6 +443,7 @@ namespace Content.Server.Database
                 .WithInvisibilitySound(parsed.InvisibilitySound ?? YautjaCharacterProfile.Default.InvisibilitySound)
                 .WithLegacy(parsed.Legacy ?? YautjaCharacterProfile.Default.Legacy)
                 .WithUnique(parsed.Unique ?? YautjaCharacterProfile.Default.Unique)
+                .WithStatus(parsed.Status ?? YautjaCharacterProfile.Default.Status)
                 .WithCapeStyle(parsed.CapeStyle ?? YautjaCharacterProfile.Default.CapeStyle)
                 .WithCapeColor(ReadColor(parsed.CapeColor, YautjaCharacterProfile.Default.CapeColor))
                 .WithFlavorText(parsed.FlavorText ?? string.Empty);
@@ -486,6 +488,7 @@ namespace Content.Server.Database
                 InvisibilitySound = profile.InvisibilitySound,
                 Legacy = profile.Legacy,
                 Unique = profile.Unique,
+                Status = profile.Status,
                 CapeStyle = profile.CapeStyle,
                 CapeColor = profile.CapeColor.ToHex(),
                 FlavorText = profile.FlavorText,

@@ -81,7 +81,12 @@ namespace Content.Server.Database.Migrations.Sqlite
                 SELECT user_id,
                        NULL,
                        CASE WHEN yautja_rank IN (0, 2, 3, 4, 5, 6) THEN yautja_rank ELSE 2 END,
-                       1,
+                       CASE yautja_rank
+                           WHEN 0 THEN 8
+                           WHEN 5 THEN 11
+                           WHEN 6 THEN 28
+                           ELSE 3
+                       END,
                        0,
                        1
                 FROM player

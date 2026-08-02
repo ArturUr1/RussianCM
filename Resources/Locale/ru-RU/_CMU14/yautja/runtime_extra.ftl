@@ -147,7 +147,7 @@ cmu-yautja-bracer-unlock-yautja = С резким сигналом наруч о
 
 cmu-yautja-cannon-pack-activated = Вы активируете плазменные пушки.
 cmu-yautja-cannon-pack-deactivated = Вы деактивируете плазменные пушки.
-cmu-yautja-cannon-pack-drain-failed = В ранце недостаточно энергии. Осталось [bold]{$charge}/{$max}[/bold], требуется [bold]{$amount}[/bold].
+cmu-yautja-cannon-pack-drain-failed = В ранце недостаточно энергии. Осталось {$charge}/{$max}, требуется {$amount}.
 cmu-yautja-cannon-pack-hands-full = Для активации плазменных пушек рука должна быть свободна!
 cmu-yautja-cannon-pack-role-denied = Даже вы не понимаете, как этим пользоваться!
 cmu-yautja-caster-deactivated = Вы деактивируете плазменный кастер.
@@ -208,7 +208,7 @@ cmu-yautja-combistick-fold-action-desc = Сложить или разложит�
 cmu-yautja-combistick-fold-action-name = Сложить комби-посох
 cmu-yautja-disc-catch-self = Вы легко ловите {$disc}.
 cmu-yautja-disc-fiddle = Вы возитесь с диском, но ничего не происходит. Может, ещё раз?
-cmu-yautja-drain-power-failed = В ваших наручах недостаточно энергии. Осталось [bold]{$charge}/{$max}[/bold], требуется [bold]{$amount}[/bold].
+cmu-yautja-drain-power-failed = В ваших наручах недостаточно энергии. Осталось {$charge}/{$max}, требуется {$amount}.
 
 cmu-yautja-emote-msg-distract = издаёт странный, завораживающий звук.
 cmu-yautja-emote-msg-fake-aliengrowl = издаёт рык ксеноморфа через голосовой синтезатор.
@@ -307,7 +307,7 @@ cmu-yautja-lobby-flavor = Описание персонажа
 cmu-yautja-lobby-flavor-limit = { $count } / { $max } символов максимум
 cmu-yautja-lobby-flavor-limit-tooltip = Максимум { $max } символов.
 cmu-yautja-lobby-flavor-placeholder = Необязательное описание персонажа
-cmu-yautja-lobby-gender = Местоимения
+cmu-yautja-lobby-gender = Пол
 cmu-yautja-lobby-greaves = Поножи
 cmu-yautja-lobby-greaves-material = Материал поножей
 cmu-yautja-lobby-greaves-style = Стиль поножей
@@ -481,3 +481,10 @@ cmu-yautja-cleaving-glaive-skull-denied = Зачем вы вообще хоти�
 cmu-yautja-cleaving-glaive-skull-existing = На {$glaive} уже установлен {$skull}.
 cmu-yautja-cleaving-glaive-skull-mounted = Вы устанавливаете {$skull} на {$glaive}.
 cmu-yautja-cleaving-glaive-skull-examine = На {$glaive} установлен человеческий череп.
+cmu-yautja-job-description-youngblood = Молодой охотник яутжа, проходящий ритуал кровавого посвящения.
+cmu-yautja-job-name-youngblood = Молодой яутжа
+chat-radio-cmu-yautja-military = YSPEC
+chat-radio-cmu-yautja-stranded = STRND
+
+cmu-yautja-badblood-weapon-choice-title = Выберите оружие
+cmu-yautja-badblood-weapon-choice-warning = Это действие необратимо. Вы уверены?

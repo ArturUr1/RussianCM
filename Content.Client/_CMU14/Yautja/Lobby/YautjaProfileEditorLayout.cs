@@ -27,6 +27,10 @@ public sealed record YautjaProfileEditorSummary(
 
 public static class YautjaProfileEditorLayout
 {
+    public const int TechOptionSpacing = 6;
+    public const int TechOptionBottomMargin = 12;
+    public const float HorizontalWorkAreaMinWidth = 750;
+
     public static IReadOnlyList<YautjaProfileEditorCategoryInfo> Categories { get; } =
     [
         new(YautjaProfileEditorCategory.Appearance, "cmu-yautja-lobby-category-appearance"),
@@ -39,6 +43,26 @@ public static class YautjaProfileEditorLayout
     public static bool IsUniqueSetLocked(YautjaCharacterProfile profile, YautjaUniqueSet unique)
     {
         return unique != YautjaUniqueSet.None && !YautjaRankResolver.CanUseUnique(profile);
+    }
+
+    public static bool IsUniqueSetLocked(YautjaProfileCapabilities capabilities, YautjaUniqueSet unique)
+    {
+        return unique != YautjaUniqueSet.None && !capabilities.CanUseUnique;
+    }
+
+    public static bool IsLegacySetLocked(YautjaProfileCapabilities capabilities, YautjaLegacySet legacy)
+    {
+        return !capabilities.CanUseLegacySet(legacy);
+    }
+
+    public static bool IsCapeLocked(YautjaProfileCapabilities capabilities, YautjaCapeStyle cape)
+    {
+        return !capabilities.CanUseCape(cape);
+    }
+
+    public static bool IsBracerLocked(YautjaProfileCapabilities capabilities, YautjaBracerMaterial bracer)
+    {
+        return !capabilities.CanUseBracer(bracer);
     }
 
     public static YautjaProfileEditorSummary BuildSummary(YautjaCharacterProfile profile)
@@ -76,5 +100,10 @@ public static class YautjaProfileEditorLayout
 
         var columns = (int) MathF.Floor((availableWidth + separation) / (cardWidth + separation));
         return Math.Clamp(columns, 1, preferredColumns);
+    }
+
+    public static bool ShouldStackWorkArea(float availableWidth)
+    {
+        return availableWidth < HorizontalWorkAreaMinWidth;
     }
 }

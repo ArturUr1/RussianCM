@@ -19,6 +19,7 @@ _LOCALIZATION_CALL_RE = re.compile(
 _LOC_ID_RE = re.compile(
     r"\b(?:LocId|LocalizedName)\b[^\"\n]*\"((?:cmu-(?:yautja|predalien|hellhound)|ent-CMU)[A-Za-z0-9_.-]*)\""
 )
+_LOCALIZATION_REFERENCE_RE = re.compile(r"^(?:cmu|ent)-[A-Za-z0-9_.-]+$")
 
 _STATIC_LOCALIZATION_KEYS = {
     "cmu-yautja-hunt-console-blooding-cancelled",
@@ -169,6 +170,10 @@ def _collect_yaml_entity_keys(root: Path) -> tuple[set[str], list[str]]:
                 for entity in entities:
                     if isinstance(entity, dict):
                         keys.update(derive_entity_keys(entity))
+                        for field_name in ("name", "description"):
+                            value = entity.get(field_name)
+                            if isinstance(value, str) and _LOCALIZATION_REFERENCE_RE.fullmatch(value):
+                                keys.add(value)
         except Exception as error:  # pragma: no cover - exercised by repository failures
             errors.append(f"YAML parse error: {path}: {error}")
 
@@ -242,7 +247,7 @@ def audit_repository(root: Path) -> AuditResult:
     for locale in ("en-US", "ru-RU"):
         locale_root = root / "Resources" / "Locale" / locale / "_CMU14" / "yautja"
         for path in locale_root.glob("*.ftl"):
-            yautja_locale_keys.update(parse_fluent(path))
+            yautja_locale_keys.update(key for key in parse_fluent(path) if not key.startswith("ent-"))
 
     expected_keys = yaml_keys | runtime_keys | yautja_locale_keys
     errors = [*en_errors, *ru_errors, *yaml_errors]

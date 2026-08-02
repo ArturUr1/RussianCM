@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Content.Shared._CMU14.Yautja;
 using Microsoft.EntityFrameworkCore;
 
 namespace Content.Server.Database;
@@ -44,6 +45,39 @@ public abstract partial class ServerDbBase
         return members.Select(ToRecord).ToList();
     }
 
+    public async Task<List<YautjaClanMemberRecord>> GetYautjaClanlessMembersAsync()
+    {
+        await using var db = await GetDb();
+        var members = await db.DbContext.YautjaClanMembers
+            .Where(entry => entry.ClanId == null)
+            .OrderByDescending(entry => entry.Rank)
+            .ToListAsync();
+        return members.Select(ToRecord).ToList();
+    }
+
+    public async Task<List<YautjaWhitelistHolderRecord>> GetYautjaWhitelistHoldersAsync()
+    {
+        await using var db = await GetDb();
+        var players = await db.DbContext.Player
+            .Where(entry => entry.YautjaWhitelistFlags != (int) YautjaWhitelistFlags.None)
+            .OrderBy(entry => entry.LastSeenUserName)
+            .Select(entry => new
+            {
+                entry.UserId,
+                entry.LastSeenUserName,
+                entry.YautjaRank,
+                entry.YautjaWhitelistFlags,
+            })
+            .ToListAsync();
+        return players
+            .Select(entry => new YautjaWhitelistHolderRecord(
+                entry.UserId,
+                entry.LastSeenUserName,
+                entry.YautjaRank,
+                entry.YautjaWhitelistFlags))
+            .ToList();
+    }
+
     public async Task<int> CreateYautjaClanAsync(
         string name,
         string description,
@@ -81,6 +115,15 @@ public abstract partial class ServerDbBase
         return updated == 1;
     }
 
+    public async Task<bool> UpdateYautjaClanHonorAsync(int clanId, int honor)
+    {
+        await using var db = await GetDb();
+        var updated = await db.DbContext.YautjaClans
+            .Where(entry => entry.Id == clanId && entry.Active)
+            .ExecuteUpdateAsync(setters => setters.SetProperty(entry => entry.Honor, honor));
+        return updated == 1;
+    }
+
     public async Task<YautjaClanDeleteResult> DeactivateYautjaClanAsync(int clanId)
     {
         await using var db = await GetDb();
@@ -101,7 +144,22 @@ public abstract partial class ServerDbBase
             .ToList();
 
         foreach (var member in members)
+        {
+            var preserveAncient = member.Rank == (int) YautjaRank.Ancient;
             member.ClanId = null;
+            if (!preserveAncient)
+            {
+                member.Rank = (int) YautjaRank.Blooded;
+                member.Permissions = (int) YautjaClanPermission.UserAll;
+                member.IsLegacy = false;
+            }
+
+            await db.DbContext.Player
+                .Where(entry => entry.UserId == member.PlayerUserId)
+                .ExecuteUpdateAsync(setters => setters.SetProperty(
+                    entry => entry.YautjaRank,
+                    (int?) member.Rank));
+        }
 
         await db.DbContext.SaveChangesAsync();
         await transaction.CommitAsync();
@@ -157,6 +215,27 @@ public abstract partial class ServerDbBase
         return true;
     }
 
+    public async Task<bool> DeleteYautjaClanMemberAsync(Guid userId)
+    {
+        await using var db = await GetDb();
+        await using var transaction = await db.DbContext.Database.BeginTransactionAsync();
+
+        var deleted = await db.DbContext.YautjaClanMembers
+            .Where(entry => entry.PlayerUserId == userId)
+            .ExecuteDeleteAsync();
+        if (deleted != 1)
+            return false;
+
+        var updated = await db.DbContext.Player
+            .Where(entry => entry.UserId == userId)
+            .ExecuteUpdateAsync(setters => setters.SetProperty(entry => entry.YautjaRank, (int?) null));
+        if (updated != 1)
+            return false;
+
+        await transaction.CommitAsync();
+        return true;
+    }
+
     public async Task<int> GetYautjaWhitelistFlagsAsync(Guid userId)
     {
         await using var db = await GetDb();
@@ -175,6 +254,20 @@ public abstract partial class ServerDbBase
             throw new InvalidOperationException($"Cannot set Yautja whitelist flags for unknown player {userId}.");
 
         player.YautjaWhitelistFlags = flags;
+
+        if (flags == (int) YautjaWhitelistFlags.None)
+        {
+            // Removing the whitelist revokes the complete Yautja profile:
+            // membership, membership rank, and the legacy compatibility rank
+            // projection must not survive a whitelist removal.
+            var member = await db.DbContext.YautjaClanMembers
+                .SingleOrDefaultAsync(entry => entry.PlayerUserId == userId);
+            if (member != null)
+                db.DbContext.YautjaClanMembers.Remove(member);
+
+            player.YautjaRank = null;
+        }
+
         await db.DbContext.SaveChangesAsync();
     }
 

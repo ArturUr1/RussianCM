@@ -162,7 +162,6 @@
       Caster: CMUYautjaBadBloodPlasmaCaster
       WristBlades: CMUYautjaWristBlades
       Scimitar: CMUYautjaScimitar
-      Shield: CMUYautjaBracerShield
       ChainGauntlet: CMUYautjaChainGauntlet
   - type: UserInterface
     interfaces:
@@ -533,7 +532,6 @@
   - type: ShowHealthBars
     damageContainers:
     - Biological
-    - Xeno
   - type: ShowHealthIcons
     damageContainers:
     - Biological
@@ -989,12 +987,6 @@
   - type: RMCWeaponAccuracy
     accuracyMultiplier: 1
     accuracyMultiplierUnwielded: 7
-  - type: ProjectileBatteryAmmoProvider
-    proto: CMUYautjaCasterStunBolt
-    fireCost: 1
-  - type: Battery
-    maxCharge: 1000
-    startingCharge: 1000
   - type: YautjaStoredGear
     kind: Caster
   - type: YautjaCaster
@@ -1487,6 +1479,8 @@
   - type: WoundTreater
     doAfterSkillMultipliers: [0.5, 0.45, 0.35, 0.25, 0.2]
     selfTargetDoAfterMultiplier: 1
+    treatBeginSound: null
+    treatEndSound: null
 
 - type: entity
   parent: CMUpgradedBurnKit1
@@ -1513,56 +1507,30 @@
   - type: WoundTreater
     doAfterSkillMultipliers: [0.5, 0.45, 0.35, 0.25, 0.2]
     selfTargetDoAfterMultiplier: 1
+    treatBeginSound: null
+    treatEndSound: null
 
 - type: entity
-  parent: MedicatedSuture
+  parent: BaseItem
   id: CMUYautjaHealingGel
-  name: healing gel
-  description: A dense alien coagulant that knits together broad trauma.
+  name: healing gel capsule
+  description: A single-use capsule for reloading the Yautja healing gun.
   suffix: Yautja
   components:
   - type: Sprite
     sprite: _CMU14/Yautja/medical.rsi
     state: healing_gel
   - type: Item
+    size: Small
     sprite: _CMU14/Yautja/medical.rsi
     storedRotation: -90
-  - type: Healing
-    damageContainers:
-    - Biological
-    damage:
-      groups:
-        Brute: -45
-        Burn: -35
-      types:
-        Bloodloss: -15
-    bloodlossModifier: -20
-    delay: 0.75
-    selfHealPenaltyMultiplier: 1.25
-    healingBeginSound:
-      path: "/Audio/Items/Medical/brutepack_begin.ogg"
-      params:
-        volume: 1.0
-        variation: 0.125
-    healingEndSound:
-      path: "/Audio/Items/Medical/brutepack_end.ogg"
-      params:
-        volume: 1.0
-        variation: 0.125
-  - type: RemoveComponents
-    components:
-    - type: Stack
-      stackType: MedicatedSuture
-      count: 1
-    - type: StackPrice
-      price: 20
+  - type: YautjaHealingCapsule
   - type: Tag
     tags:
-    - Brutepack
     - CMUYautjaMedicompItem
 
 - type: entity
-  parent: RegenerativeMesh
+  parent: BaseItem
   id: CMUYautjaStabilizerGel
   name: stabilizer gel
   description: A fast-setting alien gel for buying time through shock and blood loss.
@@ -1573,28 +1541,6 @@
     state: stabilizer_gel
   - type: Item
     sprite: _CMU14/Yautja/medical.rsi
-  - type: Healing
-    damageContainers:
-    - Biological
-    damage:
-      groups:
-        Airloss: -30
-      types:
-        Bloodloss: -30
-        Asphyxiation: -20
-    bloodlossModifier: -30
-    delay: 0.75
-    selfHealPenaltyMultiplier: 1.25
-    healingBeginSound:
-      path: "/Audio/Items/Medical/ointment_begin.ogg"
-      params:
-        volume: 1.0
-        variation: 0.125
-    healingEndSound:
-      path: "/Audio/Items/Medical/ointment_end.ogg"
-      params:
-        volume: 1.0
-        variation: 0.125
   - type: Stack
     stackType: CMUYautjaStabilizerGel
     count: 1
@@ -1602,6 +1548,8 @@
     tags:
     - Ointment
     - CMUYautjaMedicompItem
+  - type: CMSurgeryTool
+  - type: CMUYautjaMedicompStabilizerTool
 
 - type: stack
   id: CMUYautjaStabilizerGel
@@ -1621,6 +1569,8 @@
     state: wound_clamp
   - type: Item
     sprite: _CMU14/Yautja/medical.rsi
+  - type: CMSurgeryTool
+  - type: CMUYautjaMedicompClampTool
   - type: Tag
     tags:
     - CMHemostat
@@ -1641,7 +1591,7 @@
     sprite: _CMU14/Yautja/medical.rsi
   - type: YautjaHealingGun
     loaded: true
-    repairsFractures: true
+    repairsFractures: false
     damageContainers:
     - Biological
     damage:
@@ -1658,8 +1608,12 @@
       params:
         volume: 1.0
         variation: 0.125
+    reloadSound:
+      path: /Audio/_RMC14/Medical/air_release.ogg
   - type: UseDelay
     delay: 2
+  - type: CMSurgeryTool
+  - type: CMUYautjaMedicompHealingGunTool
   - type: Tag
     tags:
     - CMUYautjaMedicompItem
@@ -1694,7 +1648,7 @@
       map: ["enum.SolutionContainerLayers.Fill"]
   - type: Hypospray
     transferAmount: 30
-    injectSound: /Audio/_RMC14/Medical/hypospray.ogg
+    injectSound: /Audio/_CMU14/Yautja/Medical/pred_crystal_inject.ogg
     injectOnly: true
     onlyAffectsMobs: true
     canContainerDraw: false
@@ -1712,6 +1666,8 @@
       reagents: {}
   - type: SolutionContainerVisuals
     maxFillLevels: 1
+    fillBaseName: thwei_
+    emptySpriteName: null
     changeColor: false
   - type: MedicallyUnskilledDoAfter
     min: 0

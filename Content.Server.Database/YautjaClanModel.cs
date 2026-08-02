@@ -67,6 +67,12 @@ public sealed record YautjaClanMemberRecord(
     int Honor,
     bool IsLegacy);
 
+public sealed record YautjaWhitelistHolderRecord(
+    Guid PlayerUserId,
+    string Name,
+    int? Rank,
+    int WhitelistFlags);
+
 public sealed record YautjaClanDeleteResult(
     bool Succeeded,
     List<Guid> DetachedPlayers);

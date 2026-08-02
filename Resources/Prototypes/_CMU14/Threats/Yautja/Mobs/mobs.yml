@@ -102,6 +102,8 @@
   name: Yautja Military Caste Soldier
   suffix: Yautja, Military Caste, Event
   components:
+  - type: YautjaMilitaryCaste
+    caste: Soldier
   - type: Loadout
     prototypes:
     - CMUYautjaMilitaryCasteSoldierGear
@@ -112,6 +114,8 @@
   name: Yautja Military Caste Enforcer
   suffix: Yautja, Military Caste, Event
   components:
+  - type: YautjaMilitaryCaste
+    caste: Enforcer
   - type: Loadout
     prototypes:
     - CMUYautjaMilitaryCasteEnforcerGear

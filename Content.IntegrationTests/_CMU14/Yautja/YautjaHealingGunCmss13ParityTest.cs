@@ -12,7 +12,7 @@ namespace Content.IntegrationTests._CMU14.Yautja;
 public sealed class YautjaHealingGunCmss13ParityTest
 {
     [Test]
-    public async Task HealingGunConsumesOnlyAfterSuccessfulHealAndCanBeUsedAgainAfterReload()
+    public async Task HealingGunDoesNotDirectlyHealOutsideMedicompSurgery()
     {
         await using var pair = await PoolManager.GetServerClient();
         var server = pair.Server;
@@ -34,15 +34,14 @@ public sealed class YautjaHealingGunCmss13ParityTest
                 entMan.EventBus.RaiseLocalEvent(gun, firstUse);
 
                 var gunComp = entMan.GetComponent<YautjaHealingGunComponent>(gun);
-                var afterHeal = entMan.GetComponent<DamageableComponent>(user).TotalDamage;
                 Assert.Multiple(() =>
                 {
-                    Assert.That(firstUse.Handled, Is.True,
-                        "A loaded CMSS13 healing_gun must heal a damaged target.");
-                    Assert.That(afterHeal, Is.LessThan(beforeHeal),
-                        "The successful shot must apply the local healing payload.");
-                    Assert.That(gunComp.Loaded, Is.False,
-                        "A successful healing_gun use consumes its one loaded charge.");
+                    Assert.That(firstUse.Handled, Is.False,
+                        "CMSS13 healing_gun is a Medicomp surgery tool, not a direct-use injector.");
+                    Assert.That(entMan.GetComponent<DamageableComponent>(user).TotalDamage, Is.EqualTo(beforeHeal),
+                        "Using the loaded gun in hand must not apply treatment outside the surgery flow.");
+                    Assert.That(gunComp.Loaded, Is.True,
+                        "The loaded capsule is consumed only when the Medicomp tend-wounds step completes.");
                 });
 
                 var emptyUse = new UseInHandEvent(user);
@@ -50,15 +49,19 @@ public sealed class YautjaHealingGunCmss13ParityTest
                 Assert.Multiple(() =>
                 {
                     Assert.That(emptyUse.Handled, Is.False,
-                        "An empty CMSS13 healing_gun refuses another treatment.");
-                    Assert.That(entMan.GetComponent<YautjaHealingGunComponent>(gun).Loaded, Is.False);
+                        "The gun must remain non-interactive as a direct treatment tool when empty.");
+                    Assert.That(entMan.GetComponent<YautjaHealingGunComponent>(gun).Loaded, Is.True,
+                        "A failed direct-use attempt must not change the loaded state.");
                 });
 
+                entMan.GetComponent<YautjaHealingGunComponent>(gun).Loaded = false;
                 var capsule = entMan.SpawnEntity("CMUYautjaHealingCapsule", MapCoordinates.Nullspace);
                 try
                 {
+                    Assert.That(entMan.HasComponent<YautjaHealingCapsuleComponent>(capsule), Is.True,
+                        "The spawned healing capsule must carry the discrete reload marker.");
                     var reload = new AfterInteractUsingEvent(user, capsule, gun, default, true);
-                    entMan.EventBus.RaiseLocalEvent(gun, reload);
+                    entMan.EventBus.RaiseLocalEvent(gun, reload, broadcast: true);
                     Assert.That(reload.Handled, Is.True);
                     Assert.That(entMan.Deleted(capsule), Is.True);
                 }
@@ -68,14 +71,13 @@ public sealed class YautjaHealingGunCmss13ParityTest
                         entMan.DeleteEntity(capsule);
                 }
 
-                damageable.TryChangeDamage(user, new DamageSpecifier(prototypes.Index<DamageTypePrototype>("Blunt"), 30));
                 var reloadedUse = new UseInHandEvent(user);
                 entMan.EventBus.RaiseLocalEvent(gun, reloadedUse);
                 Assert.Multiple(() =>
                 {
-                    Assert.That(reloadedUse.Handled, Is.True,
-                        "Reloading with a CMSS13 healing_gel capsule restores one usable charge.");
-                    Assert.That(entMan.GetComponent<YautjaHealingGunComponent>(gun).Loaded, Is.False);
+                    Assert.That(reloadedUse.Handled, Is.False,
+                        "Reloading with a CMSS13 healing_gel restores a surgery charge, not a direct-use action.");
+                    Assert.That(entMan.GetComponent<YautjaHealingGunComponent>(gun).Loaded, Is.True);
                 });
             }
             finally
@@ -109,7 +111,7 @@ public sealed class YautjaHealingGunCmss13ParityTest
                 entMan.GetComponent<YautjaHealingGunComponent>(gun).Loaded = false;
 
                 var firstLoad = new AfterInteractUsingEvent(user, firstCapsule, gun, default, true);
-                entMan.EventBus.RaiseLocalEvent(gun, firstLoad);
+                entMan.EventBus.RaiseLocalEvent(gun, firstLoad, broadcast: true);
 
                 Assert.Multiple(() =>
                 {
@@ -120,7 +122,7 @@ public sealed class YautjaHealingGunCmss13ParityTest
                 });
 
                 var secondLoad = new AfterInteractUsingEvent(user, secondCapsule, gun, default, true);
-                entMan.EventBus.RaiseLocalEvent(gun, secondLoad);
+                entMan.EventBus.RaiseLocalEvent(gun, secondLoad, broadcast: true);
 
                 Assert.Multiple(() =>
                 {

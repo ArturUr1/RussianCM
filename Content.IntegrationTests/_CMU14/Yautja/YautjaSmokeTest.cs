@@ -170,16 +170,22 @@ public sealed class YautjaSmokeTest
             try
             {
                 Assert.That(entMan.HasComponent<YautjaComponent>(hunter), Is.True);
-                AssertEquipped(entMan, inventory, hunter, "mask", "CMUYautjaMask");
-                AssertEquipped(entMan, inventory, hunter, "ears2", "CMUYautjaFalconDrone");
+                AssertEquipped(entMan, inventory, hunter, "ears", "CMUYautjaCommunicator");
+                Assert.That(inventory.TryGetSlotEntity(hunter, "ears2", out _), Is.False,
+                    "The falcon drone is rack gear and must not be part of the direct spawn loadout.");
                 AssertEquipped(entMan, inventory, hunter, "gloves", "CMUYautjaBracer");
-                AssertEquipped(entMan, inventory, hunter, "back", "CMUYautjaCapeFull");
-                AssertEquippedAny(entMan, inventory, hunter, "outerClothing", ClanArmorLoadoutIds);
-                AssertEquipped(entMan, inventory, hunter, "jumpsuit", "CMUYautjaBodyMesh");
-                AssertEquipped(entMan, inventory, hunter, "shoes", "CMUYautjaClanGreaves");
-                AssertEquipped(entMan, inventory, hunter, "belt", "CMUYautjaHuntingPouch");
-                AssertEquipped(entMan, inventory, hunter, "pocket1", "CMUYautjaSmartDisc");
-                AssertEquipped(entMan, inventory, hunter, "pocket2", "CMUYautjaMedicompFull");
+                Assert.That(inventory.TryGetSlotEntity(hunter, "gloves", out var bracer), Is.True);
+                var bracerGear = entMan.GetComponent<YautjaGearContainerComponent>(bracer!.Value);
+                Assert.That(bracerGear.Gear.ContainsKey(YautjaGearKind.Shield), Is.False,
+                    "The wrist shield is rack gear and must not be part of the direct spawn loadout.");
+                Assert.That(inventory.TryGetSlotEntity(hunter, "mask", out _), Is.False);
+                Assert.That(inventory.TryGetSlotEntity(hunter, "back", out _), Is.False);
+                Assert.That(inventory.TryGetSlotEntity(hunter, "outerClothing", out _), Is.False);
+                Assert.That(inventory.TryGetSlotEntity(hunter, "jumpsuit", out _), Is.False);
+                Assert.That(inventory.TryGetSlotEntity(hunter, "shoes", out _), Is.False);
+                Assert.That(inventory.TryGetSlotEntity(hunter, "belt", out _), Is.False);
+                Assert.That(inventory.TryGetSlotEntity(hunter, "pocket1", out _), Is.False);
+                Assert.That(inventory.TryGetSlotEntity(hunter, "pocket2", out _), Is.False);
             }
             finally
             {
@@ -5526,6 +5532,49 @@ public sealed class YautjaSmokeTest
                 entMan.DeleteEntity(hunter);
                 entMan.DeleteEntity(nonYautja);
 
+                if (!entMan.Deleted(bracer))
+                    entMan.DeleteEntity(bracer);
+            }
+        });
+
+        await pair.CleanReturnAsync();
+    }
+
+    [Test]
+    public async Task BracerMenuRoutesNotificationSoundCommandThroughGuardedUtility()
+    {
+        await using var pair = await PoolManager.GetServerClient();
+        var server = pair.Server;
+
+        await server.WaitAssertion(() =>
+        {
+            var entMan = server.EntMan;
+            var inventory = entMan.System<InventorySystem>();
+            var ui = entMan.System<SharedUserInterfaceSystem>();
+            var hunter = entMan.SpawnEntity("CMMobHuman", MapCoordinates.Nullspace);
+            var bracer = entMan.SpawnEntity("CMUYautjaBracer", MapCoordinates.Nullspace);
+
+            try
+            {
+                entMan.EnsureComponent<YautjaComponent>(hunter);
+                Assert.That(inventory.TryEquip(hunter, bracer, "gloves", silent: true, force: true), Is.True);
+
+                var bracerComp = entMan.GetComponent<YautjaBracerComponent>(bracer);
+                bracerComp.NotificationSound = true;
+
+                ui.RaiseUiMessage(bracer, YautjaBracerUIKey.Key,
+                    new YautjaBracerPanelCommandMsg(YautjaBracerPanelCommand.ToggleBracerNotificationSound)
+                    {
+                        Actor = hunter,
+                    });
+
+                Assert.That(bracerComp.NotificationSound, Is.False,
+                    "The worn-bracer BUI command must route through TryToggleNotificationSound.");
+            }
+            finally
+            {
+                if (!entMan.Deleted(hunter))
+                    entMan.DeleteEntity(hunter);
                 if (!entMan.Deleted(bracer))
                     entMan.DeleteEntity(bracer);
             }
@@ -11469,6 +11518,44 @@ public sealed class YautjaSmokeTest
     }
 
     [Test]
+    public async Task YautjaButcherSkinStageStartsWithoutDirtyingServerOnlyState()
+    {
+        var (server, _) = await PoolManager.GenerateServer(new PoolSettings(), TestContext.Out);
+
+        try
+        {
+            await server.WaitAssertion(() =>
+            {
+                var entMan = server.EntMan;
+                var mobState = entMan.System<MobStateSystem>();
+                var trophies = entMan.System<YautjaTrophySystem>();
+                var hunter = entMan.SpawnEntity("CMMobHuman", MapCoordinates.Nullspace);
+                var target = entMan.SpawnEntity("CMMobHuman", MapCoordinates.Nullspace);
+
+                try
+                {
+                    entMan.EnsureComponent<YautjaComponent>(hunter);
+                    mobState.ChangeMobState(target, MobState.Dead);
+
+                    Assert.That(trophies.TryStartButcher(hunter, target, YautjaButcherProcedure.Skin), Is.True);
+                    Assert.That(entMan.GetComponent<YautjaTrophySourceComponent>(target).ButcheryProgress, Is.EqualTo(1));
+                }
+                finally
+                {
+                    if (!entMan.Deleted(hunter))
+                        entMan.DeleteEntity(hunter);
+                    if (!entMan.Deleted(target))
+                        entMan.DeleteEntity(target);
+                }
+            });
+        }
+        finally
+        {
+            server.Dispose();
+        }
+    }
+
+    [Test]
     public async Task YautjaLeapShowsWindupBeforeAnimatedThrow()
     {
         await using var pair = await PoolManager.GetServerClient();
@@ -12267,6 +12354,51 @@ public sealed class YautjaSmokeTest
                     entMan.DeleteEntity(hunter);
                 if (!entMan.Deleted(chair))
                     entMan.DeleteEntity(chair);
+            }
+        });
+
+        await pair.CleanReturnAsync();
+    }
+
+    [Test]
+    public async Task HunterShipChairBuckleFacesChairDirection()
+    {
+        await using var pair = await PoolManager.GetServerClient();
+        var server = pair.Server;
+        var map = await pair.CreateTestMap();
+
+        await server.WaitAssertion(() =>
+        {
+            var entMan = server.EntMan;
+            var buckle = entMan.System<SharedBuckleSystem>();
+            var transform = entMan.System<SharedTransformSystem>();
+
+            var eastRider = entMan.SpawnEntity("CMMobHuman", map.GridCoords);
+            var eastChair = entMan.SpawnEntity("CMUHunterShipPlacedCMChairNonFoldChairEast", map.GridCoords.Offset(new Vector2(1, 0)));
+            var northRider = entMan.SpawnEntity("CMMobHuman", map.GridCoords.Offset(new Vector2(0, 2)));
+            var northChair = entMan.SpawnEntity("CMUHunterShipPlacedCMChairComfyComfychairNorth", map.GridCoords.Offset(new Vector2(1, 2)));
+
+            try
+            {
+                Assert.That(buckle.TryBuckle(eastRider, eastRider, eastChair, popup: false), Is.True);
+                Assert.That(buckle.TryBuckle(northRider, northRider, northChair, popup: false), Is.True);
+
+                Assert.Multiple(() =>
+                {
+                    Assert.That(transform.GetWorldRotation(eastRider).GetCardinalDir(), Is.EqualTo(Direction.East));
+                    Assert.That(transform.GetWorldRotation(northRider).GetCardinalDir(), Is.EqualTo(Direction.North));
+                });
+            }
+            finally
+            {
+                if (!entMan.Deleted(eastRider))
+                    entMan.DeleteEntity(eastRider);
+                if (!entMan.Deleted(eastChair))
+                    entMan.DeleteEntity(eastChair);
+                if (!entMan.Deleted(northRider))
+                    entMan.DeleteEntity(northRider);
+                if (!entMan.Deleted(northChair))
+                    entMan.DeleteEntity(northChair);
             }
         });
 

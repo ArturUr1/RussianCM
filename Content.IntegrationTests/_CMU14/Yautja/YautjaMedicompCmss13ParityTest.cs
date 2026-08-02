@@ -245,6 +245,7 @@ public sealed class YautjaMedicompCmss13ParityTest
         Assert.That(prototype.TryGetComponent<SpriteComponent>(out var sprite, factory), Is.True, id);
         Assert.That(prototype.TryGetComponent<HyposprayComponent>(out var hypospray, factory), Is.True, id);
         Assert.That(prototype.TryGetComponent<SolutionContainerManagerComponent>(out var solutions, factory), Is.True, id);
+        Assert.That(prototype.TryGetComponent<SolutionContainerVisualsComponent>(out var visuals, factory), Is.True, id);
         var layers = sprite!.AllLayers.ToArray();
 
         Assert.Multiple(() =>
@@ -257,6 +258,8 @@ public sealed class YautjaMedicompCmss13ParityTest
             Assert.That(solutions.Solutions["pen"].Contents.Count, Is.EqualTo(1), $"{id} contains one source-equivalent reagent");
             Assert.That(solutions.Solutions["pen"].Contents.First().Reagent.Prototype, Is.EqualTo(reagentId), $"{id} reagent id");
             Assert.That(solutions.Solutions["pen"].Contents.First().Quantity, Is.EqualTo((FixedPoint2) 30), $"{id} reagent quantity");
+            Assert.That(visuals!.FillBaseName, Is.EqualTo("thwei_"), $"{id} filled state prefix");
+            Assert.That(visuals.EmptySpriteName, Is.Null, $"{id} empty state must hide the fill layer");
         });
     }
 

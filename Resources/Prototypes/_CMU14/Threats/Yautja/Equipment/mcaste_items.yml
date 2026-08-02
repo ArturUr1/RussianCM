@@ -99,7 +99,8 @@
   - type: Item
     size: Normal
   - type: Clothing
-    sprite: _CMU14/Yautja/mcaste_gear.rsi
+    sprite: _CMU14/Yautja/mcaste_gear_worn.rsi
+    equippedState: fullarmor_soldier
     slots: OUTERCLOTHING
     equipDelay: 10
     unequipDelay: 10
@@ -127,6 +128,8 @@
   - type: Sprite
     sprite: _CMU14/Yautja/mcaste_gear.rsi
     state: fullarmor_soldier_lead
+  - type: Clothing
+    equippedState: fullarmor_soldier_lead
 
 - type: entity
   parent: CMUYautjaGreavesBase
@@ -141,7 +144,8 @@
   - type: Item
     size: Normal
   - type: Clothing
-    sprite: _CMU14/Yautja/mcaste_gear.rsi
+    sprite: _CMU14/Yautja/mcaste_gear_worn.rsi
+    equippedState: y-boots_powered
     slots: FEET
     equipDelay: 10
     unequipDelay: 10
@@ -167,7 +171,8 @@
   - type: Item
     size: Normal
   - type: Clothing
-    sprite: _CMU14/Yautja/mcaste_gear.rsi
+    sprite: _CMU14/Yautja/mcaste_gear_worn.rsi
+    equippedState: helmet_powered
     slots: HEAD
     equipDelay: 10
     unequipDelay: 10
@@ -239,7 +244,8 @@
     sprite: _CMU14/Yautja/mcaste_gear.rsi
     heldPrefix: cannonpack
   - type: Clothing
-    sprite: _CMU14/Yautja/mcaste_gear.rsi
+    sprite: _CMU14/Yautja/mcaste_gear_worn.rsi
+    equippedState: cannonpack
     slots: BACK
     equipDelay: 10
     unequipDelay: 10
