@@ -125,7 +125,7 @@ public sealed partial class YautjaHuntConsoleSystem : EntitySystem
         foreach (var destination in ent.Comp.AvailableDestinations)
         {
             options.Add(new DialogOption(
-                destination.DisplayName,
+                LocalizeDisplayName(destination.DisplayName),
                 new YautjaHuntingGroundSelectedEvent(GetNetEntity(user), destination.Id)));
         }
 
@@ -170,13 +170,14 @@ public sealed partial class YautjaHuntConsoleSystem : EntitySystem
         ent.Comp.DestinationId = destination.Id;
         _huntingGroundActivated = true;
 
+        var destinationName = LocalizeDisplayName(destination.DisplayName);
         var message = Loc.GetString(
             "cmu-yautja-hunt-console-selection-broadcast",
             ("hunter", Name(user.Value)),
-            ("ground", destination.DisplayName));
+            ("ground", destinationName));
         AnnounceToYautja(message);
         _adminLog.Add(LogType.Action, LogImpact.Medium,
-            $"{ToPrettyString(user.Value):player} spawned {destination.DisplayName} (hunting grounds)");
+            $"{ToPrettyString(user.Value):player} spawned {destinationName} (hunting grounds)");
     }
 
     private void MarkHuntingGrounds(Entity<MapComponent> map, HashSet<Entity<MapGridComponent>>? grids)
@@ -224,7 +225,7 @@ public sealed partial class YautjaHuntConsoleSystem : EntitySystem
         foreach (var call in callOptions)
         {
             options.Add(new DialogOption(
-                call.DisplayName,
+                LocalizeDisplayName(call.DisplayName),
                 new YautjaHuntCallSelectedEvent(GetNetEntity(user), call.Id)));
         }
 
@@ -349,12 +350,13 @@ public sealed partial class YautjaHuntConsoleSystem : EntitySystem
 
         var request = Spawn(null, ent.Owner.ToCoordinates());
         var requestComp = EnsureComp<YautjaHuntCallComponent>(request);
+        var callName = LocalizeDisplayName(option.DisplayName);
         requestComp.Kind = ent.Comp.Kind;
         requestComp.Requester = requester;
         requestComp.Destination = destination;
         requestComp.DestinationId = ent.Comp.DestinationId;
         requestComp.CallId = option.Id;
-        requestComp.CallName = option.DisplayName;
+        requestComp.CallName = callName;
 
         var maxCount = Math.Max(1, option.SpawnCount > 0 ? option.SpawnCount : ent.Comp.SpawnCount);
         var minCount = Math.Clamp(option.MinSpawnCount, 1, maxCount);
@@ -409,20 +411,27 @@ public sealed partial class YautjaHuntConsoleSystem : EntitySystem
                 ? "cmu-yautja-hunt-console-blooding-broadcast"
                 : "cmu-yautja-hunt-console-hunt-ground-broadcast",
             ("hunter", Name(requester)),
-            ("hunt", option.DisplayName));
+            ("hunt", callName));
         AnnounceToYautja(broadcast);
 
         if (blooding)
         {
             _adminLog.Add(LogType.Action, LogImpact.Medium,
-                $"{ToPrettyString(requester):player} has called {option.DisplayName} (Youngblood ERT)");
+                $"{ToPrettyString(requester):player} has called {callName} (Youngblood ERT)");
         }
         else
         {
             _adminLog.Add(LogType.Action, LogImpact.Medium,
-                $"{ToPrettyString(requester):player} triggered {option.DisplayName} inside the hunting grounds");
+                $"{ToPrettyString(requester):player} triggered {callName} inside the hunting grounds");
         }
         return true;
+    }
+
+    private string LocalizeDisplayName(string value)
+    {
+        return value.StartsWith("cmu-yautja-", StringComparison.Ordinal)
+            ? Loc.GetString(value)
+            : value;
     }
 
     private EntityUid? TrySpawnPrey(
@@ -534,10 +543,10 @@ public sealed partial class YautjaHuntConsoleSystem : EntitySystem
         var options = new List<DialogOption>
         {
             new(
-                "Open",
+                Loc.GetString("cmu-yautja-hunt-escape-console-open"),
                 new YautjaHuntEscapeActionSelectedEvent(GetNetEntity(args.User), YautjaHuntEscapeAction.Open)),
             new(
-                "Close",
+                Loc.GetString("cmu-yautja-hunt-escape-console-close"),
                 new YautjaHuntEscapeActionSelectedEvent(GetNetEntity(args.User), YautjaHuntEscapeAction.Close)),
         };
 
@@ -546,7 +555,7 @@ public sealed partial class YautjaHuntConsoleSystem : EntitySystem
             args.User,
             Name(ent.Owner),
             options,
-            "Do you wish to close or open the shutter?",
+            Loc.GetString("cmu-yautja-hunt-escape-console-dialog-message"),
             timeout: ent.Comp.DialogTimeout);
     }
 

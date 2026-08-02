@@ -108,7 +108,7 @@
       4: rmc-xeno-elder-larva
       5: rmc-xeno-elder-larva
   - type: FixedIdentity
-    name: cm-job-name-xeno-larva
+    name: cmu-job-name-xeno-unknown
   - type: VentCrawler
     ventCrawlIcon: larva
   - type: RMCActionOrder

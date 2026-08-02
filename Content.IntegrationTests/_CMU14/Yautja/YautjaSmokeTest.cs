@@ -852,8 +852,8 @@ public sealed class YautjaSmokeTest
                 Assert.Multiple(() =>
                 {
                     Assert.That(bracerComp.InvisibilitySound, Is.EqualTo(YautjaInvisibilitySound.Modern));
-                    AssertSoundPath(bracerComp.CloakOnSound, "/Audio/_CMU14/Yautja/pred_cloakon_modern.ogg");
-                    AssertSoundPath(bracerComp.CloakOffSound, "/Audio/_CMU14/Yautja/pred_cloakoff_modern.ogg");
+                    AssertSoundPath(bracerComp.CloakOnSound, "/Audio/_CMU14/Yautja/pred_cloakon_modern.wav");
+                    AssertSoundPath(bracerComp.CloakOffSound, "/Audio/_CMU14/Yautja/pred_cloakoff_modern.wav");
                 });
             }
             finally
@@ -11878,8 +11878,10 @@ public sealed class YautjaSmokeTest
         await pair.CleanReturnAsync();
     }
 
-    [Test]
-    public async Task ThrowHeldItemDoesNotPassThroughHunterShipWall()
+    [TestCase("Pen")]
+    [TestCase("CMUYautjaHarpoon")]
+    [TestCase("CMUYautjaSmartDisc")]
+    public async Task ThrowHeldItemDoesNotPassThroughHunterShipWall(string itemPrototype)
     {
         await using var pair = await PoolManager.GetServerClient();
         var server = pair.Server;
@@ -11893,7 +11895,7 @@ public sealed class YautjaSmokeTest
 
             var hunter = entMan.SpawnEntity("CMMobHuman", map.GridCoords);
             var wall = entMan.SpawnEntity("CMUHunterShipWallTurfClosedWallHuntershipHunterBase", map.GridCoords.Offset(new Vector2(1, 0)));
-            var item = entMan.SpawnEntity("Pen", map.GridCoords);
+            var item = entMan.SpawnEntity(itemPrototype, map.GridCoords);
 
             try
             {
@@ -15522,6 +15524,25 @@ public sealed class YautjaSmokeTest
                 if (!entMan.Deleted(disabled))
                     entMan.DeleteEntity(disabled);
             }
+        });
+
+        await pair.CleanReturnAsync();
+    }
+
+    [Test]
+    public async Task SleepingHellhoundProvidesDialogUiForWakeConfirmation()
+    {
+        await using var pair = await PoolManager.GetServerClient();
+        var server = pair.Server;
+
+        await server.WaitAssertion(() =>
+        {
+            var prototypes = server.ResolveDependency<IPrototypeManager>();
+            var factory = server.EntMan.ComponentFactory;
+            var prototype = prototypes.Index<EntityPrototype>("CMUHunterShipSleepingHellhound");
+
+            Assert.That(prototype.TryGetComponent<UserInterfaceComponent>(out _, factory), Is.True,
+                "The sleeping Hellhound must expose UserInterface so DialogBui can open the wake confirmation.");
         });
 
         await pair.CleanReturnAsync();

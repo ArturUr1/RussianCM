@@ -37,6 +37,9 @@ public sealed partial class ANPRCRadioWindow : DefaultWindow
     public event Action? OnRadioCheck;
     public event Action? OnOpenDirectory;
     public event Action<int, string>? OnManualFrequency;
+    public event Action<bool>? OnSetSweep;
+    public event Action<int, int>? OnTuneContact;
+    public event Action<bool>? OnPrintLog;
 
     private static readonly Color LcdBright = Color.FromHex("#3FCF8E");
     private static readonly Color LcdMid = Color.FromHex("#2D9E60");
@@ -211,6 +214,15 @@ public sealed partial class ANPRCRadioWindow : DefaultWindow
         RadioCheckButton.OnPressed += _ => OnRadioCheck?.Invoke();
         DirectoryButton.OnPressed += _ => OnOpenDirectory?.Invoke();
 
+        SweepButton.OnPressed += _ =>
+        {
+            if (_lastState == null) return;
+            OnSetSweep?.Invoke(!_lastState.SweepEnabled);
+        };
+
+        PrintLogButton.OnPressed += _ => OnPrintLog?.Invoke(false);
+        PrintInterceptsButton.OnPressed += _ => OnPrintLog?.Invoke(true);
+
         NetLogChannelFilter.OnItemSelected += args =>
         {
             NetLogChannelFilter.SelectId(args.Id);
@@ -231,7 +243,11 @@ public sealed partial class ANPRCRadioWindow : DefaultWindow
             _netLogChannelFilter = null;
             _netLogSearchFilter = string.Empty;
             NetLogSearchEdit.Text = string.Empty;
-            NetLogChannelFilter.SelectId(0);
+
+            // the dropdown is empty until the first state arrives, and selecting an
+            // id it does not carry throws rather than no-opping
+            if (NetLogChannelFilter.ItemCount > 0)
+                NetLogChannelFilter.SelectId(0);
             if (_lastState != null)
                 RebuildNetLog(_lastState);
         };
@@ -516,7 +532,11 @@ public sealed partial class ANPRCRadioWindow : DefaultWindow
 
         RadioCheckButton.Disabled = !ready;
 
+        RebuildSweep(state);
         RebuildNetLog(state);
+
+        PrintLogButton.Disabled = !online || state.NetLog.Count == 0;
+        PrintInterceptsButton.Disabled = !online || state.NetLog.All(e => !e.Intercepted);
 
         PowerButton.Text = state.Enabled
             ? Loc.GetString("anprc-power-off-button")
@@ -572,7 +592,17 @@ public sealed partial class ANPRCRadioWindow : DefaultWindow
 
             string freqText;
             if (state.FrequencyOverrides.TryGetValue(slot, out var dynFreq))
-                freqText = $"{FormatFreq(dynFreq)} МГц · ПРЯМАЯ";
+            {
+                // a raw frequency the sweep fixed but could not name reads as an
+                // unknown net rather than a plain direct entry, so an operator can
+                // tell a tuned intercept from a number they punched in themselves
+                var unknownNet = state.SweepContacts.Any(contact =>
+                    contact.Resolved && !contact.Known && contact.Frequency == dynFreq);
+
+                freqText = unknownNet
+                    ? $"{FormatFreq(dynFreq)} МГц · НЕИЗВЕСТНАЯ СЕТЬ"
+                    : $"{FormatFreq(dynFreq)} МГц · ПРЯМАЯ";
+            }
             else if (state.Presets.TryGetValue(slot, out var ch) && _prototype.TryIndex(ch, out var proto))
                 freqText = $"{FormatFreq(PlanFreq(proto))} МГц · {proto.LocalizedName.ToUpperInvariant()}";
             else
@@ -662,15 +692,26 @@ public sealed partial class ANPRCRadioWindow : DefaultWindow
             if (proto.Frequency <= 0)
                 continue;
 
-            // only list the radio's own faction nets. faction-less channels (colony,
-            // civilian) get tuned by raw frequency instead
-            if (!string.IsNullOrEmpty(opFaction) && proto.Faction != opFaction)
+            // own-faction nets always list. a foreign net lists once the search
+            // receiver has fixed it - the server only puts a foreign channel's
+            // frequency in the state after it lands in DiscoveredFrequencies.
+            // faction-less channels (colony, civilian) get tuned by raw frequency
+            var ownNet = string.IsNullOrEmpty(opFaction) ||
+                         string.Equals(proto.Faction, opFaction, StringComparison.OrdinalIgnoreCase);
+
+            var discovered = !ownNet &&
+                             !string.IsNullOrEmpty(proto.Faction) &&
+                             state.ChannelFrequencies.ContainsKey(proto.ID);
+
+            if (!ownNet && !discovered)
                 continue;
 
             var capturedProto = proto;
             var btn = new Button
             {
-                Text = $"{proto.LocalizedName.ToUpperInvariant()}  -  {FormatFreq(PlanFreq(proto))} МГц",
+                Text = discovered
+                    ? $"{proto.LocalizedName.ToUpperInvariant()}  -  {FormatFreq(PlanFreq(proto))} МГц · ПОЙМАНА"
+                    : $"{proto.LocalizedName.ToUpperInvariant()}  -  {FormatFreq(PlanFreq(proto))} МГц",
                 HorizontalExpand = true,
             };
             btn.OnPressed += _ =>
@@ -680,6 +721,101 @@ public sealed partial class ANPRCRadioWindow : DefaultWindow
                 CloseSlotEntryPanel();
             };
             EntryNetList.AddChild(btn);
+        }
+    }
+
+    private void RebuildSweep(ANPRCRadioState state)
+    {
+        var online = state.Enabled && (state.IsEquipped || state.Planted);
+
+        SweepButton.Disabled = !online;
+        SweepButton.Text = state.SweepEnabled ? "STOP SEARCH" : "START SEARCH";
+        SweepButton.Pressed = state.SweepEnabled && online;
+
+        SweepStatusLabel.Text = !online ? "OFFLINE" : state.SweepEnabled ? "SEARCHING" : "IDLE";
+        SweepStatusLabel.FontColorOverride = state.SweepEnabled && online ? TextWarn : TextDim;
+
+        if (state.SweepEnabled && online)
+        {
+            SweepBandLabel.Text = $"HEAD: {FormatFreq(state.SweepPosition)} MHz";
+            SweepBandLabel.FontColorOverride = LcdBright;
+            SweepHintLabel.Text = "NETS DROPPED · TX INHIBITED";
+            SweepHintLabel.FontColorOverride = TextWarn;
+        }
+        else
+        {
+            SweepBandLabel.Text = "BAND IDLE";
+            SweepBandLabel.FontColorOverride = LcdOff;
+            SweepHintLabel.Text = "Searching drops all nets and blocks transmit.";
+            SweepHintLabel.FontColorOverride = TextDim;
+        }
+
+        SweepContactList.RemoveAllChildren();
+
+        if (state.SweepContacts.Count == 0)
+        {
+            SweepContactList.AddChild(new Label
+            {
+                Text = "NO CONTACTS",
+                FontColorOverride = TextDim,
+            });
+
+            return;
+        }
+
+        foreach (var contact in state.SweepContacts)
+        {
+            var row = new BoxContainer
+            {
+                Orientation = BoxContainer.LayoutOrientation.Horizontal,
+                SeparationOverride = 4,
+            };
+
+            if (contact.Resolved)
+            {
+                // an own net is dimmed and tagged: it is on the band, but it was never
+                // work, and it should not read like a prize the operator won
+                row.AddChild(new Label
+                {
+                    Text = contact.Known
+                        ? $"{FormatFreq(contact.Frequency)} MHz · {contact.ChannelName.ToUpperInvariant()} · OWN NET"
+                        : $"{FormatFreq(contact.Frequency)} MHz · {contact.ChannelName.ToUpperInvariant()}",
+                    FontColorOverride = contact.Known ? TextDim : TextGood,
+                    HorizontalExpand = true,
+                    ClipText = true,
+                });
+
+                // own nets are already sitting in the operator's presets, so only a
+                // fixed foreign net gets the shortcut
+                if (!contact.Known)
+                {
+                    var tuneBtn = new Button
+                    {
+                        Text = "TUNE",
+                        MinWidth = 52,
+                        Disabled = state.ActiveSlot < 0 || !state.SlotLabels.ContainsKey(state.ActiveSlot),
+                    };
+
+                    var captured = contact.Frequency;
+                    var slot = state.ActiveSlot;
+                    tuneBtn.OnPressed += _ => OnTuneContact?.Invoke(slot, captured);
+
+                    row.AddChild(tuneBtn);
+                }
+            }
+            else
+            {
+                // partial fix: only the digits earned so far, the rest still masked
+                row.AddChild(new Label
+                {
+                    Text = $"~{MaskDigits(FormatFreq(contact.Frequency), contact.Tier, contact.TierMax)} MHz · PARTIAL {contact.Tier}/{contact.TierMax}",
+                    FontColorOverride = TextWarn,
+                    HorizontalExpand = true,
+                    ClipText = true,
+                });
+            }
+
+            SweepContactList.AddChild(row);
         }
     }
 
@@ -701,8 +837,10 @@ public sealed partial class ANPRCRadioWindow : DefaultWindow
 
             var line = new Label
             {
-                Text = $"[{timeStr}] {entry.SenderName} · {entry.ChannelDisplay}",
-                FontColorOverride = TextLog,
+                Text = entry.Intercepted
+                    ? $"[{timeStr}] {entry.SenderName} · {entry.ChannelDisplay} · INTERCEPT"
+                    : $"[{timeStr}] {entry.SenderName} · {entry.ChannelDisplay}",
+                FontColorOverride = entry.Intercepted ? TextWarn : TextLog,
                 ClipText = true,
             };
             var msg = new Label
@@ -750,7 +888,10 @@ public sealed partial class ANPRCRadioWindow : DefaultWindow
             .OrderBy(c => c, StringComparer.OrdinalIgnoreCase)
             .ToList();
 
-        if (channels.SequenceEqual(_netLogChannels))
+        // on a fresh window with an empty log both lists are empty, so the equality
+        // check alone would skip the build and leave the dropdown with no ALL NETS
+        // entry for the clear button to select back to
+        if (NetLogChannelFilter.ItemCount > 0 && channels.SequenceEqual(_netLogChannels))
             return;
 
         _netLogChannels.Clear();
@@ -779,6 +920,17 @@ public sealed partial class ANPRCRadioWindow : DefaultWindow
 
     private static string FormatFreq(int raw)
         => raw >= 1000 ? $"{raw / 1000}.{raw % 1000:D3}" : $"00.{raw:D3}";
+
+    // replace the digits the operator has not earned with X, so a partial fix reads
+    // as 2.4XX instead of a falsely precise 2.400
+    private static string MaskDigits(string formatted, int tier, int tierMax)
+    {
+        var unknown = Math.Clamp(tierMax - tier, 0, formatted.Length);
+
+        return unknown > 0
+            ? formatted[..^unknown] + new string('X', unknown)
+            : formatted;
+    }
 
     private static string BandName(int f)
         => f < 3000 ? "LF" : f < 30000 ? "HF" : f < 88000 ? "VHF" : f < 300000 ? "UHF" : "SHF";

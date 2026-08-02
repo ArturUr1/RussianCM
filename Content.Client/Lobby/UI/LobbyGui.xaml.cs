@@ -18,6 +18,7 @@ namespace Content.Client.Lobby.UI
     {
         private const float BalanceRatingBottomMargin = 84f;
         private const float MinimumTerminalColumnWidth = 350f;
+        private const float LeftPanelVisualPadding = 34f;
         private const float RightPanelVisualPadding = 20f;
 
         [Dependency] private IClientConsoleHost _consoleHost = default!;
@@ -100,6 +101,8 @@ namespace Content.Client.Lobby.UI
             CollapseButton.OnPressed += _ => TogglePanel(false);
             ExpandButton.OnPressed += _ => TogglePanel(true);
             MainContainer.OnResized += KeepTerminalUsable;
+            TerminalCard.OnResized += SyncTerminalViewport;
+            RightSide.OnResized += SyncTerminalViewport;
         }
 
         public void StartBootSequence()
@@ -211,8 +214,11 @@ namespace Content.Client.Lobby.UI
 
         private void SyncTerminalViewport()
         {
+            TerminalBackground.ReservedLeftWidth = DefaultState.Visible
+                ? MathF.Max(MinimumTerminalColumnWidth, TerminalCard.Width + LeftPanelVisualPadding)
+                : 0f;
             TerminalBackground.ReservedRightWidth = RightSide.Visible
-                ? RightSide.SetWidth + RightPanelVisualPadding
+                ? MathF.Max(RightSide.SetWidth, RightSide.Width) + RightPanelVisualPadding
                 : 0f;
         }
 

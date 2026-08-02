@@ -106,10 +106,10 @@ public sealed partial class YautjaCasterSystem : EntitySystem
             return;
 
         var strength = mode.ExamineStrength.Length > 0
-            ? mode.ExamineStrength
+            ? Loc.GetString(mode.ExamineStrength)
             : Loc.GetString(mode.Name);
 
-        args.PushMarkup($"It is set to fire {strength}.");
+        args.PushMarkup(Loc.GetString("cmu-yautja-caster-fire-mode", ("mode", strength)));
     }
 
     private void OnAttemptShoot(Entity<YautjaCasterComponent> ent, ref AttemptShootEvent args)

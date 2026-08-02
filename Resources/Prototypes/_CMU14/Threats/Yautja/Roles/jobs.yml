@@ -170,6 +170,7 @@
   id: CMUYautjaYoungbloodGear
   equipment:
     ears: CMUYautjaCommunicator
+    mask: CMUYautjaMask
     gloves: CMUYautjaBracer
 
 - type: startingGear

@@ -188,12 +188,10 @@
   reactants:
     CMUOxycodone:
       amount: 1
-    RMCChlorine:
-      amount: 1
-    RMCFluorine:
+    RMCCLF3:
       amount: 1
   products:
-    CMUFentanylPrecursor: 3
+    CMUFentanylPrecursor: 2
 
 - type: reaction
   id: CMUFentanyl
@@ -333,6 +331,18 @@
       amount: 1
   products:
     CMUOsteoCalc: 3
+
+- type: reaction
+  id: CMUAlkysine
+  reactants:
+    RMCChlorine:
+      amount: 1
+    RMCNitrogen:
+      amount: 1
+    CMDylovene:
+      amount: 1
+  products:
+    CMUAlkysine: 3
 
 - type: reaction
   id: CMUBiogenicMatrix

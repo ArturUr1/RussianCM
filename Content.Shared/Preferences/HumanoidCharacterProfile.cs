@@ -41,6 +41,10 @@ namespace Content.Shared.Preferences
         private static readonly Regex MultiDotRegex = new(@"\.+", RegexOptions.Compiled);
         private static readonly Regex LeadingTrailingDotRegex = new(@"(^\.|\.$)", RegexOptions.Compiled);
         private static readonly Regex SingleDotRegex = new(@"\.", RegexOptions.Compiled);
+        private static readonly Regex HeightRegex = new(@"^[4-6]'(?:[0-9]|1[01])$", RegexOptions.Compiled);
+
+        public const int MinWeight = 90;
+        public const int MaxWeight = 300;
 
         /// <summary>
         /// Job preferences for initial spawn.
@@ -228,6 +232,39 @@ namespace Content.Shared.Preferences
 
         [DataField]
         public YautjaCharacterProfile YautjaProfile { get; private set; } = YautjaCharacterProfile.Default;
+        /// <summary>
+        /// Whether this character is a synthetic. Requires the synthetic job whitelist to
+        /// set to true; if true, the character will only be resolved into synthetic jobs.
+        /// </summary>
+        [DataField]
+        public bool Synthetic { get; private set; } = false;
+
+        [DataField]
+        public string ShortExamine { get; private set; } = string.Empty;
+
+        [DataField]
+        public string FullDescription { get; private set; } = string.Empty;
+
+        [DataField]
+        public string MedicalRecord { get; private set; } = string.Empty;
+
+        [DataField]
+        public string CriminalRecord { get; private set; } = string.Empty;
+
+        [DataField]
+        public string GeneralRecord { get; private set; } = string.Empty;
+
+        [DataField]
+        public string Height { get; private set; } = string.Empty;
+
+        [DataField]
+        public int Weight { get; private set; } = 160;
+
+        [DataField]
+        public BuildType Build { get; private set; } = BuildType.Average;
+
+        [DataField]
+        public bool HideMetaInformation { get; private set; } = false;
 
         public HumanoidCharacterProfile(
             string name,
@@ -253,11 +290,21 @@ namespace Content.Shared.Preferences
             ProtoId<AllegiancePrototype>? allegiance = null,
             ProtoId<OriginPrototype>? origin = null,
             ProtoId<PlatoonPrototype>? platoon = null,
+            bool synthetic = false,
             HashSet<ProtoId<ThreatPrototype>>? threatPreferences = null,
             Dictionary<string, Dictionary<ProtoId<JobPrototype>, JobPriority>>? gamemodeJobPriorities = null,
             Dictionary<string, HashSet<ProtoId<AntagPrototype>>>? gamemodeAntagPreferences = null,
             Dictionary<string, HashSet<ProtoId<ThreatPrototype>>>? gamemodeThreatPreferences = null,
-            YautjaCharacterProfile? yautjaProfile = null)
+            YautjaCharacterProfile? yautjaProfile = null,
+            string shortExamine = "",
+            string fullDescription = "",
+            string medicalRecord = "",
+            string criminalRecord = "",
+            string generalRecord = "",
+            string height = "",
+            int weight = 160,
+            BuildType build = BuildType.Average,
+            bool hideMetaInformation = false)
         {
             Name = name;
             FlavorText = flavortext;
@@ -283,11 +330,21 @@ namespace Content.Shared.Preferences
             Allegiance = allegiance;
             Origin = origin;
             Platoon = platoon;
+            Synthetic = synthetic;
             _threatPreferences = threatPreferences ?? new();
             _gamemodeJobPriorities = NormalizeGamemodeJobPriorities(gamemodeJobPriorities);
             _gamemodeAntagPreferences = NormalizeGamemodeSetPreferences(gamemodeAntagPreferences);
             _gamemodeThreatPreferences = NormalizeGamemodeSetPreferences(gamemodeThreatPreferences);
             YautjaProfile = yautjaProfile?.Clone() ?? YautjaCharacterProfile.Default;
+            ShortExamine = shortExamine;
+            FullDescription = fullDescription;
+            MedicalRecord = medicalRecord;
+            CriminalRecord = criminalRecord;
+            GeneralRecord = generalRecord;
+            Height = height;
+            Weight = weight;
+            Build = build;
+            HideMetaInformation = hideMetaInformation;
         }
 
         private static string NormalizePreferenceGamemode(string? gamemode)
@@ -405,6 +462,7 @@ namespace Content.Shared.Preferences
                 other.Allegiance,
                 other.Origin,
                 other.Platoon,
+                other.Synthetic,
                 new HashSet<ProtoId<ThreatPrototype>>(other.ThreatPreferences),
                 other.GamemodeJobPriorities.ToDictionary(
                     pair => pair.Key,
@@ -415,7 +473,16 @@ namespace Content.Shared.Preferences
                 other.GamemodeThreatPreferences.ToDictionary(
                     pair => pair.Key,
                     pair => new HashSet<ProtoId<ThreatPrototype>>(pair.Value)),
-                other.YautjaProfile)
+                other.YautjaProfile,
+                other.ShortExamine,
+                other.FullDescription,
+                other.MedicalRecord,
+                other.CriminalRecord,
+                other.GeneralRecord,
+                other.Height,
+                other.Weight,
+                other.Build,
+                other.HideMetaInformation)
         {
         }
 
@@ -501,6 +568,9 @@ namespace Content.Shared.Preferences
             }
 
             var name = GetName(species, gender);
+            var heightFeet = random.Next(4, 7);
+            var heightInches = random.Next(0, 12);
+            var weight = random.Next(MinWeight, MaxWeight + 1);
 
             return new HumanoidCharacterProfile()
             {
@@ -511,6 +581,8 @@ namespace Content.Shared.Preferences
                 Species = species,
                 Voice = voiceId,
                 Appearance = HumanoidCharacterAppearance.Random(species, sex),
+                Height = $"{heightFeet}'{heightInches}",
+                Weight = weight,
             };
         }
 
@@ -608,6 +680,58 @@ namespace Content.Shared.Preferences
         public HumanoidCharacterProfile WithYautjaProfile(YautjaCharacterProfile profile)
         {
             return new(this) { YautjaProfile = profile.Clone() };
+        }
+        public HumanoidCharacterProfile WithSynthetic(bool synthetic)
+        {
+            return new(this)
+            {
+                Synthetic = synthetic
+            };
+        }
+
+        public HumanoidCharacterProfile WithShortExamine(string shortExamine)
+        {
+            return new(this) { ShortExamine = shortExamine };
+        }
+
+        public HumanoidCharacterProfile WithFullDescription(string fullDescription)
+        {
+            return new(this) { FullDescription = fullDescription };
+        }
+
+        public HumanoidCharacterProfile WithMedicalRecord(string medicalRecord)
+        {
+            return new(this) { MedicalRecord = medicalRecord };
+        }
+
+        public HumanoidCharacterProfile WithCriminalRecord(string criminalRecord)
+        {
+            return new(this) { CriminalRecord = criminalRecord };
+        }
+
+        public HumanoidCharacterProfile WithGeneralRecord(string generalRecord)
+        {
+            return new(this) { GeneralRecord = generalRecord };
+        }
+
+        public HumanoidCharacterProfile WithHeight(string height)
+        {
+            return new(this) { Height = height };
+        }
+
+        public HumanoidCharacterProfile WithWeight(int weight)
+        {
+            return new(this) { Weight = Math.Clamp(weight, MinWeight, MaxWeight) };
+        }
+
+        public HumanoidCharacterProfile WithBuild(BuildType build)
+        {
+            return new(this) { Build = build };
+        }
+
+        public HumanoidCharacterProfile WithHideMetaInformation(bool hideMetaInformation)
+        {
+            return new(this) { HideMetaInformation = hideMetaInformation };
         }
 
         public HumanoidCharacterProfile WithThreatPreference(ProtoId<ThreatPrototype> threat, bool pref)
@@ -944,6 +1068,16 @@ namespace Content.Shared.Preferences
                 YautjaProfile.Unique != other.YautjaProfile.Unique ||
                 YautjaProfile.FlavorText != other.YautjaProfile.FlavorText)
                 return false;
+            if (Synthetic != other.Synthetic) return false;
+            if (ShortExamine != other.ShortExamine) return false;
+            if (FullDescription != other.FullDescription) return false;
+            if (MedicalRecord != other.MedicalRecord) return false;
+            if (CriminalRecord != other.CriminalRecord) return false;
+            if (GeneralRecord != other.GeneralRecord) return false;
+            if (Height != other.Height) return false;
+            if (Weight != other.Weight) return false;
+            if (Build != other.Build) return false;
+            if (HideMetaInformation != other.HideMetaInformation) return false;
             if (!_threatPreferences.SetEquals(other._threatPreferences)) return false;
             if (!GamemodeSetPreferencesEqual(_gamemodeThreatPreferences, other._gamemodeThreatPreferences)) return false;
             return Appearance.MemberwiseEquals(other.Appearance);
@@ -1072,6 +1206,35 @@ namespace Content.Shared.Preferences
                 flavortext = FormattedMessage.RemoveMarkupOrThrow(FlavorText);
             }
 
+            string ClampDescriptionField(string text, int maxLen)
+            {
+                var stripped = FormattedMessage.RemoveMarkupOrThrow(text);
+                return stripped.Length > maxLen ? stripped[..maxLen] : stripped;
+            }
+
+            var maxShortExamineLength = configManager.GetCVar(CCVars.MaxShortExamineLength);
+            var maxDescriptionFieldLength = configManager.GetCVar(CCVars.MaxCharacterDescriptionFieldLength);
+            var shortExamine = ClampDescriptionField(ShortExamine, maxShortExamineLength);
+            var fullDescription = ClampDescriptionField(FullDescription, maxDescriptionFieldLength);
+            var medicalRecord = ClampDescriptionField(MedicalRecord, maxDescriptionFieldLength);
+            var criminalRecord = ClampDescriptionField(CriminalRecord, maxDescriptionFieldLength);
+            var generalRecord = ClampDescriptionField(GeneralRecord, maxDescriptionFieldLength);
+            var height = HeightRegex.IsMatch(Height) ? Height : string.Empty;
+            var weight = Math.Clamp(Weight, MinWeight, MaxWeight);
+
+            var build = Build switch
+            {
+                BuildType.Thin => BuildType.Thin,
+                BuildType.Lean => BuildType.Lean,
+                BuildType.Average => BuildType.Average,
+                BuildType.Athletic => BuildType.Athletic,
+                BuildType.Muscular => BuildType.Muscular,
+                BuildType.Broad => BuildType.Broad,
+                BuildType.Stocky => BuildType.Stocky,
+                BuildType.Heavyset => BuildType.Heavyset,
+                _ => BuildType.Average // Invalid enum values.
+            };
+
             var appearance = HumanoidCharacterAppearance.EnsureValid(Appearance, Species, Sex);
 
             var prefsUnavailableMode = PreferenceUnavailable switch
@@ -1149,6 +1312,14 @@ namespace Content.Shared.Preferences
             Gender = gender;
             Appearance = appearance;
             SpawnPriority = spawnPriority;
+            ShortExamine = shortExamine;
+            FullDescription = fullDescription;
+            MedicalRecord = medicalRecord;
+            CriminalRecord = criminalRecord;
+            GeneralRecord = generalRecord;
+            Height = height;
+            Weight = weight;
+            Build = build;
 
             var armorPreference = ArmorPreference switch
             {
@@ -1372,6 +1543,16 @@ namespace Content.Shared.Preferences
             hashCode.Add(Allegiance);
             hashCode.Add(Origin);
             hashCode.Add(Platoon);
+            hashCode.Add(Synthetic);
+            hashCode.Add(ShortExamine);
+            hashCode.Add(FullDescription);
+            hashCode.Add(MedicalRecord);
+            hashCode.Add(CriminalRecord);
+            hashCode.Add(GeneralRecord);
+            hashCode.Add(Height);
+            hashCode.Add(Weight);
+            hashCode.Add((int)Build);
+            hashCode.Add(HideMetaInformation);
             foreach (var threatPreference in _threatPreferences.Select(threat => threat.Id).OrderBy(id => id))
             {
                 hashCode.Add(threatPreference);
