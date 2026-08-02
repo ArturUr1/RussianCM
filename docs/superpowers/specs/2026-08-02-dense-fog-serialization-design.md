@@ -12,7 +12,7 @@ Clicking the dense fog at Yautja hunting grounds must open the existing escape c
 
 Add `[Serializable, NetSerializable]` to `YautjaPreserveEscapeChoiceEvent` in `Content.Shared/_CMU14/Yautja/YautjaHuntEvents.cs`. This follows the established event pattern and changes no gameplay behavior: non-Yautja players still receive the existing confirmation dialog and five-second escape do-after, while Yautja players remain denied at the edge.
 
-Add a connected server/client integration regression test that spawns the preserve edge, triggers the real hand interaction, allows the dialog state to replicate, and verifies both processes remain alive. The test protects the failure boundary rather than asserting source attributes alone.
+Add a shared serialization-contract regression test for the event. The connected runtime scenario remains part of manual verification because the current integration harness aborts during client startup on pre-existing duplicate-localization errors before it can reach the interaction.
 
 ## Alternatives considered
 
@@ -22,7 +22,7 @@ Add a connected server/client integration regression test that spawns the preser
 
 ## Verification
 
-- The new regression test fails before the attribute is added with the same missing-type serialization failure.
+- The new regression test fails before the attribute is added because the event has neither required serialization attribute.
 - The new test passes after the attribute is added.
 - Existing targeted Yautja integration tests and Debug server/client builds pass.
-- Runtime logs contain no fatal PVS serialization error when the dense-fog dialog is opened.
+- Runtime logs contain no fatal PVS serialization error when the dense-fog dialog is opened; duplicate-localization warnings remain a pre-existing non-fatal issue.
