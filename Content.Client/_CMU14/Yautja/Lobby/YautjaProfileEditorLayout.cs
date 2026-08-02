@@ -42,6 +42,7 @@ public static class YautjaProfileEditorLayout
 {
     public const int TechOptionSpacing = 6;
     public const int TechOptionBottomMargin = 12;
+    public const float HorizontalWorkAreaMinWidth = 750;
 
     public static IReadOnlyList<YautjaProfileEditorCategoryInfo> Categories { get; } =
     [
@@ -129,5 +130,10 @@ public static class YautjaProfileEditorLayout
 
         var columns = (int) MathF.Floor((availableWidth + separation) / (cardWidth + separation));
         return Math.Clamp(columns, 1, preferredColumns);
+    }
+
+    public static bool ShouldStackWorkArea(float availableWidth)
+    {
+        return availableWidth < HorizontalWorkAreaMinWidth;
     }
 }

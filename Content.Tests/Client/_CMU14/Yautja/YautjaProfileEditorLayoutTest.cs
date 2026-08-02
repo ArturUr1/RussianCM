@@ -62,6 +62,16 @@ public sealed class YautjaProfileEditorLayoutTest
             Is.False);
     }
 
+    [Test]
+    public void TechnologyOptionsUseVerticalLocalizationSafeLayout()
+    {
+        Assert.Multiple(() =>
+        {
+            Assert.That(YautjaProfileEditorLayout.TechOptionSpacing, Is.GreaterThan(0));
+            Assert.That(YautjaProfileEditorLayout.TechOptionBottomMargin, Is.GreaterThanOrEqualTo(10));
+        });
+    }
+
     [TestCase(false, YautjaLegacySet.Dragon, true)]
     [TestCase(true, YautjaLegacySet.Dragon, false)]
     [TestCase(false, YautjaLegacySet.None, false)]
@@ -127,16 +137,6 @@ public sealed class YautjaProfileEditorLayoutTest
     }
 
     [Test]
-    public void TechnologyOptionsUseVerticalLocalizationSafeLayout()
-    {
-        Assert.Multiple(() =>
-        {
-            Assert.That(YautjaProfileEditorLayout.TechOptionSpacing, Is.GreaterThan(0));
-            Assert.That(YautjaProfileEditorLayout.TechOptionBottomMargin, Is.GreaterThanOrEqualTo(10));
-        });
-    }
-
-    [Test]
     public void SummarySelectionUsesUniqueSetAndCurrentGear()
     {
         var profile = YautjaCharacterProfile.Default
@@ -164,6 +164,30 @@ public sealed class YautjaProfileEditorLayoutTest
         Assert.That(selection.CasterMaterial, Is.EqualTo(YautjaBracerMaterial.Silver));
     }
 
+    [Test]
+    public void BuildSummaryUsesUniqueSetAndCurrentGearNames()
+    {
+        var profile = YautjaCharacterProfile.Default
+            .WithRank(YautjaRank.Elite)
+            .WithUnique(YautjaUniqueSet.Anubys)
+            .WithArmor(YautjaGearMaterial.Silver, 2)
+            .WithMask(YautjaGearMaterial.Bronze, 3)
+            .WithGreaves(YautjaGearMaterial.Bone, 1)
+            .WithCapeStyle(YautjaCapeStyle.Full)
+            .WithBracer(YautjaBracerMaterial.Crimson)
+            .WithCaster(YautjaBracerMaterial.Silver);
+
+        var summary = YautjaProfileEditorLayout.BuildSummary(profile);
+
+        Assert.That(summary.Set, Is.EqualTo(YautjaCharacterProfile.GetUniqueDisplayName(YautjaUniqueSet.Anubys)));
+        Assert.That(summary.Armor, Is.EqualTo(YautjaCharacterProfile.GetArmorStyleDisplayName(YautjaGearMaterial.Silver, 2)));
+        Assert.That(summary.Mask, Is.EqualTo(YautjaCharacterProfile.GetMaskStyleDisplayName(YautjaGearMaterial.Bronze, 3)));
+        Assert.That(summary.Greaves, Is.EqualTo(YautjaCharacterProfile.GetGreavesStyleDisplayName(YautjaGearMaterial.Bone, 1)));
+        Assert.That(summary.Cape, Is.EqualTo(YautjaCharacterProfile.GetCapeDisplayName(YautjaCapeStyle.Full)));
+        Assert.That(summary.Bracer, Is.EqualTo(YautjaCharacterProfile.GetBracerDisplayName(YautjaBracerMaterial.Crimson)));
+        Assert.That(summary.Caster, Is.EqualTo(YautjaCharacterProfile.GetCasterDisplayName(YautjaBracerMaterial.Silver)));
+    }
+
     [TestCase(760, 6, 6)]
     [TestCase(340, 6, 3)]
     [TestCase(220, 4, 1)]
@@ -171,6 +195,17 @@ public sealed class YautjaProfileEditorLayoutTest
     {
         Assert.That(
             YautjaProfileEditorLayout.GetResponsiveColumnCount(availableWidth, preferredColumns),
+            Is.EqualTo(expected));
+    }
+
+    [TestCase(0, true)]
+    [TestCase(749, true)]
+    [TestCase(750, false)]
+    [TestCase(1100, false)]
+    public void WorkAreaStacksWhenWidthCannotFitFixedColumns(float availableWidth, bool expected)
+    {
+        Assert.That(
+            YautjaProfileEditorLayout.ShouldStackWorkArea(availableWidth),
             Is.EqualTo(expected));
     }
 }

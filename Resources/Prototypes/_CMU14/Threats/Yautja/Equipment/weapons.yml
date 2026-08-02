@@ -259,6 +259,8 @@
   - type: Item
     heldPrefix: combistick
     size: Large
+  - type: ItemThrowRange
+    range: 4
   - type: Clothing
     slots:
     - back
@@ -353,6 +355,8 @@
   - type: Item
     heldPrefix: war_axe
     size: Large
+  - type: ItemThrowRange
+    range: 4
   - type: Clothing
     slots:
     - back
@@ -383,6 +387,8 @@
   - type: Item
     heldPrefix: ceremonial_dagger
     size: Tiny
+  - type: ItemThrowRange
+    range: 6
   - type: Clothing
     slots:
     - pocket
@@ -702,6 +708,8 @@
   - type: Item
     heldPrefix: duelling_club
     size: Normal
+  - type: ItemThrowRange
+    range: 7
   - type: MeleeWeapon
     damage:
       types:
@@ -734,6 +742,8 @@
   - type: Item
     heldPrefix: duelling_hatchet
     size: Small
+  - type: ItemThrowRange
+    range: 4
   - type: MeleeWeapon
     damage:
       types:
