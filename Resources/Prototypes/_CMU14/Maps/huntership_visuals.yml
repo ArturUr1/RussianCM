@@ -14330,16 +14330,16 @@
     enableOverrideDir: true
     overrideDir: South
     layers:
-    - state: ""
+    - state: base
       color: "#9bb1be"
       map: [ "enum.IVDripVisualLayers.Base" ]
     - state: reagent0
       map: [ "enum.IVDripVisualLayers.Reagent" ]
   - type: Icon
     sprite: _CMU14/HunterShip/obj/structures/machinery/iv_drip.rsi
-    state: ""
+    state: base
   - type: IVDrip
-    unattachedState: ""
+    unattachedState: base
     attachedState: hooked
     reagentStates:
     - 0: reagent0

@@ -5056,7 +5056,6 @@
       hijackable: false
       canTacticalLand: true
       tacticalLandFootprintOverride: 7,13
-      directLanding: true
     - type: ApcPowerReceiver
       needsPower: false
     - type: RMCPowerReceiver

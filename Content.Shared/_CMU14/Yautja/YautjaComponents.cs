@@ -2086,7 +2086,7 @@ public sealed partial class YautjaHellhoundComponent : Component
     public float LimbTargetDamageMultiplier = 1.15f;
 
     [DataField]
-    public EntProtoId CameraId = "CMUYautjaHellhoundCamera";
+    public EntProtoId CameraId = "CMUMobYautjaHellhound";
 }
 
 [RegisterComponent]
