@@ -14,7 +14,7 @@
     state: lbtshell_hesh
     suffix: false
   - type: CartridgeAmmo
-    deleteOnSpawn: false
+    deleteOnSpawn: true # RuMC edit
     proto: RMCProjectileLTBCannon
     muzzleFlash: MuzzleFlashEffectVehicleOverLarge
     muzzleFlashOffset: 2.2, 0
