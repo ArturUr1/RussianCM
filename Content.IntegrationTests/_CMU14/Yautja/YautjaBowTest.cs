@@ -3378,6 +3378,27 @@ public sealed class YautjaBowTest
     }
 
     [Test]
+    public async Task YautjaMcasteWornVisualsUseWorldStates()
+    {
+        await using var pair = await PoolManager.GetServerClient();
+        var client = pair.Client;
+
+        await client.WaitAssertion(() =>
+        {
+            var prototypes = client.ResolveDependency<IPrototypeManager>();
+            var factory = client.ResolveDependency<IComponentFactory>();
+
+            AssertClothingVisualState(prototypes, factory, "CMUYautjaPoweredArmor", "outerClothing", "fullarmor_soldier");
+            AssertClothingVisualState(prototypes, factory, "CMUYautjaPoweredArmorEnforcer", "outerClothing", "fullarmor_soldier_lead");
+            AssertClothingVisualState(prototypes, factory, "CMUYautjaPoweredGreaves", "shoes", "y-boots_powered");
+            AssertClothingVisualState(prototypes, factory, "CMUYautjaPoweredHelmet", "head", "helmet_powered");
+            AssertClothingVisualState(prototypes, factory, "CMUYautjaCannonPack", "back", "cannonpack");
+        });
+
+        await pair.CleanReturnAsync();
+    }
+
+    [Test]
     public async Task CannonPackWornActionMatchesCmss13BackpackAction()
     {
         await using var pair = await PoolManager.GetServerClient();
@@ -16079,6 +16100,24 @@ public sealed class YautjaBowTest
         Assert.That(prototype.TryGetComponent<SpriteComponent>(out var sprite, factory), Is.True, id);
         Assert.That(sprite!.BaseRSI?.Path, Is.EqualTo(new ResPath("/Textures/" + spritePath)), $"{id} world sprite RSI");
         Assert.That(sprite.AllLayers.First().RsiState.Name, Is.EqualTo(state), $"{id} world icon state");
+    }
+
+    private static void AssertClothingVisualState(
+        IPrototypeManager prototypes,
+        IComponentFactory factory,
+        string id,
+        string slot,
+        string state)
+    {
+        var prototype = prototypes.Index<EntityPrototype>(id);
+
+        Assert.That(prototype.TryGetComponent<ClothingComponent>(out var clothing, factory), Is.True, id);
+#pragma warning disable RA0002
+        Assert.That(clothing!.ClothingVisuals.TryGetValue(slot, out var layers), Is.True,
+            $"{id} must define clothing visuals for {slot}.");
+#pragma warning restore RA0002
+        Assert.That(layers, Has.Count.EqualTo(1), $"{id} {slot} visual layer count.");
+        Assert.That(layers![0].State, Is.EqualTo(state), $"{id} {slot} visual state.");
     }
 
     private static IEnumerable<EntityUid> EntityPrototypeIds(IEntityManager entMan, string prototype)
