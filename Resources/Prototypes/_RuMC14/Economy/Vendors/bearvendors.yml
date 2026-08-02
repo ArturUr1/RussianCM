@@ -194,12 +194,10 @@
         amount: 25
       - id: RMCGlassesTriMaxBronze
         amount: 25
-    #- name: au14-vendor-section-patches
-    #  entries:
-    #  - id: AU14PatchUPP
-    #    amount: 80
-    #  - id: AU14PatchUPPNavalInfantry
-    #    amount: 80
+    - name: au14-vendor-section-patches
+      entries:
+      - id: RuMCPatchBEAR
+        amount: 80
 
 
 
