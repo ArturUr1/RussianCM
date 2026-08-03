@@ -6,18 +6,12 @@
   components:
   - type: Sprite
     sprite: _RuMC14/Clothing/BEAR/jumpsuits/bear_forms_brown.rsi
-  - type: Foldable
-    unfoldVerbText: rmc-sleeves-verb-unfold
-    foldVerbText: rmc-sleeves-verb-fold
   - type: UniformAccessoryHolder
     startingAccessories:
     - RuMCPatchBEAR
   - type: Tag
     tags:
     - RuMCUniformBEAR
-
-- type: Tag
-  id: RuMCUniformBEAR
 
 - type: entity
   parent: RuMCUniformBEAR
@@ -36,3 +30,6 @@
   components:
   - type: Sprite
     sprite: _RuMC14/Clothing/BEAR/jumpsuits/bear_forms_gray.rsi
+
+- type: Tag
+  id: RuMCUniformBEAR

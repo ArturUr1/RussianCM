@@ -44,7 +44,7 @@
   description: It contains three RG35F Termobaric grenades.
 
 - type: entity
-  parent: RuCMPacketGrenadeeTermobaricUPP
+  parent: RuCMPacketGrenadeTermobaricUPP
   id: RuMCPacketGrenadeTermobaricUPPFilled
   suffix: Filled
   components:

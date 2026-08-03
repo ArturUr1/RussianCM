@@ -198,6 +198,8 @@
       entries:
       - id: RuMCPatchBEAR
         amount: 80
+      - id: RuMCPatchBEARHammer
+        amount: 40
 
 
 
