@@ -63,6 +63,7 @@
       entries:
       - id: RMCGunCasePistolM1984
       - id: AU14GunCasePistolHG45
+      - id: RMCGunCaseRevolverSpearhead # RuMC edit
     - name: au14-vendor-section-restraining-gear
       entries:
       - id: RMCHandcuffs
