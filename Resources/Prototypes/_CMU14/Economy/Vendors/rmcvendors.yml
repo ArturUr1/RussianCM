@@ -1501,6 +1501,12 @@
         amount: 1
       - id: RMCTentUNMCExtendedMessFolded
         amount: 1
+    # RuMC edit start
+    - name: au14-vendor-section-melee-weapons
+      entries:
+      - id: RMCScabbardKatanaFilled
+        amount: 2
+    # RuMC edit end
 
 - type: entity
   parent: ColMarTechBase
