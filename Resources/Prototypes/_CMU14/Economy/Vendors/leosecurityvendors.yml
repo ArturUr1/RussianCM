@@ -32,6 +32,7 @@
       entries:
       - id: CMBeltSecurityMarshalFilled
       - id: RMCBeltHolsterPistolTSE
+      - id: RMCBeltHolsterRevolverBlack # RuMC edit
     - name: au14-vendor-section-bag
       choices: { CMUCMBDutyStorageBag: 1 }
       entries:
