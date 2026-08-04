@@ -1209,6 +1209,8 @@
         amount: 1
       - id: RuMCUTES-CCase
         amount: 1
+      - id: RuMCHammer
+        amount: 1
     - name: au14-vendor-section-primary-ammunition
       entries:
       - id: RMCMagazineRifleAK4047
