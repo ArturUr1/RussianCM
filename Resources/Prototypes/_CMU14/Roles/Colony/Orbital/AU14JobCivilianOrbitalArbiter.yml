@@ -83,7 +83,7 @@
     - CMFolderBlack
     - CMPaperBin30
   inhand:
-  - AU14BriefcaseArbiterBundle # RuCM fix Орбитальный арбитр получает теперь свой кейс с печатью
+  - AU14BriefcaseArbiterBundle # RuMC edit
 
 - type: entity
   parent: CMSpawnPointJobBase
