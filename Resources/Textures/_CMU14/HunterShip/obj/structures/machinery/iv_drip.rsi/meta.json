@@ -6,15 +6,16 @@
     "x": 32,
     "y": 32
   },
+  "rsic": false,
   "states": [
+    {
+      "name": "base"
+    },
     {
       "name": "hooked"
     },
     {
       "name": "beakerlarge100"
-    },
-    {
-      "name": ""
     },
     {
       "name": "reagent100"

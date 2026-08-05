@@ -37647,7 +37647,7 @@ entities:
     - type: Transform
       pos: -56.5,-18.5
       parent: 1
-- proto: RMCSpawnPointProvostInspector
+- proto: CMUSpawnPointProvostInspector
   entities:
   - uid: 1435
     components:
@@ -37915,7 +37915,7 @@ entities:
     - type: MetaData
       name: Fiorina ground relay
     - type: Transform
-      pos: -43.5,4.5
+      pos: 13.5,-12.5
       parent: 1
     - type: YautjaRelayDestination
       kind: Ground

@@ -975,7 +975,7 @@
 
 - type: lorePrimer
   id: AU14PrimerPlanetChances
-  planetText: lore-primer-planet-chances # RuMC edit
+  planetText: cmu-lore-primer-chances
 
 - type: lorePrimer
   id: AU14PrimerPlanetLV747
@@ -983,11 +983,11 @@
 
 - type: lorePrimer
   id: AU14PrimerPlanetShepherdsPride
-  planetText: lore-primer-planet-shepherds-pride # RuMC edit
+  planetText: cmu-lore-primer-shepherds-pride
 
 - type: lorePrimer
   id: AU14PrimerPlanetStableGarrison
-  planetText: lore-primer-planet-stable-garrison # RuMC edit
+  planetText: cmu-lore-primer-stable-garrison
 
 - type: lorePrimer
   id: AU14PrimerPlanetLV624
@@ -1007,11 +1007,11 @@
 
 - type: lorePrimer
   id: AU14PrimerPlanetLV327
-  planetText: lore-primer-planet-lv327 # RuMC edit
+  planetText: cmu-lore-primer-port-nereid
 
 - type: lorePrimer
   id: AU14PrimerPlanetCorsatStation
-  planetText: lore-primer-planet-corsat-station # RuMC edit
+  planetText: cmu-lore-primer-corsat
 
 - type: lorePrimer
   id: AU14PrimerPlanetLament
@@ -1019,7 +1019,7 @@
 
 - type: lorePrimer
   id: AU14PrimerPlanetSorokyne
-  planetText: lore-primer-planet-sorokyne # RuMC edit
+  planetText: cmu-lore-primer-sorokyne
 
 - type: lorePrimer
   id: AU14PrimerPlanetTrijent
@@ -1027,15 +1027,15 @@
 
 - type: lorePrimer
   id: AU14PrimerPlanetShivasSnowball
-  planetText: lore-primer-planet-shivas-snowball # RuMC edit
+  planetText: cmu-lore-primer-shivas-snowball
 
 - type: lorePrimer
   id: AU14PrimerPlanetKutjevo
-  planetText: lore-primer-planet-kutjevo # RuMC edit
+  planetText: cmu-lore-primer-kutjevo
 
 - type: lorePrimer
   id: AU14PrimerPlanetFiorina
-  planetText: lore-primer-planet-fiorina # RuMC edit
+  planetText: cmu-lore-primer-fiorina
 
 
 - type: entity
@@ -1110,4 +1110,4 @@
 
 - type: lorePrimer
   id: CMUPrimerHopesRetreat
-  planetText: lore-primer-planet-hopes-retreat # RuMC edit
+  planetText: cmu-lore-primer-hopes-retreat

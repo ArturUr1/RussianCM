@@ -703,7 +703,7 @@ public sealed partial class TacticalMapSystem : SharedTacticalMapSystem
     private void OnComputerUpdateCanvasMsg(Entity<TacticalMapComputerComponent> ent, ref TacticalMapUpdateCanvasMsg args)
     {
         var user = args.Actor;
-        if (!_skills.HasSkill(user, ent.Comp.Skill, ent.Comp.SkillLevel))
+        if (!ent.Comp.AllowCanvas || !_skills.HasSkill(user, ent.Comp.Skill, ent.Comp.SkillLevel))
             return;
 
         var lines = args.Lines;
@@ -936,7 +936,7 @@ public sealed partial class TacticalMapSystem : SharedTacticalMapSystem
     private void OnComputerCreateLabelMsg(Entity<TacticalMapComputerComponent> ent, ref TacticalMapCreateLabelMsg args)
     {
         var user = args.Actor;
-        if (!_skills.HasSkill(user, ent.Comp.Skill, ent.Comp.SkillLevel))
+        if (!ent.Comp.AllowCanvas || !_skills.HasSkill(user, ent.Comp.Skill, ent.Comp.SkillLevel))
             return;
 
         var time = _timing.CurTime;
@@ -953,7 +953,7 @@ public sealed partial class TacticalMapSystem : SharedTacticalMapSystem
     private void OnComputerEditLabelMsg(Entity<TacticalMapComputerComponent> ent, ref TacticalMapEditLabelMsg args)
     {
         var user = args.Actor;
-        if (!_skills.HasSkill(user, ent.Comp.Skill, ent.Comp.SkillLevel))
+        if (!ent.Comp.AllowCanvas || !_skills.HasSkill(user, ent.Comp.Skill, ent.Comp.SkillLevel))
             return;
 
         var time = _timing.CurTime;
@@ -970,7 +970,7 @@ public sealed partial class TacticalMapSystem : SharedTacticalMapSystem
     private void OnComputerDeleteLabelMsg(Entity<TacticalMapComputerComponent> ent, ref TacticalMapDeleteLabelMsg args)
     {
         var user = args.Actor;
-        if (!_skills.HasSkill(user, ent.Comp.Skill, ent.Comp.SkillLevel))
+        if (!ent.Comp.AllowCanvas || !_skills.HasSkill(user, ent.Comp.Skill, ent.Comp.SkillLevel))
             return;
 
         var time = _timing.CurTime;
@@ -987,7 +987,7 @@ public sealed partial class TacticalMapSystem : SharedTacticalMapSystem
     private void OnComputerMoveLabelMsg(Entity<TacticalMapComputerComponent> ent, ref TacticalMapMoveLabelMsg args)
     {
         var user = args.Actor;
-        if (!_skills.HasSkill(user, ent.Comp.Skill, ent.Comp.SkillLevel))
+        if (!ent.Comp.AllowCanvas || !_skills.HasSkill(user, ent.Comp.Skill, ent.Comp.SkillLevel))
             return;
 
         var time = _timing.CurTime;
@@ -1669,8 +1669,28 @@ public sealed partial class TacticalMapSystem : SharedTacticalMapSystem
 
         if (user.Comp.Xenos)
         {
-            user.Comp.XenoBlips = user.Comp.LiveUpdate ? map.XenoBlips : map.LastUpdateXenoBlips.ToDictionary();
-            user.Comp.XenoStructureBlips = user.Comp.LiveUpdate ? map.XenoStructureBlips : map.LastUpdateXenoStructureBlips.ToDictionary();
+            var xenoBlips = user.Comp.LiveUpdate ? map.XenoBlips : map.LastUpdateXenoBlips;
+            var xenoStructureBlips = user.Comp.LiveUpdate ? map.XenoStructureBlips : map.LastUpdateXenoStructureBlips;
+            var hiveMembers = new HashSet<int>();
+            var hasHive = false;
+
+            if (_xenoHive.GetHive(user.Owner) is { } hive)
+            {
+                hasHive = true;
+                var members = EntityQueryEnumerator<HiveMemberComponent>();
+                while (members.MoveNext(out var member, out var hiveMember))
+                {
+                    if (hiveMember.Hive == hive.Owner)
+                        hiveMembers.Add(member.Id);
+                }
+            }
+
+            user.Comp.XenoBlips = xenoBlips
+                .Where(blip => hiveMembers.Contains(blip.Key) || (!hasHive && blip.Key == playerId))
+                .ToDictionary();
+            user.Comp.XenoStructureBlips = xenoStructureBlips
+                .Where(blip => hiveMembers.Contains(blip.Key))
+                .ToDictionary();
 
             if (!user.Comp.LiveUpdate)
             {
@@ -1685,6 +1705,13 @@ public sealed partial class TacticalMapSystem : SharedTacticalMapSystem
             {
                 if (!comp.VisibleToXenos)
                     continue;
+
+                if (TryComp(uid, out HiveMemberComponent? alwaysVisibleMember) &&
+                    alwaysVisibleMember is not null &&
+                    !hiveMembers.Contains(uid.Id))
+                {
+                    continue;
+                }
 
                 if (user.Comp.XenoBlips.ContainsKey(uid.Id) || user.Comp.XenoStructureBlips.ContainsKey(uid.Id))
                     continue;

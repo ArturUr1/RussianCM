@@ -181,8 +181,10 @@
   nameLocKey: lore-primer-platoon-vaipo # RuMC edit
   lorePrimer: AU14PrimerPlatoonVAIPO
   reqlist: VAIPOCargoCatalog
+  Allegiance: UA
   languages:
     - English
+    - TacticalSignLanguage
   vendorSet: VAIPO
   CompatibleDropships:
   - /Maps/_CMU14/Shuttles/alamo.yml
@@ -201,6 +203,7 @@
   lorePrimer: AU14PrimerPlatoonRMC
   Allegiance: TWE
   languages:
+    - Japanese
     - English
   reqlist: RMCCargoCatalog
   vendorSet: RMC
@@ -231,36 +234,36 @@
 
 - type: lorePrimer
   id: AU14PrimerPlatoonLACN
-  PlatoonInfo: lore-primer-platoon-lacn # RuMC edit
+  PlatoonInfo: lore-primer-platoon-lacn-info
 
 - type: lorePrimer
   id: AU14PrimerPlatoonUSCM
-  PlatoonInfo: lore-primer-platoon-uscm # RuMC edit
+  PlatoonInfo: lore-primer-platoon-uscm-info
 
 - type: lorePrimer
   id: AU14PrimerPlatoonUPP
-  PlatoonInfo: lore-primer-platoon-upp # RuMC edit
+  PlatoonInfo: lore-primer-platoon-upp-info
 
 - type: lorePrimer
   id: AU14PrimerPlatoonWEYU
-  PlatoonInfo: lore-primer-platoon-weyu # RuMC edit
+  PlatoonInfo: lore-primer-platoon-weyu-info
 
 - type: lorePrimer
   id: AU14PrimerPlatoonCMBCIU
-  PlatoonInfo: lore-primer-platoon-cmbciu # RuMC edit
+  PlatoonInfo: lore-primer-platoon-cmbciu-info
 
 - type: lorePrimer
   id: AU14PrimerPlatoonHAZOPS
-  PlatoonInfo: lore-primer-platoon-hazops # RuMC edit
+  PlatoonInfo: lore-primer-platoon-hazops-info
 
 - type: lorePrimer
   id: AU14PrimerPlatoonProdigySF
-  PlatoonInfo: lore-primer-platoon-prodigy-sf # RuMC edit
+  PlatoonInfo: lore-primer-platoon-prodigy-sf-info
 
 - type: lorePrimer
   id: AU14PrimerPlatoonVAIPO
-  PlatoonInfo: lore-primer-platoon-vaipo # RuMC edit
+  PlatoonInfo: lore-primer-platoon-vaipo-info
 
 - type: lorePrimer
   id: AU14PrimerPlatoonRMC
-  PlatoonInfo: lore-primer-platoon-rmc # RuMC edit
+  PlatoonInfo: lore-primer-platoon-rmc-info

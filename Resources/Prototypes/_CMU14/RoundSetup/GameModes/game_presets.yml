@@ -13,7 +13,7 @@
   #- AUPlanetGixensCaverns Rout of rotation till fixed - eg
   #- AUPlanetShepherdsPride
   #- AUPlanetFlight
-  - AUPlanetLV759
+  # - AUPlanetLV759 # RuMC Временно убрана на переработку, раскомментировать по завершению
   - AUPlanetLV327
   - AUPlanetCorsatStation
   - AUPlanetSorokyne
@@ -77,6 +77,7 @@
   - PlatoonSpawn
   - RemoveAllJobs
   - AddGovfor
+  - AddGovforCorrespondent
 
 - type: gamePreset
   id: ColonyFall
@@ -84,7 +85,6 @@
   - colonyfall
   name: au14-preset-colonyfall-title # RuMC edit
   showInVote: true
-  maxPlayers: 60
   description: au14-preset-colonyfall-description # RuMC edit
   supportedPlanets:
     - AUPlanetShepherdsPride

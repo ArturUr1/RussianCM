@@ -19,6 +19,7 @@ public sealed partial class LobbyTerminalBackground : Control
     private const int LowQualityStarCount = 28;
     private const float CursorParallaxPixels = 60f;
     private const float MotionSmoothing = 8f;
+    private const float DefaultLeftConsoleWidth = 360f;
 
     private static readonly Color CountdownColor = Color.FromHex("#F3C969");
     private static readonly Color ImminentColor = Color.FromHex("#FF6B62");
@@ -33,6 +34,7 @@ public sealed partial class LobbyTerminalBackground : Control
     private Vector2 _parallaxOffset;
     private LobbyTerminalMode _mode;
 
+    public float ReservedLeftWidth { get; set; } = DefaultLeftConsoleWidth;
     public float ReservedRightWidth { get; set; }
     public LobbyTerminalMode Mode => _mode;
     public Color AccentColor => GetAccentColor();
@@ -129,6 +131,7 @@ public sealed partial class LobbyTerminalBackground : Control
         DrawStars(handle, accent, now, bootProgress, motionEnabled, lowQuality);
         DrawPerspectiveGrid(handle, accent, bootProgress, lowQuality);
         DrawPlanetAndRadar(handle, accent, now, bootProgress, pulse, motionEnabled, lowQuality);
+        DrawIntegratedConsoles(handle, accent, bootProgress, pulse, crtEnabled);
         if (crtEnabled)
         {
             DrawViewfinder(handle, accent, bootProgress);
@@ -302,6 +305,113 @@ public sealed partial class LobbyTerminalBackground : Control
             accent.WithAlpha(0.12f * bootProgress),
             dashSize: 9f * UIScale,
             gapSize: 7f * UIScale);
+    }
+
+    private void DrawIntegratedConsoles(
+        DrawingHandleScreen handle,
+        Color accent,
+        float bootProgress,
+        float pulse,
+        bool crtEnabled)
+    {
+        var leftWidth = Math.Clamp(
+            MathF.Max(0f, ReservedLeftWidth) * UIScale,
+            0f,
+            PixelWidth * 0.45f);
+        var rightWidth = Math.Clamp(
+            MathF.Max(0f, ReservedRightWidth) * UIScale,
+            0f,
+            PixelWidth * 0.55f);
+
+        if (leftWidth > 0f)
+        {
+            DrawConsoleShell(
+                handle,
+                new UIBox2(0f, 0f, leftWidth, PixelHeight),
+                accent,
+                bootProgress,
+                pulse,
+                false,
+                crtEnabled);
+        }
+
+        if (rightWidth > 0f)
+            DrawConsoleShell(
+                handle,
+                new UIBox2(PixelWidth - rightWidth, 0f, PixelWidth, PixelHeight),
+                accent,
+                bootProgress,
+                pulse,
+                true,
+                crtEnabled);
+    }
+
+    private void DrawConsoleShell(
+        DrawingHandleScreen handle,
+        UIBox2 box,
+        Color accent,
+        float bootProgress,
+        float pulse,
+        bool rightSide,
+        bool crtEnabled)
+    {
+        var seamX = rightSide ? box.Left : box.Right;
+        var direction = rightSide ? -1f : 1f;
+        var line = MathF.Max(1f, UIScale);
+        var railWidth = 14f * UIScale;
+        var connectorLength = MathF.Min(72f * UIScale, PixelWidth * 0.06f);
+        var backgroundAlpha = crtEnabled ? 0.36f : 0.82f;
+
+        handle.DrawRect(box, StyleNano.CrtInsetBackground.WithAlpha(backgroundAlpha));
+
+        // Layered edge bands create a recessed seam while leaving the scene visible below it.
+        for (var i = 4; i >= 1; i--)
+        {
+            var offset = i * railWidth / 4f;
+            var band = rightSide
+                ? new UIBox2(seamX, box.Top, seamX + offset, box.Bottom)
+                : new UIBox2(seamX - offset, box.Top, seamX, box.Bottom);
+            handle.DrawRect(band, accent.WithAlpha(0.012f * (5 - i) * bootProgress));
+        }
+
+        handle.DrawRect(
+            new UIBox2(seamX - line, box.Top, seamX + line, box.Bottom),
+            accent.WithAlpha(0.42f * bootProgress));
+
+        var guideColor = accent.WithAlpha(0.17f * bootProgress);
+        var connectorColor = accent.WithAlpha(0.34f * bootProgress * pulse);
+        var guideCount = PixelHeight < 650f * UIScale ? 4 : 6;
+
+        for (var i = 1; i < guideCount; i++)
+        {
+            var y = box.Top + box.Height * i / guideCount;
+            var inset = (i % 2 == 0 ? 24f : 42f) * UIScale;
+            var startX = rightSide ? box.Right - inset : box.Left + inset;
+            var endX = seamX - direction * 8f * UIScale;
+            handle.DrawLine(new Vector2(startX, y), new Vector2(endX, y), guideColor);
+
+            var connectorEnd = new Vector2(seamX + direction * connectorLength, y + direction * 10f * UIScale);
+            handle.DrawLine(new Vector2(seamX, y), connectorEnd, connectorColor);
+            handle.DrawRect(
+                UIBox2.FromDimensions(
+                    connectorEnd - new Vector2(2f * UIScale),
+                    new Vector2(4f * UIScale)),
+                connectorColor);
+        }
+
+        // Small hardware notches make the shell feel fixed to the viewport.
+        var notchLength = 28f * UIScale;
+        var notchColor = accent.WithAlpha(0.55f * bootProgress);
+        var topNotchY = 32f * UIScale;
+        var bottomNotchY = PixelHeight - 33f * UIScale;
+        handle.DrawLine(
+            new Vector2(seamX, topNotchY),
+            new Vector2(seamX + direction * notchLength, topNotchY),
+            notchColor);
+        handle.DrawLine(
+            new Vector2(seamX, bottomNotchY),
+            new Vector2(seamX + direction * notchLength, bottomNotchY),
+            notchColor);
     }
 
     private void DrawScanlines(
