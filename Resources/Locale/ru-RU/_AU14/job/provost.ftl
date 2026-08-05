@@ -57,3 +57,5 @@ cmu-ghost-name-corp-provost-spc-medic = Медицинский специали�
 cmu-job-name-corp-provost-spc-medic = Медицинский специалист
 cmu-job-prefix-provost-spc-medic = PvSM
 cmu-ghost-role-information-provost-spc-medic-description = Обеспечьте квалифицированную травматологическую и хирургическую помощь бригаде провоста. Вооружены они слабо, но очень нужны.
+
+SquadIndforProvost = Провост
