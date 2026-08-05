@@ -1443,8 +1443,8 @@
         amount: 1
     - name: au14-vendor-section-flag
       entries:
-      - id: RuMCFlagCarriableBEAR
-        amount: 2
+      #- id: RuMCFlagCarriableBEAR
+      #  amount: 2
       - id: AU14FlagCarriableUPP
         amount: 1
 
