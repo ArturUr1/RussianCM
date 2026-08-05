@@ -30,10 +30,10 @@
       - id: CMUUniversalPaperTool
 
 
-## RuCM Fixes
+## RuMC Fixes
 - type: entity
   parent: RMCBriefcase 
-  id: AU14BriefcaseArbiterBundle # Кейс орбитального арбитра с его печатью. Фикс RuCM
+  id: AU14BriefcaseArbiterBundle # RuMC edit
   name: Arbiter's law bundle
   description: "A sturdy brown briefcase containing the complete legal library of the colony: the Colonial Civil Code (the Blue Book), the UCMJ (the Devil's Red Book), the SOP, and bureaucratic legal weaponry."
   components:
