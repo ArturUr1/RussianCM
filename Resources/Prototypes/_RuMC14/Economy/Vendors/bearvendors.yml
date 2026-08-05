@@ -910,6 +910,11 @@
       takeOne: SquadSpecKit
       sharedSpecLimit: 1
       entries:
+      - id: RuMCMachineGunTachankaCase
+        giveSquadRoleName: au14-job-name-govforspecialist-pointmanUPP
+        givePrefix: au14-job-prefix-govforspecialist-pointmanUPP
+        isAppendSquadRoleName: false
+        isAppendPrefix: true
       - id: RuMCGunAH12Case
         giveSquadRoleName: au14-job-name-govforspecialist-pointmanUPP
         givePrefix: au14-job-prefix-govforspecialist-pointmanUPP
@@ -1202,15 +1207,13 @@
       - id: RMCWeaponSMGType19
         amount: 3
       - id: RMCWeaponShotgunType23
-        amount: 5
-      - id: RuMCMachineGunTachankaCase
-        amount: 1
+        amount: 3
       - id: RuMCGunAH12Case_alt
         amount: 1
       - id: RuMCUTES-CCase
         amount: 1
       - id: RuMCHammer
-        amount: 1
+        amount: 3
     - name: au14-vendor-section-primary-ammunition
       entries:
       - id: RMCMagazineRifleAK4047
@@ -1263,10 +1266,6 @@
         amount: 5
       - id: RuMCMagazineTracerTachanka
         amount: 5
-      - id: RuMCMagazineTachankaLarge
-        amount: 1
-      - id: RuMCMagazineTachankaLargeTracer
-        amount: 1
     - name: au14-vendor-section-secondary-ammunition
       entries:
       - id: RMCMagazinePistolT73
