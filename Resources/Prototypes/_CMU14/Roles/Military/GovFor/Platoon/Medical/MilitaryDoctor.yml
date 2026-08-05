@@ -50,6 +50,7 @@
     shoes: CMBootsBlackFilled
     ears: AU14HeadsetGovforAuxiliary
     ears2: RMCM5CameraGear
+    back: CMSatchelMarine # RuMC fix спавн докторов с сумками для появления безделушек из лодаута
   inhand:
     - AU14StampMO
 
