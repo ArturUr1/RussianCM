@@ -94,14 +94,14 @@
         amount: 40
     - name: au14-vendor-section-backpack
       entries:
-      - id: RuMCBackpackLightSPN
+      - id: RuMCUPPNavalInfantrySatchel
         amount: 80
-      - id: RuMCUPPNavalInfantryBackpack1
+      - id: RuMCUPPNavalInfantryBackpack
         amount: 30
+      - id: RuMCUPPNavalInfantryBackpackMedical
+        amount: 20
       - id: RuMCUPPNavalInfantryBackpackBig
         amount: 20
-      - id: RMCSatchelSPPWelder
-        amount: 5
       - id: RMCScabbardShotgun
         amount: 3
       - id: RMCBackpackAmmo
@@ -547,7 +547,7 @@
     - name: au14-vendor-section-backpack
       choices: { CMUPlatoonAirCrewBackpack: 1 }
       entries:
-      - id: RuMCUPPNavalInfantryBackpack1
+      - id: RuMCUPPNavalInfantrySatchel
     - name: au14-vendor-section-belts
       choices: { CMUPlatoonAirCrewBelts: 1 }
       entries:
@@ -1126,7 +1126,7 @@
     - name: au14-vendor-section-backpack
       choices: { CMBackpack: 1 }
       entries:
-      - id: RuMCUPPNavalInfantryBackpack1
+      - id: RuMCUPPNavalInfantrySatchel
       - id: CMSatchelSecurity
     - name: au14-vendor-section-pouches
       choices: { RMCPouch: 2 }
@@ -1516,5 +1516,5 @@
         amount: 25
     - name: au14-vendor-section-bag
       entries:
-      - id: RuMCUPPNavalInfantryBackpack1
+      - id: RuMCUPPNavalInfantrySatchel
         amount: 40
