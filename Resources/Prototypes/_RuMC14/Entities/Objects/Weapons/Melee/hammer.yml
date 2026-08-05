@@ -12,7 +12,7 @@
   #  - Suitstorage
   #  sprite: _RMC14/Objects/Weapons/Melee/breaching.rsi
   - type: MeleeWeapon
-    attackRate: 5
+    attackRate: 0.5
     damage:
       types:
         Slash: 10

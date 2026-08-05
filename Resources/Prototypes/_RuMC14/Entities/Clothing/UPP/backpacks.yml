@@ -1,5 +1,5 @@
 - type: entity
-  parent: [RuMCUPPNavalInfantryBackpack1]
+  parent: [RuMCUPPNavalInfantryBackpack]
   id: RuMCUPPNavalInfantryBackpackMedical
   name: UPP lightweight backpack
   description: Compact and lightweight backpack with an external strap. Perfect for quick raids. Has straps for a first aid kit.
