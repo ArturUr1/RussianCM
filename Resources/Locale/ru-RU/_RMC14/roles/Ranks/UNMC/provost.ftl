@@ -28,8 +28,8 @@ rank-CMURankProvostProvostTeamLeader = Мастер-сержант
 rank-CMURankProvostProvostEnforcer = Штаб-сержант
   .prefix = Штаб-серж.
 
-rank-CMURankProvostSpcComms = Коммуникационный специалист
-  .prefix = Комм. спец.
+rank-CMURankProvostSpcComms = Специалист по связи
+  .prefix = Спец. по св.
 
 rank-CMURankProvostSpcAgent = Специальный агент
   .prefix = Спецагент
