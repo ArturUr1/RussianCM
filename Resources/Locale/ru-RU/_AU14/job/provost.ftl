@@ -48,8 +48,8 @@ cmu-job-name-corp-provost-spc-agent = Специальный агент
 cmu-job-prefix-provost-spc-agent = ПрСА
 cmu-ghost-role-information-provost-spc-agent-description = Внедряйтесь и собирайте разведданные. Действуйте независимо, надевайте синюю броню только при необходимости.
 
-cmu-ghost-name-corp-provost-spc-comms = Коммуникационный специалист Провост
-cmu-job-name-corp-provost-spc-comms = Коммуникационный специалист
+cmu-ghost-name-corp-provost-spc-comms = Специалист по связи Провост
+cmu-job-name-corp-provost-spc-comms = Специалист по связи
 cmu-job-prefix-provost-spc-comms = ПрКС
 cmu-ghost-role-information-provost-spc-comms-description = Управляйте радиообменом, координируйте сигналы и противодействуйте радиоэлектронной борьбе.
 

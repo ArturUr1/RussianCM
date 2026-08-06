@@ -7,6 +7,12 @@
   startingGear: CMUGearProvostAdvisor
   playTimeTracker: CMJobProvostAdvisor
   ranks:
+    RMCRankCivilian: []
+  chevrons:
+    CMURankProvostAdvisor:
+      entity: AU14ChevronProvostAdvisor
+      requirements: []
+  ranks:
     CMURankProvostAdvisor: []
   roundComponents:
   - type: Skills
