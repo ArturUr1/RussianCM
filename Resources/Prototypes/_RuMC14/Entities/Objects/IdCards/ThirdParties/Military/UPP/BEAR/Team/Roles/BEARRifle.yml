@@ -1,0 +1,132 @@
+- type: job
+  parent: CMJobBase
+  id: RuMCUPPBEARRifleman
+  roundSide: ThirdParty
+  roundForce: BEAR
+  roundRole: RuMCUPPBEARRifleman
+  roundComponents:
+  - type: TacticalMapIcon
+    icon:
+      sprite: /Textures/_RMC14/Interface/map_blips.rsi
+      state: spp_co
+  - type: AssignSquad
+    whitelist:
+      tags:
+      - RuMCSquadBEAR # for future when there's a dedicated map for them, right now does nothing
+  - type: Skills
+    skills:
+      RMCSkillCqc: 1
+      RMCSkillEngineer: 1
+      RMCSkillConstruction: 1
+      RMCSkillFirearms: 2
+      RMCSkillMedical: 1
+      RMCSkillMeleeWeapons: 1
+      RMCSkillPolice: 2
+      RMCSkillFireman: 3
+      RMCSkillVehicles: 2
+      RMCSkillJtac: 1
+      RMCSkillEndurance: 2
+  - type: JobPrefix
+    prefix: au-14-job-prefix-rmcrrt-commander
+  - type: MarineOrders
+  - type: RMCTrackable
+  - type: RMCPointing
+  - type: Language
+    spokenLanguages:
+    - Polish
+    - English
+    - Russian
+    - Spanish
+    - Mandarin
+    - German
+    - TacticalSignLanguage
+    understoodLanguages:
+    - Polish
+    - English
+    - Russian
+    - Spanish
+    - Mandarin
+    - German
+    - TacticalSignLanguage
+    currentLanguage: Russian
+    defaultLanguage: Russian
+
+  name: Пулемётчик ЧВК BEAR
+  description: Пулемётчик ЧВК BEAR
+  playTimeTracker: RuMCJobUPPBEARRifleman
+  ranks:
+    RMCRankCivilian: []
+  chevrons:
+    UPP_SeniorSergeant:
+      entity: AU14ChevronUPPNISeniorSergeant
+      requirements:
+      - !type:RoleTimeRequirement
+        role: RuMCJobUPPBEARRifleman
+        time: 36000 # 10 hours
+    UPP_Sergeant:
+      entity: AU14ChevronUPPNISergeant
+      requirements:
+      - !type:RoleTimeRequirement
+        role: RuMCJobUPPBEARRifleman
+        time: 18000 # 5 hours
+    UPP_Plutonowy:
+      entity: AU14ChevronUPPNIPlutonowy
+      requirements: []
+  spawnMenuRoleName: PMC BEAR Rifleman
+  startingGear: RuMCGearUPPBEARRifleman
+  greeting: Вы член секретного спецподразделения ЧВК BEAR СПН! Существование связи BEAR и СПН строжайше секретны, никто не должен знать кто вы и что вы здесь делаете. Вы дружествены к СПН, враждебны к ЧВК VAI и ЧВК We-Y.
+  icon: "RuMCJobIconUPPBEARRifleman"
+  joinNotifyCrew: false
+  supervisors: au14-job-supervisors-govfor
+  accessGroups:
+  - AU14GovforCommand
+  hidden: false
+
+- type: entity
+  parent: RuMCBaseMobSpeciesOrganicUPPBEAR
+  id: RuMCJobUPPBEARRifleman
+  name: PMC BEAR Rifleman
+  components:
+  - type: GhostTakeoverAvailable
+  - type: GhostRoleApplySpecial
+    squad: RuMCSquadBEAR
+  - type: GhostRole
+    makeSentient: true
+    allowSpeech: true
+    allowMovement: true
+    name: Оператор пулемёта BEAR
+    description: Оператор пулемёта ЧВК BEAR.
+    reregister: false
+    job: RuMCUPPBEARRifleman
+    raffle:
+      settings: short
+    rules: au14-uppgrom-rules
+
+- type: startingGear
+  id: RuMCGearUPPBEARRifleman
+  equipment:
+    id: RuCMIDCardUPPBEARRifleman
+    outerClothing: RuMCArmorBEARFull
+    jumpsuit: RuMCUniformBEARFull
+    shoes: RMCBootsSPPBlack
+    mask: CMMaskCoif
+    #eyes:
+    head: RuMCInfantryHelmetBEARFull
+    gloves: RMCHandsBlack
+    belt: RuMCBeltMagazineBEARFull
+    pocket1: RuMCPouchMagazineBEARFull
+    pocket2: RuMCUPPPouchIFAKFill
+    back: RuMCUPPNavalInfantrySatchel
+    ears: RuMCHeadsetBEAR
+    ears2: RMCM5CameraGear
+    suitstorage: RuMCWeaponRifleAK13
+
+- type: jobIcon
+  parent: CMJobIconBase
+  id: RuMCJobIconUPPBEARRifleman
+  icon:
+    sprite: _RMC14/Interface/cm_job_icons.rsi
+    state: upp_co
+
+- type: playTimeTracker
+  id: RuMCJobUPPBEARRifleman

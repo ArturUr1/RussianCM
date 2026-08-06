@@ -1,0 +1,133 @@
+- type: job
+  parent: CMJobBase
+  id: RuMCUPPBEARMachinegunner
+  roundSide: ThirdParty
+  roundForce: BEAR
+  roundRole: RuMCUPPBEARMachinegunner
+  roundComponents:
+  - type: TacticalMapIcon
+    icon:
+      sprite: /Textures/_RMC14/Interface/map_blips.rsi
+      state: spp_co
+  - type: AssignSquad
+    whitelist:
+      tags:
+      - RuMCSquadBEAR # for future when there's a dedicated map for them, right now does nothing
+  - type: Skills
+    skills:
+      RMCSkillCqc: 1
+      RMCSkillEngineer: 1
+      RMCSkillConstruction: 1
+      RMCSkillFirearms: 2
+      RMCSkillMedical: 1
+      RMCSkillMeleeWeapons: 1
+      RMCSkillPolice: 2
+      RMCSkillFireman: 3
+      RMCSkillVehicles: 2
+      RMCSkillJtac: 1
+      RMCSkillEndurance: 2
+      RMCSkillSmartGun: 1
+  - type: JobPrefix
+    prefix: au-14-job-prefix-rmcrrt-commander
+  - type: MarineOrders
+  - type: RMCTrackable
+  - type: RMCPointing
+  - type: Language
+    spokenLanguages:
+    - Polish
+    - English
+    - Russian
+    - Spanish
+    - Mandarin
+    - German
+    - TacticalSignLanguage
+    understoodLanguages:
+    - Polish
+    - English
+    - Russian
+    - Spanish
+    - Mandarin
+    - German
+    - TacticalSignLanguage
+    currentLanguage: Russian
+    defaultLanguage: Russian
+
+  name: Пулемётчик ЧВК BEAR
+  description: Пулемётчик ЧВК BEAR
+  playTimeTracker: RuMCJobUPPBEARMachinegunner
+  ranks:
+    RMCRankCivilian: []
+  chevrons:
+    UPP_SeniorSergeant:
+      entity: AU14ChevronUPPNISeniorSergeant
+      requirements:
+      - !type:RoleTimeRequirement
+        role: RuMCJobUPPBEARMachinegunner
+        time: 36000 # 10 hours
+    UPP_Sergeant:
+      entity: AU14ChevronUPPNISergeant
+      requirements:
+      - !type:RoleTimeRequirement
+        role: RuMCJobUPPBEARMachinegunner
+        time: 18000 # 5 hours
+    UPP_Plutonowy:
+      entity: AU14ChevronUPPNIPlutonowy
+      requirements: []
+  spawnMenuRoleName: PMC BEAR Machinegunner
+  startingGear: RuMCGearUPPBEARMachinegunner
+  greeting: Вы член секретного спецподразделения ЧВК BEAR СПН! Существование связи BEAR и СПН строжайше секретны, никто не должен знать кто вы и что вы здесь делаете. Вы дружествены к СПН, враждебны к ЧВК VAI и ЧВК We-Y.
+  icon: "RuMCJobIconUPPBEARMachinegunner"
+  joinNotifyCrew: false
+  supervisors: au14-job-supervisors-govfor
+  accessGroups:
+  - AU14GovforCommand
+  hidden: false
+
+- type: entity
+  parent: RuMCBaseMobSpeciesOrganicUPPBEAR
+  id: RuMCJobUPPBEARMachinegunner
+  name: PMC BEAR Machinegunner
+  components:
+  - type: GhostTakeoverAvailable
+  - type: GhostRoleApplySpecial
+    squad: RuMCSquadBEAR
+  - type: GhostRole
+    makeSentient: true
+    allowSpeech: true
+    allowMovement: true
+    name: Оператор пулемёта BEAR
+    description: Оператор пулемёта ЧВК BEAR.
+    reregister: false
+    job: RuMCUPPBEARMachinegunner
+    raffle:
+      settings: short
+    rules: au14-uppgrom-rules
+
+- type: startingGear
+  id: RuMCGearUPPBEARMachinegunner
+  equipment:
+    id: RuCMIDCardUPPBEARMachinegunner
+    outerClothing: RuMCArmorHeavyBEARFull
+    jumpsuit: RuMCUniformBEARFull
+    shoes: RMCBootsSPPBlack
+    mask: CMMaskCoif
+    #eyes:
+    head: RuMCUPPNavalInfantryHeavyHelmet2
+    gloves: RMCHandsBlack
+    belt: RuMCUPPNavalInfantryBeltMachinegunnerFull
+    pocket1: RuMCUPPPouchDrumFull
+    pocket2: RuMCUPPPouchIFAKFill
+    back: RuMCUPPNavalInfantrySatchel
+    ears: RuMCHeadsetBEAR
+    ears2: RMCM5CameraGear
+    suitstorage: RuMCMachineGunPKP_MS
+
+- type: jobIcon
+  parent: CMJobIconBase
+  id: RuMCJobIconUPPBEARMachinegunner
+  icon:
+    sprite: _RMC14/Interface/cm_job_icons.rsi
+    state: upp_co
+
+- type: playTimeTracker
+  id: RuMCJobUPPBEARMachinegunner

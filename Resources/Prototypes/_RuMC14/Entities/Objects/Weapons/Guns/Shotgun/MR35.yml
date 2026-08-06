@@ -2,7 +2,7 @@
   parent: [ RMCBaseWeaponShotgun, RMCBaseAttachableHolder ]
   name: MR35 pump shotgun
   id: RuMCWeaponShotgunMR35
-  description: 3dasdaasd
+  #description: 3dasdaasd
   components:
   - type: Sprite
     sprite: _RuMC14/Objects/Weapons/Guns/Shotgun/MR35/inhands.rsi
@@ -22,18 +22,13 @@
     recoilUnwielded: 4
     scatterWielded: 10
     scatterUnwielded: 10
-    baseFireRate: 2
+    baseFireRate: 2.5
     burstScatterMult: 4
   - type: BallisticAmmoProvider
     capacity: 8 # todo change to 9 when bullet chambering is added
     whitelist:
       tags:
-      - RMCShellShotgunBuckshot
       - RMCShellShotgunSlugs
-      - RMCShellShotgunFlechette
-      - RMCShellShotgunIncendiaryBuckshot
-      - RMCShellShotgunIncendiary
-      - RMCShellShotgunBeanbag
   - type: RMCWeaponAccuracy
     accuracyMultiplier: 1.15
     accuracyMultiplierUnwielded: 0.5

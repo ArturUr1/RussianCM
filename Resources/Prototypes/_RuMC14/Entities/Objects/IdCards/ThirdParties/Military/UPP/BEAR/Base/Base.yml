@@ -1,0 +1,240 @@
+- type: entity
+  parent: CMMobHuman
+  id: RuMCBaseMobSpeciesOrganicUPPBEAR
+  suffix: RuMC, BEAR
+  abstract: true
+  components:
+  - type: GhostTakeoverAvailable
+  - type: NpcFactionMember
+    factions:
+    - AUUpp
+  - type: RandomHumanoidAppearance
+  - type: RandomHumanoidAppearanceWhitelisted
+    allowedMaleHairStyles:
+    - RMCHumanHairCrew
+    - RMCHumanHairAviator
+    - RMCHumanHairJensen
+    - RMCHumanHairAverageJoe
+    - AU14HumanHairCIA5
+    - RMCHumanHairCombover
+    - RMCHumanHairCombover2
+    - RMCHumanHairCplDietrich
+    - RMCHumanHairCut
+    - RMCHumanHairHeadStubble
+    - RMCHumanHairHighAndTight
+    - RMCHumanHairHighfade
+    - RMCHumanHairHighlight
+    - AU14HumanHairIRS
+    - RMCHumanHairLtRasczak
+    - RMCHumanHairMarineFade
+    - RMCHumanHairMarineFlatTop
+    - RMCHumanHairMedfade
+    - RMCHumanHairNofade
+    - RMCHumanHairShavedpart
+    - RMCHumanHairShavedHead
+    - RMCHumanHairShort
+    - RMCHumanHairSideUndercutHang
+    - RMCHumanHairSkinhead
+    - RMCHumanHairTaper
+    - RMCHumanHairWardaddy
+    - RMCHumanHairUndercut
+    - RMCHumanHairUndercutTop
+    allowedFemaleHairStyles:
+    - RMCHumanHairShortbangs
+    - RMCHumanHairBobcurl
+    - RMCHumanHairMarineBun
+    - RMCHumanHairBun
+    - RMCHumanHairFringetail
+    - AU14HumanHairLowBun
+    - AU14HumanHairLowPonyTail
+    - AU14HumanHairLowPonyTailAlt
+    - RMCHumanHairPonytail1
+    - RMCHumanHairPonytail7
+    - RMCHumanHairPvtRedding
+    - RMCHumanHairPvtVasquez
+    - RMCHumanHairLong
+    - RMCHumanHairPixieCutLeft
+    - RMCHumanHairPixieCutRight
+    allowedHairColorsHex:
+    - "#0B0B0B"
+    - "#1A1A1A"
+    - "#222222"
+    - "#2B1B0F"
+    - "#3B2314"
+    - "#4A2E1A"
+    - "#5A3A22"
+    - "#6B4A2F"
+    - "#9C8651"
+    - "#B79A5A"
+    - "#4A1F12"
+    - "#7A5E42"
+    allowedEyeColorsHex: [ "#000000" ]
+    beardChance: 0.1
+
+# Equipment
+
+- type: entity
+  parent: AU14BeltMedicalUPP
+  id: RuMCBeltMedicalUPPBEARFullSupportTech
+  suffix: RuMC, FULL, BEAR
+  components:
+  - type: StorageFill
+    contents:
+    - id: CMSurgicalLine
+    - id: CMSynthGraft
+    - id: CMUPlainTraumaDressing10
+    - id: CMUCoagulantPowder
+    - id: CMUBurnGel
+    - id: CMPillCanisterBicaridine
+    - id: CMPillCanisterKelotane
+
+- type: entity
+  parent: RuMCUPPPouchMagazineLarge
+  id: RuMCPouchMagazineBEARFull
+  suffix: RuMC, FULL, BEAR
+  components:
+  - type: StorageFill
+    contents:
+    - id: RMCMagazineRifleAK4047
+      amount: 3
+    - id: RMCMagazineRifleAK4047AP
+      amount: 1
+
+- type: entity
+  parent: RuMCUPPPouchDrum
+  id: RuMCUPPPouchDrumFull
+  suffix: RuMC, FULL, BEAR
+  components:
+  - type: StorageFill
+    contents:
+    - id: RuMCMagazinePKP_MS
+      amount: 2
+    - id: RuMCMachineMagazineTracerPKP_MS
+      amount: 1
+
+- type: entity
+  parent: RuMCUPPNavalInfantryBeltAmmo
+  id: RuMCBeltMagazineBEARFull
+  suffix: RuMC, FULL, BEAR
+  components:
+  - type: StorageFill
+    contents:
+    - id: RMCMagazineRifleAK4047
+      amount: 3
+    - id: RMCMagazineRifleAK4047AP
+      amount: 2
+
+- type: entity
+  parent: RuMCUPPNavalInfantryBeltMachinegunner
+  id: RuMCUPPNavalInfantryBeltMachinegunnerFull
+  suffix: RuMC, FULL, BEAR
+  components:
+  - type: StorageFill
+    contents:
+    - id: RuMCMagazinePKP_MS
+      amount: 5
+    - id: RuMCMachineMagazineTracerPKP_MS
+      amount: 2
+
+- type: entity
+  parent: RuMCArmorBEAR_Light
+  id: RuMCArmorLightBEARFull
+  suffix: RuMC, FULL, BEAR
+  components:
+  - type: StorageFill
+    contents:
+    - id: RuMCArmorGarbShinGuardsBEAR
+    - id: RuMCArmorGarbShoulderPadsBEAR
+    - id: RuMCArmorGarbMagazineWebbingBEAR
+    - id: RuMCArmorGarbLargeWebbingBEAR
+
+- type: entity
+  parent: RuMCArmorBEAR
+  id: RuMCArmorBEARFull
+  suffix: RuMC, FULL, BEAR
+  components:
+  - type: StorageFill
+    contents:
+    - id: RuMCArmorGarbShinGuardsBEAR
+    - id: RuMCArmorGarbShoulderPadsBEAR
+    - id: RuMCArmorGarbMagazineWebbingBEAR
+    - id: RuMCArmorGarbLargeWebbingBEAR
+
+- type: entity
+  parent: RuMCArmorBEAR_Heavy
+  id: RuMCArmorHeavyBEARFull
+  suffix: RuMC, FULL, BEAR
+  components:
+  - type: StorageFill
+    contents:
+    - id: RuMCArmorGarbShinGuardsBEAR
+    - id: RuMCArmorGarbShoulderPadsBEAR
+    - id: RuMCArmorGarbMagazineWebbingBEAR
+    - id: RuMCArmorGarbLargeWebbingBEAR
+    - id: RuMCArmorGarbCrotchPadBEAR
+
+- type: entity
+  parent: RuMCUniformBEAR
+  id: RuMCUniformBEARFull
+  suffix: RuMC, FULL, BEAR
+  components:
+  - type: WebbingClothing
+    startingWebbing: AU14WebbingMagazine
+
+- type: entity
+  parent: RuMCBEARInfantryHelmet
+  id: RuMCInfantryHelmetBEARFull
+  suffix: RuMC, FULL, BEAR
+  components:
+  - type: StorageFill
+    contents:
+    - id: AU14GogglesM1A1PolarizedBallistic
+
+- type: entity
+  parent: RMCHeadsetMarine
+  id: RuMCHeadsetBEAR
+  name: UPP SOF headset
+  description: Issued exclusively to UPP Special Forces such as BEAR.
+  suffix: RuMC, BEAR
+  components:
+  - type: Sprite
+    sprite: _RMC14/Objects/Clothing/headsets.rsi
+    state: soc_headset
+  - type: ContainerFill
+    containers:
+      key_slots:
+      - CMEncryptionKeyColony
+  - type: RMCHeadset
+    channels:
+    - UPPSOF
+  - type: GrantSquadLeaderTracker
+    defaultMode: SquadLeader
+    trackerModes:
+    - BEARCommandingOfficer
+    - SquadLeader
+    - BattleBuddy
+    - PrimaryLandingZone
+
+- type: entity
+  id: RuMCPreset
+  name: PMC BEAR preset
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: EntityPreset
+    randomGearOther:
+    -
+      - [ AU14PVEHandsFingerlessBlackGloves ] # gloves
+      - [ AU14PVEHandsFingerlessBrownGloves ]
+      - [ AU14PVEHandsInsulatedBlackMarine ]
+      - [ CMHandsBrown ]
+    #randomWeapon:
+    #- [ AU14WeaponRifleMAR40Tactical, AU14JumpsuitCivilianVAIMAR40, AU14PouchMagazineLargeFilledMAR40, RMCMagazineRifleMAR40Ext, RMCPacketGrenadeSmokeFilled ]
+    #- [ AU14WeaponRifleMAR40Tactical, AU14JumpsuitCivilianVAIMAR40, AU14PouchMagazineLargeFilledMAR40, RMCMagazineRifleMAR40Ext, RMCPacketGrenadeSmokeFilled ]
+    #- [ AU14WeaponRifleMAR40Tactical, AU14JumpsuitCivilianVAIMAR40, AU14PouchMagazineLargeFilledMAR40, RMCMagazineRifleMAR40Ext, RMCPacketGrenadeSmokeFilled ] # 30%
+    #- [ AU14WeaponRifleABR40TacticalVAI, RMCJumpsuitCivilianYellow, AU14PouchMagazineLargeFilledL42A, RMCMagazineRifleL42AExtended, RMCMagazineRifleL42AExtended,  RMCMagazineRifleL42AAP ]
+    #- [ AU14WeaponRifleABR40TacticalVAI, RMCJumpsuitCivilianYellow, AU14PouchMagazineLargeFilledL42A, RMCMagazineRifleL42AExtended, RMCMagazineRifleL42AExtended,  RMCMagazineRifleL42AAP ] # 20%
+    #- [ AU14WeaponRifleM41AMK2Tactical, AU14JumpsuitCivilianBrownVAIM41A, AU14PouchMagazineLargeFilledM41AMK2AP, CMMagazineRifleM54CExt, RMCPacketGrenadeSmokeFilled ]
+    #- [ AU14WeaponRifleM41AMK2Tactical, AU14JumpsuitCivilianBrownVAIM41A, AU14PouchMagazineLargeFilledM41AMK2AP, CMMagazineRifleM54CExt, RMCPacketGrenadeSmokeFilled ] # 20 %
+    #- [ AU14WeaponShotgunM890Tactical, AU14JumpsuitCivilianBrownVAIHEDP, RMCPouchShotgunLargeBuckshot, RMCExplosiveBreachingCharge, RMCPacketGrenadeSmokeFilled ] # 10%
+    #- [ AU14WeaponRifleM41AMK1Tactical, AU14JumpsuitCivilianBrownVAIHEDP, AU14PouchMagazineLargeFilledM41A, CMMagazineRifleM54CMK1, RMCPacketGrenadeSmokeFilled ] # 10%
+    #tryEquipRandomWeapon: true

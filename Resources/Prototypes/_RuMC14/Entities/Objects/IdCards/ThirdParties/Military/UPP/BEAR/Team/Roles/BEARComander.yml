@@ -1,0 +1,130 @@
+- type: job
+  parent: CMJobBase
+  id: RuMCUPPBEARCommander
+  roundSide: ThirdParty
+  roundForce: BEAR
+  roundRole: RuMCUPPBEARCommander
+  roundComponents:
+  - type: TacticalMapIcon
+    icon:
+      sprite: /Textures/_RMC14/Interface/map_blips.rsi
+      state: spp_co
+  - type: AssignSquad
+    whitelist:
+      tags:
+      - RuMCSquadBEAR # for future when there's a dedicated map for them, right now does nothing
+  - type: Skills
+    skills:
+      RMCSkillCqc: 2
+      RMCSkillEngineer: 2
+      RMCSkillConstruction: 2
+      RMCSkillFirearms: 2
+      RMCSkillOverwatch: 1
+      RMCSkillMedical: 1
+      RMCSkillMeleeWeapons: 1
+      RMCSkillPilot: 1
+      RMCSkillPolice: 2
+      RMCSkillFireman: 2
+      RMCSkillPowerLoader: 1
+      RMCSkillVehicles: 2
+      RMCSkillJtac: 4
+      RMCSkillEndurance: 4
+      RMCSkillLeadership: 3
+  - type: JobPrefix
+    prefix: au-14-job-prefix-rmcrrt-commander
+  - type: MarineOrders
+  - type: RMCTrackable
+  - type: RMCPointing
+  - type: Language
+    spokenLanguages:
+    - Polish
+    - English
+    - Russian
+    - Spanish
+    - Mandarin
+    - German
+    - TacticalSignLanguage
+    understoodLanguages:
+    - Polish
+    - English
+    - Russian
+    - Spanish
+    - Mandarin
+    - German
+    - TacticalSignLanguage
+    currentLanguage: Russian
+    defaultLanguage: Russian
+
+  name: Командир ЧВК BEAR
+  description: Командир ЧВК BEAR
+  playTimeTracker: RuMCJobUPPBEARCommander
+  ranks:
+    RMCRankCivilian: []
+  chevrons:
+    UPP_Major:
+      entity: AU14ChevronUPPNIMajor
+      requirements:
+      - !type:RoleTimeRequirement
+        role: RuMCJobUPPBEARCommander
+        time: 18000 # 5 hours
+    UPP_Captain:
+      entity: AU14ChevronUPPNICaptain
+      requirements: []
+  spawnMenuRoleName: PMC BEAR Commander
+  startingGear: RuMCGearUPPBEARCommander
+  greeting: Вы член секретного спецподразделения ЧВК BEAR СПН! Существование связи BEAR и СПН строжайше секретны, никто не должен знать кто вы и что вы здесь делаете. Вы дружествены к СПН, враждебны к ЧВК VAI и ЧВК We-Y.
+  icon: "RuMCJobIconUPPBEARCommander"
+  joinNotifyCrew: false
+  supervisors: au14-job-supervisors-govfor
+  accessGroups:
+  - AU14GovforCommand
+  hidden: false
+
+- type: entity
+  parent: RuMCBaseMobSpeciesOrganicUPPBEAR
+  id: RuMCJobUPPBEARCommander
+  name: PMC BEAR Commander
+  components:
+  - type: GhostTakeoverAvailable
+  - type: GhostRoleApplySpecial
+    squad: RuMCSquadBEAR
+  - type: GhostRole
+    makeSentient: true
+    allowSpeech: true
+    allowMovement: true
+    name: Командир BEAR
+    description: Глава BEAR - владелец частной военной компании, посредник между высшим командованием СПН и ЧВК BEAR.
+    reregister: false
+    job: RuMCUPPBEARCommander
+    raffle:
+      settings: short
+    rules: au14-uppgrom-rules
+
+- type: startingGear
+  id: RuMCGearUPPBEARCommander
+  equipment:
+    id: RuCMIDCardUPPBEARCommander
+    outerClothing: RuMCArmorLightBEARFull
+    jumpsuit: RuMCUniformBEARFull
+    shoes: RMCBootsSPPBlack
+    mask: CMMaskCoif
+    #eyes:
+    head: RuMCInfantryHelmetBEARFull
+    gloves: RMCHandsBlack
+    belt: RuMCBeltMagazineBEARFull
+    pocket1: RuMCPouchMagazineBEARFull
+    pocket2: RuMCUPPPouchIFAKFill
+    back: RuMCUPPNavalInfantrySatchel
+    ears: RuMCHeadsetBEAR
+    ears2: RMCM5CameraGear
+    suitstorage: RuMCWeaponRifleAK13
+
+- type: jobIcon
+  parent: CMJobIconBase
+  id: RuMCJobIconUPPBEARCommander
+  icon:
+    sprite: _RMC14/Interface/cm_job_icons.rsi
+    state: upp_co
+
+- type: playTimeTracker
+  id: RuMCJobUPPBEARCommander

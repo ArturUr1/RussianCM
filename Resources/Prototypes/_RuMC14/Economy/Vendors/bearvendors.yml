@@ -1208,6 +1208,8 @@
         amount: 3
       - id: RMCWeaponShotgunType23
         amount: 3
+      - id: RuMCWeaponShotgunMR35
+        amount: 2
       - id: RuMCGunAH12Case_alt
         amount: 1
       - id: RuMCUTES-CCase
@@ -1256,6 +1258,8 @@
         amount: 3
       - id: RuMCMagazineRifleAG80Tracer
         amount: 10
+      - id: RMCBoxShotgunSlugs
+        amount: 20
       - id: RMCBoxShotgunHeavyBuckshot
         amount: 20
       - id: RMCBoxShotgunHeavyFlechette

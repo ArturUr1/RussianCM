@@ -1,0 +1,144 @@
+- type: job
+  parent: CMJobBase
+  id: RuMCUPPBEARGrenader
+  roundSide: ThirdParty
+  roundForce: BEAR
+  roundRole: RuMCUPPBEARGrenader
+  roundComponents:
+  - type: TacticalMapIcon
+    icon:
+      sprite: /Textures/_RMC14/Interface/map_blips.rsi
+      state: spp_co
+  - type: AssignSquad
+    whitelist:
+      tags:
+      - RuMCSquadBEAR # for future when there's a dedicated map for them, right now does nothing
+  - type: Skills
+    skills:
+      RMCSkillCqc: 1
+      RMCSkillEngineer: 4
+      RMCSkillConstruction: 3
+      RMCSkillFirearms: 2
+      RMCSkillMedical: 1
+      RMCSkillMeleeWeapons: 1
+      RMCSkillPolice: 2
+      RMCSkillFireman: 2
+      RMCSkillPowerLoader: 1
+      RMCSkillVehicles: 2
+      RMCSkillJtac: 3
+      RMCSkillEndurance: 2
+  - type: JobPrefix
+    prefix: au-14-job-prefix-rmcrrt-commander
+  - type: MarineOrders
+  - type: RMCTrackable
+  - type: RMCPointing
+  - type: Language
+    spokenLanguages:
+    - Polish
+    - English
+    - Russian
+    - Spanish
+    - Mandarin
+    - German
+    - TacticalSignLanguage
+    understoodLanguages:
+    - Polish
+    - English
+    - Russian
+    - Spanish
+    - Mandarin
+    - German
+    - TacticalSignLanguage
+    currentLanguage: Russian
+    defaultLanguage: Russian
+
+  name: Пулемётчик ЧВК BEAR
+  description: Пулемётчик ЧВК BEAR
+  playTimeTracker: RuMCJobUPPBEARGrenader
+  ranks:
+    RMCRankCivilian: []
+  chevrons:
+    UPP_SeniorSergeant:
+      entity: AU14ChevronUPPNISeniorSergeant
+      requirements:
+      - !type:RoleTimeRequirement
+        role: RuMCJobUPPBEARGrenader
+        time: 36000 # 10 hours
+    UPP_Sergeant:
+      entity: AU14ChevronUPPNISergeant
+      requirements:
+      - !type:RoleTimeRequirement
+        role: RuMCJobUPPBEARGrenader
+        time: 18000 # 5 hours
+    UPP_Plutonowy:
+      entity: AU14ChevronUPPNIPlutonowy
+      requirements: []
+  spawnMenuRoleName: PMC BEAR Grenader
+  startingGear: RuMCGearUPPBEARGrenader
+  greeting: Вы член секретного спецподразделения ЧВК BEAR СПН! Существование связи BEAR и СПН строжайше секретны, никто не должен знать кто вы и что вы здесь делаете. Вы дружествены к СПН, враждебны к ЧВК VAI и ЧВК We-Y.
+  icon: "RuMCJobIconUPPBEARGrenader"
+  joinNotifyCrew: false
+  supervisors: au14-job-supervisors-govfor
+  accessGroups:
+  - AU14GovforCommand
+  hidden: false
+
+- type: entity
+  parent: RuMCBaseMobSpeciesOrganicUPPBEAR
+  id: RuMCJobUPPBEARGrenader
+  name: PMC BEAR Grenader
+  components:
+  - type: GhostTakeoverAvailable
+  - type: GhostRoleApplySpecial
+    squad: RuMCSquadBEAR
+  - type: GhostRole
+    makeSentient: true
+    allowSpeech: true
+    allowMovement: true
+    name: Оператор пулемёта BEAR
+    description: Оператор пулемёта ЧВК BEAR.
+    reregister: false
+    job: RuMCUPPBEARGrenader
+    raffle:
+      settings: short
+    rules: au14-uppgrom-rules
+
+- type: startingGear
+  id: RuMCGearUPPBEARGrenader
+  equipment:
+    id: RuCMIDCardUPPBEARGrenader
+    outerClothing: RuMCArmorBEARFull
+    jumpsuit: RuMCUniformBEARFull
+    shoes: RMCBootsSPPBlack
+    mask: CMMaskCoif
+    #eyes:
+    head: RuMCInfantryHelmetBEARFull
+    gloves: RMCHandsBlack
+    belt: RuMCBeltMagazineBEARFull
+    pocket1: RuMCPouchMagazineBEARFull
+    pocket2: RuMCUPPPouchIFAKFill
+    back: AU14SatchelDemoSpecUPP
+    ears: RuMCHeadsetBEAR
+    ears2: RMCM5CameraGear
+    suitstorage: RuMCWeaponLauncherRPG32
+  storage:
+    back:
+    - RuMCRocketRPG_Termobaric
+    - RuMCRocketRPG_Termobaric
+    - RuMCRocketRPG_Termobaric
+    - RuMCRocketRPG_Termobaric
+    - RMCRocketHJRA12HE
+    - RMCRocketHJRA12HE
+    - RMCRocketHJRA12HE
+  inhand:
+    - RuMCWeaponRifleAK13
+
+- type: jobIcon
+  parent: CMJobIconBase
+  id: RuMCJobIconUPPBEARGrenader
+  icon:
+    sprite: _RMC14/Interface/cm_job_icons.rsi
+    state: upp_co
+
+- type: playTimeTracker
+  id: RuMCJobUPPBEARGrenader
