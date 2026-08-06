@@ -119,6 +119,55 @@
   - type: GunRequiresWield
 
 - type: entity
+  parent: RuMCWeaponSMGsPP13M
+  id: RuMCWeaponSMGsPP13MTactical
+  suffix: Tactical
+  components:
+  - type: AttachableHolder
+    slots:
+      rmc-aslot-barrel:
+        startingAttachable: RMCAttachmentSuppressor
+        whitelist:
+          tags:
+          - RMCAttachmentBarrelCharger
+          - RMCAttachmentExtendedBarrel
+          - RMCAttachmentExtendedCompensator
+          - RMCAttachmentSuppressor
+          - RMCM5Bayonet
+      rmc-aslot-rail:
+        startingAttachable: RMCAttachmentS6ReflexSight
+        whitelist:
+          tags:
+          - RMCAttachmentRailFlashlight
+          - RMCAttachmentMagneticHarness
+          - RMCAttachmentS5RedDotSight
+          - RMCAttachmentS6ReflexSight
+          - RMCAttachmentS84xTelescopicScope
+          - RMCAttachmentS42xTelescopicMiniscope
+      rmc-aslot-stock:
+        locked: true
+        startingAttachable: RuMCAttachmentPP13MStockCollapsible
+        whitelist:
+          tags:
+          - RuMCAttachmentPP13MStockCollapsible
+          - RuMCAttachmentAK13StockCollapsible
+          - RuMCAttachmentPKPStockCollapsible
+      rmc-aslot-underbarrel:
+        startingAttachable: RMCAttachmentAngledGrip
+        whitelist:
+          tags:
+          - RMCAttachmentAngledGrip
+          - RMCAttachmentBipod
+          - RMCAttachmentFlashlightGrip
+          - RMCAttachmentGyroscopicStabilizer
+          - RMCAttachmentLaserSight
+          - RMCAttachmentU1GrenadeLauncher
+          - RMCAttachmentU7UnderbarrelShotgun
+          - RMCAttachmentVerticalGrip
+          - RMCAttachmentExtinguisher
+          - RMCAttachmentFlamer
+
+- type: entity
   parent: CMMagazineRifleBase
   id: RuMCMagazinePP13M
   name: PP13M magazine (10x20mm)

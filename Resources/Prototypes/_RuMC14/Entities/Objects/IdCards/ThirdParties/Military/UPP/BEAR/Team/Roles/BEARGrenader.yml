@@ -12,7 +12,7 @@
   - type: AssignSquad
     whitelist:
       tags:
-      - RuMCSquadBEAR # for future when there's a dedicated map for them, right now does nothing
+      - RuMCSquadBEAR
   - type: Skills
     skills:
       RMCSkillCqc: 1
@@ -27,6 +27,8 @@
       RMCSkillVehicles: 2
       RMCSkillJtac: 3
       RMCSkillEndurance: 2
+  - type: EquipEntityPreset
+    preset: RuMCBEARPreset
   - type: JobPrefix
     prefix: au-14-job-prefix-rmcrrt-commander
   - type: MarineOrders
@@ -52,8 +54,8 @@
     currentLanguage: Russian
     defaultLanguage: Russian
 
-  name: Пулемётчик ЧВК BEAR
-  description: Пулемётчик ЧВК BEAR
+  name: BEAR Grenadier
+  description: BEAR Grenadier
   playTimeTracker: RuMCJobUPPBEARGrenader
   ranks:
     RMCRankCivilian: []
@@ -73,9 +75,9 @@
     UPP_Plutonowy:
       entity: AU14ChevronUPPNIPlutonowy
       requirements: []
-  spawnMenuRoleName: PMC BEAR Grenader
+  spawnMenuRoleName: BEAR Grenadier
   startingGear: RuMCGearUPPBEARGrenader
-  greeting: Вы член секретного спецподразделения ЧВК BEAR СПН! Существование связи BEAR и СПН строжайше секретны, никто не должен знать кто вы и что вы здесь делаете. Вы дружествены к СПН, враждебны к ЧВК VAI и ЧВК We-Y.
+  greeting: Вы член секретного спецподразделения ЧВК «Медведи» (BEAR) при СПН! Существование связи между BEAR и СПН строжайше секретно. Никто не должен знать, кто вы и что вы здесь делаете. Вы дружественны к СПН. Враждебны к ЧВК VAI и ЧВК We-Y. Работайте скрытно. Выполняйте задачи. Не оставляйте следов.
   icon: "RuMCJobIconUPPBEARGrenader"
   joinNotifyCrew: false
   supervisors: au14-job-supervisors-govfor
@@ -86,8 +88,10 @@
 - type: entity
   parent: RuMCBaseMobSpeciesOrganicUPPBEAR
   id: RuMCJobUPPBEARGrenader
-  name: PMC BEAR Grenader
+  name: BEAR Grenadier
   components:
+  - type: EquipEntityPreset
+    preset: RuMCBEARPreset
   - type: GhostTakeoverAvailable
   - type: GhostRoleApplySpecial
     squad: RuMCSquadBEAR
@@ -95,32 +99,19 @@
     makeSentient: true
     allowSpeech: true
     allowMovement: true
-    name: Оператор пулемёта BEAR
-    description: Оператор пулемёта ЧВК BEAR.
-    reregister: false
+    name: BEAR Grenadier
+    description: Fortification assault specialist. Armed with the RPG-32 with thermobaric rounds. Destroys cover, vehicles, and infantry groups. Operates under the cover of the machine gunner.
     job: RuMCUPPBEARGrenader
     raffle:
       settings: short
-    rules: au14-uppgrom-rules
 
 - type: startingGear
+  parent: RuMCGearUPPBEARbase
   id: RuMCGearUPPBEARGrenader
   equipment:
     id: RuCMIDCardUPPBEARGrenader
-    outerClothing: RuMCArmorBEARFull
-    jumpsuit: RuMCUniformBEARFull
-    shoes: RMCBootsSPPBlack
-    mask: CMMaskCoif
-    #eyes:
-    head: RuMCInfantryHelmetBEARFull
-    gloves: RMCHandsBlack
-    belt: RuMCBeltMagazineBEARFull
-    pocket1: RuMCPouchMagazineBEARFull
-    pocket2: RuMCUPPPouchIFAKFill
-    back: AU14SatchelDemoSpecUPP
     ears: RuMCHeadsetBEAR
-    ears2: RMCM5CameraGear
-    suitstorage: RuMCWeaponLauncherRPG32
+    back: AU14SatchelDemoSpecUPP
   storage:
     back:
     - RuMCRocketRPG_Termobaric
@@ -131,14 +122,14 @@
     - RMCRocketHJRA12HE
     - RMCRocketHJRA12HE
   inhand:
-    - RuMCWeaponRifleAK13
+    - RuMCWeaponLauncherRPG32
 
 - type: jobIcon
   parent: CMJobIconBase
   id: RuMCJobIconUPPBEARGrenader
   icon:
     sprite: _RMC14/Interface/cm_job_icons.rsi
-    state: upp_co
+    state: upp_spec
 
 - type: playTimeTracker
   id: RuMCJobUPPBEARGrenader

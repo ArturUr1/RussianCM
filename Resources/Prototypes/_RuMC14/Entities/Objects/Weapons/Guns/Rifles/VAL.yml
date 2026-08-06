@@ -115,6 +115,38 @@
   - type: GunRequiresWield
 
 - type: entity
+  parent: RuMCRifleVAL
+  id: RuMCRifleVALTactical
+  suffix: Tactical
+  components:
+  - type: AttachableHolder
+    slots:
+      rmc-aslot-barrel:
+        locked: true
+        startingAttachable: RuMCAttachmentSuppressorVAL
+        whitelist:
+          tags:
+          - RuMCAttachmentSuppressorVAL
+      rmc-aslot-rail:
+        startingAttachable: RMCAttachmentS6ReflexSight
+        whitelist:
+          tags:
+          - RMCAttachmentRailFlashlight
+          - RMCAttachmentMagneticHarness
+          - RMCAttachmentS5RedDotSight
+          - RMCAttachmentS6ReflexSight
+          - RMCAttachmentS84xTelescopicScope
+          - RMCAttachmentS42xTelescopicMiniscope
+      rmc-aslot-underbarrel:
+        startingAttachable: RMCAttachmentLaserSight
+        whitelist:
+          tags:
+          - RMCAttachmentAngledGrip
+          - RMCAttachmentGyroscopicStabilizer
+          - RMCAttachmentLaserSight
+          - RMCAttachmentVerticalGrip
+
+- type: entity
   parent: RMCMagazineRifleAK4047
   id: RuMCMagazineVAL
   name: "TOPS VAL-S magazine (10x24mm)"
@@ -132,6 +164,7 @@
   - type: Tag
     tags:
     - RuMCMagazineVAL
+    - CMMagazineRifle
   - type: BallisticAmmoProvider
     whitelist:
       tags:
@@ -158,6 +191,7 @@
   - type: Tag
     tags:
     - RuMCMagazineVAL
+    - CMMagazineRifle
   - type: BallisticAmmoProvider
     whitelist:
       tags:
@@ -184,6 +218,7 @@
   - type: Tag
     tags:
     - RuMCMagazineVAL
+    - CMMagazineRifle
   - type: BallisticAmmoProvider
     whitelist:
       tags:

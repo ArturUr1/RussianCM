@@ -45,15 +45,3 @@
   - type: ItemIFF
     factions:
     - GOVFOR
-
-- type: entity
-  parent: CMIDCardBase
-  id: RuCMIDCardUPPBEARRifleman
-  categories: [ HideSpawnMenu ]
-  name: UPP BEAR Rifleman ID card
-  components:
-  - type: PresetIdCard
-    job: AU14UPPGROMRifleman
-  - type: ItemIFF
-    factions:
-    - GOVFOR
