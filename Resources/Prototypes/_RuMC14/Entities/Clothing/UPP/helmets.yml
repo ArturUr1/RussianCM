@@ -94,7 +94,6 @@
     # armor_rad = 10
     # armor_internaldamage = 20
 
-
 - type: entity
   parent: RMCArmorHelmetMercenary
   id: RuMCUPPHeavyHelmet
