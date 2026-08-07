@@ -1322,6 +1322,8 @@
         amount: 5
       - id: RuMCBoxBulletsPistol762x25mm
         amount: 2
+      - id: RMCBoxShellsSlugs
+        amount: 2
     - name: au14-vendor-section-explosives
       entries:
       - id: AU14PacketGrenadeHighExplosiveUPPFilled
