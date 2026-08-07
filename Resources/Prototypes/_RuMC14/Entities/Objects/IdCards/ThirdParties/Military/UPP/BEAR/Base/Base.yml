@@ -345,9 +345,9 @@
     - [ RuMCRifleAH12Tactical, RuMCUniformBEAR_Black, RuMCBeltMagazineAHBEARFull, RuMCPouchMagazineAHBEARFull, ]
     - [ RuMCRifleVALTactical, RuMCUniformBEAR_Black,RuMCBeltMagazineVALBEARFull, RuMCPouchMagazineVALBEARFull, ]
     - [ RuMCWeaponSMGsPP13MTactical, RuMCUniformGrayBEARFull,RuMCBeltMagazinePP13BEARFull,  RuMCPouchMagazinePP13BEARFull, ]
-    - [ RuMCWeaponRifleAK13Tactical, RuMCUniformBEAR,RuMCBeltMagazineBEARFull, RuMCPouchMagazineBEARFull, ]
+    - [ RuMCWeaponRifleAK13Tactical, RuMCUniformBEARFull,RuMCBeltMagazineBEARFull, RuMCPouchMagazineBEARFull, ]
     - [ RuMCWeaponRifleAK13Tactical_alt1, RuMCUniformGrayBEARFull,RuMCBeltMagazineBEARFull, RuMCPouchMagazineBEARFull, ]
-    - [ RuMCWeaponRifleAK13Tactical_alt2, RuMCUniformBEAR,RuMCBeltMagazineBEARFull, RuMCPouchMagazineBEARFull, ]
+    - [ RuMCWeaponRifleAK13Tactical_alt2, RuMCUniformBEARFull,RuMCBeltMagazineBEARFull, RuMCPouchMagazineBEARFull, ]
     tryEquipRandomWeapon: true
 
 - type: entity
@@ -379,6 +379,6 @@
     - [ RuMCMachineGunPKP_MSTactical_alt, RuMCUniformBlackBEARFull,RuMCUPPNavalInfantryBeltMachinegunnerFull, RuMCUPPPouchDrumFull, ]
     - [ RuMCMachineGunPKP_MSTactical, RuMCUniformGrayBEARFull,RuMCUPPNavalInfantryBeltMachinegunnerFull,  RuMCUPPPouchDrumFull, ]
     - [ RuMCMachineGunPKP_MSTactical_alt, RuMCUniformGrayBEARFull,RuMCUPPNavalInfantryBeltMachinegunnerFull, RuMCUPPPouchDrumFull, ]
-    - [ RuMCMachineGunPKP_MSTactical, RuMCUniformBEAR,RuMCUPPNavalInfantryBeltMachinegunnerFull, RuMCUPPPouchDrumFull, ]
-    - [ RuMCMachineGunPKP_MSTactical_alt, RuMCUniformBEAR,RuMCUPPNavalInfantryBeltMachinegunnerFull, RuMCUPPPouchDrumFull, ]
+    - [ RuMCMachineGunPKP_MSTactical, RuMCUniformBEARFull,RuMCUPPNavalInfantryBeltMachinegunnerFull, RuMCUPPPouchDrumFull, ]
+    - [ RuMCMachineGunPKP_MSTactical_alt, RuMCUniformBEARFull,RuMCUPPNavalInfantryBeltMachinegunnerFull, RuMCUPPPouchDrumFull, ]
     tryEquipRandomWeapon: true
