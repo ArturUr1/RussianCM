@@ -5,8 +5,8 @@ leadersToSpawn:
   RuMCJobUPPBEARCommander: 1
 gruntsToSpawn:
   RuMCJobUPPBEARGrenader: 1
-  RuMCJobUPPBEARMachinegunner: 2
-  RuMCJobUPPBEARRifleman: 2
+  RuMCJobUPPBEARMachinegunner: 1
+  RuMCJobUPPBEARRifleman: 3
 scalewithpop: false
 spawnTogether: true
 
@@ -15,16 +15,16 @@ id: UPPBEAR
 announceAsSurvivors: true
 partyspawn: UPPBEARSpawn
 blacklistedgamemodes:
-  - insurgency
-  - forceonforce
+#  - insurgency
+#  - forceonforce
   - colonyfall
 entrymethod: shuttle
 dropshippath: /Maps/_AU14/ShuttlesDropships/rmc_ert_spp_shuttle.yml
-weight: 100
-minplayers: 100
+weight: 20
+minplayers: 10
 maxplayers: 400
-GhostsNeeded: 0
-roundstart: true
+GhostsNeeded: 10
+roundstart: false
 
 type: partySpawn
 id: UPPBEARSpawnAlt
@@ -34,7 +34,7 @@ leadersToSpawn:
 gruntsToSpawn:
   RuMCJobUPPBEARGrenader: 0
   RuMCJobUPPBEARMachinegunner: 0
-  RuMCJobUPPBEARRifleman: 1
+  RuMCJobUPPBEARRifleman: 2
 scalewithpop: false
 spawnTogether: true
 
@@ -44,13 +44,13 @@ announceAsSurvivors: true
 partyspawn: UPPBEARSpawnAlt
 blacklistedgamemodes:
   - insurgency
-  - forceonforce
+#  - forceonforce
   - colonyfall
 entrymethod: shuttle
 dropshippath: /Maps/_AU14/ShuttlesDropships/rmc_ert_spp_shuttle.yml
-weight: 100
-minplayers: 25
-maxplayers: 50
+weight: 20
+minplayers: 10
+maxplayers: 400
 GhostsNeeded: 0
 roundstart: true
 
@@ -62,7 +62,7 @@ leadersToSpawn:
 gruntsToSpawn:
   RuMCJobUPPBEARGrenader: 0
   RuMCJobUPPBEARMachinegunner: 2
-  RuMCJobUPPBEARRifleman: 2
+  RuMCJobUPPBEARRifleman: 3
 scalewithpop: false
 spawnTogether: true
 
@@ -71,14 +71,14 @@ id: UPPBEARAlt2
 announceAsSurvivors: true
 partyspawn: UPPBEARSpawnAlt2
 blacklistedgamemodes:
-  - insurgency
-  - forceonforce
-  - colonyfall
+#  - insurgency
+#  - forceonforce
+#  - colonyfall
 entrymethod: shuttle
 dropshippath: /Maps/_AU14/ShuttlesDropships/rmc_ert_spp_shuttle.yml
-weight: 100
-minplayers: 51
-maxplayers: 99
+weight: 20
+minplayers: 10
+maxplayers: 400
 GhostsNeeded: 0
-roundstart: true
+roundstart: false
 
