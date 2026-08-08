@@ -6,7 +6,8 @@
   gruntsToSpawn:
     RuMCJobUPPBEARGrenader: 1
     RuMCJobUPPBEARMachinegunner: 2
-    RuMCJobUPPBEARRifleman: 4
+    RuMCJobUPPBEARRifleman: 3
+    RuMCJobUPPBEARMedic: 1
   scalewithpop: false
   spawnTogether: true
 
@@ -30,7 +31,8 @@
   gruntsToSpawn:
     RuMCJobUPPBEARGrenader: 0
     RuMCJobUPPBEARMachinegunner: 1
-    RuMCJobUPPBEARRifleman: 4
+    RuMCJobUPPBEARRifleman: 3
+    RuMCJobUPPBEARMedic: 1
   scalewithpop: false
   spawnTogether: true
 
@@ -54,7 +56,8 @@
   gruntsToSpawn:
     #RuMCJobUPPBEARGrenader: 0
     #RuMCJobUPPBEARMachinegunner: 0
-    RuMCJobUPPBEARRifleman: 2
+    RuMCJobUPPBEARRifleman: 1
+    RuMCJobUPPBEARMedic: 1
   scalewithpop: false
   spawnTogether: true
 

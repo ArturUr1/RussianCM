@@ -61,9 +61,9 @@
       CHTORM_PMC_BEAR: 9000 #RuMC
       GROZA_PMC_BEAR: 6000 #RuMC
       SKALA_PMC_BEAR: 3000 #RuMC
-      UPPGROM: 7500
-      UPPGROMAlt: 6000
-      UPPGROMAlt2: 4500
+      #UPPGROM: 7500
+      #UPPGROMAlt: 6000
+      #UPPGROMAlt2: 4500
 
 # UA Ambassador Console - Can call in US Army
 - type: entity
