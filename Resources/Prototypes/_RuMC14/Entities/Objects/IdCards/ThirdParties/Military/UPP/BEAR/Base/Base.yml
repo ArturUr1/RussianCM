@@ -5,9 +5,6 @@
   abstract: true
   components:
   - type: GhostTakeoverAvailable
-  - type: NpcFactionMember
-    factions:
-    - AUUpp
   - type: RandomHumanoidAppearance
   - type: RandomHumanoidAppearanceWhitelisted
     allowedMaleHairStyles:
@@ -381,4 +378,37 @@
     - [ RuMCMachineGunPKP_MSTactical_alt, RuMCUniformGrayBEARFull,RuMCUPPNavalInfantryBeltMachinegunnerFull, RuMCUPPPouchDrumFull, ]
     - [ RuMCMachineGunPKP_MSTactical, RuMCUniformBEARFull,RuMCUPPNavalInfantryBeltMachinegunnerFull, RuMCUPPPouchDrumFull, ]
     - [ RuMCMachineGunPKP_MSTactical_alt, RuMCUniformBEARFull,RuMCUPPNavalInfantryBeltMachinegunnerFull, RuMCUPPPouchDrumFull, ]
+    tryEquipRandomWeapon: true
+
+- type: entity
+  id: RuMCBEARMedicPreset
+  name: PMC BEAR preset
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: EntityPreset
+    randomGearOther:
+    -
+      - [ RuMCBEARCapBrown, RMCBootsSPPBlack, AU14PVEHandsFingerlessBlackGloves, RMCGlassesMedicalHUDGlasses ]
+      - [ RuMCBEARCapBrown, RMCBootsSPPBlack, AU14PVEHandsFingerlessBrownGloves, RMCGlassesMedicalHUDGlasses ]
+      - [ RuMCBEARCapBlack, RMCBootsSPP, AU14PVEHandsInsulatedBlackMarine, RMCGlassesMedicalHUDGlasses ]
+      - [ RuMCBEARCapBlack, RMCBootsSPP, CMHandsBrown, RMCGlassesMedicalHUDGlasses ]
+      - [ RuMCBEARBoonieBrown, RMCBootsSPPBlack, AU14PVEHandsFingerlessBlackGloves, RMCGlassesMedicalHUDGlasses ]
+      - [ RuMCBEARBoonieBrown, RMCBootsSPPBlack, AU14PVEHandsFingerlessBrownGloves, RMCGlassesMedicalHUDGlasses ]
+      - [ RuMCBEARBoonieBlack, RMCBootsSPP, AU14PVEHandsInsulatedBlackMarine, RMCGlassesMedicalHUDGlasses ]
+      - [ RuMCBEARBoonieBlack, RMCBootsSPP, CMHandsBrown, RMCGlassesMedicalHUDGlasses ]
+      - [ RuMCInfantryHelmetBEARFull, RMCBootsSPPBlack, AU14PVEHandsFingerlessBlackGloves, RMCGlassesMedicalHUDGlasses ]
+      - [ RuMCBEARInfantryHelmet, RMCBootsSPPBlack, AU14PVEHandsFingerlessBrownGloves, RMCGlassesMedicalHUDGlasses ]
+      - [ RuMCInfantryHelmetBEARFull, RMCBootsSPP, AU14PVEHandsInsulatedBlackMarine, RMCGlassesMedicalHUDGlasses ]
+      - [ RuMCBEARInfantryHelmet, RMCBootsSPP, CMHandsBrown, RMCGlassesMedicalHUDGlasses ]
+      - [ RuMCInfantryHelmetBEARFull, RMCBootsSPPBlack, AU14PVEHandsFingerlessBlackGloves, RMCGlassesMedicalHUDGlasses ]
+      - [ RuMCBEARInfantryHelmet, RMCBootsSPPBlack, AU14PVEHandsFingerlessBrownGloves, RMCGlassesMedicalHUDGlasses ]
+      - [ RuMCInfantryHelmetBEARFull, RMCBootsSPP, AU14PVEHandsInsulatedBlackMarine, RMCGlassesMedicalHUDGlasses ]
+      - [ RuMCBEARInfantryHelmet, RMCBootsSPP, CMHandsBrown, RMCGlassesMedicalHUDGlasses ]
+    randomWeapon:
+    - [ RuMCWeaponSMGsPP13MTactical, RuMCUniformBEAR_Black, CMBeltMedicBag, RuMCPouchMagazinePP13BEARFull ]
+    - [ RuMCWeaponSMGsPP13MTactical, RuMCUniformBEAR_Black, CMBeltMedicBag, RuMCPouchMagazinePP13BEARFull ]
+    - [ RuMCWeaponSMGsPP13MTactical, RuMCUniformGrayBEARFull, CMBeltMedicBag,  RuMCPouchMagazinePP13BEARFull ]
+    - [ RuMCWeaponRifleAK13Tactical, RuMCUniformBEARFull, CMBeltMedicBag, RuMCPouchMagazineBEARFull ]
+    - [ RuMCWeaponRifleAK13Tactical_alt1, RuMCUniformGrayBEARFull, CMBeltMedicBag, RuMCPouchMagazineBEARFull ]
+    - [ RuMCWeaponRifleAK13Tactical_alt2, RuMCUniformBEARFull, CMBeltMedicBag, RuMCPouchMagazineBEARFull ]
     tryEquipRandomWeapon: true

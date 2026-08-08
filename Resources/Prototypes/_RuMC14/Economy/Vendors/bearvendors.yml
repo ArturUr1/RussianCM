@@ -60,6 +60,8 @@
         amount: 15
       - id: RuMCBEARCapBrown
         amount: 15
+      - id: AU14HeadCommandoBeanie
+        amount: 15
       - id: RMCM5CameraGear
         amount: 30
     - name: au14-vendor-section-hud
@@ -707,7 +709,7 @@
       entries:
       - id: RMCBootsSPPFilled
         amount: 5
-      - id: CMBootsBrown
+      - id: RMCBootsSPPBlack
         amount: 5
     - name: au14-vendor-section-headgear
       entries:
@@ -715,6 +717,8 @@
         amount: 15
       - id: RuMCBEARCapBrown
         amount: 15
+      - id: CMHeadCapSPPUshankaCivilian
+        amount: 2
     - name: au14-vendor-section-backpack
       entries:
       - id: RMCBackpackRTOSPP
@@ -1474,6 +1478,8 @@
       - id: RuMCBEARCapBlack
         amount: 15
       - id: RuMCBEARCapBrown
+        amount: 15
+      - id: AU14HeadCommandoBeanie
         amount: 15
       - id: AU14UPPUshanka
         amount: 40

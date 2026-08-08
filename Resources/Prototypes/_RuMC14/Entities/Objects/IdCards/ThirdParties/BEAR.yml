@@ -45,3 +45,15 @@
   - type: ItemIFF
     factions:
     - GOVFOR
+
+- type: entity
+  parent: CMIDCardBase
+  id: RuCMIDCardUPPBEARMedic
+  categories: [ HideSpawnMenu ]
+  name: UPP BEAR Medic ID card
+  components:
+  - type: PresetIdCard
+    job: RuMCUPPBEARMedic
+  - type: ItemIFF
+    factions:
+    - GOVFOR
