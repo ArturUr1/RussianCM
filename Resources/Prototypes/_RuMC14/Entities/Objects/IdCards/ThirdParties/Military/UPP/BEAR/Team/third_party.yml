@@ -15,6 +15,10 @@
   id: CHTORM_PMC_BEAR #ШТУРМ
   announceAsSurvivors: true
   partyspawn: BEARSpawn
+  whitelistedgamemodes:
+    - insurgency
+    - forceonforce
+    - colonyfall
   entrymethod: shuttle
   dropshippath: /Maps/_AU14/ShuttlesDropships/rmc_ert_spp_shuttle.yml
   weight: 20
@@ -40,6 +44,10 @@
   id:  GROZA_PMC_BEAR #ОБОРОНА
   announceAsSurvivors: true
   partyspawn: BEARSpawnAlt
+  whitelistedgamemodes:
+    - insurgency
+    - forceonforce
+    - colonyfall
   entrymethod: shuttle
   dropshippath: /Maps/_AU14/ShuttlesDropships/rmc_ert_spp_shuttle.yml
   weight: 20
@@ -65,6 +73,9 @@
   id: SKALA_PMC_BEAR #СОПРОВОЖДЕНИЕ
   announceAsSurvivors: true
   partyspawn: BEARSpawnAlt2
+  whitelistedgamemodes:
+    - insurgency
+    - colonyfall
   entrymethod: shuttle
   dropshippath: /Maps/_AU14/ShuttlesDropships/rmc_ert_spp_shuttle.yml
   weight: 20
