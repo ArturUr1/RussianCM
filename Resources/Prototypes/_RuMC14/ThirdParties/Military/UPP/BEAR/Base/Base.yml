@@ -255,7 +255,7 @@
     startingWebbing: AU14WebbingMagazine
 
 - type: entity
-  parent: RuMCUniformBEAR_Black
+  parent: RuMCUniformBlackBEARFull
   id: RuMCUniformBlackBEARFull
   suffix: RuMC, FULL, BEAR
   components:
@@ -339,8 +339,8 @@
       - [ RuMCInfantryHelmetBEARFull, RMCBootsSPP, AU14PVEHandsInsulatedBlackMarine ]
       - [ RuMCBEARInfantryHelmet, RMCBootsSPP, CMHandsBrown ]
     randomWeapon:
-    - [ RuMCRifleAH12Tactical, RuMCUniformBEAR_Black, RuMCBeltMagazineAHBEARFull, RuMCPouchMagazineAHBEARFull, ]
-    - [ RuMCRifleVALTactical, RuMCUniformBEAR_Black,RuMCBeltMagazineVALBEARFull, RuMCPouchMagazineVALBEARFull, ]
+    - [ RuMCRifleAH12Tactical, RuMCUniformBlackBEARFull, RuMCBeltMagazineAHBEARFull, RuMCPouchMagazineAHBEARFull, ]
+    - [ RuMCRifleVALTactical, RuMCUniformBlackBEARFull,RuMCBeltMagazineVALBEARFull, RuMCPouchMagazineVALBEARFull, ]
     - [ RuMCWeaponSMGsPP13MTactical, RuMCUniformGrayBEARFull,RuMCBeltMagazinePP13BEARFull,  RuMCPouchMagazinePP13BEARFull, ]
     - [ RuMCWeaponRifleAK13Tactical, RuMCUniformBEARFull,RuMCBeltMagazineBEARFull, RuMCPouchMagazineBEARFull, ]
     - [ RuMCWeaponRifleAK13Tactical_alt1, RuMCUniformGrayBEARFull,RuMCBeltMagazineBEARFull, RuMCPouchMagazineBEARFull, ]
@@ -405,10 +405,10 @@
       - [ RuMCInfantryHelmetBEARFull, RMCBootsSPP, AU14PVEHandsInsulatedBlackMarine, RMCGlassesMedicalHUDGlasses ]
       - [ RuMCBEARInfantryHelmet, RMCBootsSPP, CMHandsBrown, RMCGlassesMedicalHUDGlasses ]
     randomWeapon:
-    - [ RuMCWeaponSMGsPP13MTactical, RuMCUniformBEAR_Black, CMBeltMedicBagFilled, RuMCPouchMagazinePP13BEARFull ]
-    - [ RuMCWeaponSMGsPP13MTactical, RuMCUniformBEAR_Black, CMBeltMedicBagFilled, RuMCPouchMagazinePP13BEARFull ]
-    - [ RuMCWeaponSMGsPP13MTactical, RuMCUniformGrayBEARFull, CMBeltMedicBagFilled,  RuMCPouchMagazinePP13BEARFull ]
-    - [ RuMCWeaponRifleAK13Tactical, RuMCUniformBEARFull, CMBeltMedicBagFilled, RuMCPouchMagazineBEARFull ]
-    - [ RuMCWeaponRifleAK13Tactical_alt1, RuMCUniformGrayBEARFull, CMBeltMedicBagFilled, RuMCPouchMagazineBEARFull ]
-    - [ RuMCWeaponRifleAK13Tactical_alt2, RuMCUniformBEARFull, CMBeltMedicBagFilled, RuMCPouchMagazineBEARFull ]
+    - [ RuMCWeaponSMGsPP13MTactical, RuMCUniformBlackBEARFull, AU14BeltMedicBagProdigyFilled, RuMCPouchMagazinePP13BEARFull ]
+    - [ RuMCWeaponSMGsPP13MTactical, RuMCUniformBlackBEARFull, AU14BeltMedicBagProdigyFilled, RuMCPouchMagazinePP13BEARFull ]
+    - [ RuMCWeaponSMGsPP13MTactical, RuMCUniformGrayBEARFull, AU14BeltMedicBagProdigyFilled,  RuMCPouchMagazinePP13BEARFull ]
+    - [ RuMCWeaponRifleAK13Tactical, RuMCUniformBEARFull, AU14BeltMedicBagProdigyFilled, RuMCPouchMagazineBEARFull ]
+    - [ RuMCWeaponRifleAK13Tactical_alt1, RuMCUniformGrayBEARFull, AU14BeltMedicBagProdigyFilled, RuMCPouchMagazineBEARFull ]
+    - [ RuMCWeaponRifleAK13Tactical_alt2, RuMCUniformBEARFull, AU14BeltMedicBagProdigyFilled, RuMCPouchMagazineBEARFull ]
     tryEquipRandomWeapon: true

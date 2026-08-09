@@ -116,6 +116,8 @@
     - RMCMRESPP
     - AU14PacketGrenadeSmokeUPPFilled
     - AU14CMDefibrillator
+    - CMSurgicalCaseFilled
+    - CMPortableSurgicalBedSpawnFolded
 
 - type: jobIcon
   parent: CMJobIconBase

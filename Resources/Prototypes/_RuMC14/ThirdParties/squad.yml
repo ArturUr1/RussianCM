@@ -5,11 +5,11 @@
   components:
   - type: SquadTeam
     color: "#1f0e0f"
-    blacklistedSquadArmor:
-    - Helmet
-    - Goggles
-    - Armor
-    - Gloves
+    #blacklistedSquadArmor:
+    #- Helmet
+    #- Goggles
+    #- Armor
+    #- Gloves
     radio: UPPSOF
     minimapBackground:
       sprite: /Textures/_RMC14/Interface/map_blips.rsi
