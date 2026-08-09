@@ -84,7 +84,7 @@
     - RMCProjectileRocketHJRA12
   - type: CartridgeAmmo
     proto: RMCProjectileRocketHJRA12AT
-    deleteOnSpawn: false
+    deleteOnSpawn: true # RuMC edit
   - type: Sprite
     sprite: _RMC14/Objects/Weapons/Guns/Ammunition/Explosives/hjra.rsi
     layers:
@@ -109,7 +109,7 @@
     - RMCProjectileRocketHJRA12
   - type: CartridgeAmmo
     proto: RMCProjectileRocketHJRA12HE
-    deleteOnSpawn: false
+    deleteOnSpawn: true # RuMC edit
   - type: Sprite
     sprite: _RMC14/Objects/Weapons/Guns/Ammunition/Explosives/hjra.rsi
     layers:
@@ -134,7 +134,7 @@
     - RMCProjectileRocketHJRA12
   - type: CartridgeAmmo
     proto: RMCProjectileRocketHJRA12Incen
-    deleteOnSpawn: false
+    deleteOnSpawn: true # RuMC edit
   - type: Sprite
     sprite: _RMC14/Objects/Weapons/Guns/Ammunition/Explosives/hjra.rsi
     layers:
@@ -159,7 +159,7 @@
   components:
   - type: CartridgeAmmo
     proto: RMCProjectileRocket84mmAntiArmor
-    deleteOnSpawn: false
+    deleteOnSpawn: true # RuMC edit
   - type: Sprite
     sprite: _RMC14/Objects/Weapons/Guns/Ammunition/Explosives/hjra.rsi
     layers:
@@ -176,7 +176,7 @@
   components:
   - type: CartridgeAmmo
     proto: RMCProjectileRocket84mm
-    deleteOnSpawn: false
+    deleteOnSpawn: true # RuMC edit
   - type: Sprite
     sprite: _RMC14/Objects/Weapons/Guns/Ammunition/Explosives/hjra.rsi
     layers:
