@@ -1335,11 +1335,9 @@
       - id: AU14PacketGrenadeIncendiaryUPPFilled
         amount: 2
       - id: RuMCPacketGrenadeTermobaricUPPFilled
-        amount: 2
+        amount: 3
       - id: AU14PacketGrenadeSmokeUPPFilled
-        amount: 15
-      - id: RMCPacketGrenadeWhitePhosphorusFilled
-        amount: 2
+        amount: 10
       - id: AU14PacketGrenadeTearGasFilled
         amount: 3
       - id: RMCBoxClaymoreMineFilled
@@ -1397,6 +1395,8 @@
       - id: RMCIntelDetector
         amount: 4
       - id: RMCFulton20
+        amount: 4
+      - id: RMCOverwatchCameraTripod
         amount: 4
       - id: RMCSentryLaptop
         amount: 4
