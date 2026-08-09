@@ -12,8 +12,6 @@
     CMURankProvostAdvisor:
       entity: AU14ChevronProvostAdvisor
       requirements: []
-  ranks:
-    CMURankProvostAdvisor: []
   roundComponents:
   - type: Skills
     skills:

@@ -106,29 +106,7 @@ public sealed partial class CMUZLevelsSystem : CMUSharedZLevelsSystem
             depth++;
         }
 
-        if (TryAddMapsIntoZNetwork(stationNetwork, dict))
-            StabilizeZLevelDeckGrids(dict.Keys);
-    }
-
-    private void StabilizeZLevelDeckGrids(IEnumerable<EntityUid> maps)
-    {
-        foreach (var mapUid in maps)
-        {
-            if (!TryComp<MapComponent>(mapUid, out var map))
-                continue;
-
-            var query = EntityQueryEnumerator<MapGridComponent, TransformComponent>();
-            while (query.MoveNext(out var gridUid, out _, out var gridXform))
-            {
-                if (gridXform.MapID != map.MapId)
-                    continue;
-
-                _shuttle.Disable(gridUid);
-
-                if (TryComp<ShuttleComponent>(gridUid, out var shuttle))
-                    shuttle.Enabled = false;
-            }
-        }
+        TryAddMapsIntoZNetwork(stationNetwork, dict);
     }
 
     private void AddZLevelGridsToStations(
