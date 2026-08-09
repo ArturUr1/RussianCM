@@ -405,10 +405,10 @@
       - [ RuMCInfantryHelmetBEARFull, RMCBootsSPP, AU14PVEHandsInsulatedBlackMarine, RMCGlassesMedicalHUDGlasses ]
       - [ RuMCBEARInfantryHelmet, RMCBootsSPP, CMHandsBrown, RMCGlassesMedicalHUDGlasses ]
     randomWeapon:
-    - [ RuMCWeaponSMGsPP13MTactical, RuMCUniformBEAR_Black, CMBeltMedicBag, RuMCPouchMagazinePP13BEARFull ]
-    - [ RuMCWeaponSMGsPP13MTactical, RuMCUniformBEAR_Black, CMBeltMedicBag, RuMCPouchMagazinePP13BEARFull ]
-    - [ RuMCWeaponSMGsPP13MTactical, RuMCUniformGrayBEARFull, CMBeltMedicBag,  RuMCPouchMagazinePP13BEARFull ]
-    - [ RuMCWeaponRifleAK13Tactical, RuMCUniformBEARFull, CMBeltMedicBag, RuMCPouchMagazineBEARFull ]
-    - [ RuMCWeaponRifleAK13Tactical_alt1, RuMCUniformGrayBEARFull, CMBeltMedicBag, RuMCPouchMagazineBEARFull ]
-    - [ RuMCWeaponRifleAK13Tactical_alt2, RuMCUniformBEARFull, CMBeltMedicBag, RuMCPouchMagazineBEARFull ]
+    - [ RuMCWeaponSMGsPP13MTactical, RuMCUniformBEAR_Black, CMBeltMedicBagFilled, RuMCPouchMagazinePP13BEARFull ]
+    - [ RuMCWeaponSMGsPP13MTactical, RuMCUniformBEAR_Black, CMBeltMedicBagFilled, RuMCPouchMagazinePP13BEARFull ]
+    - [ RuMCWeaponSMGsPP13MTactical, RuMCUniformGrayBEARFull, CMBeltMedicBagFilled,  RuMCPouchMagazinePP13BEARFull ]
+    - [ RuMCWeaponRifleAK13Tactical, RuMCUniformBEARFull, CMBeltMedicBagFilled, RuMCPouchMagazineBEARFull ]
+    - [ RuMCWeaponRifleAK13Tactical_alt1, RuMCUniformGrayBEARFull, CMBeltMedicBagFilled, RuMCPouchMagazineBEARFull ]
+    - [ RuMCWeaponRifleAK13Tactical_alt2, RuMCUniformBEARFull, CMBeltMedicBagFilled, RuMCPouchMagazineBEARFull ]
     tryEquipRandomWeapon: true
