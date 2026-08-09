@@ -118,6 +118,11 @@
     - AU14CMDefibrillator
     - CMSurgicalCaseFilled
     - CMPortableSurgicalBedSpawnFolded
+    - ClothingHandsGlovesNitrile
+    jumpsuit:
+    - RMCMRESPP
+    - RMCMRESPP
+
 
 - type: jobIcon
   parent: CMJobIconBase

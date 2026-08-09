@@ -255,7 +255,7 @@
     startingWebbing: AU14WebbingMagazine
 
 - type: entity
-  parent: RuMCUniformBlackBEARFull
+  parent: RuMCUniformBEAR_Black
   id: RuMCUniformBlackBEARFull
   suffix: RuMC, FULL, BEAR
   components:
