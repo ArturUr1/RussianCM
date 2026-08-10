@@ -35,7 +35,29 @@
   playTimeTracker: AU14JobCivilianAmbassadorCCA
   setPreference: true
   ranks:
-    AU14RankAmbassador: []
+    RMCRankCivilian: []
+  chevrons:
+    RUMC14RankCounselateCommonAmbassador:
+      entity: RUMC14RankChevronCounselateCommonAmbassador
+      requirements:
+      - !type:RoleTimeRequirement
+        role: AU14JobCivilianAmbassadorCCA
+        time: 252000
+    RUMC14RankCounselateCommonEnvoy1:
+      entity: RUMC14RankChevronCounselateCommonEnvoy1
+      requirements:
+      - !type:RoleTimeRequirement
+        role: AU14JobCivilianAmbassadorCCA
+        time: 144000
+    RUMC14RankCounselateCommonEnvoy2:
+      entity: RUMC14RankChevronCounselateCommonEnvoy2
+      requirements:
+      - !type:RoleTimeRequirement
+        role: AU14JobCivilianAmbassadorCCA
+        time: 36000
+    RUMC14RankCounselateCommonCounselor1:
+      entity: RUMC14RankChevronCounselateCommonCounselor1
+      requirements: []
   startingGear: AU14GearCivilianAmbassadorCCA
   icon: "AU14JobIconCCAAmbassador"
   requireAdminNotify: false
@@ -129,7 +151,29 @@
   playTimeTracker: AU14JobCivilianAmbassadorICSC
   setPreference: true
   ranks:
-    AU14RankAmbassador: []
+    RMCRankCivilian: []
+  chevrons:
+    RUMC14RankCounselateCommonAmbassador:
+      entity: RUMC14RankChevronCounselateCommonAmbassador
+      requirements:
+      - !type:RoleTimeRequirement
+        role: AU14JobCivilianAmbassadorICSC
+        time: 252000
+    RUMC14RankCounselateCommonEnvoy1:
+      entity: RUMC14RankChevronCounselateCommonEnvoy1
+      requirements:
+      - !type:RoleTimeRequirement
+        role: AU14JobCivilianAmbassadorICSC
+        time: 144000
+    RUMC14RankCounselateCommonEnvoy2:
+      entity: RUMC14RankChevronCounselateCommonEnvoy2
+      requirements:
+      - !type:RoleTimeRequirement
+        role: AU14JobCivilianAmbassadorICSC
+        time: 36000
+    RUMC14RankCounselateCommonCounselor1:
+      entity: RUMC14RankChevronCounselateCommonCounselor1
+      requirements: []
   startingGear: AU14GearCivilianAmbassadorICSC
   icon: "AU14JobIconICSCAmbassador"
   requireAdminNotify: false
@@ -223,7 +267,29 @@
   playTimeTracker: AU14JobCivilianAmbassadorTWE
   setPreference: true
   ranks:
-    AU14RankTWEAmbassador: []
+    RMCRankCivilian: []
+  chevrons:
+    RUMC14RankCounselateTWEAmbassador:
+      entity: RUMC14RankChevronCounselateTWEAmbassador
+      requirements:
+      - !type:RoleTimeRequirement
+        role: AU14JobCivilianAmbassadorTWE
+        time: 252000
+    RUMC14RankCounselateTWEEnvoy1:
+      entity: RUMC14RankChevronCounselateTWEEnvoy1
+      requirements:
+      - !type:RoleTimeRequirement
+        role: AU14JobCivilianAmbassadorTWE
+        time: 144000
+    RUMC14RankCounselateTWEEnvoy2:
+      entity: RUMC14RankChevronCounselateTWEEnvoy2
+      requirements:
+      - !type:RoleTimeRequirement
+        role: AU14JobCivilianAmbassadorTWE
+        time: 36000
+    RUMC14RankCounselateTWECounselor1:
+      entity: RUMC14RankChevronCounselateTWECounselor1
+      requirements: []
   startingGear: AU14GearCivilianAmbassadorTWE
   icon: "AU14JobIconTWEAmbassador"
   requireAdminNotify: false
@@ -316,7 +382,29 @@
   playTimeTracker: AU14JobCivilianAmbassadorUA
   setPreference: true
   ranks:
-    AU14RankAmbassador: []
+    RMCRankCivilian: []
+  chevrons:
+    RUMC14RankCounselateUAAmbassador:
+      entity: RUMC14RankChevronCounselateUAAmbassador
+      requirements:
+      - !type:RoleTimeRequirement
+        role: AU14JobCivilianAmbassadorUA
+        time: 252000
+    RUMC14RankCounselateUAEnvoy1:
+      entity: RUMC14RankChevronCounselateUAEnvoy1
+      requirements:
+      - !type:RoleTimeRequirement
+        role: AU14JobCivilianAmbassadorUA
+        time: 144000
+    RUMC14RankCounselateUAEnvoy2:
+      entity: RUMC14RankChevronCounselateUAEnvoy2
+      requirements:
+      - !type:RoleTimeRequirement
+        role: AU14JobCivilianAmbassadorUA
+        time: 36000
+    RUMC14RankCounselateUACounselor1:
+      entity: RUMC14RankChevronCounselateUACounselor1
+      requirements: []
   startingGear: AU14GearCivilianAmbassadorUA
   icon: "AU14JobIconUAAmbassador"
   requireAdminNotify: false
@@ -408,7 +496,29 @@
   playTimeTracker: AU14JobCivilianAmbassadorUPP
   setPreference: true
   ranks:
-    AU14RankAmbassador: []
+    RMCRankCivilian: []
+  chevrons:
+    RUMC14RankCounselateUPPAmbassador:
+      entity: RUMC14RankChevronCounselateUPPAmbassador
+      requirements:
+      - !type:RoleTimeRequirement
+        role: AU14JobCivilianAmbassadorUPP
+        time: 252000
+    RUMC14RankCounselateUPPEnvoy1:
+      entity: RUMC14RankChevronCounselateUPPEnvoy1
+      requirements:
+      - !type:RoleTimeRequirement
+        role: AU14JobCivilianAmbassadorUPP
+        time: 144000
+    RUMC14RankCounselateUPPEnvoy2:
+      entity: RUMC14RankChevronCounselateUPPEnvoy2
+      requirements:
+      - !type:RoleTimeRequirement
+        role: AU14JobCivilianAmbassadorUPP
+        time: 36000
+    RUMC14RankCounselateUPPCounselor1:
+      entity: RUMC14RankChevronCounselateUPPCounselor1
+      requirements: []
   startingGear: AU14GearCivilianAmbassadorUPP
   icon: "AU14JobIconUPPAmbassador"
   requireAdminNotify: false
