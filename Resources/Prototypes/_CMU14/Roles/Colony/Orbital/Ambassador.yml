@@ -250,6 +250,21 @@
   - type: CMVendorUser
     id: AU14JobCivilianAmbassadorTWE
     points: 70
+  - type: Language
+    spokenLanguages:
+    - Japanese
+    - English
+    - Irish
+    - Hindi
+    - Indonesian
+    - Dutch
+    understoodLanguages:
+    - Japanese
+    - English
+    - Irish
+    - Hindi
+    - Indonesian
+    - Dutch
   - type: JobPrefix
     prefix: au14-job-prefix-civilianambassadortwe
   - type: TacticalMapIcon
@@ -364,6 +379,13 @@
   - type: CMVendorUser
     id: AU14JobCivilianAmbassadorUA
     points: 70
+  - type: Language
+    spokenLanguages:
+    - Brazilian
+    - English
+    understoodLanguages:
+    - Brazilian
+    - English
   - type: JobPrefix
     prefix: au14-job-prefix-civilianambassadorua
   - type: TacticalMapIcon
@@ -479,6 +501,23 @@
   - type: CMVendorUser
     id: AU14JobCivilianAmbassadorUPP
     points: 70
+  - type: Language
+    spokenLanguages:
+    - Polish
+    - English
+    - Russian
+    - Spanish
+    - Mandarin
+    - German
+    - Hungarian
+    understoodLanguages:
+    - Polish
+    - English
+    - Russian
+    - Spanish
+    - Mandarin
+    - German
+    - Hungarian
   - type: JobPrefix
     prefix: au14-job-prefix-civilianambassadorupp
   - type: TacticalMapIcon
