@@ -14,19 +14,19 @@ ent-AU14ChevronUPPNISeniorGefreiter = лычка старшего ефрейто
     .desc = {ent-AU14ChevronUPPNIBase.desc}
     .suffix = Морская пехота
 
-ent-AU14ChevronUPPNICorporal = лычка капрала
+ent-AU14ChevronUPPNICorporal = лычка младший сержант
     .desc = {ent-AU14ChevronUPPNIBase.desc}
     .suffix = Морская пехота
 
-ent-AU14ChevronUPPNIPlutonowy = лычка взводного
+ent-AU14ChevronUPPNIPlutonowy = лычка сержанта
     .desc = {ent-AU14ChevronUPPNIBase.desc}
     .suffix = Морская пехота
 
-ent-AU14ChevronUPPNISergeant = лычка сержанта
+ent-AU14ChevronUPPNISergeant = лычка старшего сержанта
     .desc = {ent-AU14ChevronUPPNIBase.desc}
     .suffix = Морская пехота
 
-ent-AU14ChevronUPPNISeniorSergeant = лычка старшего сержанта
+ent-AU14ChevronUPPNISeniorSergeant = лычка старшины
     .desc = {ent-AU14ChevronUPPNIBase.desc}
     .suffix = Морская пехота
 
@@ -81,15 +81,15 @@ ent-AU14ChevronUPPNIColonel = лычка полковника
     .desc = {ent-AU14ChevronUPPNIBase.desc}
     .suffix = Морская пехота
 
-ent-AU14ChevronUPPNIBrigadierGeneral = лычка генерал-бригадира
+ent-AU14ChevronUPPNIBrigadierGeneral = лычка генерал-майора
     .desc = {ent-AU14ChevronUPPNIBase.desc}
     .suffix = Морская пехота
 
-ent-AU14ChevronUPPNIDivisionalGeneral = лычка генерал-майора
+ent-AU14ChevronUPPNIDivisionalGeneral = лычка генерал-лейтенанта
     .desc = {ent-AU14ChevronUPPNIBase.desc}
     .suffix = Морская пехота
 
-ent-AU14ChevronUPPNIGeneralOfTheBranch = лычка генерала рода войск
+ent-AU14ChevronUPPNIGeneralOfTheBranch = лычка генерал-полковника
     .desc = {ent-AU14ChevronUPPNIBase.desc}
     .suffix = Морская пехота
 
