@@ -54,8 +54,8 @@
     currentLanguage: Russian
     defaultLanguage: Russian
 
-  name: BEAR Machine Gunner
-  description: BEAR Machine Gunner
+  name: rumc-job-name-bear-machinegunner
+  description: rumc-job-name-bear-machinegunner
   playTimeTracker: RuMCJobUPPBEARMachinegunner
   ranks:
     RMCRankCivilian: []
@@ -99,8 +99,8 @@
     makeSentient: true
     allowSpeech: true
     allowMovement: true
-    name: BEAR Machine Gunner
-    description: Fire support operator of the BEAR PMC. Armed with the PKP-MS machine gun with a 150-round box magazine. Tasked with suppressing enemy fire points and holding positions. Works in tandem with the grenadier.
+    name: rumc-job-name-bear-machinegunner
+    description: rumc-ghostrole-description-bear-machinegunner
     job: RuMCUPPBEARMachinegunner
     raffle:
       settings: short

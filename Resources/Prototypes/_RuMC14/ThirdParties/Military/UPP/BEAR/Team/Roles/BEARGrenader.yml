@@ -54,8 +54,8 @@
     currentLanguage: Russian
     defaultLanguage: Russian
 
-  name: BEAR Grenadier
-  description: BEAR Grenadier
+  name: rumc-job-name-bear-grenadier
+  description: rumc-job-name-bear-grenadier
   playTimeTracker: RuMCJobUPPBEARGrenader
   ranks:
     RMCRankCivilian: []
@@ -99,8 +99,8 @@
     makeSentient: true
     allowSpeech: true
     allowMovement: true
-    name: BEAR Grenadier
-    description: Fortification assault specialist. Armed with the RPG-32 with thermobaric rounds. Destroys cover, vehicles, and infantry groups. Operates under the cover of the machine gunner.
+    name: rumc-job-name-bear-grenadier
+    description: rumc-ghostrole-description-bear-grenadier
     job: RuMCUPPBEARGrenader
     raffle:
       settings: short

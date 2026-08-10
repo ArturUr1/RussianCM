@@ -57,8 +57,8 @@
     currentLanguage: Russian
     defaultLanguage: Russian
 
-  name: BEAR Squad Leader
-  description: BEAR Squad Leader
+  name: rumc-job-name-bear-commander
+  description: rumc-job-name-bear-commander
   playTimeTracker: RuMCJobUPPBEARCommander
   ranks:
     RMCRankCivilian: []
@@ -96,8 +96,8 @@
     makeSentient: true
     allowSpeech: true
     allowMovement: true
-    name: BEAR Squad Leader
-    description:  The squad leader of the BEAR PMC. Responsible for mission execution, team coordination, and on-ground decision-making. Carries secret communication with the UPP. First in battle, last to retreat.
+    name: rumc-job-name-bear-commander
+    description: rumc-ghostrole-description-bear-commander
     job: RuMCUPPBEARCommander
     raffle:
       settings: short
