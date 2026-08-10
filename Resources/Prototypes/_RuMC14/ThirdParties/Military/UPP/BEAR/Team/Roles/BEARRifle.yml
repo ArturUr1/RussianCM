@@ -94,6 +94,7 @@
   supervisors: au14-job-supervisors-govfor
   accessGroups:
   - AU14GovforCommand
+  - AU14GovforSquad
   hidden: false
 
 - type: entity
