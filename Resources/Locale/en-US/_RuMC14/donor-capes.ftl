@@ -1,0 +1,26 @@
+rmc-donor-capes-tab = Capes
+rmc-donor-capes-none = No cape
+rmc-donor-capes-locked = Subscription level required: {$tier}
+rmc-donor-capes-tier = Subscription level: {$tier}
+rmc-donor-capes-no-access = Subscription is not linked
+rmc-donor-capes-tier-leader = Rebellion Leader
+rmc-donor-capes-tier-scout = Scout
+rmc-donor-capes-tier-assault = Assault
+rmc-donor-cape-description = An exclusive donor cape.
+
+rmc-donor-cape-01-name = Danger
+rmc-donor-cape-02-name = Fire
+rmc-donor-cape-03-name = Green-red-blue flag
+rmc-donor-cape-04-name = Smoke break
+rmc-donor-cape-05-name = Star
+rmc-donor-cape-06-name = Sword
+rmc-donor-cape-07-name = US flag
+rmc-donor-cape-08-name = Three World Empire
+rmc-donor-cape-09-name = Born to kill
+rmc-donor-cape-10-name = Crow
+rmc-donor-cape-11-name = Dragon
+rmc-donor-cape-12-name = Lightning
+rmc-donor-cape-13-name = MC logo
+rmc-donor-cape-14-name = Phoenix
+rmc-donor-cape-15-name = Snake
+rmc-donor-cape-16-name = RuMC cloak

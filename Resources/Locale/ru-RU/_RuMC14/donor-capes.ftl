@@ -1,0 +1,26 @@
+rmc-donor-capes-tab = Плащи
+rmc-donor-capes-none = Без плаща
+rmc-donor-capes-locked = Требуется уровень подписки: {$tier}
+rmc-donor-capes-tier = Уровень подписки: {$tier}
+rmc-donor-capes-no-access = Подписка не подключена
+rmc-donor-capes-tier-leader = Лидер восстания
+rmc-donor-capes-tier-scout = Разведчик
+rmc-donor-capes-tier-assault = Штурмовик
+rmc-donor-cape-description = Эксклюзивный плащ для донатеров.
+
+rmc-donor-cape-01-name = Опасность
+rmc-donor-cape-02-name = Огонь
+rmc-donor-cape-03-name = Красно-зелёно-синий флаг
+rmc-donor-cape-04-name = Перекур
+rmc-donor-cape-05-name = Звезда
+rmc-donor-cape-06-name = Меч
+rmc-donor-cape-07-name = Флаг США
+rmc-donor-cape-08-name = Три мировые империи
+rmc-donor-cape-09-name = Рождён убивать
+rmc-donor-cape-10-name = Ворона
+rmc-donor-cape-11-name = Дракон
+rmc-donor-cape-12-name = Молния
+rmc-donor-cape-13-name = Логотип MC
+rmc-donor-cape-14-name = Феникс
+rmc-donor-cape-15-name = Змея
+rmc-donor-cape-16-name = Плащ RuMC
