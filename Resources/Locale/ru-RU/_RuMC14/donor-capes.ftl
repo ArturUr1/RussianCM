@@ -10,12 +10,12 @@ rmc-donor-cape-description = Эксклюзивный плащ для донат
 
 rmc-donor-cape-01-name = Опасность
 rmc-donor-cape-02-name = Огонь
-rmc-donor-cape-03-name = Красно-зелёно-синий флаг
+rmc-donor-cape-03-name = Плащ КОФ
 rmc-donor-cape-04-name = Перекур
 rmc-donor-cape-05-name = Звезда
 rmc-donor-cape-06-name = Меч
 rmc-donor-cape-07-name = Флаг США
-rmc-donor-cape-08-name = Три мировые империи
+rmc-donor-cape-08-name = Плащ ИТМ
 rmc-donor-cape-09-name = Рождён убивать
 rmc-donor-cape-10-name = Ворона
 rmc-donor-cape-11-name = Дракон

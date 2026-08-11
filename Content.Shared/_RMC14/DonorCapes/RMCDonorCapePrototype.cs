@@ -19,6 +19,9 @@ public sealed partial class RMCDonorCapePrototype : IPrototype
     public SpriteSpecifier Icon { get; private set; } = SpriteSpecifier.Invalid;
 
     [DataField]
+    public SpriteSpecifier? Preview { get; private set; }
+
+    [DataField]
     public int Number { get; private set; }
 
     [DataField]

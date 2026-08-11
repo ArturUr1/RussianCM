@@ -10,12 +10,12 @@ rmc-donor-cape-description = An exclusive donor cape.
 
 rmc-donor-cape-01-name = Danger
 rmc-donor-cape-02-name = Fire
-rmc-donor-cape-03-name = Green-red-blue flag
+rmc-donor-cape-03-name = KOF Cape
 rmc-donor-cape-04-name = Smoke break
 rmc-donor-cape-05-name = Star
 rmc-donor-cape-06-name = Sword
 rmc-donor-cape-07-name = US flag
-rmc-donor-cape-08-name = Three World Empire
+rmc-donor-cape-08-name = ITM Cape
 rmc-donor-cape-09-name = Born to kill
 rmc-donor-cape-10-name = Crow
 rmc-donor-cape-11-name = Dragon
