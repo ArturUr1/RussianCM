@@ -134,7 +134,7 @@ public sealed class DonorCapeTab : BoxContainer
 
         if (icon is { } sprite)
         {
-            var iconView = new AnimatedTextureRect
+            var iconView = new DonorCapePreviewControl
             {
                 MinSize = new Vector2(112, 96),
                 MaxSize = new Vector2(112, 96),

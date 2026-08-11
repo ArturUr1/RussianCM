@@ -1,0 +1,58 @@
+using Robust.Client.Graphics;
+using Robust.Client.GameObjects;
+using Robust.Client.UserInterface;
+using Robust.Client.UserInterface.Controls;
+using Robust.Shared.Graphics.RSI;
+using Robust.Shared.IoC;
+using Robust.Shared.Timing;
+using Robust.Shared.Utility;
+
+namespace Content.Client._RMC14.DonorCapes;
+
+public sealed class DonorCapePreviewControl : Control
+{
+    [Dependency] private readonly SpriteSystem _sprite = default!;
+    private IRsiStateLike? _state;
+    private int _frameStart;
+    private int _frameCount;
+    private int _frame;
+    private float _frameTime;
+
+    public TextureRect DisplayRect { get; }
+
+    public DonorCapePreviewControl()
+    {
+        IoCManager.InjectDependencies(this);
+
+        DisplayRect = new TextureRect();
+        AddChild(DisplayRect);
+    }
+
+    public void SetFromSpriteSpecifier(SpriteSpecifier specifier)
+    {
+        _state = _sprite.RsiStateLike(specifier);
+        var range = DonorCapePreviewAnimation.GetBackViewFrameRange(_state.AnimationFrameCount);
+        _frameStart = range.Start;
+        _frameCount = range.Count;
+        _frame = _frameStart;
+        _frameTime = _state.GetDelay(_frame);
+        DisplayRect.Texture = _state.GetFrame(RsiDirection.South, _frame);
+    }
+
+    protected override void FrameUpdate(FrameEventArgs args)
+    {
+        if (!VisibleInTree || _state == null || _frameCount <= 1)
+            return;
+
+        var oldFrame = _frame;
+        _frameTime -= args.DeltaSeconds;
+        while (_frameTime < _state.GetDelay(_frame))
+        {
+            _frame = _frameStart + (_frame - _frameStart + 1) % _frameCount;
+            _frameTime += _state.GetDelay(_frame);
+        }
+
+        if (_frame != oldFrame)
+            DisplayRect.Texture = _state.GetFrame(RsiDirection.South, _frame);
+    }
+}
