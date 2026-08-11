@@ -1,5 +1,5 @@
 - type: entity
-  parent: [ ClothingHeadHatWelding, RMCMarineHelmetBase ]
+  parent:  RMCMarineHelmetBase
   id: RuMCUPPNavalInfantryHeavyHelmet
   name: Maska-S
   description: The helmet for the UPP. It's called a heavy helmet, but the only difference is that the mask feels like it's made of cardboard, so there's not much difference between this and the regular version. [Head, eyes]
@@ -24,9 +24,9 @@
           True: {state: icon-on}
           False: {state: icon}
   - type: Appearance
-  - type: Tag
-    tags:
-    - RMCHelmetWelding
+  #- type: Tag
+  #  tags:
+  #  - RMCHelmetWelding
   - type: Item
     storedRotation: 0
   - type: HelmetAccessory
@@ -47,7 +47,7 @@
     # armor_internaldamage = 20
 
 - type: entity
-  parent: [ ClothingHeadHatWelding, RMCMarineHelmetBase ]
+  parent: RMCMarineHelmetBase
   id: RuMCUPPNavalInfantryHeavyHelmet2
   name: Altyn-S
   description: A heavy assault helmet featuring a wide, curved bulletproof polycarbonate visor. Unlike the Maska, it offers a full, unobstructed field of view, making it ideal for commanders and operators in close-quarters environments. The visor is resistant to most pistol rounds and shrapnel, but can be cracked by sustained heavy fire or blunt impacts. A symbol of elite status and modern protection.
