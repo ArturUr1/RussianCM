@@ -11,6 +11,23 @@ rmc-donor-capes-section-scout = Scout and above
 rmc-donor-capes-section-assault = Assault and above
 rmc-donor-cape-description = An exclusive donor cape.
 
+rmc-donor-cape-01-description = A cape bearing a warning emblem for those ready to face danger.
+rmc-donor-cape-02-description = A cape decorated with a fiery pattern.
+rmc-donor-cape-03-description = A KOF cape with its signature emblem.
+rmc-donor-cape-04-description = A cape for those who can endure even the longest smoke break.
+rmc-donor-cape-05-description = A star-marked cape — a sign of status and recognition.
+rmc-donor-cape-06-description = A cape bearing a sword emblem, symbolizing resolve.
+rmc-donor-cape-07-description = A cape bearing the flag of the United States.
+rmc-donor-cape-08-description = An ITM cape with its signature emblem.
+rmc-donor-cape-09-description = A cape bearing the words “Born to kill”.
+rmc-donor-cape-10-description = A cape bearing the image of a crow.
+rmc-donor-cape-11-description = A cape bearing the image of a dragon.
+rmc-donor-cape-12-description = A cape bearing the image of lightning.
+rmc-donor-cape-13-description = A cape bearing the MC logo.
+rmc-donor-cape-14-description = A cape bearing the image of a phoenix.
+rmc-donor-cape-15-description = A cape bearing the image of a snake.
+rmc-donor-cape-16-description = The signature RuMC cloak.
+
 rmc-donor-cape-01-name = Danger
 rmc-donor-cape-02-name = Fire
 rmc-donor-cape-03-name = KOF Cape

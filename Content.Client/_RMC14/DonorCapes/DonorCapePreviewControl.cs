@@ -15,6 +15,7 @@ public sealed class DonorCapePreviewControl : Control
     private int _frameCount;
     private int _frame;
     private float _frameTime;
+    private RsiDirection _direction;
 
     public TextureRect DisplayRect { get; }
 
@@ -27,12 +28,17 @@ public sealed class DonorCapePreviewControl : Control
     public void SetFromSpriteSpecifier(SpriteSpecifier specifier)
     {
         _state = specifier.RsiStateLike();
-        var range = DonorCapePreviewAnimation.GetBackViewFrameRange(_state.AnimationFrameCount);
+        _direction = _state.RsiDirections == RsiDirectionType.Dir1
+            ? RsiDirection.South
+            : RsiDirection.North;
+        var range = DonorCapePreviewAnimation.GetBackViewFrameRange(
+            _state.AnimationFrameCount,
+            _state.RsiDirections);
         _frameStart = range.Start;
         _frameCount = range.Count;
         _frame = _frameStart;
         _frameTime = _state.GetDelay(_frame);
-        DisplayRect.Texture = _state.GetFrame(RsiDirection.South, _frame);
+        DisplayRect.Texture = _state.GetFrame(_direction, _frame);
     }
 
     protected override void FrameUpdate(FrameEventArgs args)
@@ -49,6 +55,6 @@ public sealed class DonorCapePreviewControl : Control
         }
 
         if (_frame != oldFrame)
-            DisplayRect.Texture = _state.GetFrame(RsiDirection.South, _frame);
+            DisplayRect.Texture = _state.GetFrame(_direction, _frame);
     }
 }

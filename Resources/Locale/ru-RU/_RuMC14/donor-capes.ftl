@@ -11,6 +11,23 @@ rmc-donor-capes-section-scout = Разведчик и выше
 rmc-donor-capes-section-assault = Штурмовик и выше
 rmc-donor-cape-description = Эксклюзивный плащ для донатеров.
 
+rmc-donor-cape-01-description = Плащ с предупреждающей эмблемой, подчёркивающий готовность к опасности.
+rmc-donor-cape-02-description = Плащ, украшенный огненным узором.
+rmc-donor-cape-03-description = Плащ КОФ с фирменной символикой.
+rmc-donor-cape-04-description = Плащ для тех, кто умеет выдержать даже самый долгий перекур.
+rmc-donor-cape-05-description = Плащ со звездой — знак статуса и признания.
+rmc-donor-cape-06-description = Плащ с эмблемой меча, символизирующей решимость.
+rmc-donor-cape-07-description = Плащ с флагом США.
+rmc-donor-cape-08-description = Плащ ИТМ с фирменной символикой.
+rmc-donor-cape-09-description = Плащ с надписью «Рождён убивать».
+rmc-donor-cape-10-description = Плащ с изображением ворона.
+rmc-donor-cape-11-description = Плащ с изображением дракона.
+rmc-donor-cape-12-description = Плащ с изображением молнии.
+rmc-donor-cape-13-description = Плащ с логотипом MC.
+rmc-donor-cape-14-description = Плащ с изображением феникса.
+rmc-donor-cape-15-description = Плащ с изображением змеи.
+rmc-donor-cape-16-description = Фирменный плащ RuMC.
+
 rmc-donor-cape-01-name = Опасность
 rmc-donor-cape-02-name = Огонь
 rmc-donor-cape-03-name = Плащ КОФ
