@@ -293,6 +293,7 @@
     containers:
       key_slots:
       - CMEncryptionKeyColony
+      - AU14EncryptionKeyUPPAmb
   - type: RMCHeadset
     channels:
     - UPPSOF
