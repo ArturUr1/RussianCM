@@ -61,7 +61,9 @@ public sealed class DonorCapeSystem : EntitySystem
 
     private bool TryInsertIntoStorage(EntityUid mob, EntityUid item)
     {
-        var slots = _inventory.GetSlotEnumerator(mob, SlotFlags.BACK | SlotFlags.BELT | SlotFlags.POCKET);
+        var slots = _inventory.GetSlotEnumerator(
+            mob,
+            SlotFlags.BACK | SlotFlags.BELT | SlotFlags.POCKET | SlotFlags.SUITSTORAGE);
         while (slots.MoveNext(out var slot))
         {
             if (slot.ContainedEntity is not { } storageOwner ||

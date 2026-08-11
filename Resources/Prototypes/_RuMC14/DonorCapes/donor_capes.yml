@@ -4,7 +4,7 @@
   item: RMCDonorCapeItem01
   icon: { sprite: _RuMC14/DonorCapes/cape01.rsi, state: icon }
   number: 1
-  requiredPriority: 4
+  requiredPriority: 3
 
 - type: rmcDonorCape
   id: rmc-donor-cape-02
@@ -12,7 +12,7 @@
   item: RMCDonorCapeItem02
   icon: { sprite: _RuMC14/DonorCapes/cape02.rsi, state: icon }
   number: 2
-  requiredPriority: 4
+  requiredPriority: 3
 
 - type: rmcDonorCape
   id: rmc-donor-cape-03
