@@ -1,9 +1,8 @@
 using Robust.Client.Graphics;
-using Robust.Client.GameObjects;
 using Robust.Client.UserInterface;
 using Robust.Client.UserInterface.Controls;
+using Robust.Client.Utility;
 using Robust.Shared.Graphics.RSI;
-using Robust.Shared.IoC;
 using Robust.Shared.Timing;
 using Robust.Shared.Utility;
 
@@ -11,7 +10,6 @@ namespace Content.Client._RMC14.DonorCapes;
 
 public sealed class DonorCapePreviewControl : Control
 {
-    [Dependency] private readonly SpriteSystem _sprite = default!;
     private IRsiStateLike? _state;
     private int _frameStart;
     private int _frameCount;
@@ -22,15 +20,13 @@ public sealed class DonorCapePreviewControl : Control
 
     public DonorCapePreviewControl()
     {
-        IoCManager.InjectDependencies(this);
-
         DisplayRect = new TextureRect();
         AddChild(DisplayRect);
     }
 
     public void SetFromSpriteSpecifier(SpriteSpecifier specifier)
     {
-        _state = _sprite.RsiStateLike(specifier);
+        _state = specifier.RsiStateLike();
         var range = DonorCapePreviewAnimation.GetBackViewFrameRange(_state.AnimationFrameCount);
         _frameStart = range.Start;
         _frameCount = range.Count;
