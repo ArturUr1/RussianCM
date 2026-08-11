@@ -6,6 +6,9 @@ rmc-donor-capes-no-access = Подписка не подключена
 rmc-donor-capes-tier-leader = Лидер восстания
 rmc-donor-capes-tier-scout = Разведчик
 rmc-donor-capes-tier-assault = Штурмовик
+rmc-donor-capes-section-leader = Лидер восстания и выше
+rmc-donor-capes-section-scout = Разведчик и выше
+rmc-donor-capes-section-assault = Штурмовик и выше
 rmc-donor-cape-description = Эксклюзивный плащ для донатеров.
 
 rmc-donor-cape-01-name = Опасность

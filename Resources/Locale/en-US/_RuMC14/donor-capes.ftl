@@ -6,6 +6,9 @@ rmc-donor-capes-no-access = Subscription is not linked
 rmc-donor-capes-tier-leader = Rebellion Leader
 rmc-donor-capes-tier-scout = Scout
 rmc-donor-capes-tier-assault = Assault
+rmc-donor-capes-section-leader = Rebellion Leader and above
+rmc-donor-capes-section-scout = Scout and above
+rmc-donor-capes-section-assault = Assault and above
 rmc-donor-cape-description = An exclusive donor cape.
 
 rmc-donor-cape-01-name = Danger

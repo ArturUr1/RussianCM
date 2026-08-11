@@ -17,7 +17,12 @@ public sealed class DonorCapeTab : BoxContainer
     private readonly IPrototypeManager _prototypeManager;
     private readonly LinkAccountManager _linkAccount;
     private readonly ButtonGroup _buttonGroup = new();
-    private readonly GridContainer _capeGrid = new() { Columns = 4, HorizontalExpand = true };
+    private readonly BoxContainer _capeSections = new()
+    {
+        Orientation = LayoutOrientation.Vertical,
+        HorizontalExpand = true,
+        SeparationOverride = 10,
+    };
     private readonly Label _tierLabel = new();
     private Button _noneButton = default!;
     private readonly List<(RMCDonorCapePrototype Cape, Button Button)> _capeButtons = new();
@@ -43,7 +48,7 @@ public sealed class DonorCapeTab : BoxContainer
             HorizontalExpand = true,
             VerticalExpand = true,
         };
-        scroll.AddChild(_capeGrid);
+        scroll.AddChild(_capeSections);
         AddChild(scroll);
 
         BuildCapeButtons();
@@ -73,18 +78,41 @@ public sealed class DonorCapeTab : BoxContainer
             enabled: true,
             icon: null);
         _noneButton.OnPressed += _ => OnCapeSelected?.Invoke(null);
-        _capeGrid.AddChild(_noneButton);
+        var noneGrid = new GridContainer { Columns = 4, HorizontalExpand = true };
+        noneGrid.AddChild(_noneButton);
+        _capeSections.AddChild(noneGrid);
 
-        foreach (var cape in _prototypeManager.EnumeratePrototypes<RMCDonorCapePrototype>().OrderBy(cape => cape.Number))
+        var capes = _prototypeManager.EnumeratePrototypes<RMCDonorCapePrototype>().ToArray();
+        foreach (var section in DonorCapeLayout.BuildSections(capes, cape => cape.RequiredPriority, cape => cape.Number))
         {
-            var button = BuildButton(
-                Loc.GetString(cape.Name),
-                selected: false,
-                enabled: false,
-                icon: cape.Icon);
-            button.OnPressed += _ => OnCapeSelected?.Invoke(cape.ID);
-            _capeButtons.Add((cape, button));
-            _capeGrid.AddChild(button);
+            var sectionContainer = new BoxContainer
+            {
+                Orientation = LayoutOrientation.Vertical,
+                HorizontalExpand = true,
+                SeparationOverride = 4,
+            };
+            sectionContainer.AddChild(new Label
+            {
+                Text = GetSectionTitle(section.RequiredPriority),
+                HorizontalExpand = true,
+                MinHeight = 24,
+            });
+
+            var grid = new GridContainer { Columns = 4, HorizontalExpand = true };
+            foreach (var cape in section.Capes)
+            {
+                var button = BuildButton(
+                    Loc.GetString(cape.Name),
+                    selected: false,
+                    enabled: false,
+                    icon: DonorCapePreview.GetPreview(cape.Preview, cape.Icon));
+                button.OnPressed += _ => OnCapeSelected?.Invoke(cape.ID);
+                _capeButtons.Add((cape, button));
+                grid.AddChild(button);
+            }
+
+            sectionContainer.AddChild(grid);
+            _capeSections.AddChild(sectionContainer);
         }
     }
 
@@ -92,8 +120,8 @@ public sealed class DonorCapeTab : BoxContainer
     {
         var button = new Button
         {
-            MinSize = new Vector2(120, 126),
-            MaxSize = new Vector2(120, 126),
+            MinSize = new Vector2(160, 150),
+            MaxSize = new Vector2(160, 150),
             ToggleMode = true,
             Pressed = selected,
             Group = _buttonGroup,
@@ -102,31 +130,30 @@ public sealed class DonorCapeTab : BoxContainer
             StyleClasses = { StyleBase.ButtonSquare },
         };
 
-        var children = new List<Control>
-        {
-            new Label
-            {
-                Text = label,
-                MinSize = new Vector2(108, 18),
-                MaxSize = new Vector2(108, 36),
-                Align = Label.AlignMode.Center,
-                ClipText = true,
-            },
-        };
+        var children = new List<Control>();
 
         if (icon is { } sprite)
         {
             var iconView = new AnimatedTextureRect
             {
-                MinSize = new Vector2(96, 96),
-                MaxSize = new Vector2(96, 96),
+                MinSize = new Vector2(112, 96),
+                MaxSize = new Vector2(112, 96),
             };
-            iconView.DisplayRect.MinSize = new Vector2(96, 96);
+            iconView.DisplayRect.MinSize = new Vector2(112, 96);
             iconView.DisplayRect.Stretch = TextureRect.StretchMode.Scale;
             iconView.SetFromSpriteSpecifier(sprite);
             children.Add(iconView);
 
         }
+
+        children.Add(new Label
+        {
+            Text = label,
+            MinSize = new Vector2(144, 36),
+            MaxSize = new Vector2(144, 36),
+            Align = Label.AlignMode.Center,
+            ClipText = false,
+        });
 
         var container = new BoxContainer
         {
@@ -141,6 +168,17 @@ public sealed class DonorCapeTab : BoxContainer
         button.AddChild(container);
 
         return button;
+    }
+
+    private string GetSectionTitle(int requiredPriority)
+    {
+        return requiredPriority switch
+        {
+            4 => Loc.GetString("rmc-donor-capes-section-assault"),
+            3 => Loc.GetString("rmc-donor-capes-section-scout"),
+            1 => Loc.GetString("rmc-donor-capes-section-leader"),
+            _ => Loc.GetString("rmc-donor-capes-tier", ("tier", GetRequiredTier(requiredPriority))),
+        };
     }
 
     private void RefreshAccess()
