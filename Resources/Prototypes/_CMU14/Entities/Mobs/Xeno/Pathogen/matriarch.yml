@@ -165,7 +165,7 @@
       params:
         volume: 0
   - type: TTS # RuMC edit
-    voice: DRAGON_KNIGHT_DOTA_2
+    voice: PHANTOM_ASSASSIN_ARCANA_DOTA_2
     faction: Xeno
 
 - type: entity

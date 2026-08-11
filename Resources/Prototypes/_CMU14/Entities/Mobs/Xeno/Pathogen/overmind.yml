@@ -188,7 +188,7 @@
     color: "#8a8c50"
   - type: DropshipHijacker
   - type: TTS # RuMC edit
-    voice: PHANTOM_ASSASSIN_ARCANA_DOTA_2
+    voice: DRAGON_KNIGHT_DOTA_2
     faction: Xeno
 
 - type: entity
