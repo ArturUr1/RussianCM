@@ -23,7 +23,7 @@
   icon: { sprite: _RuMC14/DonorCapes/cape03.rsi, state: icon }
   preview: { sprite: _RuMC14/DonorCapes/cape03.rsi, state: equipped-NECK }
   number: 3
-  requiredPriority: 1
+  requiredPriority: 2
 - type: rmcDonorCape
   id: rmc-donor-cape-04
   name: rmc-donor-cape-04-name
@@ -31,7 +31,7 @@
   icon: { sprite: _RuMC14/DonorCapes/cape04.rsi, state: icon }
   preview: { sprite: _RuMC14/DonorCapes/cape04.rsi, state: equipped-NECK }
   number: 4
-  requiredPriority: 1
+  requiredPriority: 2
 
 - type: rmcDonorCape
   id: rmc-donor-cape-05
@@ -139,4 +139,4 @@
   icon: { sprite: _RuMC14/DonorCapes/cape16.rsi, state: icon }
   preview: { sprite: _RuMC14/DonorCapes/cape16.rsi, state: equipped-NECK }
   number: 16
-  requiredPriority: 1
+  requiredPriority: 2

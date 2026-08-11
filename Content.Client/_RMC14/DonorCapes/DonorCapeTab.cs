@@ -176,6 +176,7 @@ public sealed class DonorCapeTab : BoxContainer
         {
             4 => Loc.GetString("rmc-donor-capes-section-assault"),
             3 => Loc.GetString("rmc-donor-capes-section-scout"),
+            2 => Loc.GetString("rmc-donor-capes-section-cell-commander"),
             1 => Loc.GetString("rmc-donor-capes-section-leader"),
             _ => Loc.GetString("rmc-donor-capes-tier", ("tier", GetRequiredTier(requiredPriority))),
         };
@@ -206,6 +207,7 @@ public sealed class DonorCapeTab : BoxContainer
         return requiredPriority switch
         {
             1 => Loc.GetString("rmc-donor-capes-tier-leader"),
+            2 => Loc.GetString("rmc-donor-capes-tier-cell-commander"),
             3 => Loc.GetString("rmc-donor-capes-tier-scout"),
             4 => Loc.GetString("rmc-donor-capes-tier-assault"),
             _ => requiredPriority.ToString(),
