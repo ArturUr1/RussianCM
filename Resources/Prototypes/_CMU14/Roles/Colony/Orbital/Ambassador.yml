@@ -34,7 +34,7 @@
   description: au14-job-description-civilianambassadorcca
   playTimeTracker: AU14JobCivilianAmbassadorCCA
   setPreference: true
-  ranks:
+  ranks: # RuMC edit start
     RMCRankCivilian: []
   chevrons:
     RUMC14RankCounselateCommonAmbassador:
@@ -57,7 +57,7 @@
         time: 36000
     RUMC14RankCounselateCommonCounselor1:
       entity: RUMC14RankChevronCounselateCommonCounselor1
-      requirements: []
+      requirements: [] # RuMC edit end
   startingGear: AU14GearCivilianAmbassadorCCA
   icon: "AU14JobIconCCAAmbassador"
   requireAdminNotify: false
@@ -150,7 +150,7 @@
   description: au14-job-description-civilianambassadoricsc
   playTimeTracker: AU14JobCivilianAmbassadorICSC
   setPreference: true
-  ranks:
+  ranks: # RuMC edit start
     RMCRankCivilian: []
   chevrons:
     RUMC14RankCounselateCommonAmbassador:
@@ -173,7 +173,7 @@
         time: 36000
     RUMC14RankCounselateCommonCounselor1:
       entity: RUMC14RankChevronCounselateCommonCounselor1
-      requirements: []
+      requirements: [] # RuMC edit end
   startingGear: AU14GearCivilianAmbassadorICSC
   icon: "AU14JobIconICSCAmbassador"
   requireAdminNotify: false
@@ -250,7 +250,7 @@
   - type: CMVendorUser
     id: AU14JobCivilianAmbassadorTWE
     points: 70
-  - type: Language
+  - type: Language # RuMC edit start
     spokenLanguages:
     - Japanese
     - English
@@ -264,7 +264,7 @@
     - Irish
     - Hindi
     - Indonesian
-    - Dutch
+    - Dutch # RuMC edit end
   - type: JobPrefix
     prefix: au14-job-prefix-civilianambassadortwe
   - type: TacticalMapIcon
@@ -281,7 +281,7 @@
   description: au14-job-description-civilianambassadortwe
   playTimeTracker: AU14JobCivilianAmbassadorTWE
   setPreference: true
-  ranks:
+  ranks: # RuMC edit start
     RMCRankCivilian: []
   chevrons:
     RUMC14RankCounselateTWEAmbassador:
@@ -304,7 +304,7 @@
         time: 36000
     RUMC14RankCounselateTWECounselor1:
       entity: RUMC14RankChevronCounselateTWECounselor1
-      requirements: []
+      requirements: [] # RuMC edit end
   startingGear: AU14GearCivilianAmbassadorTWE
   icon: "AU14JobIconTWEAmbassador"
   requireAdminNotify: false
@@ -379,13 +379,13 @@
   - type: CMVendorUser
     id: AU14JobCivilianAmbassadorUA
     points: 70
-  - type: Language
+  - type: Language # RuMC edit start
     spokenLanguages:
     - Brazilian
     - English
     understoodLanguages:
     - Brazilian
-    - English
+    - English # RuMC edit end
   - type: JobPrefix
     prefix: au14-job-prefix-civilianambassadorua
   - type: TacticalMapIcon
@@ -403,7 +403,7 @@
   description: au14-job-description-civilianambassadorua
   playTimeTracker: AU14JobCivilianAmbassadorUA
   setPreference: true
-  ranks:
+  ranks: # RuMC edit start
     RMCRankCivilian: []
   chevrons:
     RUMC14RankCounselateUAAmbassador:
@@ -426,7 +426,7 @@
         time: 36000
     RUMC14RankCounselateUACounselor1:
       entity: RUMC14RankChevronCounselateUACounselor1
-      requirements: []
+      requirements: [] # RuMC edit end
   startingGear: AU14GearCivilianAmbassadorUA
   icon: "AU14JobIconUAAmbassador"
   requireAdminNotify: false
@@ -501,7 +501,7 @@
   - type: CMVendorUser
     id: AU14JobCivilianAmbassadorUPP
     points: 70
-  - type: Language
+  - type: Language # RuMC edit start
     spokenLanguages:
     - Polish
     - English
@@ -517,7 +517,7 @@
     - Spanish
     - Mandarin
     - German
-    - Hungarian
+    - Hungarian # RuMC edit end
   - type: JobPrefix
     prefix: au14-job-prefix-civilianambassadorupp
   - type: TacticalMapIcon
@@ -534,7 +534,7 @@
   description: au14-job-description-civilianambassadorupp
   playTimeTracker: AU14JobCivilianAmbassadorUPP
   setPreference: true
-  ranks:
+  ranks: # RuMC edit start
     RMCRankCivilian: []
   chevrons:
     RUMC14RankCounselateUPPAmbassador:
@@ -557,7 +557,7 @@
         time: 36000
     RUMC14RankCounselateUPPCounselor1:
       entity: RUMC14RankChevronCounselateUPPCounselor1
-      requirements: []
+      requirements: [] # RuMC edit end
   startingGear: AU14GearCivilianAmbassadorUPP
   icon: "AU14JobIconUPPAmbassador"
   requireAdminNotify: false
