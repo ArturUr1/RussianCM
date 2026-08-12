@@ -247,10 +247,10 @@
     #    crate: AU14CrateAssortedKnives
     #  - cost: 800
     #    crate: RMCCrateM34
-      - cost: 2200
+      - cost: 2250
         crate: AU14CrateHJRA12
-    #  - cost: 1200
-    #    crate: AU14CrateOG60
+      - cost: 2750
+        crate: AU14CrateOG60
     #  - cost: 1500
     #    crate: RuMCCrateRPG_36
     #  - cost: 2000
