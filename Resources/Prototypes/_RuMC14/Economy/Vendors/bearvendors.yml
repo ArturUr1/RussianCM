@@ -697,6 +697,12 @@
         amount: 10
       - id: RuMCUniformBEAR_Gray
         amount: 10
+    - name: au14-vendor-section-apparel
+      choices: { CMHat: 1 }
+      entries:
+      - id: RuMCHeadBeretVDV
+      - id: RuMCHeadBeretMarien
+      - id: RuMCHeadBeretSSO
     #- name: au14-vendor-section-coats
     #  entries:
     #  - id: AU14CoatUPP
@@ -818,7 +824,9 @@
     - name: au14-vendor-section-apparel
       choices: { CMHat: 1 }
       entries:
-      - id: CMHeadCapSPPBeret
+      - id: RuMCHeadBeretVDV
+      - id: RuMCHeadBeretMarien
+      - id: RuMCHeadBeretSSO
     - name: au14-vendor-section-headgear
       choices: { CMHelmet: 1 }
       entries:
@@ -871,6 +879,12 @@
       entries:
       - id: RMCMagazinePistolNP92
         amount: 60
+    - name: au14-vendor-section-apparel
+      choices: { CMHat: 1 }
+      entries:
+      - id: RuMCHeadBeretVDV
+      - id: RuMCHeadBeretMarien
+      - id: RuMCHeadBeretSSO
     - name: au14-vendor-section-attachments
       entries:
       - id: RuMCAttachmentAK13StockCollapsible
@@ -1155,6 +1169,7 @@
       entries:
       - id: AU14ClothingOuterStraitjacket
         amount: 5 # TODO: bandaid - remove after mappers have placed this
+      - id: RMCMegaphone
 
 - type: entity
   parent: ColMarTechCargo

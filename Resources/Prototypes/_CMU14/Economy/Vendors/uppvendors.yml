@@ -50,7 +50,7 @@
         amount: 40
       - id: AU14UPPPatrolCap
         amount: 20
-      - id: CMHeadCapSPPBeret
+      - id: RuMCHeadBeretMarien
         amount: 15
       - id: AU14UPPBoonie
         amount: 15
@@ -535,7 +535,7 @@
       - id: AU14UPPPatrolCap
       - id: AU14UPPBoonie
       - id: AU14UPPUshanka
-      - id: CMHeadCapSPPBeret
+      - id: RuMCHeadBeretMarien
     - name: au14-vendor-section-webbings
       choices: { CMUPlatoonAirCrewWebbings: 1 }
       entries:
@@ -713,7 +713,7 @@
       entries:
       - id: CMHeadCapSPPPeaked
         amount: 5
-      - id: CMHeadCapSPPBeret
+      - id: RuMCHeadBeretMarien
         amount: 5
       - id: CMHeadCapSPPUshankaCivilian
         amount: 10
@@ -821,7 +821,7 @@
     - name: au14-vendor-section-apparel
       choices: { CMHat: 1 }
       entries:
-      - id: CMHeadCapSPPBeret
+      - id: RuMCHeadBeretMarien
     - name: au14-vendor-section-headgear
       choices: { CMHelmet: 1 }
       entries:
@@ -856,7 +856,7 @@
     - name: Apparel
       choices: { CMHat: 1 }
       entries:
-      - id: CMHeadCapSPPBeret
+      - id: RuMCHeadBeretMarien
     - name: Squad Leader Essentials
       takeAll: CMStandard
       entries:
@@ -1248,6 +1248,7 @@
       entries:
       - id: AU14ClothingOuterStraitjacket
         amount: 5 # TODO: bandaid - remove after mappers have placed this
+      - id: RMCMegaphone
 
 - type: entity
   parent: ColMarTechCargo
@@ -1544,7 +1545,7 @@
       entries:
       - id: AU14UPPPatrolCap
         amount: 20
-      - id: CMHeadCapSPPBeret
+      - id: RuMCHeadBeretMarien
         amount: 15
       - id: AU14UPPBoonie
         amount: 15

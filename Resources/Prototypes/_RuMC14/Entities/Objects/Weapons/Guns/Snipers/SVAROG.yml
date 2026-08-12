@@ -101,7 +101,7 @@
   - type: Sprite
     sprite: _RuMC14/Objects/Weapons/Guns/Snipers/SVAROG/mag.rsi
     layers:
-    - state: mag-0
+    - state: base
       map: ["enum.GunVisualLayers.Base"]
     - state: mag-1
       map: ["enum.GunVisualLayers.Mag"]
@@ -130,11 +130,11 @@
   - type: Sprite
     sprite: _RuMC14/Objects/Weapons/Guns/Snipers/SVAROG/mag.rsi
     layers:
-    - state: mag-0
+    - state: base
       map: ["enum.GunVisualLayers.Base"]
     - state: mag-1
       map: ["enum.GunVisualLayers.Mag"]
-    - state: band_e
+    - state: ammo_band
       color: "#9C2219"
 
 - type: entity
@@ -147,13 +147,13 @@
     proto: CMCartridgeSniper10x28mmFlak
     capacity: 15
   - type: Sprite
-    sprite: _RMC14/Objects/Weapons/Guns/Ammunition/Magazines/m42c.rsi
+    sprite: _RuMC14/Objects/Weapons/Guns/Snipers/SVAROG/mag.rsi
     layers:
-    - state: mag-0
+    - state: base
       map: ["enum.GunVisualLayers.Base"]
     - state: mag-1
       map: ["enum.GunVisualLayers.Mag"]
-    - state: band_e
+    - state: ammo_band
       color: "#7866FF"
 
 - type: Tag
