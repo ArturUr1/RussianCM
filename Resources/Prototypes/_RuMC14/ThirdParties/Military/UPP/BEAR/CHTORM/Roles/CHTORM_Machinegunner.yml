@@ -54,8 +54,8 @@
     currentLanguage: Russian
     defaultLanguage: Russian
 
-  name: BEAR Machine Gunner
-  description: BEAR Machine Gunner
+  name: CHTORM Machine Gunner
+  description: CHTORM Machine Gunner
   playTimeTracker: RuMCJobUPPBEARMachinegunner
   ranks:
     RMCRankCivilian: []
@@ -87,7 +87,7 @@
       - !type:RoleTimeRequirement
         role: RuMCJobUPPBEARMachinegunner
         time: 10800 # 3 hours
-  spawnMenuRoleName: BEAR Machine Gunner
+  spawnMenuRoleName: CHTORM Machine Gunner
   startingGear: RuMCGearUPPBEARMachinegunner
   greeting: Вы член секретного спецподразделения ЧВК «Медведи» (BEAR) при СПН! Существование связи между BEAR и СПН строжайше секретно. Никто не должен знать, кто вы и что вы здесь делаете. Вы дружественны к СПН. Враждебны к ЧВК VAI и ЧВК We-Y. Работайте скрытно. Выполняйте задачи. Не оставляйте следов.
   icon: "RuMCJobIconUPPBEARMachinegunner"
@@ -101,7 +101,7 @@
 - type: entity
   parent: RuMCBaseMobSpeciesOrganicUPPBEAR
   id: RuMCJobUPPBEARMachinegunner
-  name: BEAR Machine Gunner
+  name: CHTORM Machine Gunner
   components:
   - type: EquipEntityPreset
     preset: RuMCBEARmachinegunPreset
@@ -112,7 +112,7 @@
     makeSentient: true
     allowSpeech: true
     allowMovement: true
-    name: BEAR Machine Gunner
+    name: CHTORM Machine Gunner
     description: Fire support operator of the BEAR PMC. Armed with the PKP-MS machine gun with a 150-round box magazine. Tasked with suppressing enemy fire points and holding positions. Works in tandem with the grenadier.
     job: RuMCUPPBEARMachinegunner
     raffle:

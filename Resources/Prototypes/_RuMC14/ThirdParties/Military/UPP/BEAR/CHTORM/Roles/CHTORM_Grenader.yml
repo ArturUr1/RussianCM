@@ -54,8 +54,8 @@
     currentLanguage: Russian
     defaultLanguage: Russian
 
-  name: BEAR Grenadier
-  description: BEAR Grenadier
+  name: CHTORM Grenadier
+  description: CHTORM Grenadier
   playTimeTracker: RuMCJobUPPBEARGrenader
   ranks:
     RMCRankCivilian: []
@@ -87,7 +87,7 @@
       - !type:RoleTimeRequirement
         role: RuMCJobUPPBEARGrenader
         time: 10800 # 3 hours
-  spawnMenuRoleName: BEAR Grenadier
+  spawnMenuRoleName: CHTORM Grenadier
   startingGear: RuMCGearUPPBEARGrenader
   greeting: Вы член секретного спецподразделения ЧВК «Медведи» (BEAR) при СПН! Существование связи между BEAR и СПН строжайше секретно. Никто не должен знать, кто вы и что вы здесь делаете. Вы дружественны к СПН. Враждебны к ЧВК VAI и ЧВК We-Y. Работайте скрытно. Выполняйте задачи. Не оставляйте следов.
   icon: "RuMCJobIconUPPBEARGrenader"
@@ -101,7 +101,7 @@
 - type: entity
   parent: RuMCBaseMobSpeciesOrganicUPPBEAR
   id: RuMCJobUPPBEARGrenader
-  name: BEAR Grenadier
+  name: CHTORM Grenadier
   components:
   - type: EquipEntityPreset
     preset: RuMCBEARPreset
@@ -112,7 +112,7 @@
     makeSentient: true
     allowSpeech: true
     allowMovement: true
-    name: BEAR Grenadier
+    name: CHTORM Grenadier
     description: Fortification assault specialist. Armed with the RPG-32 with thermobaric rounds. Destroys cover, vehicles, and infantry groups. Operates under the cover of the machine gunner.
     job: RuMCUPPBEARGrenader
     raffle:
