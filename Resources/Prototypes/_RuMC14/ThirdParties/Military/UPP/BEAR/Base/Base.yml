@@ -328,6 +328,28 @@
     back: RuMCUPPNavalInfantrySatchel
     ears2: RMCM5CameraGear
 
+- type: startingGear
+  id: RuMCGearUPPBEARbaseLigth
+  equipment:
+    outerClothing: RuMCArmorLightBEARFull
+    mask: CMMaskCoif
+    #eyes:
+    pocket2: RuMCUPPPouchIFAKFill
+    back: RuMCUPPNavalInfantrySatchel
+    ears2: RMCM5CameraGear
+
+- type: startingGear
+  id: RuMCGearUPPBEARbaseHeavy
+  equipment:
+    outerClothing: RuMCArmorHeavyBEARFull
+    mask: CMMaskCoif
+    #eyes:
+    pocket2: RuMCUPPPouchIFAKFill
+    back: RuMCUPPNavalInfantryBackpackBig
+    ears2: RMCM5CameraGear
+
+#reandom preset
+
 - type: entity
   id: RuMCBEARPreset
   name: PMC BEAR preset
@@ -386,12 +408,12 @@
       - [ RuMCInfantryHelmetBEARFull, RMCBootsSPP, AU14PVEHandsInsulatedBlackMarine ]
       - [ RuMCBEARInfantryHelmet, RMCBootsSPP, CMHandsBrown ]
     randomWeapon:
-    - [ RuMCMachineGunPKP_MSTactical, RuMCUniformBlackBEARFull, RuMCUPPNavalInfantryBeltMachinegunnerFull, RuMCUPPPouchDrumFull, ]
-    - [ RuMCMachineGunPKP_MSTactical_alt, RuMCUniformBlackBEARFull,RuMCUPPNavalInfantryBeltMachinegunnerFull, RuMCUPPPouchDrumFull, ]
-    - [ RuMCMachineGunPKP_MSTactical, RuMCUniformGrayBEARFull,RuMCUPPNavalInfantryBeltMachinegunnerFull,  RuMCUPPPouchDrumFull, ]
-    - [ RuMCMachineGunPKP_MSTactical_alt, RuMCUniformGrayBEARFull,RuMCUPPNavalInfantryBeltMachinegunnerFull, RuMCUPPPouchDrumFull, ]
-    - [ RuMCMachineGunPKP_MSTactical, RuMCUniformBEARFull,RuMCUPPNavalInfantryBeltMachinegunnerFull, RuMCUPPPouchDrumFull, ]
-    - [ RuMCMachineGunPKP_MSTactical_alt, RuMCUniformBEARFull,RuMCUPPNavalInfantryBeltMachinegunnerFull, RuMCUPPPouchDrumFull, ]
+    - [ RuMCMachineGunPKP_MSTactical, RuMCUniformBlackBEARFull, RuMCUPPNavalInfantryBeltMachinegunnerFull, RuMCUPPPouchDrumFull ]
+    - [ RuMCMachineGunPKP_MSTactical_alt, RuMCUniformBlackBEARFull, RuMCUPPNavalInfantryBeltMachinegunnerFull, RuMCUPPPouchDrumFull ]
+    - [ RuMCMachineGunPKP_MSTactical, RuMCUniformGrayBEARFull, RuMCUPPNavalInfantryBeltMachinegunnerFull,  RuMCUPPPouchDrumFull ]
+    - [ RuMCMachineGunPKP_MSTactical_alt, RuMCUniformGrayBEARFull, RuMCUPPNavalInfantryBeltMachinegunnerFull, RuMCUPPPouchDrumFull ]
+    - [ RuMCMachineGunPKP_MSTactical, RuMCUniformBEARFull, RuMCUPPNavalInfantryBeltMachinegunnerFull, RuMCUPPPouchDrumFull ]
+    - [ RuMCMachineGunPKP_MSTactical_alt, RuMCUniformBEARFull, RuMCUPPNavalInfantryBeltMachinegunnerFull, RuMCUPPPouchDrumFull ]
     tryEquipRandomWeapon: true
 
 - type: entity
