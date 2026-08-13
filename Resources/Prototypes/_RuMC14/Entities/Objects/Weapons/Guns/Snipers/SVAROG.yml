@@ -76,7 +76,7 @@
           - RMCAttachmentLaserSight
   - type: AttachableHolderVisuals
     offsets:
-      rmc-aslot-underbarrel: 0.21875, -0.343
+      rmc-aslot-underbarrel: 0.21875, -0.2431415
   - type: RMCGunChamber
     enabled: false
   - type: InteractedBlacklist
