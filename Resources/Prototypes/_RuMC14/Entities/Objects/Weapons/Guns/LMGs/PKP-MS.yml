@@ -40,18 +40,18 @@
     baseFireModes:
     - FullAuto
     recoilWielded: 0.5
-    recoilUnwielded: 2
-    scatterWielded: 2.5
-    scatterUnwielded: 4
+    recoilUnwielded: 3
+    scatterWielded: 8
+    scatterUnwielded: 16
     baseFireRate: 5.45
     modifiers:
       FullAuto:
         fireDelay: 0.018
-        maxScatterModifier: 8
+        maxScatterModifier: 12
         shotsToMaxScatter: 6
   - type: RMCWeaponAccuracy
     accuracyMultiplier: 0.9
-    accuracyMultiplierUnwielded: 0.55
+    accuracyMultiplierUnwielded: 0.65
   - type: ItemSlots
     slots:
       gun_magazine:
@@ -137,7 +137,7 @@
           - RMCAttachmentSuppressor
           - RMCM5Bayonet
       rmc-aslot-rail:
-        startingAttachable: RMCAttachmentS6ReflexSight
+        startingAttachable: AU14AttachmentTwoPointSling
         whitelist:
           tags:
           - RMCAttachmentRailFlashlight
@@ -186,7 +186,7 @@
           - RMCAttachmentSuppressor
           - RMCM5Bayonet
       rmc-aslot-rail:
-        startingAttachable: RMCAttachmentS6ReflexSight
+        startingAttachable: AU14AttachmentTwoPointSling
         whitelist:
           tags:
           - RMCAttachmentRailFlashlight

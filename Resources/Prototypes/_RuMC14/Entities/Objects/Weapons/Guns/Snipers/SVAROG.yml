@@ -65,9 +65,15 @@
           tags:
           - RuMCSVAROGIntegratedScope
       rmc-aslot-underbarrel:
+        startingAttachable: RMCAttachmentBipod
         whitelist:
           tags:
           - RMCAttachmentBipod
+          - RMCAttachmentVerticalGrip
+          - RMCAttachmentAngledGrip
+          - RMCAttachmentFlashlightGrip
+          - RMCAttachmentGyroscopicStabilizer
+          - RMCAttachmentLaserSight
   - type: AttachableHolderVisuals
     offsets:
       rmc-aslot-underbarrel: 0.21875, -0.343

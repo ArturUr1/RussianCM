@@ -1,36 +1,39 @@
 - type: job
   parent: CMJobBase
-  id: RuMCUPPBEARMachinegunner
+  id: RuMCUPPBEARCommander
   roundSide: ThirdParty
   roundForce: BEAR
-  roundRole: RuMCUPPBEARMachinegunner
+  roundRole: RuMCUPPBEARCommander
   roundComponents:
   - type: TacticalMapIcon
     icon:
       sprite: /Textures/_RMC14/Interface/map_blips.rsi
-      state: upp_sapper
+      state: upp_sl_a
   - type: AssignSquad
     whitelist:
       tags:
       - RuMCSquadBEAR
   - type: Skills
     skills:
-      RMCSkillCqc: 1
-      RMCSkillEngineer: 1
-      RMCSkillConstruction: 1
+      RMCSkillCqc: 2
+      RMCSkillEngineer: 2
+      RMCSkillConstruction: 2
       RMCSkillFirearms: 2
+      RMCSkillOverwatch: 1
       RMCSkillMedical: 1
       RMCSkillMeleeWeapons: 1
+      RMCSkillPilot: 1
       RMCSkillPolice: 2
-      RMCSkillFireman: 3
+      RMCSkillFireman: 2
+      RMCSkillPowerLoader: 1
       RMCSkillVehicles: 2
-      RMCSkillJtac: 1
-      RMCSkillEndurance: 2
-      RMCSkillSmartGun: 1
+      RMCSkillJtac: 4
+      RMCSkillEndurance: 4
+      RMCSkillLeadership: 3
   - type: EquipEntityPreset
-    preset: RuMCBEARmachinegunPreset
+    preset: RuMCBEARPreset
   - type: JobPrefix
-    prefix: au-14-job-prefix-rmcrrt-commander
+    prefix: Commander
   - type: MarineOrders
   - type: RMCTrackable
   - type: RMCPointing
@@ -54,43 +57,43 @@
     currentLanguage: Russian
     defaultLanguage: Russian
 
-  name: BEAR Machine Gunner
-  description: BEAR Machine Gunner
-  playTimeTracker: RuMCJobUPPBEARMachinegunner
+  name: BEAR Squad Leader
+  description: BEAR Squad Leader
+  playTimeTracker: RuMCJobUPPBEARCommander
   ranks:
     RMCRankCivilian: []
   chevrons:
-    UPP_Private:
-      entity: AU14ChevronUPPNIPrivate
-      requirements: []
-    UPP_Gefreiter:
-      entity: AU14ChevronUPPNIGefreiter
-      requirements:
-      - !type:RoleTimeRequirement
-        role: RuMCJobUPPBEARMachinegunner
-        time: 1800 # 0.5 hours
-    UPP_SeniorGefreiter:
-      entity: AU14ChevronUPPNISeniorGefreiter
-      requirements:
-      - !type:RoleTimeRequirement
-        role: RuMCJobUPPBEARMachinegunner
-        time: 5400 # 1.5 hours
-    UPP_Corporal:
-      entity: AU14ChevronUPPNICorporal
-      requirements:
-      - !type:RoleTimeRequirement
-        role: RuMCJobUPPBEARMachinegunner
-        time: 7200 # 2 hours
     UPP_Plutonowy:
       entity: AU14ChevronUPPNIPlutonowy
+      requirements: []
+    UPP_Sergeant:
+      entity: AU14ChevronUPPNISergeant
       requirements:
       - !type:RoleTimeRequirement
-        role: RuMCJobUPPBEARMachinegunner
+        role: RuMCJobUPPBEARCommander
+        time: 1800 # 0.5 hours
+    UPP_SeniorSergeant:
+      entity: AU14ChevronUPPNISeniorSergeant
+      requirements:
+      - !type:RoleTimeRequirement
+        role: RuMCJobUPPBEARCommander
+        time: 5400 # 1.5 hours
+    UPP_JuniorLieutenant:
+      entity: AU14ChevronUPPNIJuniorLieutenant
+      requirements:
+      - !type:RoleTimeRequirement
+        role: RuMCJobUPPBEARCommander
+        time: 7200 # 2 hours
+    UPP_Lieutenant:
+      entity: AU14ChevronUPPNILieutenant
+      requirements:
+      - !type:RoleTimeRequirement
+        role: RuMCJobUPPBEARCommander
         time: 10800 # 3 hours
-  spawnMenuRoleName: BEAR Machine Gunner
-  startingGear: RuMCGearUPPBEARMachinegunner
+  spawnMenuRoleName: BEAR Squad Leader
+  startingGear: RuMCGearUPPBEARCommander
   greeting: Вы член секретного спецподразделения ЧВК «Медведи» (BEAR) при СПН! Существование связи между BEAR и СПН строжайше секретно. Никто не должен знать, кто вы и что вы здесь делаете. Вы дружественны к СПН. Враждебны к ЧВК VAI и ЧВК We-Y. Работайте скрытно. Выполняйте задачи. Не оставляйте следов.
-  icon: "RuMCJobIconUPPBEARMachinegunner"
+  icon: "RuMCJobIconUPPBEARCommander"
   joinNotifyCrew: false
   supervisors: au14-job-supervisors-govfor
   accessGroups:
@@ -100,11 +103,11 @@
 
 - type: entity
   parent: RuMCBaseMobSpeciesOrganicUPPBEAR
-  id: RuMCJobUPPBEARMachinegunner
-  name: BEAR Machine Gunner
+  id: RuMCJobUPPBEARCommander
+  name: BEAR Squad Leader
   components:
   - type: EquipEntityPreset
-    preset: RuMCBEARmachinegunPreset
+    preset: RuMCBEARPreset
   - type: GhostTakeoverAvailable
   - type: GhostRoleApplySpecial
     squad: RuMCSquadBEAR
@@ -112,32 +115,36 @@
     makeSentient: true
     allowSpeech: true
     allowMovement: true
-    name: BEAR Machine Gunner
-    description: Fire support operator of the BEAR PMC. Armed with the PKP-MS machine gun with a 150-round box magazine. Tasked with suppressing enemy fire points and holding positions. Works in tandem with the grenadier.
-    job: RuMCUPPBEARMachinegunner
+    name: BEAR Squad Leader
+    description:  The squad leader of the BEAR PMC. Responsible for mission execution, team coordination, and on-ground decision-making. Carries secret communication with the UPP. First in battle, last to retreat.
+    job: RuMCUPPBEARCommander
     raffle:
       settings: short
 
 - type: startingGear
   parent: RuMCGearUPPBEARbase
-  id: RuMCGearUPPBEARMachinegunner
+  id: RuMCGearUPPBEARCommander
   equipment:
-    id: RuCMIDCardUPPBEARMachinegunner
+    id: RuCMIDCardUPPBEARCommander
     ears: RuMCHeadsetBEAR
   storage:
+    outerClothing:
+    - RMCLaserDesignator
     back:
-    - RMCMRESPP
-    - RMCMRESPP
-    - AU14PacketGrenadeHighExplosiveUPPFilled
-    - AU14PacketGrenadeSmokeUPPFilled
+    - RuMCGrenadeTermobaric
+    - AU14GrenadeHighExplosiveUPP
+    - AU14GrenadeHighExplosiveUPP
+    - AU14GrenadeSmokeUPP
+    - AU14GrenadeSmokeUPP
+    - RMCExplosiveBreachingCharge
     - RMCExplosiveBreachingCharge
 
 - type: jobIcon
   parent: CMJobIconBase
-  id: RuMCJobIconUPPBEARMachinegunner
+  id: RuMCJobIconUPPBEARCommander
   icon:
     sprite: _RMC14/Interface/cm_job_icons.rsi
-    state: upp_sapper
+    state: upp_sl_a
 
 - type: playTimeTracker
-  id: RuMCJobUPPBEARMachinegunner
+  id: RuMCJobUPPBEARCommander

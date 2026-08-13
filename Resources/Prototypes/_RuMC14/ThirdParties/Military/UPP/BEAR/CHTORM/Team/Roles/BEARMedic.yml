@@ -1,14 +1,14 @@
 - type: job
   parent: CMJobBase
-  id: RuMCUPPBEARGrenader
+  id: RuMCUPPBEARMedic
   roundSide: ThirdParty
   roundForce: BEAR
-  roundRole: RuMCUPPBEARGrenader
+  roundRole: RuMCUPPBEARMedic
   roundComponents:
   - type: TacticalMapIcon
     icon:
       sprite: /Textures/_RMC14/Interface/map_blips.rsi
-      state: upp_spec
+      state: spp_med
   - type: AssignSquad
     whitelist:
       tags:
@@ -16,21 +16,21 @@
   - type: Skills
     skills:
       RMCSkillCqc: 1
-      RMCSkillEngineer: 4
-      RMCSkillConstruction: 3
+      RMCSkillEngineer: 1
+      RMCSkillConstruction: 1
       RMCSkillFirearms: 2
-      RMCSkillMedical: 1
+      RMCSkillMedical: 2
+      RMCSkillSurgery: 3
       RMCSkillMeleeWeapons: 1
       RMCSkillPolice: 2
-      RMCSkillFireman: 2
-      RMCSkillPowerLoader: 1
+      RMCSkillFireman: 3
       RMCSkillVehicles: 2
-      RMCSkillJtac: 3
+      RMCSkillJtac: 1
       RMCSkillEndurance: 2
   - type: EquipEntityPreset
-    preset: RuMCBEARPreset
+    preset: RuMCBEARMedicPreset
   - type: JobPrefix
-    prefix: au-14-job-prefix-rmcrrt-commander
+    prefix: Medic
   - type: MarineOrders
   - type: RMCTrackable
   - type: RMCPointing
@@ -54,9 +54,9 @@
     currentLanguage: Russian
     defaultLanguage: Russian
 
-  name: BEAR Grenadier
-  description: BEAR Grenadier
-  playTimeTracker: RuMCJobUPPBEARGrenader
+  name: BEAR Medic
+  description: BEAR Medic
+  playTimeTracker: RuMCJobUPPBEARMedic
   ranks:
     RMCRankCivilian: []
   chevrons:
@@ -67,44 +67,45 @@
       entity: AU14ChevronUPPNIGefreiter
       requirements:
       - !type:RoleTimeRequirement
-        role: RuMCJobUPPBEARGrenader
+        role: RuMCJobUPPBEARMedic
         time: 1800 # 0.5 hours
     UPP_SeniorGefreiter:
       entity: AU14ChevronUPPNISeniorGefreiter
       requirements:
       - !type:RoleTimeRequirement
-        role: RuMCJobUPPBEARGrenader
+        role: RuMCJobUPPBEARMedic
         time: 5400 # 1.5 hours
     UPP_Corporal:
       entity: AU14ChevronUPPNICorporal
       requirements:
       - !type:RoleTimeRequirement
-        role: RuMCJobUPPBEARGrenader
+        role: RuMCJobUPPBEARMedic
         time: 7200 # 2 hours
     UPP_Plutonowy:
       entity: AU14ChevronUPPNIPlutonowy
       requirements:
       - !type:RoleTimeRequirement
-        role: RuMCJobUPPBEARGrenader
+        role: RuMCJobUPPBEARMedic
         time: 10800 # 3 hours
-  spawnMenuRoleName: BEAR Grenadier
-  startingGear: RuMCGearUPPBEARGrenader
+  spawnMenuRoleName: BEAR Medic
+  startingGear: RuMCGearUPPBEARMedic
   greeting: Вы член секретного спецподразделения ЧВК «Медведи» (BEAR) при СПН! Существование связи между BEAR и СПН строжайше секретно. Никто не должен знать, кто вы и что вы здесь делаете. Вы дружественны к СПН. Враждебны к ЧВК VAI и ЧВК We-Y. Работайте скрытно. Выполняйте задачи. Не оставляйте следов.
-  icon: "RuMCJobIconUPPBEARGrenader"
+  icon: "RuMCJobIconUPPBEARMedic"
   joinNotifyCrew: false
   supervisors: au14-job-supervisors-govfor
   accessGroups:
   - AU14GovforCommand
+  - AU14GovforCorpsman
   - AU14GovforSquad
   hidden: false
 
 - type: entity
   parent: RuMCBaseMobSpeciesOrganicUPPBEAR
-  id: RuMCJobUPPBEARGrenader
-  name: BEAR Grenadier
+  id: RuMCJobUPPBEARMedic
+  name: BEAR Medic
   components:
   - type: EquipEntityPreset
-    preset: RuMCBEARPreset
+    preset: RuMCBEARMedicPreset
   - type: GhostTakeoverAvailable
   - type: GhostRoleApplySpecial
     squad: RuMCSquadBEAR
@@ -112,37 +113,34 @@
     makeSentient: true
     allowSpeech: true
     allowMovement: true
-    name: BEAR Grenadier
-    description: Fortification assault specialist. Armed with the RPG-32 with thermobaric rounds. Destroys cover, vehicles, and infantry groups. Operates under the cover of the machine gunner.
-    job: RuMCUPPBEARGrenader
+    name: BEAR Medic
+    description: The primary combat unit of the BEAR PMC. Armed with the AK-13 assault carbine. A versatile fighter for any mission — from reconnaissance to assault. Fast, accurate, reliable.
+    job: RuMCUPPBEARMedic
     raffle:
       settings: short
 
 - type: startingGear
   parent: RuMCGearUPPBEARbase
-  id: RuMCGearUPPBEARGrenader
+  id: RuMCGearUPPBEARMedic
   equipment:
-    id: RuCMIDCardUPPBEARGrenader
+    id: RuCMIDCardUPPBEARMedic
     ears: RuMCHeadsetBEAR
-    back: AU14SatchelDemoSpecUPP
   storage:
     back:
-    - RuMCRocketRPG_Termobaric
-    - RuMCRocketRPG_Termobaric
-    - RuMCRocketRPG_Termobaric
-    - RuMCRocketRPG_Termobaric
-    - RMCRocketHJRA12HE
-    - RMCRocketHJRA12HE
-    - RMCRocketHJRA12HE
-  inhand:
-    - RuMCWeaponLauncherRPG32
+    - RMCMRESPP
+    - AU14GrenadeSmokeUPP
+    - AU14CMDefibrillator
+    - CMSurgicalCaseFilled
+    - CMPortableSurgicalBedSpawnFolded
+    - ClothingHandsGlovesNitrile
+
 
 - type: jobIcon
   parent: CMJobIconBase
-  id: RuMCJobIconUPPBEARGrenader
+  id: RuMCJobIconUPPBEARMedic
   icon:
     sprite: _RMC14/Interface/cm_job_icons.rsi
-    state: upp_spec
+    state: upp_pvt
 
 - type: playTimeTracker
-  id: RuMCJobUPPBEARGrenader
+  id: RuMCJobUPPBEARMedic

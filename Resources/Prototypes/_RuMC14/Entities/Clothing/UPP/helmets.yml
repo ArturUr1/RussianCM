@@ -88,7 +88,7 @@
     melee: 30
     bullet: 35
     bio: 25
-    explosionArmor: 17
+    explosionArmor: 20
     # armor_laser = 15
     # armor_energy = 10
     # armor_rad = 10

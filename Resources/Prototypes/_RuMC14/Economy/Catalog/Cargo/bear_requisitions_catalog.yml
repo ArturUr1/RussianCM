@@ -231,9 +231,9 @@
         crate: AU14KitWeaponMar40
       - cost: 500
         crate: AU14KitWeaponMar30
-      - cost: 1500
+      - cost: 3000
         crate: RuMCCrateAH12
-      - cost: 500
+      - cost: 2500
         crate: RuMCCrateVAL
     #  - cost: 250
     #    crate: RMCCrateMK80

@@ -247,12 +247,25 @@
     - id: RuMCArmorGarbCrotchPadBEAR
 
 - type: entity
+  parent: AU14WebbingDropPouchUPP
+  id: RuMCWebbingDropPouchBEARFull
+  name: BEAR marine drop pouch
+  description: A convenient pouch to carry loose items around.
+  components:
+    - type: StorageFill
+      contents:
+      - id: RMCMRESPP
+      - id: RMCMRESPP
+      - id: CMBicaridineAutoInjector
+      - id: AU14HemostaticGauzePacket
+
+- type: entity
   parent: RuMCUniformBEAR
   id: RuMCUniformBEARFull
   suffix: RuMC, FULL, BEAR
   components:
   - type: WebbingClothing
-    startingWebbing: AU14WebbingMagazine
+    startingWebbing: RuMCWebbingDropPouchBEARFull
 
 - type: entity
   parent: RuMCUniformBEAR_Black
@@ -260,7 +273,7 @@
   suffix: RuMC, FULL, BEAR
   components:
   - type: WebbingClothing
-    startingWebbing: AU14WebbingMagazine
+    startingWebbing: RuMCWebbingDropPouchBEARFull
 
 - type: entity
   parent: RuMCUniformBEAR_Gray
@@ -268,7 +281,7 @@
   suffix: RuMC, FULL, BEAR
   components:
   - type: WebbingClothing
-    startingWebbing: AU14WebbingMagazine
+    startingWebbing: RuMCWebbingDropPouchBEARFull
 
 - type: entity
   parent: RuMCBEARInfantryHelmet
