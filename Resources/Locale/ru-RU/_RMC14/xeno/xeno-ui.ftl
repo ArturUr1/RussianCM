@@ -22,9 +22,10 @@ rmc-xeno-tracker-target-HiveLeader = Лидер улья
 rmc-xeno-tracker-target-Tunnel = Туннель
 rmc-xeno-tracker-target-HiveCore = Ядро улья
 
-rmc-xeno-ui-ovi-needed-label = [bold][color=red]Королева должна находиться\nна яйцекладе, чтобы вы получали очки![/color][/bold]
+rmc-xeno-ui-ovi-needed-label = [bold][color=red]Королева должна находиться
+    на яйцекладе, чтобы вы получали очки![/color][/bold]
 
-rmc-xeno-ui-evolution-points = Очки эволюции: { $points } / { $maxPoints }
+rmc-xeno-ui-evolution-points = Очки эволюции: {$points} / {$maxPoints}
 rmc-ui-xeno-strain-confirm = Подтвердить
 
 rmc-xeno-words-of-the-queen-header = Слова Королевы звучат в нашей голове...

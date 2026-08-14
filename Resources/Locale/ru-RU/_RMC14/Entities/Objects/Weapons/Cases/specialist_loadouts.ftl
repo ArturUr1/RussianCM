@@ -5,6 +5,12 @@ ent-RMCKitLoader = кейс снаряжения помощника гранат
 
 ent-RMCScoutSpecEquipmentCase = кейс снаряжения разведчика
     .desc = Большой кейс, содержащий кастомную боевую винтовку M4SPR, лёгкий бронежилет и шлем M3-S, боевой прицел M4SPR, термоплащ M68, реактивное термопокрывало V3 и другое снаряжение.
+ent-AU14ScoutSpecEquipmentCaseWeYu = {ent-RMCScoutSpecEquipmentCase}
+    .desc = {ent-RMCScoutSpecEquipmentCase.desc}
+    .suffix = Ве-Ю
+ent-AU14ScoutSpecEquipmentCaseLACN = {ent-RMCScoutSpecEquipmentCase}
+    .desc = {ent-RMCScoutSpecEquipmentCase.desc}
+    .suffix = ЛАКФ
 
 ent-RMCDemoSpecEquipmentCase = кейс снаряжения подрывника
     .desc = Большой кейс, содержащий противотанковую пусковую установку крупного калибра M5, усиленный лёгкий бронежилет M3-T, пять 84-мм ракет и дополнительные элементы экипировки. ПРИМЕЧАНИЕ: Нельзя класть предметы обратно в этот кейс.
