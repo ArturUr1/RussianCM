@@ -948,7 +948,7 @@
         givePrefix: au14-job-prefix-govforspecialist-heavyantitankUPP
         isAppendSquadRoleName: false
         isAppendPrefix: true
-      - id: AU14KitUPPMarksmanType88
+      - id: RuMCSniperRifleSVAROGCase
         giveSquadRoleName: au14-job-name-govforspecialist-marksmanUPP
         givePrefix: au14-job-prefix-govforspecialist-marksmanUPP
         isAppendSquadRoleName: false
@@ -1227,8 +1227,6 @@
         amount: 3
       - id: RuMCWeaponShotgunMR35
         amount: 2
-      - id: RuMCGunAH12Case_alt
-        amount: 1
       - id: RuMCUTES-CCase
         amount: 1
       - id: RuMCHammer
@@ -1253,10 +1251,6 @@
         amount: 10
       - id: RuMCMagazineVALTracer
         amount: 60
-      - id: RuMCMagazineAH12
-        amount: 20
-      - id: RuMCMagazineAH12Tracer
-        amount: 20
       - id: RuMCMagazinePKP_MS
         amount: 20
       - id: RuMCMachineMagazineTracerPKP_MS
@@ -1416,9 +1410,9 @@
     - name: au14-vendor-section-headgear
       entries:
       - id: RuMCUPPNavalInfantryHeavyHelmet
-        amount: 4
-      - id: RuMCUPPNavalInfantryHeavyHelmet2
         amount: 2
+      - id: RuMCUPPNavalInfantryHeavyHelmet2
+        amount: 4
     - name: au14-vendor-section-rto-packs
       entries:
       - id: AU14BackpackRTOPackJungle

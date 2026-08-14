@@ -784,7 +784,7 @@
     - name: au14-vendor-section-headgear
       choices: { CMHelmet: 1 }
       entries:
-      - id: RuMCUPPNavalInfantryHeavyHelmet
+      - id: RuMCUPPNavalInfantryHeavyHelmet2
     - name: au14-vendor-section-firearm-system
       choices: { CMUPlatoonMG: 1 }
       entries:
@@ -1022,6 +1022,11 @@
         isAppendSquadRoleName: false
         isAppendPrefix: true
       - id: AU14KitUPPMarksmanType88
+        giveSquadRoleName: au14-job-name-govforspecialist-marksmanUPP
+        givePrefix: au14-job-prefix-govforspecialist-marksmanUPP
+        isAppendSquadRoleName: false
+        isAppendPrefix: true
+      - id: RuMCSniperRifleSVAROGCase
         giveSquadRoleName: au14-job-name-govforspecialist-marksmanUPP
         givePrefix: au14-job-prefix-govforspecialist-marksmanUPP
         isAppendSquadRoleName: false
@@ -1300,8 +1305,6 @@
         amount: 3
       - id: RMCWeaponShotgunType23
         amount: 3
-      - id: RuMCGunAH12Case_alt
-        amount: 1
       - id: RuMCUTES-CCase
         amount: 1
     - name: au14-vendor-section-primary-ammunition
@@ -1346,10 +1349,6 @@
         amount: 25
       - id: RMCMagazineSMGType64
         amount: 200
-      - id: RuMCMagazineTachanka
-        amount: 5
-      - id: RuMCMagazineTracerTachanka
-        amount: 5
     - name: au14-vendor-section-secondary-ammunition
       entries:
       - id: RMCMagazinePistolT73
@@ -1477,9 +1476,9 @@
     - name: au14-vendor-section-headgear
       entries:
       - id: RuMCUPPNavalInfantryHeavyHelmet
-        amount: 4
-      - id: RuMCUPPNavalInfantryHeavyHelmet2
         amount: 2
+      - id: RuMCUPPNavalInfantryHeavyHelmet2
+        amount: 4
     - name: au14-vendor-section-rto-packs
       entries:
       - id: AU14BackpackRTOPackJungle
