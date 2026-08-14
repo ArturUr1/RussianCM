@@ -8,7 +8,7 @@
   - type: TacticalMapIcon
     icon:
       sprite: /Textures/_RMC14/Interface/map_blips.rsi
-      state: upp_pvt
+      state: upp_sl_a
   - type: AssignSquad
     whitelist:
       tags:
@@ -137,7 +137,7 @@
   id: RuMCJobIconUPPLiquidatorComander
   icon:
     sprite: _RMC14/Interface/cm_job_icons.rsi
-    state: upp_pvt
+    state: upp_sl_a
 
 - type: playTimeTracker
   id: RuMCJobUPPLiquidatorComander
