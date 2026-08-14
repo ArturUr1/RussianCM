@@ -111,7 +111,7 @@
     pocket2: AU14PouchIFAKFill
     back: RMCBackpackFlamer
     ears: RuMCHeadsetLiquidator
-    suitstorage: RMCWeaponFlamerSpecUPP
+    suitstorage: RMCWeaponFlamerSPP
   storage:
     back:
     - RMCTankFlamerSPP
