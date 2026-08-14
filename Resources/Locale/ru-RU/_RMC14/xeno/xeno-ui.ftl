@@ -30,6 +30,9 @@ rmc-ui-xeno-strain-confirm = Подтвердить
 
 rmc-xeno-words-of-the-queen-header = Слова Королевы звучат в нашей голове...
 
+rmc-xeno-word-queen-window-title = Слово Королевы
+rmc-xeno-word-queen-window-send = Отправить улью
+
 rmc-xeno-larva-queue-title = Присоединиться как ксено
 rmc-xeno-larva-queue-hives = Доступные ульи
 rmc-xeno-larva-queue-search = Поиск ульев...
