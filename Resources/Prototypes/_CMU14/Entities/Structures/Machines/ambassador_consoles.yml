@@ -58,9 +58,10 @@
     replenishAmount: 10
     replenishInterval: 60
     callableParties:
-      CHTORM_PMC_BEAR: 9500 #RuMC edit start
-      GROZA_PMC_BEAR: 5000
-      SKALA_PMC_BEAR: 2900
+      CHTORM_PMC_BEAR: 8000 #RuMC edit start
+      GROZA_PMC_BEAR: 4500
+      SKALA_PMC_BEAR: 2000
+      Liquidators: 3500
       #UPPGROM: 7500
       #UPPGROMAlt: 6000
       #UPPGROMAlt2: 4500 #RuMC edit end
