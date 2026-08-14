@@ -59,3 +59,11 @@ rmc-announcement-unidentified-lifesigns = [color=#CECECE][font size=16][bold]Uni
     Unidentified lifesigns ({$count}) detected onboard the dropship {$name}. Recommendation: lockdown of exterior access ports, including ducting and ventilation.[/bold][/font][/color]
 
 rmc-announcement-shipside-header = Please write a message to announce to the crew
+
+rmc-announcement-title-command = >> COMMAND <<
+rmc-announcement-title-overwatch = >> OVERWATCH <<
+rmc-announcement-title-alert-level = ALERT LEVEL
+rmc-announcement-title-red-alert = RED ALERT
+rmc-announcement-title-unknown-broadcast = >> UNKNOWN BROADCAST <<
+rmc-announcement-title-priority-notice = >> PRIORITY NOTICE <<
+rmc-announcement-title-queen = >> QUEEN <<
