@@ -3,11 +3,11 @@ ent-AU14ChevronProvostBase = лычка провост-маршалов
     .suffix = Провосты
 
 ent-AU14ChevronProvostEnforcer = лычка силовика
-    .desc = { ent-AU14ChevronProvostBase.desc}
+    .desc = {ent-AU14ChevronProvostBase.desc}
     .suffix = Провосты
 
 ent-AU14ChevronProvostTeamLeader = лычка лидера группы силовиков
-    .desc = { ent-AU14ChevronProvostBase.desc}
+    .desc = {ent-AU14ChevronProvostBase.desc}
     .suffix = Провосты
 
 ent-AU14ChevronProvostAdvisor = лычка советника

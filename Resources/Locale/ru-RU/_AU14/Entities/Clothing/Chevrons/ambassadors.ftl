@@ -7,11 +7,11 @@ ent-RUMC14ChevronAmbassadorsBase = лычка консульства
 ## UPP
 
 ent-RUMC14RankChevronCounselateUPPAmbassador = лычка уполномоченного посла СПН
-    .desc = { ent-RUMC14ChevronAmbassadorsBase.desc}
+    .desc = {ent-RUMC14ChevronAmbassadorsBase.desc}
     .suffix = Посольство СПН
 
 ent-RUMC14RankChevronCounselateUPPEnvoy1 = лычка посланника 1го класса СПН
-    .desc = { ent-RUMC14ChevronAmbassadorsBase.desc}
+    .desc = {ent-RUMC14ChevronAmbassadorsBase.desc}
     .suffix = Посольство СПН
 
 ent-RUMC14RankChevronCounselateUPPEnvoy2 = лычка посланника 2го класса СПН
@@ -53,11 +53,11 @@ ent-RUMC14RankChevronCounselateUPPAttache = лычка атташе СПН
 ## UA
 
 ent-RUMC14RankChevronCounselateUAAmbassador = лычка уполномоченного посла ОА
-    .desc = { ent-RUMC14ChevronAmbassadorsBase.desc}
+    .desc = {ent-RUMC14ChevronAmbassadorsBase.desc}
     .suffix = Посольство ОА
 
 ent-RUMC14RankChevronCounselateUAEnvoy1 = лычка посланника 1го класса ОА
-    .desc = { ent-RUMC14ChevronAmbassadorsBase.desc}
+    .desc = {ent-RUMC14ChevronAmbassadorsBase.desc}
     .suffix = Посольство ОА
 
 ent-RUMC14RankChevronCounselateUAEnvoy2 = лычка посланника 2го класса ОА
@@ -99,11 +99,11 @@ ent-RUMC14RankChevronCounselateUAAttache = лычка атташе ОА
 ## TWE
 
 ent-RUMC14RankChevronCounselateTWEAmbassador = лычка уполномоченного посла ИТМ
-    .desc = { ent-RUMC14ChevronAmbassadorsBase.desc}
-    .suffix = Посольствоьство ИТМ
+    .desc = {ent-RUMC14ChevronAmbassadorsBase.desc}
+    .suffix = Посольство ИТМ
 
 ent-RUMC14RankChevronCounselateTWEEnvoy1 = лычка посланника 1го класса ИТМ
-    .desc = { ent-RUMC14ChevronAmbassadorsBase.desc}
+    .desc = {ent-RUMC14ChevronAmbassadorsBase.desc}
     .suffix = Посольство ИТМ
 
 ent-RUMC14RankChevronCounselateTWEEnvoy2 = лычка посланника 2го класса ИТМ
@@ -145,11 +145,11 @@ ent-RUMC14RankChevronCounselateTWEAttache = лычка атташе ИТМ
 ## Common
 
 ent-RUMC14RankChevronCounselateCommonAmbassador = лычка уполномоченного посла
-    .desc = { ent-RUMC14ChevronAmbassadorsBase.desc}
+    .desc = {ent-RUMC14ChevronAmbassadorsBase.desc}
     .suffix = Посольство прочих стран
 
 ent-RUMC14RankChevronCounselateCommonEnvoy1 = лычка посланника 1го класса
-    .desc = { ent-RUMC14ChevronAmbassadorsBase.desc}
+    .desc = {ent-RUMC14ChevronAmbassadorsBase.desc}
     .suffix = Посольство прочих стран
 
 ent-RUMC14RankChevronCounselateCommonEnvoy2 = лычка посланника 2го класса
