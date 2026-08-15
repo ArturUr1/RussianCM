@@ -220,140 +220,142 @@
     access: [ [ "AU14AccessGovforSquad" ], [ "AU14AccessOpforSquad" ] ]
   - type: Sprite
     sprite: _AU14/Structures/Vendors/assortedequipment.rsi
-  #- type: CMAutomatedVendor
-  #  sections:
-  #  - name: au14-vendor-section-food
-  #    entries:
-  #    - id: AU14MREUPP
-  #      amount: 60
-  #    - id: AU14BoxMREUPP
-  #      amount: 10
-  #  - name: au14-vendor-section-medical-supplies
-  #    entries:
-  #    - id: RuMCUPPPouchIFAKFill
-  #      recommended: true
-  #      amount: 30
-  #    - id: AU14HemostaticGauzePacket
-  #      amount: 40
-  #    - id: AU14Tourniquet
-  #      amount: 40
-  #    - id: CMOintment10
-  #      amount: 40
-  #    - id: CMPacketPillsTricordrazine
-  #      amount: 40
-  #    - id: AU14NaloxoneAutoInjector
-  #      amount: 9
-  #    - id: AU14PacketPillsTramadol
-  #      amount: 40
-  #    - id: AU14FirstAidAutoInjectorNoSkill
-  #      amount: 20
-  #    - id: CMUSplintItem
-  #      amount: 40
-  #  - name: au14-vendor-section-tools
-  #    entries:
-  #    - id: CMEntrenchingTool
-  #      recommended: true
-  #      amount: 30
-  #    - id: AU14ToolShovel
-  #      amount: 10
-  #    - id: RMCCombatUtilityKnifeA
-  #      recommended: true
-  #      amount: 25
-  #    - id: RMCCombatUtilityKnifeB
-  #      recommended: true
-  #      amount: 5
-  #    - id: CMM11Knife
-  #      amount: 15
-  #    - id: RMCScabbardMacheteFilled
-  #      amount: 6
-  #    - id: RMCHelmetGarbGunOil
-  #      amount: 30
-  #    - id: CMFireExtinguisher
-  #      amount: 10
-  #    - id: CMFireExtinguisherPortable
-  #      amount: 5
-  #    - id: RMCLightReplacer
-  #      amount: 10
-  #    - id: CMScrewdriver
-  #      amount: 10
-  #    - id: CMWirecutter
-  #      amount: 10
-  #    - id: CMCrowbar
-  #      amount: 10
-  #    - id: CMWrench
-  #      amount: 10
-  #    - id: CMMultitool
-  #      amount: 10
-  #    - id: CMWelderSmall
-  #      amount: 10
-  #    - id: CMWelder
-  #      amount: 4
-  #    - id: RMCWelderPVE
-  #      amount: 1
-  #  - name: au14-vendor-section-engineering-supplies
-  #    entries:
-  #    - id: CMSandbagEmpty25
-  #      recommended: true
-  #      amount: 2
-  #    - id: BarbedWire15
-  #      amount: 6
-  #    - id: CMSheetMetal50
-  #      amount: 2
-  #    - id: CMSheetPlasteel50
-  #      amount: 1
-  #    - id: RMCBoxMagazinePowerCellsHighFilled
-  #      amount: 2
-  #    - id: RMCEngineerKit
-  #      amount: 1
-  #    - id: RMCPowerCellHigh
-  #      amount: 5
-  #    - id: RMCCableCoil
-  #      amount: 15
-  #  - name: au14-vendor-section-flares-lights
-  #    entries:
-  #    - id: RMCBoxFlashlights
-  #      amount: 4
-  #    - id: RMCFlashlight
-  #      amount: 20
-  #    - id: RMCWeaponPistolM82F
-  #      amount: 4
-  #    - id: RuMCBoxFlareFilled
-  #      amount: 5
-  #    - id: RuMCPackFlareWhite
-  #      amount: 12
-  #    - id: RuMCPackFlareRed
-  #      amount: 8
-  #  - name: au14-vendor-section-gas-mask
-  #    entries:
-  #    - id: RMCMaskGasSPP
-  #      amount: 40
-  #    - id: CMUGasMaskFilterUPP
-  #      amount: 80
-  #    - id: AU14PouchGasMaskBag
-  #      amount: 20
-  #  - name: au14-vendor-section-optics
-  #    entries:
-  #    - id: RMCLaserDesignatorPVE
-  #      amount: 2
-  #    - id: RMCBinocularsPVE
-  #      amount: 5
-  #  - name: au14-vendor-section-misc
-  #    entries:
-  #    - id: RMCZipties
-  #      recommended: true
-  #      amount: 60
-  #    - id: RMCPVECaseMotionDetector
-  #      amount: 1
-  #    - id: CMRollerBedSpawnFolded
-  #      amount: 8
-  #    - id: CMFoldingBarricadesMB6x3
-  #      amount: 2
-  #    - id: BedrollFolded
-  #      amount: 20
-  #    - id: AU14GuidebookLawMarine
-  #      amount: 3
-  #    - id: AU14GuidebookSOP
-  #      amount: 3
+  - type: CMAutomatedVendor
+    sections:
+    - name: au14-vendor-section-food
+      entries:
+      - id: RuMCirpUPP
+        amount: 60
+      - id: RuMCBoxIRPUPP
+        amount: 10
+    - name: au14-vendor-section-medical-supplies
+      entries:
+      - id: RuMCUPPPouchIFAKFill
+        recommended: true
+        amount: 30
+      - id: AU14HemostaticGauzePacket
+        amount: 40
+      - id: AU14Tourniquet
+        amount: 40
+      - id: CMOintment10
+        amount: 40
+      - id: CMPacketPillsTricordrazine
+        amount: 40
+      - id: AU14NaloxoneAutoInjector
+        amount: 9
+      - id: AU14PacketPillsTramadol
+        amount: 40
+      - id: AU14FirstAidAutoInjectorNoSkill
+        amount: 20
+      - id: CMUSplintItem
+        amount: 40
+    - name: au14-vendor-section-tools
+      entries:
+      - id: CMEntrenchingTool
+        recommended: true
+        amount: 30
+      - id: AU14ToolShovel
+        amount: 10
+      - id: RMCCombatUtilityKnifeA
+        recommended: true
+        amount: 25
+      - id: RMCCombatUtilityKnifeB
+        recommended: true
+        amount: 5
+      - id: CMM11Knife
+        amount: 15
+      - id: RMCScabbardMacheteFilled
+        amount: 6
+      - id: RMCHelmetGarbGunOil
+        amount: 30
+      - id: CMFireExtinguisher
+        amount: 10
+      - id: CMFireExtinguisherPortable
+        amount: 5
+      - id: RMCLightReplacer
+        amount: 10
+      - id: CMScrewdriver
+        amount: 10
+      - id: CMWirecutter
+        amount: 10
+      - id: CMCrowbar
+        amount: 10
+      - id: CMWrench
+        amount: 10
+      - id: CMMultitool
+        amount: 10
+      - id: CMWelderSmall
+        amount: 10
+      - id: CMWelder
+        amount: 4
+      - id: RMCWelderPVE
+        amount: 1
+    - name: au14-vendor-section-engineering-supplies
+      entries:
+      - id: CMSandbagEmpty25
+        recommended: true
+        amount: 2
+      - id: BarbedWire15
+        amount: 6
+      - id: CMSheetMetal50
+        amount: 2
+      - id: CMSheetPlasteel50
+        amount: 1
+      - id: RMCBoxMagazinePowerCellsHighFilled
+        amount: 2
+      - id: RMCEngineerKit
+        amount: 1
+      - id: RMCPowerCellHigh
+        amount: 5
+      - id: RMCCableCoil
+        amount: 15
+    - name: au14-vendor-section-flares-lights
+      entries:
+      - id: RMCBoxFlashlights
+        amount: 4
+      - id: RMCFlashlight
+        amount: 20
+      - id: RMCWeaponPistolM82F
+        amount: 4
+      - id: RuMCBoxFlareFilled
+        amount: 5
+      - id: RuMCPackFlareWhite
+        amount: 12
+      - id: RuMCPackFlareRed
+        amount: 8
+    - name: au14-vendor-section-gas-mask
+      entries:
+      - id: RMCMaskGasSPP
+        amount: 40
+      - id: RMCMaskPrescriptionGasSPP
+        amount: 10
+      - id: CMUGasMaskFilterUPP
+        amount: 80
+      - id: AU14PouchGasMaskBag
+        amount: 20
+    - name: au14-vendor-section-optics
+      entries:
+      - id: RMCLaserDesignatorPVE
+        amount: 2
+      - id: RMCBinocularsPVE
+        amount: 5
+    - name: au14-vendor-section-misc
+      entries:
+      - id: RMCZipties
+        recommended: true
+        amount: 60
+      - id: RMCPVECaseMotionDetector
+        amount: 1
+      - id: CMRollerBedSpawnFolded
+        amount: 8
+      - id: CMFoldingBarricadesMB6x3
+        amount: 2
+      - id: BedrollFolded
+        amount: 20
+      - id: AU14GuidebookLawMarine
+        amount: 3
+      - id: AU14GuidebookSOP
+        amount: 3
 
 - type: entity
   parent: AU14UPPMedicalVendor

@@ -222,9 +222,9 @@
     sections:
     - name: au14-vendor-section-food
       entries:
-      - id: AU14MREUPP
+      - id: RuMCirpUPP
         amount: 60
-      - id: AU14BoxMREUPP
+      - id: RuMCBoxIRPUPP
         amount: 10
     - name: au14-vendor-section-medical-supplies
       entries:

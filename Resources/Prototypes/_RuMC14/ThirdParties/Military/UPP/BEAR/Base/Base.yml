@@ -254,8 +254,8 @@
   components:
     - type: StorageFill
       contents:
-      - id: RMCMRESPP
-      - id: RMCMRESPP
+      - id: RuMCirpUPP
+      - id: RuMCirpUPP
       - id: CMBicaridineAutoInjector
       - id: AU14HemostaticGauzePacket
 

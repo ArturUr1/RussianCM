@@ -40,7 +40,7 @@
         - ReagentId: Protein
           Quantity: 10
   - type: Food
-    transferAmount: 5
+    transferAmount: 2
     trash:
     - RuMCFoodTinIRPTrash
 
@@ -68,8 +68,8 @@
     openableByHand: false
   - type: FlavorProfile
     flavors:
-    - sweet
-    - creamy
+    - salty
+    - meaty
   - type: SolutionContainerManager
     solutions:
       food:
@@ -80,7 +80,7 @@
         - ReagentId: Protein
           Quantity: 10
   - type: Food
-    transferAmount: 5
+    transferAmount: 2
     trash:
     - RuMCFoodTinIRPTrashMeat
 
@@ -88,6 +88,7 @@
   parent: FoodTinBaseTrash
   id: RuMCFoodTinIRPTrashMeat
   name: empty canned meat (Regular)
+  description: An empty tin can. Not much use now.
   components:
   - type: Sprite
     sprite: _RuMC14/Objects/Consulable/Food/Tin/stewed_meat.rsi
@@ -119,7 +120,7 @@
         - ReagentId: Protein
           Quantity: 10
   - type: Food
-    transferAmount: 5
+    transferAmount: 2
     trash:
     - RuMCFoodTinIRPTrashMeat2
 
@@ -127,6 +128,7 @@
   parent: FoodTinBaseTrash
   id: RuMCFoodTinIRPTrashMeat2
   name: empty canned meat
+  description: An empty tin can. Not much use now.
   components:
   - type: Sprite
     sprite: _RuMC14/Objects/Consulable/Food/Tin/2stewed_meat.rsi
@@ -155,11 +157,11 @@
         maxVol: 5
         reagents:
         - ReagentId: Nutriment
-          Quantity: 15
+          Quantity: 20
         - ReagentId: Protein
-          Quantity: 10
+          Quantity: 25
   - type: Food
-    transferAmount: 5
+    transferAmount: 2
     trash:
     - RuMCFoodTinIRPTrashPorridge
 
@@ -167,6 +169,7 @@
   parent: FoodTinBaseTrash
   id: RuMCFoodTinIRPTrashPorridge
   name: empty porridge ration (a)
+  description: An empty tin can. Not much use now.
   components:
   - type: Sprite
     sprite: _RuMC14/Objects/Consulable/Food/Tin/porridge.rsi
@@ -199,7 +202,7 @@
         - ReagentId: Protein
           Quantity: 10
   - type: Food
-    transferAmount: 5
+    transferAmount: 2
     trash:
     - RuMCFoodTinIRPTrashPorridge2
 
@@ -207,6 +210,7 @@
   parent: FoodTinBaseTrash
   id: RuMCFoodTinIRPTrashPorridge2
   name: empty porridge ration (b)
+  description: An empty tin can. Not much use now.
   components:
   - type: Sprite
     sprite: _RuMC14/Objects/Consulable/Food/Tin/2porridge.rsi
@@ -239,7 +243,7 @@
         - ReagentId: Protein
           Quantity: 10
   - type: Food
-    transferAmount: 5
+    transferAmount: 2
     trash:
     - RuMCFoodTinIRPTrashPorridge3
 
@@ -247,6 +251,7 @@
   parent: FoodTinBaseTrash
   id: RuMCFoodTinIRPTrashPorridge3
   name: empty porridge ration (c)
+  description: An empty tin can. Not much use now.
   components:
   - type: Sprite
     sprite: _RuMC14/Objects/Consulable/Food/Tin/3porridge.rsi
@@ -277,7 +282,7 @@
         - ReagentId: Protein
           Quantity: 10
   - type: Food
-    transferAmount: 5
+    transferAmount: 2
     trash:
     - RuMCFoodTinIRPTrashMilk
 
@@ -285,6 +290,7 @@
   parent: FoodTinBaseTrash
   id: RuMCFoodTinIRPTrashMilk
   name: empty condensed milk
+  description: An empty tin can. Not much use now.
   components:
   - type: Sprite
     sprite: _RuMC14/Objects/Consulable/Food/Tin/condensed_milk.rsi
@@ -315,7 +321,7 @@
         - ReagentId: Protein
           Quantity: 10
   - type: Food
-    transferAmount: 5
+    transferAmount: 2
     trash:
     - RuMCFoodTinIRPTrashMilk2
 
@@ -323,6 +329,7 @@
   parent: FoodTinBaseTrash
   id: RuMCFoodTinIRPTrashMilk2
   name: empty condensed milk
+  description: An empty tin can. Not much use now.
   components:
   - type: Sprite
     sprite: _RuMC14/Objects/Consulable/Food/Tin/2condensed_milk.rsi
@@ -332,8 +339,8 @@
 - type: entity
   parent: FoodTinBase
   id: RuMCFoodLightTinIRPStew
-  name:
-  description:
+  name: canned stew (meat)
+  description: A standard-issue tin of canned meat stew. Dense, salty, and filling. A staple of field rations.
   components:
   - type: Sprite
     sprite: _RuMC14/Objects/Consulable/Food/lightTin/stew.rsi
@@ -341,8 +348,9 @@
     openableByHand: true
   - type: FlavorProfile
     flavors:
-    - sweet
-    - creamy
+    - salty
+    - vegetables
+    - meaty
   - type: SolutionContainerManager
     solutions:
       food:
@@ -353,14 +361,15 @@
         - ReagentId: Protein
           Quantity: 10
   - type: Food
-    transferAmount: 5
+    transferAmount: 2
     trash:
     - RuMCFoodLightTinIRPTrashStew
 
 - type: entity
   parent: FoodTinBaseTrash
   id: RuMCFoodLightTinIRPTrashStew
-  name: empty
+  name: empty tin
+  description: An empty tin can. Not much use now.
   components:
   - type: Sprite
     sprite: _RuMC14/Objects/Consulable/Food/lightTin/stew.rsi
@@ -368,8 +377,8 @@
 - type: entity
   parent: FoodTinBase
   id: RuMCFoodLightTinIRPStew2
-  name:
-  description:
+  name: canned stew (vegetable)
+  description: A tin of hearty vegetable stew with a touch of salt. Lighter than the meat version, but still enough to keep you going.
   components:
   - type: Sprite
     sprite: _RuMC14/Objects/Consulable/Food/lightTin/2stew.rsi
@@ -377,26 +386,27 @@
     openableByHand: true
   - type: FlavorProfile
     flavors:
-    - sweet
-    - creamy
+    - salty
+    - vegetables
   - type: SolutionContainerManager
     solutions:
       food:
         maxVol: 5
         reagents:
         - ReagentId: Nutriment
-          Quantity: 10
+          Quantity: 15
         - ReagentId: Protein
-          Quantity: 10
+          Quantity: 5
   - type: Food
-    transferAmount: 5
+    transferAmount: 2
     trash:
     - RuMCFoodLightTinIRPTrashStew2
 
 - type: entity
   parent: FoodTinBaseTrash
   id: RuMCFoodLightTinIRPTrashStew2
-  name: empty
+  name: empty tin
+  description: An empty tin can. Not much use now.
   components:
   - type: Sprite
     sprite: _RuMC14/Objects/Consulable/Food/lightTin/2stew.rsi
@@ -404,8 +414,8 @@
 - type: entity
   parent: FoodTinBase
   id: RuMCFoodLightTinIRPBuckwheat
-  name:
-  description:
+  name: canned buckwheat (bacon)
+  description: A tin of buckwheat porridge with bacon bits. A field classic for those who need real energy.
   components:
   - type: Sprite
     sprite: _RuMC14/Objects/Consulable/Food/lightTin/buckwheat.rsi
@@ -413,8 +423,10 @@
     openableByHand: true
   - type: FlavorProfile
     flavors:
-    - sweet
-    - creamy
+    - salty
+    - rice
+    - vegetables
+    - bacon
   - type: SolutionContainerManager
     solutions:
       food:
@@ -425,14 +437,15 @@
         - ReagentId: Protein
           Quantity: 10
   - type: Food
-    transferAmount: 5
+    transferAmount: 2
     trash:
     - RuMCFoodLightTinIRPTrashBuckwheat
 
 - type: entity
   parent: FoodTinBaseTrash
   id: RuMCFoodLightTinIRPTrashBuckwheat
-  name: empty
+  name: empty tin
+  description: An empty tin can. Not much use now.
   components:
   - type: Sprite
     sprite: _RuMC14/Objects/Consulable/Food/lightTin/buckwheat.rsi
@@ -440,8 +453,8 @@
 - type: entity
   parent: FoodTinBase
   id: RuMCFoodLightTinIRPRise
-  name:
-  description:
+  name: canned rice (fish)
+  description: A tin of rice with salted fish. A little fishy, a little salty, but it gets the job done.
   components:
   - type: Sprite
     sprite: _RuMC14/Objects/Consulable/Food/lightTin/rise.rsi
@@ -449,8 +462,10 @@
     openableByHand: true
   - type: FlavorProfile
     flavors:
-    - sweet
-    - creamy
+    - salty
+    - rice
+    - vegetables
+    - fishy
   - type: SolutionContainerManager
     solutions:
       food:
@@ -461,14 +476,15 @@
         - ReagentId: Protein
           Quantity: 10
   - type: Food
-    transferAmount: 5
+    transferAmount: 2
     trash:
     - RuMCFoodLightTinIRPTrashRise
 
 - type: entity
   parent: FoodTinBaseTrash
   id: RuMCFoodLightTinIRPTrashRise
-  name: empty
+  name: empty tin
+  description: An empty tin can. Not much use now.
   components:
   - type: Sprite
     sprite: _RuMC14/Objects/Consulable/Food/lightTin/rise.rsi

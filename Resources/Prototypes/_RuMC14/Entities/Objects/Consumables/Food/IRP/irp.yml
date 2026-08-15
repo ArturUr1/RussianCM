@@ -21,7 +21,7 @@
   description: "With love and the soul of the homeland." # С любовью и душой от родины.
   components:
   - type: Sprite
-    sprite: _RMC14/Objects/Consumable/Food/mre_spp.rsi
+    sprite: _RuMC14/Objects/Consulable/Food/irp_spp.rsi
   - type: GenericVisualizer
     visuals:
       enum.OpenableVisuals.Opened:
@@ -30,17 +30,27 @@
           False: { state: "closed" }
   - type: Storage
     grid:
-    - 0,0,9,1 #5 slots min
+    - 0,0,9,1
     whitelist: null
   - type: StorageFill
     contents:
+    - id: RuMCFoodTinIRPMeat
+      orGroup: main
+    - id: RuMCFoodTinIRPMeat
+      orGroup: main
     - id: RuMCFoodTinIRPMeat
       orGroup: main
     - id: RuMCFoodTinIRPMeat2
       orGroup: main
     - id: RuMCFoodTinIRPPorridge
       orGroup: main
+    - id: RuMCFoodTinIRPPorridge
+      orGroup: main
     - id: RuMCFoodTinIRPPorridge2
+      orGroup: main
+    - id: RuMCFoodTinIRPPorridge2
+      orGroup: main
+    - id: RuMCFoodTinIRPPorridge3
       orGroup: main
     - id: RuMCFoodTinIRPPorridge3
       orGroup: main
@@ -99,3 +109,13 @@
       orGroup: drink
     - id: RuMCDrinkUPPBugJuice
       orGroup: drink
+
+- type: entity
+  parent: RMCBoxMREEmpty
+  name: box of UPP Ration Packs (x12)
+  description: A box of UPP Ration Packs.
+  id: RuMCBoxIRPUPP
+  suffix: Filled, UPP
+  components:
+  - type: CMItemSlots
+    startingItem: RuMCirpUPP
