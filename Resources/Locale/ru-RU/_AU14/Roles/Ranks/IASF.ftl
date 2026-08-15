@@ -17,7 +17,7 @@ rank-IASF_SecondSergeant = Второй сержант
   .prefix = 2й Серж.
 
 rank-IASF_ChiefCorporal = Старший капрал
-  .prefix = Гл. Капр.
+  .prefix = Ст. Капр.
 
 rank-IASF_FirstSergeant = Первый сержант
   .prefix = 1й Серж.
