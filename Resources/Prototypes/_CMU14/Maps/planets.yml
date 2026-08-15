@@ -14,11 +14,13 @@
     platoonsOpfor:
     - UPP
     - VAIPO
+    - BEAR
     - ProdigySF
     platoonsGovfor:
     - LACN
     - USCM
     - WEYU
+    - BEAR #временно
     - RMC
     - HAZOPS
     defaultgovfor: USCM
@@ -93,6 +95,7 @@
     - UPP
     - HAZOPS
     - VAIPO
+    - BEAR
     - ProdigySF
     platoonsGovfor:
     - LACN
@@ -101,7 +104,7 @@
     - RMC
     - UPP
     - HAZOPS
-    - VAIPO
+    - BEAR
     - ProdigySF
     defaultgovfor: USCM
     defaultopfor: UPP
@@ -174,6 +177,7 @@
     platoonsOpfor:
     - UPP
     - VAIPO
+    - BEAR
     - ProdigySF
     platoonsGovfor:
     - WEYU
@@ -245,6 +249,7 @@
     - ProdigySF
     platoonsGovfor:
     - WEYU
+    - BEAR #временно
     - USCM
     - RMC
     defaultgovfor: USCM
@@ -313,11 +318,13 @@
     - WEYU
     - ProdigySF
     - VAIPO
+    - BEAR
     platoonsGovfor:
     - LACN
     - USCM
     - CMBCIU
     - RMC
+    - BEAR #временно
     defaultgovfor: USCM
     defaultopfor: UPP
     govforinship: false
@@ -390,6 +397,7 @@
     - ProdigySF
     - HAZOPS
     - VAIPO
+    - BEAR #временно
     defaultgovfor: HAZOPS
     defaultopfor: UPP
     govforinship: true
@@ -417,6 +425,7 @@
     - ProdigySF
     platoonsGovfor:
     - LACN
+    - BEAR #временно
     - CMBCIU
     - USCM
     - RMC
@@ -460,6 +469,7 @@
     platoonsGovfor:
     - USCM
     - ProdigySF
+    - BEAR
     - UPP
     - RMC
     defaultgovfor: USCM
@@ -525,6 +535,7 @@
     - UPP
     platoonsGovfor:
     - LACN
+    - BEAR #временно
     - CMBCIU
     - USCM
     - RMC
@@ -596,6 +607,7 @@
     - USCM
     - RMC
     - UPP
+    - BEAR
     - HAZOPS
     defaultgovfor: USCM
     defaultopfor: WEYU
@@ -649,6 +661,7 @@
     - UPP
     - ProdigySF
     - VAIPO
+    - BEAR
     - LACN
     defaultgovfor: WEYU
     defaultopfor: ProdigySF
@@ -715,6 +728,7 @@
     - RMC
     platoonsGovfor:
     - UPP
+    - BEAR
     - ProdigySF
     defaultgovfor: RMC
     defaultopfor: UPP
@@ -778,6 +792,7 @@
     platoonsGovfor:
     - LACN
     - USCM
+    - BEAR
     - RMC
     defaultgovfor: RMC
     defaultopfor: VAIPO
@@ -836,6 +851,7 @@
     - USCM
     - WEYU
     - VAIPO
+    - BEAR
     - RMC
     - UPP
     - HAZOPS
@@ -899,6 +915,7 @@
     - HAZOPS
     - ProdigySF
     - VAIPO
+    - BEAR
     defaultgovfor: USCM
     defaultopfor: UPP
     govforinship: true
@@ -954,6 +971,7 @@
     - USCM
     - WEYU
     - VAIPO
+    - BEAR
     - UPP
     - HAZOPS
     defaultgovfor: USCM
@@ -1014,6 +1032,7 @@
     - USCM
     - WEYU
     - VAIPO
+    - BEAR
     - UPP
     - HAZOPS
     - ProdigySF
@@ -1147,6 +1166,7 @@
     - HAZOPS
     - ProdigySF
     - VAIPO
+    - BEAR
     defaultgovfor: WEYU
     defaultopfor: ProdigySF
     govforinship: false
