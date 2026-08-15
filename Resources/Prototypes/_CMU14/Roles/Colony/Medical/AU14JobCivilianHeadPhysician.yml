@@ -62,6 +62,7 @@
   id: AU14GearCivilianHeadPhysician
   equipment:
     ears: CMHeadsetColony
+    outerClothing: RMCLabcoatCMO # RuMC edit
   storage:
     back:
     - AU14StampHPHY
