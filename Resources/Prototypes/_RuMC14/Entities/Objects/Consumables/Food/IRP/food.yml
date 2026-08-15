@@ -62,7 +62,7 @@
         maxVol: 7
         reagents:
         - ReagentId: Nutriment
-          Quantity: 15
+          Quantity: 7
   - type: FlavorProfile
     flavors:
     - bread

@@ -81,6 +81,7 @@
     - id: RuMCIRPComponentGallet
     - id: RuMCIRPComponentGallet
     - id: RuMCIRPComponentGallet
+    - id: RMCSpoonPlastic
 
     - id: RuMCIRPComponentCandies
       orGroup: dessert
