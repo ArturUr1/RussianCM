@@ -141,7 +141,7 @@ public sealed partial class ServerDbManager
                 transaction,
                 invitation.UserId,
                 -expiryPenalty,
-                "moderation_duty_invite_expired",
+                "moderation_invite_expired",
                 invitation.Id,
                 cancel);
             await AppendDutyAuditAsync(
@@ -389,7 +389,7 @@ public sealed partial class ServerDbManager
                 transaction,
                 governanceUserId,
                 -expiryPenalty,
-                "moderation_duty_invite_expired",
+                "moderation_invite_expired",
                 invitationId,
                 cancel);
             await AppendDutyAuditAsync(
@@ -416,7 +416,7 @@ public sealed partial class ServerDbManager
                     transaction,
                     governanceUserId,
                     -declinePenalty,
-                    "moderation_duty_invite_declined",
+                    "moderation_invite_decline",
                     invitationId,
                     cancel);
             }
