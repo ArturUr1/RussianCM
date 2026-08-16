@@ -1,6 +1,6 @@
 rmc-announcement-author = Command
 rmc-announcement-author-shipside = Command Ship
-rmc-announcement-author-highcommand = UNMC High Command
+rmc-announcement-author-highcommand = High Command
 rmc-announcement-author-queen-mother = The Queen Mother
 rmc-announcement-message = [font size=16][bold][color=#CECECE]{$author} Priority Announcement[/color][/bold][/font][font size=16][color=red]
 
@@ -67,3 +67,6 @@ rmc-announcement-title-red-alert = RED ALERT
 rmc-announcement-title-unknown-broadcast = >> UNKNOWN BROADCAST <<
 rmc-announcement-title-priority-notice = >> PRIORITY NOTICE <<
 rmc-announcement-title-queen = >> QUEEN <<
+cmu-announcement-queen-mother = [font size=16][bold][color=#7575F3]Queen Mother Psychic Directive[/color][/bold][/font][font size=16][color=red]
+
+    {$message}[/font][/color]
