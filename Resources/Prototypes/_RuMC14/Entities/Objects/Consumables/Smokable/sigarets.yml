@@ -15,3 +15,13 @@
   components:
   - type: Sprite
     sprite: _RuMC14/Objects/Consulable/Smokeables/Cigarettes/souz.rsi
+
+#sigar pack
+- type: entity
+  parent: RMCTarbackCase
+  id: RuMCCigaretPackBelomor
+  name: "коробка сигар 'Беломор'"
+  description: "Классика для любителей - дорогие сигары с импортным табаком."
+  components:
+  - type: Sprite
+    sprite: _RuMC14/Objects/Consulable/Smokeables/Cigars/belomor.rsi

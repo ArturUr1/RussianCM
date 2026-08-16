@@ -40,7 +40,7 @@
         - ReagentId: Protein
           Quantity: 10
   - type: Food
-    transferAmount: 2
+    transferAmount: 10
     trash:
     - RuMCFoodTinIRPTrash
 
@@ -80,7 +80,7 @@
         - ReagentId: Protein
           Quantity: 10
   - type: Food
-    transferAmount: 2
+    transferAmount: 10
     trash:
     - RuMCFoodTinIRPTrashMeat
 
@@ -120,7 +120,7 @@
         - ReagentId: Protein
           Quantity: 10
   - type: Food
-    transferAmount: 2
+    transferAmount: 10
     trash:
     - RuMCFoodTinIRPTrashMeat2
 
@@ -161,7 +161,7 @@
         - ReagentId: Protein
           Quantity: 25
   - type: Food
-    transferAmount: 2
+    transferAmount: 10
     trash:
     - RuMCFoodTinIRPTrashPorridge
 
@@ -202,7 +202,7 @@
         - ReagentId: Protein
           Quantity: 10
   - type: Food
-    transferAmount: 2
+    transferAmount: 10
     trash:
     - RuMCFoodTinIRPTrashPorridge2
 
@@ -243,7 +243,7 @@
         - ReagentId: Protein
           Quantity: 10
   - type: Food
-    transferAmount: 2
+    transferAmount: 10
     trash:
     - RuMCFoodTinIRPTrashPorridge3
 
@@ -282,7 +282,7 @@
         - ReagentId: Protein
           Quantity: 10
   - type: Food
-    transferAmount: 2
+    transferAmount: 10
     trash:
     - RuMCFoodTinIRPTrashMilk
 
@@ -321,7 +321,7 @@
         - ReagentId: Protein
           Quantity: 10
   - type: Food
-    transferAmount: 2
+    transferAmount: 10
     trash:
     - RuMCFoodTinIRPTrashMilk2
 
@@ -361,7 +361,7 @@
         - ReagentId: Protein
           Quantity: 10
   - type: Food
-    transferAmount: 2
+    transferAmount: 10
     trash:
     - RuMCFoodLightTinIRPTrashStew
 
@@ -398,7 +398,7 @@
         - ReagentId: Protein
           Quantity: 5
   - type: Food
-    transferAmount: 2
+    transferAmount: 10
     trash:
     - RuMCFoodLightTinIRPTrashStew2
 
@@ -437,7 +437,7 @@
         - ReagentId: Protein
           Quantity: 10
   - type: Food
-    transferAmount: 2
+    transferAmount: 10
     trash:
     - RuMCFoodLightTinIRPTrashBuckwheat
 
@@ -476,7 +476,7 @@
         - ReagentId: Protein
           Quantity: 10
   - type: Food
-    transferAmount: 2
+    transferAmount: 10
     trash:
     - RuMCFoodLightTinIRPTrashRise
 
