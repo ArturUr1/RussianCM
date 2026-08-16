@@ -125,5 +125,38 @@ public sealed class CCCVars : CVars
     public static readonly CVarDef<int> GovernanceFreezeMaxSeconds =
         CVarDef.Create("governance.freeze_max_seconds", 120, CVar.SERVERONLY | CVar.ARCHIVE);
 
+    /// <summary>
+    /// Number of simultaneous community responders requested for an active round.
+    /// </summary>
+    public static readonly CVarDef<int> GovernanceDutyTargetResponders =
+        CVarDef.Create("governance.duty_target_responders", 1, CVar.SERVERONLY | CVar.ARCHIVE);
+
+    /// <summary>
+    /// Interval between server-side duty staffing checks.
+    /// </summary>
+    public static readonly CVarDef<int> GovernanceDutyCheckSeconds =
+        CVarDef.Create("governance.duty_check_seconds", 30, CVar.SERVERONLY | CVar.ARCHIVE);
+
+    /// <summary>
+    /// Time an in-game duty invitation remains open.
+    /// </summary>
+    public static readonly CVarDef<int> GovernanceDutyInviteSeconds =
+        CVarDef.Create("governance.duty_invite_seconds", 90, CVar.SERVERONLY | CVar.ARCHIVE);
+
+    /// <summary>
+    /// Maximum lifetime of an accepted duty session. Round end always closes it sooner.
+    /// </summary>
+    public static readonly CVarDef<int> GovernanceDutySessionMinutes =
+        CVarDef.Create("governance.duty_session_minutes", 240, CVar.SERVERONLY | CVar.ARCHIVE);
+
+    public static readonly CVarDef<int> GovernanceDutyAcceptReward =
+        CVarDef.Create("governance.duty_accept_reward", 10, CVar.SERVERONLY | CVar.ARCHIVE);
+
+    public static readonly CVarDef<int> GovernanceDutyDeclinePenalty =
+        CVarDef.Create("governance.duty_decline_penalty", 15, CVar.SERVERONLY | CVar.ARCHIVE);
+
+    public static readonly CVarDef<int> GovernanceDutyExpiryPenalty =
+        CVarDef.Create("governance.duty_expiry_penalty", 20, CVar.SERVERONLY | CVar.ARCHIVE);
+
 #endregion
 }

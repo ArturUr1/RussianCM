@@ -1,8 +1,9 @@
 # RUCM Community Governance: game boundary
 
-This module is the server-side trust boundary between RussianCM and the Community Governance bot.
-The bot may create duty sessions and capability grants, but the game never accepts permissions,
-scope, expiry, or target state from a client.
+This module is the server-side trust boundary between RussianCM and Community Governance.
+The game owns duty invitations, duty sessions and temporary capability grants; the Discord bot
+owns the case workflow. The game never accepts permissions, scope, expiry, or target state from a
+client.
 
 ## Deployment
 
@@ -15,9 +16,24 @@ scope, expiry, or target state from a client.
    [governance]
    enabled = true
    freeze_max_seconds = 120
+   duty_target_responders = 1
+   duty_check_seconds = 30
+   duty_invite_seconds = 90
+   duty_session_minutes = 240
    ```
 
 SQLite deliberately fails closed: no duty session or capability can be authorized.
+
+## In-game duty flow
+
+During an active round the server periodically checks whether the configured responder target is
+staffed. It randomly selects connected observers with Moderation Qualification level I or higher
+and opens an in-game invitation. Accepting adds 10 Civic Rating and atomically creates a
+round-scoped DutySession plus `moderation.freeze`; declining removes 15; recusal has no rating
+effect. Expired invitations use the configured expiry penalty. Sessions and their grants are
+closed automatically on timeout or when the round changes. Candidates must already have a
+`governance.qualifications` row with `track = 'moderation'` and `level >= 1`; ordinary linked
+accounts are synchronized at level 0 and are not invited.
 
 ## In-game commands
 

@@ -15,6 +15,35 @@ public sealed record GovernanceAuthorization(
     string Capability,
     DateTimeOffset ExpiresAt);
 
+public sealed record GovernanceDutyInvitation(
+    long Id,
+    NetUserId UserId,
+    int RoundId,
+    DateTimeOffset ExpiresAt);
+
+public enum GovernanceDutyInvitationChoice
+{
+    Accept,
+    Decline,
+    Recuse,
+}
+
+public enum GovernanceDutyResponseStatus
+{
+    Accepted,
+    Declined,
+    Recused,
+    Expired,
+    AlreadyHandled,
+    Invalid,
+    NotObserver,
+}
+
+public sealed record GovernanceDutyResponse(
+    GovernanceDutyResponseStatus Status,
+    int CivicRating,
+    GovernanceDutySession? Duty = null);
+
 public enum GovernanceDenial
 {
     None,
