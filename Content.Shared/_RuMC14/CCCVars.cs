@@ -112,5 +112,18 @@ public sealed class CCCVars : CVars
     public static readonly CVarDef<string> PlaytimeApiAllowedIP =
         CVarDef.Create("playtime.allowed_ip", "", CVar.SERVERONLY | CVar.CONFIDENTIAL);
 
+    /// <summary>
+    /// Enables the in-game RUCM Community Governance enforcement boundary.
+    /// Requires the main database engine to be PostgreSQL and the governance schema to be installed.
+    /// </summary>
+    public static readonly CVarDef<bool> GovernanceEnabled =
+        CVarDef.Create("governance.enabled", false, CVar.SERVERONLY | CVar.ARCHIVE);
+
+    /// <summary>
+    /// Maximum duration of a temporary governance freeze.
+    /// </summary>
+    public static readonly CVarDef<int> GovernanceFreezeMaxSeconds =
+        CVarDef.Create("governance.freeze_max_seconds", 120, CVar.SERVERONLY | CVar.ARCHIVE);
+
 #endregion
 }
