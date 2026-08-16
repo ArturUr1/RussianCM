@@ -59,7 +59,7 @@
   - type: SolutionContainerManager
     solutions:
       food:
-        maxVol: 7
+        maxVol: 10
         reagents:
         - ReagentId: Nutriment
           Quantity: 7
@@ -161,10 +161,10 @@
   - type: SolutionContainerManager
     solutions:
       food:
-        maxVol: 30
+        maxVol: 20
         reagents:
         - ReagentId: Nutriment
-          Quantity: 20
+          Quantity: 19
         - ReagentId: Protein
           Quantity: 1
   - type: FlavorProfile
@@ -217,7 +217,7 @@
         - ReagentId: Nutriment
           Quantity: 4
         - ReagentId: Sugar
-          Quantity: 10
+          Quantity: 11
   - type: FlavorProfile
     flavors:
     - sweet
@@ -236,7 +236,7 @@
   - type: SolutionContainerManager
     solutions:
       food:
-        maxVol: 30
+        maxVol: 20
         reagents:
         - ReagentId: Nutriment
           Quantity: 10
@@ -264,7 +264,7 @@
   - type: SolutionContainerManager
     solutions:
       food:
-        maxVol: 30
+        maxVol: 20
         reagents:
         - ReagentId: Nutriment
           Quantity: 10
