@@ -81,7 +81,7 @@
   - type: SolutionContainerManager
     solutions:
       food:
-        maxVol: 5
+        maxVol: 30
         reagents:
         - ReagentId: Nutriment
           Quantity: 15
@@ -107,7 +107,7 @@
   - type: SolutionContainerManager
     solutions:
       food:
-        maxVol: 5
+        maxVol: 15
         reagents:
         - ReagentId: Nutriment
           Quantity: 10
@@ -135,7 +135,7 @@
   - type: SolutionContainerManager
     solutions:
       food:
-        maxVol: 5
+        maxVol: 20
         reagents:
         - ReagentId: Nutriment
           Quantity: 10
@@ -161,7 +161,7 @@
   - type: SolutionContainerManager
     solutions:
       food:
-        maxVol: 5
+        maxVol: 30
         reagents:
         - ReagentId: Nutriment
           Quantity: 20
@@ -188,7 +188,7 @@
   - type: SolutionContainerManager
     solutions:
       food:
-        maxVol: 5
+        maxVol: 15
         reagents:
         - ReagentId: Nutriment
           Quantity: 3
@@ -212,7 +212,7 @@
   - type: SolutionContainerManager
     solutions:
       food:
-        maxVol: 5
+        maxVol: 15
         reagents:
         - ReagentId: Nutriment
           Quantity: 4
@@ -236,7 +236,7 @@
   - type: SolutionContainerManager
     solutions:
       food:
-        maxVol: 5
+        maxVol: 30
         reagents:
         - ReagentId: Nutriment
           Quantity: 10
@@ -264,7 +264,7 @@
   - type: SolutionContainerManager
     solutions:
       food:
-        maxVol: 5
+        maxVol: 30
         reagents:
         - ReagentId: Nutriment
           Quantity: 10
@@ -289,10 +289,10 @@
   - type: SolutionContainerManager
     solutions:
       food:
-        maxVol: 5
+        maxVol: 30
         reagents:
         - ReagentId: Nutriment
-          Quantity: 14
+          Quantity: 12
         - ReagentId: RMCPeanutButter
           Quantity: 1
         - ReagentId: Protein
