@@ -11,6 +11,7 @@ using Robust.Shared.Enums;
 using Robust.Shared.Network;
 using Robust.Shared.Player;
 using System.Threading.Tasks;
+using System.Linq;
 
 namespace Content.Server._RuMC14.Governance;
 
@@ -30,6 +31,7 @@ public sealed class GovernanceDutySystem : EntitySystem
 
     private float _elapsed = float.MaxValue;
     private bool _checking;
+    private readonly HashSet<long> _shownJuryInvitations = new();
 
     public override void Update(float frameTime)
     {
@@ -56,16 +58,15 @@ public sealed class GovernanceDutySystem : EntitySystem
         try
         {
             var observers = new List<NetUserId>();
+            var connected = new List<NetUserId>();
             foreach (var session in _players.Sessions)
             {
-                if (session.Status is not (SessionStatus.Connected or SessionStatus.InGame) ||
-                    session.AttachedEntity is not { } entity ||
-                    !HasComp<GhostComponent>(entity))
-                {
+                if (session.Status is not (SessionStatus.Connected or SessionStatus.InGame))
                     continue;
-                }
 
-                observers.Add(session.UserId);
+                connected.Add(session.UserId);
+                if (session.AttachedEntity is { } entity && HasComp<GhostComponent>(entity))
+                    observers.Add(session.UserId);
             }
 
             var target = Math.Clamp(_cfg.GetCVar(CCCVars.GovernanceDutyTargetResponders), 0, 16);
@@ -102,7 +103,32 @@ public sealed class GovernanceDutySystem : EntitySystem
                 _euis.OpenEui(
                     new GovernanceDutyInviteEui(
                         invitation.Id,
-                        invitation.RoundId,
+                        GovernanceInviteKind.ModerationDuty,
+                        invitation.RoundId.ToString(),
+                        invitation.ExpiresAt,
+                        acceptReward,
+                        declinePenalty,
+                        expiryPenalty,
+                        this),
+                    session);
+            }
+
+            var juryInvitations = await _database.GetPendingGovernanceJuryInvitationsAsync(connected);
+            var pendingJuryIds = juryInvitations.Select(invitation => invitation.Id).ToHashSet();
+            _shownJuryInvitations.RemoveWhere(id => !pendingJuryIds.Contains(id));
+            foreach (var invitation in juryInvitations)
+            {
+                if (!_shownJuryInvitations.Add(invitation.Id) ||
+                    !_players.TryGetSessionById(invitation.UserId, out var session))
+                {
+                    continue;
+                }
+
+                _euis.OpenEui(
+                    new GovernanceDutyInviteEui(
+                        invitation.Id,
+                        GovernanceInviteKind.Jury,
+                        invitation.CaseId,
                         invitation.ExpiresAt,
                         acceptReward,
                         declinePenalty,
@@ -124,15 +150,19 @@ public sealed class GovernanceDutySystem : EntitySystem
     public async Task RespondToInvitationAsync(
         ICommonSession player,
         long invitationId,
+        GovernanceInviteKind kind,
         GovernanceDutyInviteChoice choice)
     {
         if (!_governance.Enabled || _ticker.RunLevel != GameRunLevel.InRound)
         {
-            _chat.DispatchServerMessage(player, Loc.GetString("governance-duty-response-invalid"));
+            _chat.DispatchServerMessage(
+                player,
+                Loc.GetString(ResponseLocale(kind, GovernanceDutyResponseStatus.Invalid)));
             return;
         }
 
-        if (choice == GovernanceDutyInviteChoice.Accept &&
+        if (kind == GovernanceInviteKind.ModerationDuty &&
+            choice == GovernanceDutyInviteChoice.Accept &&
             (player.AttachedEntity is not { } entity || !HasComp<GhostComponent>(entity)))
         {
             // The player returned to a body after receiving the observer-only invitation.
@@ -161,52 +191,73 @@ public sealed class GovernanceDutySystem : EntitySystem
 
         try
         {
-            var response = await _database.RespondGovernanceDutyInvitationAsync(
-                invitationId,
-                player.UserId,
-                _ticker.RoundId,
-                choice switch
-                {
-                    GovernanceDutyInviteChoice.Accept => GovernanceDutyInvitationChoice.Accept,
-                    GovernanceDutyInviteChoice.Decline => GovernanceDutyInvitationChoice.Decline,
-                    _ => GovernanceDutyInvitationChoice.Recuse,
-                },
-                TimeSpan.FromMinutes(Math.Clamp(
-                    _cfg.GetCVar(CCCVars.GovernanceDutySessionMinutes),
-                    1,
-                    1440)),
-                Math.Clamp(_cfg.GetCVar(CCCVars.GovernanceDutyAcceptReward), 0, 1000),
-                Math.Clamp(_cfg.GetCVar(CCCVars.GovernanceDutyDeclinePenalty), 0, 1000),
-                Math.Clamp(_cfg.GetCVar(CCCVars.GovernanceDutyExpiryPenalty), 0, 1000));
+            var databaseChoice = choice switch
+            {
+                GovernanceDutyInviteChoice.Accept => GovernanceDutyInvitationChoice.Accept,
+                GovernanceDutyInviteChoice.Decline => GovernanceDutyInvitationChoice.Decline,
+                _ => GovernanceDutyInvitationChoice.Recuse,
+            };
+            var acceptReward = Math.Clamp(_cfg.GetCVar(CCCVars.GovernanceDutyAcceptReward), 0, 1000);
+            var declinePenalty = Math.Clamp(_cfg.GetCVar(CCCVars.GovernanceDutyDeclinePenalty), 0, 1000);
+            var expiryPenalty = Math.Clamp(_cfg.GetCVar(CCCVars.GovernanceDutyExpiryPenalty), 0, 1000);
+            var response = kind == GovernanceInviteKind.Jury
+                ? await _database.RespondGovernanceJuryInvitationAsync(
+                    invitationId,
+                    player.UserId,
+                    databaseChoice,
+                    acceptReward,
+                    declinePenalty,
+                    expiryPenalty)
+                : await _database.RespondGovernanceDutyInvitationAsync(
+                    invitationId,
+                    player.UserId,
+                    _ticker.RoundId,
+                    databaseChoice,
+                    TimeSpan.FromMinutes(Math.Clamp(
+                        _cfg.GetCVar(CCCVars.GovernanceDutySessionMinutes),
+                        1,
+                        1440)),
+                    acceptReward,
+                    declinePenalty,
+                    expiryPenalty);
 
-            if (response.Status == GovernanceDutyResponseStatus.Accepted)
+            if (kind == GovernanceInviteKind.ModerationDuty &&
+                response.Status == GovernanceDutyResponseStatus.Accepted)
                 await _governance.RefreshDutyAsync(player.UserId);
+
+            if (kind == GovernanceInviteKind.Jury)
+                _shownJuryInvitations.Remove(invitationId);
 
             _chat.DispatchServerMessage(
                 player,
                 Loc.GetString(
-                    ResponseLocale(response.Status),
+                    ResponseLocale(kind, response.Status),
                     ("rating", response.CivicRating)));
             _elapsed = float.MaxValue;
         }
         catch (Exception exception)
         {
-            Log.Error($"Community duty invitation {invitationId} response failed: {exception}");
-            _chat.DispatchServerMessage(player, Loc.GetString("governance-duty-response-invalid"));
+            Log.Error($"Governance invitation {invitationId} response failed: {exception}");
+            _chat.DispatchServerMessage(
+                player,
+                Loc.GetString(ResponseLocale(kind, GovernanceDutyResponseStatus.Invalid)));
         }
     }
 
-    private static string ResponseLocale(GovernanceDutyResponseStatus status)
+    private static string ResponseLocale(
+        GovernanceInviteKind kind,
+        GovernanceDutyResponseStatus status)
     {
+        var prefix = kind == GovernanceInviteKind.Jury ? "governance-jury" : "governance-duty";
         return status switch
         {
-            GovernanceDutyResponseStatus.Accepted => "governance-duty-response-accepted",
-            GovernanceDutyResponseStatus.Declined => "governance-duty-response-declined",
-            GovernanceDutyResponseStatus.Recused => "governance-duty-response-recused",
-            GovernanceDutyResponseStatus.Expired => "governance-duty-response-expired",
-            GovernanceDutyResponseStatus.AlreadyHandled => "governance-duty-response-handled",
+            GovernanceDutyResponseStatus.Accepted => $"{prefix}-response-accepted",
+            GovernanceDutyResponseStatus.Declined => $"{prefix}-response-declined",
+            GovernanceDutyResponseStatus.Recused => $"{prefix}-response-recused",
+            GovernanceDutyResponseStatus.Expired => $"{prefix}-response-expired",
+            GovernanceDutyResponseStatus.AlreadyHandled => $"{prefix}-response-handled",
             GovernanceDutyResponseStatus.NotObserver => "governance-duty-response-observer-required",
-            _ => "governance-duty-response-invalid",
+            _ => $"{prefix}-response-invalid",
         };
     }
 }

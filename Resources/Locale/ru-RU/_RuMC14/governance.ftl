@@ -27,6 +27,19 @@ governance-duty-response-expired = Срок приглашения истёк. �
 governance-duty-response-handled = Это приглашение уже было обработано.
 governance-duty-response-invalid = Приглашение больше недействительно или Governance недоступна.
 governance-duty-response-observer-required = Принять дежурство можно только находясь наблюдателем.
+governance-jury-invite-title = Приглашение в присяжные RUCM
+governance-jury-invite-description =
+    Вы случайно выбраны кандидатом в присяжные по делу #{$case}.
+
+    Само дело и доказательства доступны в публичном Discord-треде. Согласие увеличит Civic Rating на {$acceptReward}, отказ уменьшит его на {$declinePenalty}, самоотвод не изменит рейтинг. Игнорирование приглашения уменьшит рейтинг на {$expiryPenalty}.
+
+    Ответьте до {$expires}. После ответа бот автоматически продолжит дело в Discord.
+governance-jury-response-accepted = Вы согласились стать присяжным. Ответ передан в Discord, ваш Civic Rating: {$rating}.
+governance-jury-response-declined = Вы отказались от судейства. Ответ передан в Discord, ваш Civic Rating: {$rating}.
+governance-jury-response-recused = Самоотвод принят без изменения рейтинга. Бот выберет замену.
+governance-jury-response-expired = Срок приглашения в присяжные истёк. Ваш Civic Rating: {$rating}.
+governance-jury-response-handled = Это приглашение в присяжные уже было обработано.
+governance-jury-response-invalid = Приглашение в присяжные больше недействительно или Governance недоступна.
 governance-denial-disabled = система Governance отключена
 governance-denial-invalid-input = некорректный incident-id или текст причины
 governance-denial-not-on-duty = нет активной DutySession или capability moderation.freeze

@@ -6,7 +6,8 @@ namespace Content.Server._RuMC14.Governance;
 
 public sealed class GovernanceDutyInviteEui(
     long invitationId,
-    int roundId,
+    GovernanceInviteKind kind,
+    string entityId,
     DateTimeOffset expiresAt,
     int acceptReward,
     int declinePenalty,
@@ -18,7 +19,8 @@ public sealed class GovernanceDutyInviteEui(
     public override EuiStateBase GetNewState()
     {
         return new GovernanceDutyInviteEuiState(
-            roundId,
+            kind,
+            entityId,
             expiresAt.UtcDateTime,
             acceptReward,
             declinePenalty,
@@ -34,6 +36,6 @@ public sealed class GovernanceDutyInviteEui(
 
         _responding = true;
         Close();
-        _ = dutySystem.RespondToInvitationAsync(Player, invitationId, choice.Choice);
+        _ = dutySystem.RespondToInvitationAsync(Player, invitationId, kind, choice.Choice);
     }
 }

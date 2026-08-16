@@ -21,6 +21,12 @@ public sealed record GovernanceDutyInvitation(
     int RoundId,
     DateTimeOffset ExpiresAt);
 
+public sealed record GovernanceJuryInvitation(
+    long Id,
+    NetUserId UserId,
+    string CaseId,
+    DateTimeOffset ExpiresAt);
+
 public enum GovernanceDutyInvitationChoice
 {
     Accept,

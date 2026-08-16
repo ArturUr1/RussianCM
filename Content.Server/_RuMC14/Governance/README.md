@@ -1,9 +1,10 @@
 # RUCM Community Governance: game boundary
 
 This module is the server-side trust boundary between RussianCM and Community Governance.
-The game owns duty invitations, duty sessions and temporary capability grants; the Discord bot
-owns the case workflow. The game never accepts permissions, scope, expiry, or target state from a
-client.
+The game owns moderation duty invitations, duty sessions and temporary capability grants. The
+Discord bot owns the case workflow and jury selection, while the game delivers pending jury
+invitations from the same PostgreSQL schema and records the player's response. The game never
+accepts permissions, scope, expiry, rating amounts, or target state from a client.
 
 ## Deployment
 
@@ -34,6 +35,15 @@ effect. Expired invitations use the configured expiry penalty. Sessions and thei
 closed automatically on timeout or when the round changes. Candidates must already have a
 `governance.qualifications` row with `track = 'moderation'` and `level >= 1`; ordinary linked
 accounts are synchronized at level 0 and are not invited.
+
+## In-game jury flow
+
+The Discord bot writes a `purpose = 'jury'`, `entity_type = 'court_case'` invitation after random
+selection. The game polls pending invitations for connected SS14 UUIDs and opens the same trusted
+EUI with the case number and rating effects. Accept, decline, recusal and expiry are committed
+atomically to PostgreSQL; the bot polls that state and advances the Discord case. Jury candidates
+do not need to be observers and receive no moderation capability. The Discord slash command is a
+fallback for candidates who are not connected to the game server.
 
 ## In-game commands
 

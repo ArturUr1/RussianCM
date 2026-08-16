@@ -42,7 +42,8 @@ public sealed class GovernanceDutyInviteEui : BaseEui
         if (state is GovernanceDutyInviteEuiState invitation)
         {
             _window?.UpdateInvitation(
-                invitation.RoundId,
+                invitation.Kind,
+                invitation.EntityId,
                 invitation.ExpiresAt,
                 invitation.AcceptReward,
                 invitation.DeclinePenalty,

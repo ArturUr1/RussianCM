@@ -27,6 +27,19 @@ governance-duty-response-expired = The invitation expired. Your Civic Rating is 
 governance-duty-response-handled = This invitation has already been handled.
 governance-duty-response-invalid = The invitation is no longer valid or Governance is unavailable.
 governance-duty-response-observer-required = You must be an observer to accept community duty.
+governance-jury-invite-title = RUCM Jury Invitation
+governance-jury-invite-description =
+    You were randomly selected as a juror candidate for case #{$case}.
+
+    The case and evidence are available in its public Discord thread. Accepting adds {$acceptReward} Civic Rating, declining removes {$declinePenalty}, and recusal does not change rating. Ignoring the invitation removes {$expiryPenalty}.
+
+    Respond before {$expires}. The bot will automatically continue the Discord case after your response.
+governance-jury-response-accepted = You accepted jury service. Discord has received your response. Your Civic Rating is {$rating}.
+governance-jury-response-declined = You declined jury service. Discord has received your response. Your Civic Rating is {$rating}.
+governance-jury-response-recused = Recusal accepted without a rating change. The bot will select a replacement.
+governance-jury-response-expired = The jury invitation expired. Your Civic Rating is {$rating}.
+governance-jury-response-handled = This jury invitation has already been handled.
+governance-jury-response-invalid = The jury invitation is no longer valid or Governance is unavailable.
 governance-denial-disabled = Governance is disabled
 governance-denial-invalid-input = the incident id or reason is invalid
 governance-denial-not-on-duty = no active DutySession or moderation.freeze capability

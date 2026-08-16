@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Content.Server._RuMC14.Governance;
@@ -12,6 +13,19 @@ namespace Content.Server.Database;
 
 public partial interface IServerDbManager
 {
+    Task<IReadOnlyList<GovernanceJuryInvitation>> GetPendingGovernanceJuryInvitationsAsync(
+        IReadOnlyCollection<NetUserId> onlineUsers,
+        CancellationToken cancel = default);
+
+    Task<GovernanceDutyResponse> RespondGovernanceJuryInvitationAsync(
+        long invitationId,
+        NetUserId userId,
+        GovernanceDutyInvitationChoice choice,
+        int acceptReward,
+        int declinePenalty,
+        int expiryPenalty,
+        CancellationToken cancel = default);
+
     Task<IReadOnlyList<GovernanceDutyInvitation>> CreateGovernanceDutyInvitationsAsync(
         int roundId,
         IReadOnlyCollection<NetUserId> onlineObservers,
@@ -34,6 +48,196 @@ public partial interface IServerDbManager
 
 public sealed partial class ServerDbManager
 {
+    public async Task<IReadOnlyList<GovernanceJuryInvitation>> GetPendingGovernanceJuryInvitationsAsync(
+        IReadOnlyCollection<NetUserId> onlineUsers,
+        CancellationToken cancel = default)
+    {
+        if (!_cfg.GetCVar(CCVars.DatabaseEngine).Equals("postgres", StringComparison.OrdinalIgnoreCase) ||
+            onlineUsers.Count == 0)
+        {
+            return Array.Empty<GovernanceJuryInvitation>();
+        }
+
+        var onlineIds = onlineUsers.Select(user => user.UserId).ToArray();
+        var result = new List<GovernanceJuryInvitation>();
+        await using var connection = CreateGovernanceConnection();
+        await connection.OpenAsync(cancel);
+        await using var command = new NpgsqlCommand(
+            """
+            SELECT invitation.id, users.ss14_user_id, invitation.entity_id,
+                   invitation.expires_at
+            FROM governance.invitations AS invitation
+            JOIN governance.users AS users ON users.id = invitation.user_id
+            WHERE invitation.purpose = 'jury'
+              AND invitation.entity_type = 'court_case'
+              AND invitation.state = 'pending'
+              AND invitation.expires_at > now()
+              AND users.ss14_user_id = ANY(@online_users)
+              AND NOT users.is_governance_suspended
+            ORDER BY invitation.created_at
+            """,
+            connection);
+        command.Parameters.AddWithValue(
+            "online_users",
+            NpgsqlDbType.Array | NpgsqlDbType.Uuid,
+            onlineIds);
+        await using var reader = await command.ExecuteReaderAsync(cancel);
+        while (await reader.ReadAsync(cancel))
+        {
+            result.Add(new GovernanceJuryInvitation(
+                reader.GetInt64(0),
+                new NetUserId(reader.GetGuid(1)),
+                reader.GetString(2),
+                new DateTimeOffset(reader.GetDateTime(3))));
+        }
+
+        return result;
+    }
+
+    public async Task<GovernanceDutyResponse> RespondGovernanceJuryInvitationAsync(
+        long invitationId,
+        NetUserId userId,
+        GovernanceDutyInvitationChoice choice,
+        int acceptReward,
+        int declinePenalty,
+        int expiryPenalty,
+        CancellationToken cancel = default)
+    {
+        if (!_cfg.GetCVar(CCVars.DatabaseEngine).Equals("postgres", StringComparison.OrdinalIgnoreCase))
+            return new GovernanceDutyResponse(GovernanceDutyResponseStatus.Invalid, 0);
+
+        await using var connection = CreateGovernanceConnection();
+        await connection.OpenAsync(cancel);
+        await using var transaction = await connection.BeginTransactionAsync(cancel);
+        await using (var invitationLock = new NpgsqlCommand(
+                         "SELECT pg_advisory_xact_lock(hashtextextended('rucm-jury-invitation', @id))",
+                         connection,
+                         transaction))
+        {
+            invitationLock.Parameters.AddWithValue("id", invitationId);
+            await invitationLock.ExecuteNonQueryAsync(cancel);
+        }
+
+        Guid governanceUserId;
+        string state;
+        DateTime expiresAt;
+        int rating;
+        await using (var select = new NpgsqlCommand(
+                         """
+                         SELECT invitation.user_id, invitation.state, invitation.expires_at,
+                                users.civic_rating_cache
+                         FROM governance.invitations AS invitation
+                         JOIN governance.users AS users ON users.id = invitation.user_id
+                         WHERE invitation.id = @invitation_id
+                           AND invitation.purpose = 'jury'
+                           AND invitation.entity_type = 'court_case'
+                           AND users.ss14_user_id = @ss14_user_id
+                           AND NOT users.is_governance_suspended
+                         FOR UPDATE OF invitation, users
+                         """,
+                         connection,
+                         transaction))
+        {
+            select.Parameters.AddWithValue("invitation_id", invitationId);
+            select.Parameters.AddWithValue("ss14_user_id", userId.UserId);
+            await using var reader = await select.ExecuteReaderAsync(cancel);
+            if (!await reader.ReadAsync(cancel))
+            {
+                await transaction.RollbackAsync(cancel);
+                return new GovernanceDutyResponse(GovernanceDutyResponseStatus.Invalid, 0);
+            }
+
+            governanceUserId = reader.GetGuid(0);
+            state = reader.GetString(1);
+            expiresAt = reader.GetDateTime(2);
+            rating = reader.GetInt32(3);
+        }
+
+        if (state != "pending")
+        {
+            await transaction.RollbackAsync(cancel);
+            return new GovernanceDutyResponse(GovernanceDutyResponseStatus.AlreadyHandled, rating);
+        }
+
+        if (expiresAt <= DateTime.UtcNow)
+        {
+            await SetInvitationStateAsync(connection, transaction, invitationId, "expired", cancel);
+            rating = await AppendDutyRatingAsync(
+                connection,
+                transaction,
+                governanceUserId,
+                -expiryPenalty,
+                "jury_invite_expired",
+                invitationId,
+                cancel);
+            await AppendDutyAuditAsync(
+                connection,
+                transaction,
+                "invitation.expired",
+                governanceUserId,
+                "invitation",
+                invitationId.ToString(),
+                new { purpose = "jury", penalty = expiryPenalty },
+                cancel);
+            await transaction.CommitAsync(cancel);
+            return new GovernanceDutyResponse(GovernanceDutyResponseStatus.Expired, rating);
+        }
+
+        var targetState = choice switch
+        {
+            GovernanceDutyInvitationChoice.Accept => "accepted",
+            GovernanceDutyInvitationChoice.Decline => "declined",
+            _ => "recused",
+        };
+        await SetInvitationStateAsync(connection, transaction, invitationId, targetState, cancel);
+        if (choice == GovernanceDutyInvitationChoice.Accept)
+        {
+            rating = await AppendDutyRatingAsync(
+                connection,
+                transaction,
+                governanceUserId,
+                acceptReward,
+                "jury_invite_accept",
+                invitationId,
+                cancel);
+        }
+        else if (choice == GovernanceDutyInvitationChoice.Decline)
+        {
+            rating = await AppendDutyRatingAsync(
+                connection,
+                transaction,
+                governanceUserId,
+                -declinePenalty,
+                "jury_invite_decline",
+                invitationId,
+                cancel);
+        }
+
+        await AppendDutyAuditAsync(
+            connection,
+            transaction,
+            $"invitation.{targetState}",
+            governanceUserId,
+            "invitation",
+            invitationId.ToString(),
+            new
+            {
+                purpose = "jury",
+                reward = choice == GovernanceDutyInvitationChoice.Accept ? acceptReward : 0,
+                penalty = choice == GovernanceDutyInvitationChoice.Decline ? declinePenalty : 0,
+            },
+            cancel);
+        await transaction.CommitAsync(cancel);
+        return new GovernanceDutyResponse(
+            choice switch
+            {
+                GovernanceDutyInvitationChoice.Accept => GovernanceDutyResponseStatus.Accepted,
+                GovernanceDutyInvitationChoice.Decline => GovernanceDutyResponseStatus.Declined,
+                _ => GovernanceDutyResponseStatus.Recused,
+            },
+            rating);
+    }
+
     public async Task<IReadOnlyList<GovernanceDutyInvitation>> CreateGovernanceDutyInvitationsAsync(
         int roundId,
         IReadOnlyCollection<NetUserId> onlineObservers,

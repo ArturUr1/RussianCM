@@ -4,6 +4,13 @@ using Robust.Shared.Serialization;
 namespace Content.Shared._RuMC14.Governance;
 
 [Serializable, NetSerializable]
+public enum GovernanceInviteKind
+{
+    ModerationDuty,
+    Jury,
+}
+
+[Serializable, NetSerializable]
 public enum GovernanceDutyInviteChoice
 {
     Accept,
@@ -20,13 +27,15 @@ public sealed class GovernanceDutyInviteChoiceMessage(
 
 [Serializable, NetSerializable]
 public sealed class GovernanceDutyInviteEuiState(
-    int roundId,
+    GovernanceInviteKind kind,
+    string entityId,
     DateTime expiresAt,
     int acceptReward,
     int declinePenalty,
     int expiryPenalty) : EuiStateBase
 {
-    public readonly int RoundId = roundId;
+    public readonly GovernanceInviteKind Kind = kind;
+    public readonly string EntityId = entityId;
     public readonly DateTime ExpiresAt = expiresAt;
     public readonly int AcceptReward = acceptReward;
     public readonly int DeclinePenalty = declinePenalty;

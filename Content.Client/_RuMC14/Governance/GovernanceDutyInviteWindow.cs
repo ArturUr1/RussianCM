@@ -1,4 +1,5 @@
 using System.Numerics;
+using Content.Shared._RuMC14.Governance;
 using Robust.Client.UserInterface.Controls;
 using Robust.Client.UserInterface.CustomControls;
 using static Robust.Client.UserInterface.Controls.BoxContainer;
@@ -58,15 +59,21 @@ public sealed class GovernanceDutyInviteWindow : DefaultWindow
     }
 
     public void UpdateInvitation(
-        int roundId,
+        GovernanceInviteKind kind,
+        string entityId,
         DateTime expiresAt,
         int acceptReward,
         int declinePenalty,
         int expiryPenalty)
     {
+        Title = Loc.GetString(kind == GovernanceInviteKind.Jury
+            ? "governance-jury-invite-title"
+            : "governance-duty-invite-title");
         _description.Text = Loc.GetString(
-            "governance-duty-invite-description",
-            ("round", roundId),
+            kind == GovernanceInviteKind.Jury
+                ? "governance-jury-invite-description"
+                : "governance-duty-invite-description",
+            (kind == GovernanceInviteKind.Jury ? "case" : "round", entityId),
             ("expires", expiresAt.ToLocalTime().ToString("HH:mm:ss")),
             ("acceptReward", acceptReward),
             ("declinePenalty", declinePenalty),
