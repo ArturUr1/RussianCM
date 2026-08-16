@@ -52,7 +52,7 @@
     currentLanguage: Russian
     defaultLanguage: Russian
 
-  name: GROZA Machine Gunner
+  name: BEAR Machine Gunner
   description: GROZA Machine Gunner
   playTimeTracker: RuMCJobUPPBEARMachinegunner
   ranks:

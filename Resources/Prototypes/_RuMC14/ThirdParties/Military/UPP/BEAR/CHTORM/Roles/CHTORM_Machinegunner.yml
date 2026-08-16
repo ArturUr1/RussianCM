@@ -54,7 +54,7 @@
     currentLanguage: Russian
     defaultLanguage: Russian
 
-  name: CHTORM Machine Gunner
+  name: BEAR Machine Gunner
   description: CHTORM Machine Gunner
   playTimeTracker: RuMCJobUPPBEARMachinegunner
   ranks:
