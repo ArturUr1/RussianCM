@@ -76,10 +76,11 @@ public sealed partial class AdminConsoleThirdPartyWindow : DefaultWindow
             {
                 var id = _thirdPartyIds[i];
                 var info = s.CallableParties[id];
+                var name = Loc.GetString(info.DisplayName); // RuMC edit
                 var label = _calledParties.Contains(id)
                 // RuMC edit start
-                    ? Loc.GetString("admin-console-third-party-item-called", ("name", info.DisplayName), ("cost", info.Cost.ToString("F0")))
-                    : Loc.GetString("admin-console-third-party-item", ("name", info.DisplayName), ("cost", info.Cost.ToString("F0")));
+                    ? Loc.GetString("admin-console-third-party-item-called", ("name", name), ("cost", info.Cost.ToString("F0")))
+                    : Loc.GetString("admin-console-third-party-item", ("name", name), ("cost", info.Cost.ToString("F0")));
                 // RuMC edit end
 
                 ThirdPartyList.Add(new ItemList.Item(ThirdPartyList)
