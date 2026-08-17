@@ -48,6 +48,8 @@ public sealed class CourtDiscordCoordinator(
         await punishments.ExecutePendingAsync();
         foreach (var courtCase in await court.CasesWithoutThreadsAsync())
             await EnsureCaseThreadAsync(courtCase);
+        foreach (var ticket in await moderation.AHelpsWithoutThreadsAsync())
+            await EnsureAHelpThreadAsync(ticket);
         await NotifyJurorsAsync();
         await NotifyEventReviewersAsync();
         await PublishVerdictsAsync();
@@ -210,9 +212,12 @@ public sealed class CourtDiscordCoordinator(
             return cached;
         var channel = client.GetChannel(config.GovernanceChannel)
             ?? throw new InvalidOperationException($"Governance channel {config.GovernanceChannel} is unavailable.");
-        var reporter = await court.GetAccountAsync(ticket.ReporterUserId);
+        var reporter = await moderation.GetReporterAsync(ticket);
+        var reporterText = reporter.DiscordId is { } discordId
+            ? $"<@{discordId}> ({reporter.Name})"
+            : reporter.Name;
         var embed = new EmbedBuilder().WithTitle($"AHelp №{ticket.Id} • раунд {ticket.RoundId}")
-            .WithDescription(ticket.Summary).AddField("Заявитель", $"<@{reporter.DiscordId}>", true)
+            .WithDescription(ticket.Summary).AddField("Заявитель", reporterText, true)
             .AddField("Статус", ticket.Status, true).WithColor(Color.Gold).WithCurrentTimestamp().Build();
         IThreadChannel thread;
         if (channel is SocketForumChannel forum)

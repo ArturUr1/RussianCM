@@ -45,12 +45,29 @@ atomically to PostgreSQL; the bot polls that state and advances the Discord case
 do not need to be observers and receive no moderation capability. The Discord slash command is a
 fallback for candidates who are not connected to the game server.
 
+## In-game AHelp
+
+The native Bwoink AHelp is the source of tickets. Its first player message atomically creates a
+PostgreSQL `ahelp_tickets` row and every non-admin-only message is appended to immutable
+`ahelp_messages`. Active responder observers use `governance_ahelp` to view the queue, claim a
+ticket, open its existing Bwoink conversation, mark it waiting, or resolve it. The server grants
+access only to the responder assigned to that ticket; selecting another player in the client UI
+does not bypass the PostgreSQL capability and assignment checks.
+
 ## In-game commands
 
 - `governance_status` refreshes and displays the caller's current duty session.
+- `governance_ahelp` opens the responder's in-game AHelp queue.
 - `governance_freeze <player|UUID> <seconds> <incident-id> <reason>` requires an active
   `moderation.freeze` grant scoped to the current round. The caller must be an observer,
   cannot target themselves, and cannot freeze for longer than 120 seconds.
+- `governance_explanation <player|UUID> <action-id> <reason>` opens an assigned Bwoink
+  conversation, sends the approved explanation request to the player and records replies in the
+  immutable AHelp transcript.
+- `governance_logs <player|UUID> <action-id>` returns at most 100 current-round admin-log entries
+  involving that player. The approved action is one-shot and every access is audited.
+- `governance_round_remove <player|UUID> <action-id> <reason>` requires qualification level II,
+  a two-person quorum and blocks reconnects until the round changes.
 
 Every successful or denied freeze attempt is appended to `governance.audit_events` when the
 database is available. Long-term punishments remain outside this responder surface and are

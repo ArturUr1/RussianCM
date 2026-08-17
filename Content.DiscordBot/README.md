@@ -51,7 +51,9 @@ runtime dependency and must not be started after this bot is deployed.
 - `/суд статус` displays the current PostgreSQL state.
 - `/управление профиль|друг-добавить|друг-удалить` manages transparent selection
   conflicts and shows independent jury/moderation/event qualifications.
-- `/дежурство ...` owns AHelp, LiveIncident, scoped moderation proposals and quorum.
+- Native in-game AHelp creates the PostgreSQL queue; active responder observers claim and answer
+  tickets through `governance_ahelp`. Discord mirrors threads and retains LiveIncident,
+  scoped moderation proposals and quorum controls.
   `freeze` needs one approval; `round_remove` needs two independent approvals.
 - `/событие ...` implements proposal, three-reviewer decision, a bounded resource
   manifest, temporary `event.*` capabilities, action audit, and automatic revocation.
@@ -75,6 +77,8 @@ approved PostgreSQL action and target:
 
 ```text
 governance_freeze <player> <seconds> <action-id> <reason>
+governance_explanation <player> <action-id> <reason>
+governance_logs <player> <action-id>
 governance_round_remove <player> <action-id> <reason>
 ```
 

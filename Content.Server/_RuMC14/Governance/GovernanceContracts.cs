@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Robust.Shared.Network;
 
 namespace Content.Server._RuMC14.Governance;
@@ -31,6 +32,22 @@ public sealed record GovernanceJuryInvitation(
     NetUserId UserId,
     string CaseId,
     DateTimeOffset ExpiresAt);
+
+public sealed record GovernanceAHelpTicketInfo(
+    long Id,
+    int RoundId,
+    NetUserId ReporterUserId,
+    string ReporterName,
+    string Summary,
+    string Status,
+    DateTimeOffset CreatedAt,
+    bool ClaimedByMe);
+
+public sealed record GovernanceAHelpTranscriptLine(
+    NetUserId SenderUserId,
+    string SenderName,
+    string Body,
+    DateTimeOffset CreatedAt);
 
 public enum GovernanceDutyInvitationChoice
 {
@@ -68,6 +85,7 @@ public enum GovernanceDenial
     TargetUnavailable,
     AlreadyFrozen,
     ActionNotApproved,
+    AHelpUnavailable,
 }
 
 public readonly record struct GovernanceActionResult(GovernanceDenial Denial)
@@ -75,6 +93,15 @@ public readonly record struct GovernanceActionResult(GovernanceDenial Denial)
     public bool Allowed => Denial == GovernanceDenial.None;
 
     public static GovernanceActionResult Success => new(GovernanceDenial.None);
+}
+
+public sealed record GovernanceLogLine(DateTimeOffset CreatedAt, string Type, string Message);
+
+public sealed record GovernanceLogAccessResult(
+    GovernanceDenial Denial,
+    IReadOnlyList<GovernanceLogLine> Logs)
+{
+    public bool Allowed => Denial == GovernanceDenial.None;
 }
 
 public static class GovernancePolicy

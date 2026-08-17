@@ -1,6 +1,9 @@
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Content.Server.Administration.Systems;
+using Content.Server.Administration.Logs;
+using Content.Server.Database;
 using Content.Server.GameTicking;
 using Content.Shared.Administration;
 using Content.Shared.Corvax.CCCVars;
@@ -18,11 +21,16 @@ public sealed class GovernanceSystem : EntitySystem
 {
     public const string FreezeCapability = "moderation.freeze";
     public const string RoundRemoveCapability = "moderation.round_remove";
+    public const string ExplanationCapability = "moderation.request_explanation";
+    public const string ViewLogsCapability = "moderation.view_logs";
 
+    [Dependency] private readonly IAdminLogManager _adminLogs = default!;
     [Dependency] private readonly AdminFrozenSystem _adminFrozen = default!;
+    [Dependency] private readonly BwoinkSystem _bwoink = default!;
     [Dependency] private readonly IConfigurationManager _cfg = default!;
     [Dependency] private readonly GameTicker _gameTicker = default!;
     [Dependency] private readonly GovernanceManager _governance = default!;
+    [Dependency] private readonly IServerDbManager _database = default!;
     [Dependency] private readonly IPlayerManager _players = default!;
 
     private readonly Dictionary<NetUserId, int> _roundRemoved = new();
@@ -139,6 +147,130 @@ public sealed class GovernanceSystem : EntitySystem
             new { round_id = _gameTicker.RoundId, reason, moderation_action_id = actionId, duty_session_id = capability.Duty.Id });
         target.Channel.Disconnect("Вы удалены до конца раунда решением дежурных сообщества.");
         return GovernanceActionResult.Success;
+    }
+
+    public async Task<GovernanceActionResult> TryRequestExplanationAsync(
+        ICommonSession actor,
+        ICommonSession target,
+        long actionId,
+        string reason)
+    {
+        var denial = ValidateBoundedAction(actor, target, actionId, reason);
+        if (denial != GovernanceDenial.None)
+            return await DenyAsync(denial, actor, target, actionId, 0, "request_explanation");
+        if (await _governance.AuthorizeAsync(actor.UserId, _gameTicker.RoundId, ExplanationCapability) == null)
+            return await DenyAsync(GovernanceDenial.NotOnDuty, actor, target, actionId, 0, "request_explanation");
+        var action = await _governance.AuthorizeActionAsync(
+            actor.UserId, target.UserId, _gameTicker.RoundId, actionId, "request_explanation");
+        if (action == null)
+            return await DenyAsync(GovernanceDenial.ActionNotApproved, actor, target, actionId, 0, "request_explanation");
+        if (actor.AttachedEntity is not { } actorEntity || !HasComp<GhostComponent>(actorEntity))
+            return await DenyAsync(GovernanceDenial.NotObserver, actor, target, actionId, 0, "request_explanation");
+        if (target.AttachedEntity is not { } targetEntity || Deleted(targetEntity))
+            return await DenyAsync(GovernanceDenial.TargetUnavailable, actor, target, actionId, 0, "request_explanation");
+        try
+        {
+            if (await _database.OpenGovernanceExplanationAHelpAsync(
+                    target.UserId, actor.UserId, _gameTicker.RoundId, reason) == null)
+                return await DenyAsync(GovernanceDenial.AHelpUnavailable, actor, target, actionId, 0, "request_explanation");
+        }
+        catch (Exception exception)
+        {
+            Log.Error($"Could not open Governance explanation AHelp: {exception}");
+            return await DenyAsync(GovernanceDenial.DatabaseUnavailable, actor, target, actionId, 0, "request_explanation");
+        }
+
+        _bwoink.SendGovernanceExplanationRequest(actor, target, actionId, reason);
+        await _governance.CompleteActionAsync(actionId);
+        await _governance.AuditAsync(
+            "moderation.request_explanation.executed",
+            actor.UserId,
+            target.UserId,
+            "live_incident",
+            action.IncidentId.ToString(),
+            new { round_id = _gameTicker.RoundId, reason, moderation_action_id = actionId });
+        return GovernanceActionResult.Success;
+    }
+
+    public async Task<GovernanceLogAccessResult> TryViewLogsAsync(
+        ICommonSession actor,
+        ICommonSession target,
+        long actionId)
+    {
+        var denial = ValidateBoundedAction(actor, target, actionId, "view logs");
+        if (denial != GovernanceDenial.None)
+        {
+            await DenyAsync(denial, actor, target, actionId, 0, "view_logs");
+            return new GovernanceLogAccessResult(denial, []);
+        }
+        if (await _governance.AuthorizeAsync(actor.UserId, _gameTicker.RoundId, ViewLogsCapability) == null)
+        {
+            await DenyAsync(GovernanceDenial.NotOnDuty, actor, target, actionId, 0, "view_logs");
+            return new GovernanceLogAccessResult(GovernanceDenial.NotOnDuty, []);
+        }
+        var action = await _governance.AuthorizeActionAsync(
+            actor.UserId, target.UserId, _gameTicker.RoundId, actionId, "view_logs");
+        if (action == null)
+        {
+            await DenyAsync(GovernanceDenial.ActionNotApproved, actor, target, actionId, 0, "view_logs");
+            return new GovernanceLogAccessResult(GovernanceDenial.ActionNotApproved, []);
+        }
+        if (actor.AttachedEntity is not { } actorEntity || !HasComp<GhostComponent>(actorEntity))
+        {
+            await DenyAsync(GovernanceDenial.NotObserver, actor, target, actionId, 0, "view_logs");
+            return new GovernanceLogAccessResult(GovernanceDenial.NotObserver, []);
+        }
+
+        List<Content.Shared.Administration.Logs.SharedAdminLog> logs;
+        try
+        {
+            logs = await _adminLogs.All(new LogFilter
+            {
+                Round = _gameTicker.RoundId,
+                AnyPlayers = [target.UserId.UserId],
+                IncludePlayers = true,
+                IncludeNonPlayers = false,
+                Limit = 100,
+            });
+        }
+        catch (Exception exception)
+        {
+            Log.Error($"Could not read Governance incident logs: {exception}");
+            await DenyAsync(GovernanceDenial.DatabaseUnavailable, actor, target, actionId, 0, "view_logs");
+            return new GovernanceLogAccessResult(GovernanceDenial.DatabaseUnavailable, []);
+        }
+        var result = logs.Select(log => new GovernanceLogLine(
+            new DateTimeOffset(log.Date),
+            log.Type.ToString(),
+            log.Message)).ToArray();
+        await _governance.CompleteActionAsync(actionId);
+        await _governance.AuditAsync(
+            "moderation.view_logs.executed",
+            actor.UserId,
+            target.UserId,
+            "live_incident",
+            action.IncidentId.ToString(),
+            new { round_id = _gameTicker.RoundId, moderation_action_id = actionId, returned_logs = result.Length });
+        return new GovernanceLogAccessResult(GovernanceDenial.None, result);
+    }
+
+    private GovernanceDenial ValidateBoundedAction(
+        ICommonSession actor,
+        ICommonSession target,
+        long actionId,
+        string reason)
+    {
+        if (!_governance.Enabled)
+            return GovernanceDenial.Disabled;
+        if (actor.AttachedEntity is not { } actorEntity || !HasComp<GhostComponent>(actorEntity))
+            return GovernanceDenial.NotObserver;
+        if (actor.UserId == target.UserId)
+            return GovernanceDenial.SelfTarget;
+        if (actionId <= 0 || string.IsNullOrWhiteSpace(reason) || reason.Length > 512)
+            return GovernanceDenial.InvalidInput;
+        if (target.AttachedEntity is not { } targetEntity || Deleted(targetEntity))
+            return GovernanceDenial.TargetUnavailable;
+        return GovernanceDenial.None;
     }
 
     private void ReleaseFreeze(EntityUid target, Guid token)

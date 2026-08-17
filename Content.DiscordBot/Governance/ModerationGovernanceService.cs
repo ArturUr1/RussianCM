@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 namespace Content.DiscordBot.Governance;
 
 public sealed record ModerationActionOutcome(long ActionId, string Status, short Approvals, short RequiredApprovals);
+public sealed record GovernanceAHelpReporter(string Name, ulong? DiscordId);
 
 public sealed class ModerationGovernanceService(
     Func<GovernanceDbContext> governanceFactory,
@@ -29,6 +30,26 @@ public sealed class ModerationGovernanceService(
         await governance.SaveChangesAsync();
     }
 
+    public async Task<IReadOnlyList<GovernanceAHelpTicket>> AHelpsWithoutThreadsAsync()
+    {
+        await using var governance = governanceFactory();
+        return await governance.AHelpTickets.AsNoTracking()
+            .Where(value => value.DiscordThreadId == null && value.Status != "resolved")
+            .OrderBy(value => value.Id)
+            .ToListAsync();
+    }
+
+    public async Task<GovernanceAHelpReporter> GetReporterAsync(GovernanceAHelpTicket ticket)
+    {
+        await using var game = gameFactory();
+        return await game.Player.AsNoTracking()
+            .Where(value => value.UserId == ticket.ReporterSs14UserId)
+            .Select(value => new GovernanceAHelpReporter(
+                value.LastSeenUserName,
+                value.LinkedAccount == null ? null : (ulong?) value.LinkedAccount.DiscordId))
+            .SingleAsync();
+    }
+
     public async Task<GovernanceAHelpTicket> CreateAHelpAsync(ulong reporterDiscordId, ulong? targetDiscordId,
         int roundId, string summary)
     {
@@ -43,35 +64,29 @@ public sealed class ModerationGovernanceService(
                 throw new CourtRuleException("Раунд не найден.");
         }
         await using var governance = governanceFactory();
+        var activeStatuses = new[] { "open", "claimed", "waiting_player", "escalated_to_incident" };
+        if (await governance.AHelpTickets.AsNoTracking().AnyAsync(value =>
+                value.RoundId == roundId && value.ReporterSs14UserId == reporter.Ss14UserId &&
+                activeStatuses.Contains(value.Status)))
+            throw new CourtRuleException("У вас уже есть активный AHelp в этом раунде.");
+
+        await using var transaction = await governance.Database.BeginTransactionAsync();
         var now = DateTime.UtcNow;
         var ticket = governance.AHelpTickets.Add(new GovernanceAHelpTicket
         {
-            RoundId = roundId, ReporterUserId = reporter.Id, TargetUserId = target?.Id,
+            RoundId = roundId, ReporterUserId = reporter.Id, ReporterSs14UserId = reporter.Ss14UserId,
+            TargetUserId = target?.Id,
             Status = "open", Summary = summary, CreatedAt = now, UpdatedAt = now,
         }).Entity;
         await governance.SaveChangesAsync();
+        await governance.Database.ExecuteSqlInterpolatedAsync($"""
+            INSERT INTO governance.ahelp_messages(ticket_id, sender_ss14_user_id, body)
+            VALUES ({ticket.Id}, {reporter.Ss14UserId}, {summary})
+            """);
         AddAudit(governance, "ahelp.created", reporterDiscordId, "ahelp_ticket", ticket.Id.ToString(),
             new { round_id = roundId, target_user_id = target?.Id });
         await governance.SaveChangesAsync();
-        return ticket;
-    }
-
-    public async Task<GovernanceAHelpTicket> ClaimAHelpAsync(long ticketId, ulong responderDiscordId)
-    {
-        var responder = await community.RequireUserAsync(responderDiscordId);
-        await using var governance = governanceFactory();
-        var ticket = await governance.AHelpTickets.SingleOrDefaultAsync(value => value.Id == ticketId)
-            ?? throw new CourtRuleException("AHelp не найден.");
-        await RequireDutyCapabilityAsync(governance, responder.Id, ticket.RoundId, "moderation.freeze");
-        if (ticket.Status == "claimed" && ticket.ClaimedByUserId == responder.Id)
-            return ticket;
-        if (ticket.Status != "open")
-            throw new CourtRuleException("Этот AHelp уже взят или закрыт.");
-        ticket.ClaimedByUserId = responder.Id;
-        ticket.Status = "claimed";
-        ticket.UpdatedAt = DateTime.UtcNow;
-        AddAudit(governance, "ahelp.claimed", responderDiscordId, "ahelp_ticket", ticket.Id.ToString(), new { });
-        await governance.SaveChangesAsync();
+        await transaction.CommitAsync();
         return ticket;
     }
 
@@ -83,7 +98,7 @@ public sealed class ModerationGovernanceService(
         await using var governance = governanceFactory();
         var ticket = await governance.AHelpTickets.SingleOrDefaultAsync(value => value.Id == ticketId)
             ?? throw new CourtRuleException("AHelp не найден.");
-        await RequireDutyCapabilityAsync(governance, responder.Id, ticket.RoundId, "moderation.freeze");
+        await RequireDutyCapabilityAsync(governance, responder.Id, ticket.RoundId, "moderation.ahelp");
         if (ticket.ClaimedByUserId != responder.Id)
             throw new CourtRuleException("Изменять состояние может взявший AHelp дежурный.");
         ticket.Status = status;

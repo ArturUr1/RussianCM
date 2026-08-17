@@ -237,7 +237,8 @@ public sealed class GovernanceAHelpTicket
 {
     public long Id { get; set; }
     public int RoundId { get; set; }
-    public Guid ReporterUserId { get; set; }
+    public Guid? ReporterUserId { get; set; }
+    public Guid ReporterSs14UserId { get; set; }
     public Guid? TargetUserId { get; set; }
     public Guid? ClaimedByUserId { get; set; }
     public string Status { get; set; } = string.Empty;

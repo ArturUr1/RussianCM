@@ -115,7 +115,7 @@ if (governanceDoctor)
         "users", "rating_entries", "qualifications", "conflicts", "invitations",
         "court_cases", "court_participants", "court_statements", "jurors", "guilt_votes",
         "sentencing_votes", "friendships", "service_assignments", "punishment_executions",
-        "duty_sessions", "capability_grants", "ahelp_tickets", "live_incidents",
+        "duty_sessions", "capability_grants", "ahelp_tickets", "ahelp_messages", "live_incidents",
         "moderation_actions", "moderation_approvals", "event_proposals", "event_reviews",
         "event_sessions", "event_manifest_items", "event_actions", "leadership_overrides", "audit_events",
     };
@@ -125,14 +125,30 @@ if (governanceDoctor)
     if (missing.Length > 0)
         throw new InvalidOperationException($"Governance schema is incomplete: {string.Join(", ", missing)}");
     var applied = await governance.Database.GetAppliedMigrationsAsync();
-    if (!applied.Contains("20260817010000_FullGovernance"))
-        throw new InvalidOperationException("FullGovernance migration is not recorded as applied.");
+    if (!applied.Contains("20260817020000_InGameAHelp"))
+        throw new InvalidOperationException("InGameAHelp migration is not recorded as applied.");
+    var ahelpColumns = (await governance.Database.SqlQueryRaw<string>("""
+        SELECT column_name || ':' || is_nullable AS "Value"
+        FROM information_schema.columns
+        WHERE table_schema = 'governance' AND table_name = 'ahelp_tickets'
+          AND column_name IN ('reporter_user_id', 'reporter_ss14_user_id')
+        """).ToListAsync()).ToHashSet(StringComparer.Ordinal);
+    if (!ahelpColumns.SetEquals(["reporter_user_id:YES", "reporter_ss14_user_id:NO"]))
+        throw new InvalidOperationException("The in-game AHelp ticket identity contract is invalid.");
+    var immutableTrigger = await governance.Database.SqlQueryRaw<int>("""
+        SELECT count(*)::integer AS "Value"
+        FROM pg_trigger
+        WHERE tgrelid = 'governance.ahelp_messages'::regclass
+          AND tgname = 'ahelp_messages_immutable' AND tgenabled <> 'D'
+        """).SingleAsync();
+    if (immutableTrigger != 1)
+        throw new InvalidOperationException("The immutable AHelp transcript trigger is unavailable.");
     await using var game = CreateConfiguredDatabase();
     _ = await game.Player.AsNoTracking().CountAsync();
     _ = await game.RMCLinkedAccounts.AsNoTracking().CountAsync();
     var doctorSelection = new CandidateSelectionService(CreateGovernanceDatabase, CreateConfiguredDatabase);
     _ = await doctorSelection.SelectAsync("jury", 1, "doctor", "read-only", 1, [], null, TimeSpan.Zero);
-    Console.WriteLine($"Governance doctor OK: {requiredTables.Count} workflow tables, game identity tables, candidate query, latest migration.");
+    Console.WriteLine($"Governance doctor OK: {requiredTables.Count} workflow tables, in-game AHelp contract, game identity tables, candidate query, latest migration.");
     return;
 }
 

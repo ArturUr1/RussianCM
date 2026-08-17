@@ -1,4 +1,5 @@
 using Content.Server.Chat.Managers;
+using Content.Server.Administration.Systems;
 using Content.Server.Database;
 using Content.Server.EUI;
 using Content.Server.GameTicking;
@@ -28,17 +29,22 @@ public sealed class GovernanceDutySystem : EntitySystem
     [Dependency] private readonly GameTicker _ticker = default!;
     [Dependency] private readonly GovernanceManager _governance = default!;
     [Dependency] private readonly IPlayerManager _players = default!;
+    [Dependency] private readonly BwoinkSystem _bwoink = default!;
 
     private float _elapsed = float.MaxValue;
     private bool _checking;
     private readonly HashSet<long> _shownJuryInvitations = new();
+    private readonly HashSet<NetUserId> _ahelpAccess = new();
 
     public override void Update(float frameTime)
     {
         base.Update(frameTime);
 
         if (!_governance.Enabled || _ticker.RunLevel != GameRunLevel.InRound)
+        {
+            RevokeAHelpAccess();
             return;
+        }
 
         _elapsed += frameTime;
         var interval = Math.Clamp(_cfg.GetCVar(CCCVars.GovernanceDutyCheckSeconds), 10, 600);
@@ -59,6 +65,8 @@ public sealed class GovernanceDutySystem : EntitySystem
         {
             var observers = new List<NetUserId>();
             var connected = new List<NetUserId>();
+            var connectedSet = connected.ToHashSet();
+            _ahelpAccess.RemoveWhere(userId => !connectedSet.Contains(userId));
             foreach (var session in _players.Sessions)
             {
                 if (session.Status is not (SessionStatus.Connected or SessionStatus.InGame))
@@ -145,6 +153,15 @@ public sealed class GovernanceDutySystem : EntitySystem
                         expiryPenalty,
                         this),
                     session);
+            }
+
+            foreach (var session in _players.Sessions)
+            {
+                if (session.Status is not (SessionStatus.Connected or SessionStatus.InGame))
+                    continue;
+                var active = _governance.HasActiveDuty(session.UserId, _ticker.RoundId);
+                if (active ? _ahelpAccess.Add(session.UserId) : _ahelpAccess.Remove(session.UserId))
+                    RaiseNetworkEvent(new GovernanceAHelpAccessUpdated(active), session);
             }
         }
         catch (Exception exception)
@@ -233,7 +250,12 @@ public sealed class GovernanceDutySystem : EntitySystem
 
             if (kind == GovernanceInviteKind.ModerationDuty &&
                 response.Status == GovernanceDutyResponseStatus.Accepted)
+            {
                 await _governance.RefreshDutyAsync(player.UserId);
+                _ahelpAccess.Add(player.UserId);
+                RaiseNetworkEvent(new GovernanceAHelpAccessUpdated(true), player);
+                OpenAHelpQueue(player);
+            }
 
             if (kind == GovernanceInviteKind.Jury)
                 _shownJuryInvitations.Remove(invitationId);
@@ -252,6 +274,71 @@ public sealed class GovernanceDutySystem : EntitySystem
                 player,
                 Loc.GetString(ResponseLocale(kind, GovernanceDutyResponseStatus.Invalid)));
         }
+    }
+
+    public async Task<bool> CanUseAHelpAsync(ICommonSession player)
+    {
+        if (!_governance.Enabled || _ticker.RunLevel != GameRunLevel.InRound ||
+            player.AttachedEntity is not { } entity || !HasComp<GhostComponent>(entity))
+            return false;
+        return await _governance.AuthorizeAsync(player.UserId, _ticker.RoundId, "moderation.ahelp") != null;
+    }
+
+    public async Task<IReadOnlyList<GovernanceAHelpTicketInfo>> GetAHelpQueueAsync(ICommonSession player)
+    {
+        if (!await CanUseAHelpAsync(player))
+            return [];
+        return await _database.GetGovernanceAHelpQueueAsync(player.UserId, _ticker.RoundId);
+    }
+
+    public async Task<bool> ClaimAHelpAsync(ICommonSession player, long ticketId)
+    {
+        return await CanUseAHelpAsync(player) &&
+               await _database.ClaimGovernanceAHelpAsync(ticketId, player.UserId, _ticker.RoundId);
+    }
+
+    public async Task<bool> SetAHelpStatusAsync(ICommonSession player, long ticketId, string status)
+    {
+        return await CanUseAHelpAsync(player) &&
+               await _database.SetGovernanceAHelpStatusAsync(ticketId, player.UserId, _ticker.RoundId, status);
+    }
+
+    public async Task<bool> OpenAHelpChatAsync(ICommonSession player, long ticketId)
+    {
+        if (!await CanUseAHelpAsync(player))
+            return false;
+        var ticket = (await _database.GetGovernanceAHelpQueueAsync(player.UserId, _ticker.RoundId))
+            .SingleOrDefault(value => value.Id == ticketId && value.ClaimedByMe);
+        if (ticket == null)
+            return false;
+        var transcript = await _database.GetGovernanceAHelpTranscriptAsync(
+            ticketId,
+            player.UserId,
+            _ticker.RoundId);
+        _bwoink.OpenGovernanceAHelp(player, ticket.ReporterUserId, transcript);
+        return true;
+    }
+
+    public async void OpenAHelpQueue(ICommonSession player)
+    {
+        if (!await CanUseAHelpAsync(player))
+        {
+            _chat.DispatchServerMessage(player, Loc.GetString("governance-ahelp-access-denied"));
+            return;
+        }
+        _euis.OpenEui(new GovernanceAHelpQueueEui(this), player);
+    }
+
+    private void RevokeAHelpAccess()
+    {
+        if (_ahelpAccess.Count == 0)
+            return;
+        foreach (var userId in _ahelpAccess)
+        {
+            if (_players.TryGetSessionById(userId, out var session))
+                RaiseNetworkEvent(new GovernanceAHelpAccessUpdated(false), session);
+        }
+        _ahelpAccess.Clear();
     }
 
     private static string ResponseLocale(

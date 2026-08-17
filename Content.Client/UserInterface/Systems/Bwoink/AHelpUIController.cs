@@ -12,6 +12,7 @@ using Content.Client.Stylesheets;
 using Content.Client.UserInterface.Controls;
 using Content.Client.UserInterface.Systems.MenuBar.Widgets;
 using Content.Shared.Administration;
+using Content.Shared._RuMC14.Governance;
 using Content.Shared.CCVar;
 using Content.Shared.Input;
 using JetBrains.Annotations;
@@ -51,6 +52,7 @@ public sealed partial class AHelpUIController: UIController, IOnSystemChanged<Bw
     private bool _hasUnreadMHelp; // RMC14
     private bool _bwoinkSoundEnabled;
     private string? _aHelpSound;
+    private bool _governanceResponder;
 
     protected override string SawmillName => "c.s.go.es.bwoink";
 
@@ -60,6 +62,8 @@ public sealed partial class AHelpUIController: UIController, IOnSystemChanged<Bw
 
         SubscribeNetworkEvent<BwoinkDiscordRelayUpdated>(DiscordRelayUpdated);
         SubscribeNetworkEvent<BwoinkPlayerTypingUpdated>(PeopleTypingUpdated);
+        SubscribeNetworkEvent<GovernanceAHelpAccessUpdated>(GovernanceAccessUpdated);
+        SubscribeNetworkEvent<GovernanceAHelpOpenChannel>(GovernanceOpenChannel);
 
         _adminManager.AdminStatusUpdated += OnAdminStatusUpdated;
         _config.OnValueChanged(CCVars.AHelpSound, v => _aHelpSound = v, true);
@@ -172,7 +176,7 @@ public sealed partial class AHelpUIController: UIController, IOnSystemChanged<Bw
 
     public void EnsureUIHelper()
     {
-        var isAdmin = _adminManager.HasFlag(AdminFlags.Adminhelp);
+        var isAdmin = _adminManager.HasFlag(AdminFlags.Adminhelp) || _governanceResponder;
 
         if (UIHelper != null && UIHelper.IsAdmin == isAdmin)
             return;
@@ -282,7 +286,7 @@ public sealed partial class AHelpUIController: UIController, IOnSystemChanged<Bw
     // RMC14
     private void UpdateUnreadState()
     {
-        var isAdmin = _adminManager.HasFlag(AdminFlags.Adminhelp);
+        var isAdmin = _adminManager.HasFlag(AdminFlags.Adminhelp) || _governanceResponder;
         var isMentor = _staffHelp.IsMentor;
         var red = isAdmin && _hasUnreadAHelp || isMentor && _hasUnreadMHelp;
 
@@ -296,6 +300,22 @@ public sealed partial class AHelpUIController: UIController, IOnSystemChanged<Bw
             GameAHelpButton?.StyleClasses.Remove(MenuButton.StyleClassRedTopButton);
             LobbyAHelpButton?.StyleClasses.Remove(StyleNano.StyleClassButtonColorRed);
         }
+    }
+
+    private void GovernanceAccessUpdated(GovernanceAHelpAccessUpdated message, EntitySessionEventArgs args)
+    {
+        if (_governanceResponder == message.Active)
+            return;
+        _governanceResponder = message.Active;
+        EnsureUIHelper();
+        UpdateUnreadState();
+    }
+
+    private void GovernanceOpenChannel(GovernanceAHelpOpenChannel message, EntitySessionEventArgs args)
+    {
+        _governanceResponder = true;
+        EnsureUIHelper();
+        Open(message.ReporterUserId);
     }
 
     public void OnStateEntered(GameplayState state)

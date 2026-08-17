@@ -17,13 +17,6 @@ public sealed class ModerationGovernanceModule(
         await FollowupAsync($"AHelp №{ticket.Id} создан со статусом `open`.", ephemeral: true);
     });
 
-    [SlashCommand("взять", "Взять AHelp из очереди (только активный дежурный-наблюдатель)")]
-    public Task ClaimAsync(long ahelp) => ExecuteAsync(async () =>
-    {
-        var ticket = await moderation.ClaimAHelpAsync(ahelp, Context.User.Id);
-        await FollowupAsync($"AHelp №{ticket.Id} закреплён за вами.", ephemeral: true);
-    });
-
     [SlashCommand("статус", "Изменить состояние взятого AHelp")]
     public Task StatusAsync(long ahelp,
         [Choice("Открыт", "open")][Choice("Ожидание игрока", "waiting_player")][Choice("Решён", "resolved")] string status) => ExecuteAsync(async () =>

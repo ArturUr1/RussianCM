@@ -723,6 +723,7 @@ public sealed partial class ServerDbManager
                          """
                          WITH available(capability, minimum_qualification) AS (
                              VALUES
+                                 ('moderation.ahelp', 1),
                                  ('moderation.freeze', 1),
                                  ('moderation.request_explanation', 1),
                                  ('moderation.view_logs', 1),
