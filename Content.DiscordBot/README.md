@@ -39,7 +39,8 @@ runtime dependency and must not be started after this bot is deployed.
 
 ## Discord commands
 
-- `/суд жалоба` creates a PostgreSQL case and its public Discord thread.
+- `/суд жалоба` accepts the defendant's SS14 game nickname, resolves the linked
+  Discord identity from the game PostgreSQL, and creates the case and public thread.
 - `/суд защита`, `/суд свидетель-добавить`, and `/суд свидетельство` handle the
   public defense. Thread ACL allows only the parties and registered witnesses to
   write; jurors cannot discuss the case.

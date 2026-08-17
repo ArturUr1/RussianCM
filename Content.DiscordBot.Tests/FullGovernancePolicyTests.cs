@@ -24,4 +24,12 @@ public sealed class FullGovernancePolicyTests
         Assert.Throws<CourtRuleException>(() => EventGovernanceService.ParseManifest("admin.spawn:anything:1"));
         Assert.Throws<CourtRuleException>(() => EventGovernanceService.ParseManifest("event.spawn:anything:0"));
     }
+
+    [Test]
+    public void CourtDefendantNicknameIsTrimmedAndBounded()
+    {
+        Assert.That(CommunityCourtService.NormalizeGameNickname("  MarinePlayer  "), Is.EqualTo("MarinePlayer"));
+        Assert.Throws<CourtRuleException>(() => CommunityCourtService.NormalizeGameNickname("   "));
+        Assert.Throws<CourtRuleException>(() => CommunityCourtService.NormalizeGameNickname(new string('x', 65)));
+    }
 }

@@ -92,6 +92,25 @@ public sealed class CommunityCourtService(
         return courtCase;
     }
 
+    public async Task<GovernanceCourtCase> FileCaseByGameNicknameAsync(
+        ulong claimantDiscordId,
+        string defendantGameNickname,
+        int roundId,
+        string summary,
+        string evidenceReference)
+    {
+        var defendant = await RequireLinkedAccountByGameNicknameAsync(defendantGameNickname);
+        return await FileCaseAsync(claimantDiscordId, defendant.DiscordId, roundId, summary, evidenceReference);
+    }
+
+    public static string NormalizeGameNickname(string nickname)
+    {
+        nickname = nickname.Trim();
+        if (nickname.Length is < 1 or > 64)
+            throw new CourtRuleException("Игровой никнейм ответчика должен содержать от 1 до 64 символов.");
+        return nickname;
+    }
+
     public async Task<GovernanceCourtStatement> SubmitDefenseAsync(
         long caseId,
         ulong discordId,
@@ -692,6 +711,38 @@ public sealed class CommunityCourtService(
             .Where(value => value.DiscordId == discordId)
             .Select(value => new LinkedGameAccount(value.PlayerId, value.DiscordId, value.Player.LastSeenUserName))
             .SingleOrDefaultAsync() ?? throw new CourtRuleException("Discord-аккаунт не привязан к аккаунту SS14.");
+    }
+
+    private async Task<LinkedGameAccount> RequireLinkedAccountByGameNicknameAsync(string gameNickname)
+    {
+        gameNickname = NormalizeGameNickname(gameNickname);
+        var normalized = gameNickname.ToLower();
+        await using var game = gameFactory();
+        var matches = await game.Player.AsNoTracking()
+            .Where(value => value.LastSeenUserName.ToLower() == normalized)
+            .Select(value => new
+            {
+                value.UserId,
+                value.LastSeenUserName,
+                DiscordId = value.LinkedAccount == null ? null : (ulong?) value.LinkedAccount.DiscordId,
+            })
+            .Take(3)
+            .ToListAsync();
+
+        if (matches.Count == 0)
+            throw new CourtRuleException($"Игрок с никнеймом «{gameNickname}» не найден.");
+
+        var exactMatches = matches.Where(value => value.LastSeenUserName == gameNickname).ToArray();
+        var selected = exactMatches.Length == 1
+            ? exactMatches[0]
+            : matches.Count == 1
+                ? matches[0]
+                : throw new CourtRuleException("Найдено несколько игроков с таким никнеймом. Укажите его с точным регистром.");
+
+        if (selected.DiscordId == null)
+            throw new CourtRuleException($"Игрок «{selected.LastSeenUserName}» ещё не привязал Discord к аккаунту SS14.");
+
+        return new LinkedGameAccount(selected.UserId, selected.DiscordId.Value, selected.LastSeenUserName);
     }
 
     private static async Task<GovernanceUser> EnsureGovernanceUserAsync(GovernanceDbContext governance, LinkedGameAccount account)

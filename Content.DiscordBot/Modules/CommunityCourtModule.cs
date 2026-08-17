@@ -13,7 +13,7 @@ public sealed class CommunityCourtModule(
 {
     [SlashCommand("жалоба", "Подать жалобу после завершения раунда")]
     public async Task FileCaseAsync(
-        [Summary("ответчик", "Discord-пользователь, на которого подаётся жалоба")] IUser defendant,
+        [Summary("ответчик", "Игровой никнейм ответчика в SS14")] string defendant,
         [Summary("раунд", "ID завершённого раунда")] int round,
         [Summary("описание", "Описание нарушения (20–1500 символов)")] string summary,
         [Summary("файл", "Клип или иной файл доказательства")] IAttachment? attachment = null,
@@ -24,7 +24,7 @@ public sealed class CommunityCourtModule(
         {
             EnsureEnabled();
             var evidence = attachment?.Url ?? evidenceUrl ?? string.Empty;
-            var courtCase = await court.FileCaseAsync(Context.User.Id, defendant.Id, round, summary, evidence);
+            var courtCase = await court.FileCaseByGameNicknameAsync(Context.User.Id, defendant, round, summary, evidence);
             await discord.EnsureCaseThreadAsync(courtCase);
             await FollowupAsync($"Жалоба зарегистрирована как дело №{courtCase.Id}.", ephemeral: true);
         });
