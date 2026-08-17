@@ -30,6 +30,18 @@ public partial interface IServerDbManager
         string entityId,
         object payload,
         CancellationToken cancel = default);
+
+    Task<GovernanceModerationActionAuthorization?> AuthorizeGovernanceModerationActionAsync(
+        NetUserId actor,
+        NetUserId target,
+        int roundId,
+        long actionId,
+        string actionType,
+        CancellationToken cancel = default);
+
+    Task CompleteGovernanceModerationActionAsync(long actionId, CancellationToken cancel = default);
+
+    Task<int> GetGovernanceOpenAHelpCountAsync(CancellationToken cancel = default);
 }
 
 public sealed partial class ServerDbManager
@@ -181,5 +193,71 @@ public sealed partial class ServerDbManager
         command.Parameters.AddWithValue("entity_id", entityId);
         command.Parameters.AddWithValue("payload", JsonSerializer.Serialize(payload));
         await command.ExecuteNonQueryAsync(cancel);
+    }
+
+    public async Task<GovernanceModerationActionAuthorization?> AuthorizeGovernanceModerationActionAsync(
+        NetUserId actor,
+        NetUserId target,
+        int roundId,
+        long actionId,
+        string actionType,
+        CancellationToken cancel = default)
+    {
+        if (!_cfg.GetCVar(CCVars.DatabaseEngine).Equals("postgres", StringComparison.OrdinalIgnoreCase))
+            return null;
+        await using var connection = CreateGovernanceConnection();
+        await connection.OpenAsync(cancel);
+        await using var command = new NpgsqlCommand(
+            """
+            SELECT action.id, incident.id, action.action_type
+            FROM governance.moderation_actions AS action
+            JOIN governance.live_incidents AS incident ON incident.id = action.incident_id
+            JOIN governance.users AS actor_user ON actor_user.id = action.actor_user_id
+            JOIN governance.users AS target_user ON target_user.id = action.target_user_id
+            WHERE action.id = @action_id
+              AND action.action_type = @action_type
+              AND action.status = 'approved'
+              AND incident.status = 'active'
+              AND incident.round_id = @round_id
+              AND actor_user.ss14_user_id = @actor_id
+              AND target_user.ss14_user_id = @target_id
+              AND (SELECT count(*) FROM governance.moderation_approvals AS approval
+                   WHERE approval.action_id = action.id AND approval.decision = 'approve') >= action.required_approvals
+            """,
+            connection);
+        command.Parameters.AddWithValue("action_id", actionId);
+        command.Parameters.AddWithValue("action_type", actionType);
+        command.Parameters.AddWithValue("round_id", roundId);
+        command.Parameters.AddWithValue("actor_id", actor.UserId);
+        command.Parameters.AddWithValue("target_id", target.UserId);
+        await using var reader = await command.ExecuteReaderAsync(cancel);
+        return await reader.ReadAsync(cancel)
+            ? new GovernanceModerationActionAuthorization(reader.GetInt64(0), reader.GetInt64(1), reader.GetString(2))
+            : null;
+    }
+
+    public async Task CompleteGovernanceModerationActionAsync(long actionId, CancellationToken cancel = default)
+    {
+        if (!_cfg.GetCVar(CCVars.DatabaseEngine).Equals("postgres", StringComparison.OrdinalIgnoreCase))
+            return;
+        await using var connection = CreateGovernanceConnection();
+        await connection.OpenAsync(cancel);
+        await using var command = new NpgsqlCommand(
+            "UPDATE governance.moderation_actions SET status = 'executed', executed_at = now() WHERE id = @id AND status = 'approved'",
+            connection);
+        command.Parameters.AddWithValue("id", actionId);
+        await command.ExecuteNonQueryAsync(cancel);
+    }
+
+    public async Task<int> GetGovernanceOpenAHelpCountAsync(CancellationToken cancel = default)
+    {
+        if (!_cfg.GetCVar(CCVars.DatabaseEngine).Equals("postgres", StringComparison.OrdinalIgnoreCase))
+            return 0;
+        await using var connection = CreateGovernanceConnection();
+        await connection.OpenAsync(cancel);
+        await using var command = new NpgsqlCommand(
+            "SELECT count(*) FROM governance.ahelp_tickets WHERE status IN ('open', 'waiting_player')",
+            connection);
+        return Convert.ToInt32(await command.ExecuteScalarAsync(cancel));
     }
 }

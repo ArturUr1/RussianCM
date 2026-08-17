@@ -14,5 +14,13 @@
   "CourtAcceptReward": 10,
   "CourtDeclinePenalty": 15,
   "CourtExpiryPenalty": 20,
-  "CourtJuryReward": 15
+  "CourtJuryReward": 15,
+  "CourtFailurePenalty": 30,
+  "CourtFalseReportPenalty": 50,
+  "CourtSelectionCooldownHours": 24,
+  "CourtLeadershipRole": 123456789012345678,
+  "GovernanceChannel": 123456789012345678,
+  "EventReviewHours": 48,
+  "EventReviewers": 3,
+  "EventApprovalThreshold": 2
 }

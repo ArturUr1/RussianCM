@@ -434,14 +434,41 @@ public sealed partial class ServerDbManager
                          WHERE users.ss14_user_id = ANY(@online_users)
                            AND NOT users.is_governance_suspended
                            AND NOT EXISTS (
+                               SELECT 1 FROM governance.conflicts AS conflict
+                               WHERE conflict.user_id = users.id
+                                 AND (conflict.ends_at IS NULL OR conflict.ends_at > now())
+                                 AND (conflict.entity_type IS NULL OR
+                                      (conflict.entity_type = 'round' AND conflict.entity_id = @round_id_text))
+                           )
+                           AND NOT EXISTS (
                                SELECT 1 FROM governance.duty_sessions AS duty
                                WHERE duty.user_id = users.id AND duty.status = 'active'
                            )
                            AND NOT EXISTS (
+                               SELECT 1 FROM governance.event_sessions AS event
+                               WHERE event.director_user_id = users.id AND event.status = 'active' AND event.expires_at > now()
+                           )
+                           AND NOT EXISTS (
+                               SELECT 1 FROM governance.service_assignments AS assignment
+                               WHERE assignment.user_id = users.id AND assignment.track = 'moderation'
+                                 AND assignment.assigned_at > now() - interval '24 hours'
+                           )
+                           AND NOT EXISTS (
                                SELECT 1 FROM governance.invitations AS invitation
                                WHERE invitation.user_id = users.id
-                                 AND invitation.purpose = 'moderation_duty'
-                                 AND invitation.entity_id = @round_id_text
+                                 AND invitation.state = 'pending' AND invitation.expires_at > now()
+                           )
+                           AND NOT EXISTS (
+                               SELECT 1 FROM server_ban AS ban
+                               WHERE ban.player_user_id = users.ss14_user_id AND NOT ban.hidden
+                                 AND (ban.expiration_time IS NULL OR ban.expiration_time > now())
+                                 AND NOT EXISTS (SELECT 1 FROM server_unban AS unban WHERE unban.ban_id = ban.server_ban_id)
+                           )
+                           AND NOT EXISTS (
+                               SELECT 1 FROM server_role_ban AS ban
+                               WHERE ban.player_user_id = users.ss14_user_id AND NOT ban.hidden
+                                 AND (ban.expiration_time IS NULL OR ban.expiration_time > now())
+                                 AND NOT EXISTS (SELECT 1 FROM server_role_unban AS unban WHERE unban.ban_id = ban.server_role_ban_id)
                            )
                          ORDER BY random()
                          LIMIT @slots
@@ -500,6 +527,20 @@ public sealed partial class ServerDbManager
                 invitationId.ToString(),
                 new { purpose = "moderation_duty", round_id = roundId },
                 cancel);
+            await using (var assignment = new NpgsqlCommand(
+                             """
+                             INSERT INTO governance.service_assignments(
+                                 user_id, track, entity_type, entity_id, assigned_at)
+                             VALUES (@user_id, 'moderation', 'round', @round_id, now())
+                             ON CONFLICT (user_id, track, entity_type, entity_id) DO NOTHING
+                             """,
+                             connection,
+                             transaction))
+            {
+                assignment.Parameters.AddWithValue("user_id", candidate.GovernanceId);
+                assignment.Parameters.AddWithValue("round_id", roundId.ToString());
+                await assignment.ExecuteNonQueryAsync(cancel);
+            }
             result.Add(new GovernanceDutyInvitation(
                 invitationId,
                 new NetUserId(candidate.Ss14Id),
@@ -678,17 +719,32 @@ public sealed partial class ServerDbManager
             dutyExpiresAt = reader.GetDateTime(1);
         }
 
-        long capabilityId;
         await using (var capability = new NpgsqlCommand(
                          """
-                         INSERT INTO governance.capability_grants(
-                             user_id, capability, source_type, source_id, scope,
-                             issued_at, expires_at, idempotency_key)
-                         VALUES (
-                             @user_id, 'moderation.freeze', 'duty_session', @source_id,
-                             jsonb_build_object('round_id', @round_id), now(), @expires_at,
-                             @idempotency_key)
-                         RETURNING id
+                         WITH available(capability, minimum_qualification) AS (
+                             VALUES
+                                 ('moderation.freeze', 1),
+                                 ('moderation.request_explanation', 1),
+                                 ('moderation.view_logs', 1),
+                                 ('moderation.round_remove', 2)
+                         ), issued AS (
+                             INSERT INTO governance.capability_grants(
+                                 user_id, capability, source_type, source_id, scope,
+                                 issued_at, expires_at, idempotency_key)
+                             SELECT @user_id, available.capability, 'duty_session', @source_id,
+                                    jsonb_build_object('round_id', @round_id), now(), @expires_at,
+                                    'moderation-duty:' || @source_id || ':' || available.capability
+                             FROM available
+                             WHERE @qualification >= available.minimum_qualification
+                             RETURNING id, capability
+                         )
+                         INSERT INTO governance.audit_events(
+                             event_type, actor_type, actor_id, entity_type, entity_id, payload)
+                         SELECT 'capability.issued', 'ss14_server', @user_id::text,
+                                'capability_grant', issued.id::text,
+                                jsonb_build_object('source_type', 'duty_session', 'source_id', @source_id,
+                                                   'capability', issued.capability, 'round_id', @round_id)
+                         FROM issued
                          """,
                          connection,
                          transaction))
@@ -697,8 +753,8 @@ public sealed partial class ServerDbManager
             capability.Parameters.AddWithValue("source_id", dutyId.ToString());
             capability.Parameters.AddWithValue("round_id", roundId);
             capability.Parameters.AddWithValue("expires_at", dutyExpiresAt);
-            capability.Parameters.AddWithValue("idempotency_key", $"moderation-duty:{dutyId}:freeze");
-            capabilityId = Convert.ToInt64(await capability.ExecuteScalarAsync(cancel));
+            capability.Parameters.AddWithValue("qualification", qualification);
+            await capability.ExecuteNonQueryAsync(cancel);
         }
 
         await AppendDutyAuditAsync(
@@ -717,22 +773,7 @@ public sealed partial class ServerDbManager
             governanceUserId,
             "duty_session",
             dutyId.ToString(),
-            new { round_id = roundId, capability = "moderation.freeze" },
-            cancel);
-        await AppendDutyAuditAsync(
-            connection,
-            transaction,
-            "capability.issued",
-            governanceUserId,
-            "capability_grant",
-            capabilityId.ToString(),
-            new
-            {
-                source_type = "duty_session",
-                source_id = dutyId,
-                capability = "moderation.freeze",
-                round_id = roundId,
-            },
+            new { round_id = roundId, qualification },
             cancel);
 
         await transaction.CommitAsync(cancel);

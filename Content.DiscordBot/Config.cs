@@ -33,4 +33,20 @@ public sealed class Config
     public int CourtExpiryPenalty { get; set; } = 20;
 
     public int CourtJuryReward { get; set; } = 15;
+
+    public int CourtFailurePenalty { get; set; } = 30;
+
+    public int CourtFalseReportPenalty { get; set; } = 50;
+
+    public int CourtSelectionCooldownHours { get; set; } = 24;
+
+    public ulong CourtLeadershipRole { get; set; }
+
+    public ulong GovernanceChannel { get; set; }
+
+    public int EventReviewHours { get; set; } = 48;
+
+    public int EventReviewers { get; set; } = 3;
+
+    public int EventApprovalThreshold { get; set; } = 2;
 }

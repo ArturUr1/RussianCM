@@ -46,7 +46,9 @@ public sealed record CourtPolicy(
     int AcceptReward,
     int DeclinePenalty,
     int ExpiryPenalty,
-    int JuryReward)
+    int JuryReward,
+    int FailurePenalty,
+    TimeSpan SelectionCooldown)
 {
     public static CourtPolicy FromConfig(Config config)
     {
@@ -65,7 +67,9 @@ public sealed record CourtPolicy(
             config.CourtAcceptReward,
             config.CourtDeclinePenalty,
             config.CourtExpiryPenalty,
-            config.CourtJuryReward);
+            config.CourtJuryReward,
+            config.CourtFailurePenalty,
+            TimeSpan.FromHours(config.CourtSelectionCooldownHours));
     }
 }
 

@@ -5,9 +5,12 @@ cmd-governance-status-inactive = Активная DutySession для текущ�
 cmd-governance-status-active = DutySession #{$session} активна для раунда #{$round} до {$expires}.
 
 cmd-governance-freeze-description = Временно замораживает игрока в рамках активного инцидента Governance.
-cmd-governance-freeze-help = Использование: {$command} <игрок|UUID> <1-120 секунд> <incident-id> <причина>
+cmd-governance-freeze-help = Использование: {$command} <игрок|UUID> <1-120 секунд> <action-id> <причина>
 cmd-governance-freeze-denied = Действие отклонено сервером: {$reason}
-cmd-governance-freeze-success = {$target} заморожен на {$seconds} с. Инцидент: {$incident}.
+cmd-governance-freeze-success = {$target} заморожен на {$seconds} с. Одобренное действие: {$incident}.
+cmd-governance-round-remove-description = Удаляет игрока до конца раунда по одобренному действию Governance.
+cmd-governance-round-remove-help = Использование: {$command} <игрок|UUID> <action-id> <причина>
+cmd-governance-round-remove-success = {$target} удалён до конца раунда. Одобренное действие: {$action}.
 
 governance-duty-observer-only = Активная смена Community Governance допускает участие в раунде только наблюдателем.
 governance-duty-invite-title = Общественное дежурство RUCM
@@ -48,4 +51,5 @@ governance-denial-self-target = нельзя применить действие
 governance-denial-invalid-duration = длительность выходит за разрешённые пределы
 governance-denial-target-unavailable = цель недоступна или не имеет игрового тела
 governance-denial-already-frozen = цель уже заморожена другим механизмом
+governance-denial-action-not-approved = действие отсутствует, не набрало кворум либо не соответствует цели и раунду
 governance-denial-unknown = неизвестная ошибка проверки полномочий

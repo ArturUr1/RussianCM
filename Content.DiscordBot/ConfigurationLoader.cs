@@ -54,6 +54,14 @@ public static class ConfigurationLoader
         config.CourtDeclinePenalty = Int("COURT_JUROR_DECLINE_PENALTY") ?? config.CourtDeclinePenalty;
         config.CourtExpiryPenalty = Int("COURT_JUROR_EXPIRY_PENALTY") ?? config.CourtExpiryPenalty;
         config.CourtJuryReward = Int("COURT_JURY_REWARD") ?? config.CourtJuryReward;
+        config.CourtFailurePenalty = Int("COURT_JUROR_FAILURE_PENALTY") ?? config.CourtFailurePenalty;
+        config.CourtFalseReportPenalty = Int("COURT_FALSE_REPORT_PENALTY") ?? config.CourtFalseReportPenalty;
+        config.CourtSelectionCooldownHours = Int("COURT_SELECTION_COOLDOWN_HOURS") ?? config.CourtSelectionCooldownHours;
+        config.CourtLeadershipRole = ULong("COURT_LEADERSHIP_ROLE_ID") ?? config.CourtLeadershipRole;
+        config.GovernanceChannel = ULong("GOVERNANCE_CHANNEL_ID") ?? config.GovernanceChannel;
+        config.EventReviewHours = Int("EVENT_REVIEW_HOURS") ?? config.EventReviewHours;
+        config.EventReviewers = Int("EVENT_REVIEWERS") ?? config.EventReviewers;
+        config.EventApprovalThreshold = Int("EVENT_APPROVAL_THRESHOLD") ?? config.EventApprovalThreshold;
     }
 
     public static string? NormalizePostgresConnectionString(string? value)

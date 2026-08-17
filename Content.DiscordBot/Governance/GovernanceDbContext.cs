@@ -16,6 +16,22 @@ public sealed class GovernanceDbContext(DbContextOptions<GovernanceDbContext> op
     public DbSet<GovernanceGuiltVote> GuiltVotes => Set<GovernanceGuiltVote>();
     public DbSet<GovernanceSentencingVote> SentencingVotes => Set<GovernanceSentencingVote>();
     public DbSet<GovernanceAuditEvent> AuditEvents => Set<GovernanceAuditEvent>();
+    public DbSet<GovernanceCourtParticipant> CourtParticipants => Set<GovernanceCourtParticipant>();
+    public DbSet<GovernanceFriendship> Friendships => Set<GovernanceFriendship>();
+    public DbSet<GovernanceServiceAssignment> ServiceAssignments => Set<GovernanceServiceAssignment>();
+    public DbSet<GovernanceDutySession> DutySessions => Set<GovernanceDutySession>();
+    public DbSet<GovernanceCapabilityGrant> CapabilityGrants => Set<GovernanceCapabilityGrant>();
+    public DbSet<GovernancePunishmentExecution> PunishmentExecutions => Set<GovernancePunishmentExecution>();
+    public DbSet<GovernanceLeadershipOverride> LeadershipOverrides => Set<GovernanceLeadershipOverride>();
+    public DbSet<GovernanceAHelpTicket> AHelpTickets => Set<GovernanceAHelpTicket>();
+    public DbSet<GovernanceLiveIncident> LiveIncidents => Set<GovernanceLiveIncident>();
+    public DbSet<GovernanceModerationAction> ModerationActions => Set<GovernanceModerationAction>();
+    public DbSet<GovernanceModerationApproval> ModerationApprovals => Set<GovernanceModerationApproval>();
+    public DbSet<GovernanceEventProposal> EventProposals => Set<GovernanceEventProposal>();
+    public DbSet<GovernanceEventReview> EventReviews => Set<GovernanceEventReview>();
+    public DbSet<GovernanceEventSession> EventSessions => Set<GovernanceEventSession>();
+    public DbSet<GovernanceEventManifestItem> EventManifestItems => Set<GovernanceEventManifestItem>();
+    public DbSet<GovernanceEventAction> EventActions => Set<GovernanceEventAction>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -28,6 +44,30 @@ public sealed class GovernanceDbContext(DbContextOptions<GovernanceDbContext> op
         Configure<GovernanceGuiltVote>(modelBuilder, "guilt_votes");
         Configure<GovernanceSentencingVote>(modelBuilder, "sentencing_votes");
         Configure<GovernanceAuditEvent>(modelBuilder, "audit_events");
+        Configure<GovernanceFriendship>(modelBuilder, "friendships");
+        Configure<GovernanceServiceAssignment>(modelBuilder, "service_assignments");
+        Configure<GovernanceDutySession>(modelBuilder, "duty_sessions");
+        Configure<GovernanceCapabilityGrant>(modelBuilder, "capability_grants");
+        Configure<GovernancePunishmentExecution>(modelBuilder, "punishment_executions");
+        Configure<GovernanceLeadershipOverride>(modelBuilder, "leadership_overrides");
+        Configure<GovernanceAHelpTicket>(modelBuilder, "ahelp_tickets");
+        Configure<GovernanceLiveIncident>(modelBuilder, "live_incidents");
+        Configure<GovernanceModerationAction>(modelBuilder, "moderation_actions");
+        Configure<GovernanceEventProposal>(modelBuilder, "event_proposals");
+        Configure<GovernanceEventReview>(modelBuilder, "event_reviews");
+        Configure<GovernanceEventSession>(modelBuilder, "event_sessions");
+        Configure<GovernanceEventManifestItem>(modelBuilder, "event_manifest_items");
+        Configure<GovernanceEventAction>(modelBuilder, "event_actions");
+
+        var participant = modelBuilder.Entity<GovernanceCourtParticipant>();
+        participant.ToTable("court_participants", "governance");
+        participant.HasKey(value => new { value.CaseId, value.UserId });
+        SnakeCaseProperties(participant);
+
+        var approval = modelBuilder.Entity<GovernanceModerationApproval>();
+        approval.ToTable("moderation_approvals", "governance");
+        approval.HasKey(value => new { value.ActionId, value.ApproverUserId });
+        SnakeCaseProperties(approval);
 
         var qualification = modelBuilder.Entity<GovernanceQualification>();
         qualification.ToTable("qualifications", "governance");
@@ -45,10 +85,19 @@ public sealed class GovernanceDbContext(DbContextOptions<GovernanceDbContext> op
         modelBuilder.Entity<GovernanceRatingEntry>().HasIndex(value => value.IdempotencyKey).IsUnique();
         modelBuilder.Entity<GovernanceGuiltVote>().HasIndex(value => new { value.CaseId, value.JurorUserId }).IsUnique();
         modelBuilder.Entity<GovernanceSentencingVote>().HasIndex(value => new { value.CaseId, value.JurorUserId }).IsUnique();
+        modelBuilder.Entity<GovernanceFriendship>().HasIndex(value => new { value.UserId, value.FriendUserId }).IsUnique();
+        modelBuilder.Entity<GovernancePunishmentExecution>().HasIndex(value => value.CaseId).IsUnique();
+        modelBuilder.Entity<GovernanceModerationAction>().HasIndex(value => value.IdempotencyKey).IsUnique();
+        modelBuilder.Entity<GovernanceDutySession>().HasIndex(value => value.IdempotencyKey).IsUnique();
+        modelBuilder.Entity<GovernanceCapabilityGrant>().HasIndex(value => value.IdempotencyKey).IsUnique();
+        modelBuilder.Entity<GovernanceEventReview>().HasIndex(value => new { value.ProposalId, value.ReviewerUserId }).IsUnique();
         modelBuilder.Entity<GovernanceCourtCase>().Property(value => value.Version).IsConcurrencyToken();
         modelBuilder.Entity<GovernanceInvitation>().Property(value => value.Version).IsConcurrencyToken();
         modelBuilder.Entity<GovernanceRatingEntry>().Property(value => value.Metadata).HasColumnType("jsonb");
         modelBuilder.Entity<GovernanceAuditEvent>().Property(value => value.Payload).HasColumnType("jsonb");
+        modelBuilder.Entity<GovernanceEventAction>().Property(value => value.Payload).HasColumnType("jsonb");
+        modelBuilder.Entity<GovernanceEventProposal>().Property(value => value.Manifest).HasColumnType("jsonb");
+        modelBuilder.Entity<GovernanceCapabilityGrant>().Property(value => value.Scope).HasColumnType("jsonb");
     }
 
     private static void Configure<TEntity>(ModelBuilder modelBuilder, string table)

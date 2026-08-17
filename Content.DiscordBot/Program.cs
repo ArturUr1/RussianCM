@@ -20,6 +20,8 @@ var seedBoostyTiers = args.Contains("--seed-boosty-tiers");
 var listBoostyTiers = args.Contains("--list-boosty-tiers");
 var listTestPatrons = args.Contains("--list-test-patrons");
 var grantTestTierIndex = Array.IndexOf(args, "--grant-test-tier");
+var migrateOnly = args.Contains("--migrate-only");
+var governanceDoctor = args.Contains("--governance-doctor");
 var environmentFileIndex = Array.IndexOf(args, "--env-file");
 if (environmentFileIndex >= 0)
 {
@@ -96,6 +98,44 @@ if (grantTestTierIndex >= 0)
     return;
 }
 
+await using (var governance = CreateGovernanceDatabase())
+    await governance.Database.MigrateAsync();
+
+if (migrateOnly)
+{
+    Console.WriteLine("Governance migrations applied successfully.");
+    return;
+}
+
+if (governanceDoctor)
+{
+    await using var governance = CreateGovernanceDatabase();
+    var requiredTables = new HashSet<string>(StringComparer.Ordinal)
+    {
+        "users", "rating_entries", "qualifications", "conflicts", "invitations",
+        "court_cases", "court_participants", "court_statements", "jurors", "guilt_votes",
+        "sentencing_votes", "friendships", "service_assignments", "punishment_executions",
+        "duty_sessions", "capability_grants", "ahelp_tickets", "live_incidents",
+        "moderation_actions", "moderation_approvals", "event_proposals", "event_reviews",
+        "event_sessions", "event_manifest_items", "event_actions", "leadership_overrides", "audit_events",
+    };
+    var existingTables = (await governance.Database.SqlQueryRaw<string>(
+        "SELECT table_name AS \"Value\" FROM information_schema.tables WHERE table_schema = 'governance'").ToListAsync()).ToHashSet();
+    var missing = requiredTables.Except(existingTables).OrderBy(value => value).ToArray();
+    if (missing.Length > 0)
+        throw new InvalidOperationException($"Governance schema is incomplete: {string.Join(", ", missing)}");
+    var applied = await governance.Database.GetAppliedMigrationsAsync();
+    if (!applied.Contains("20260817010000_FullGovernance"))
+        throw new InvalidOperationException("FullGovernance migration is not recorded as applied.");
+    await using var game = CreateConfiguredDatabase();
+    _ = await game.Player.AsNoTracking().CountAsync();
+    _ = await game.RMCLinkedAccounts.AsNoTracking().CountAsync();
+    var doctorSelection = new CandidateSelectionService(CreateGovernanceDatabase, CreateConfiguredDatabase);
+    _ = await doctorSelection.SelectAsync("jury", 1, "doctor", "read-only", 1, [], null, TimeSpan.Zero);
+    Console.WriteLine($"Governance doctor OK: {requiredTables.Count} workflow tables, game identity tables, candidate query, latest migration.");
+    return;
+}
+
 if (string.IsNullOrWhiteSpace(token))
     throw new ArgumentException("No token found.");
 
@@ -106,19 +146,30 @@ config.Guild = guild;
 if (config.CourtEnabled && config.CourtChannel == 0)
     throw new ArgumentException("Community Court is enabled but CourtChannel is not configured.");
 
-await using (var governance = CreateGovernanceDatabase())
-    await governance.Database.MigrateAsync();
-
 await using CourtInstanceLock? courtInstanceLock = config.CourtEnabled
     ? await CourtInstanceLock.AcquireAsync(connectionString)
     : null;
 
-var court = new CommunityCourtService(CreateGovernanceDatabase, CreateConfiguredDatabase, CourtPolicy.FromConfig(config));
-var coordinator = new CourtDiscordCoordinator(client, court, config);
+var selection = new CandidateSelectionService(CreateGovernanceDatabase, CreateConfiguredDatabase);
+var court = new CommunityCourtService(
+    CreateGovernanceDatabase,
+    CreateConfiguredDatabase,
+    CourtPolicy.FromConfig(config),
+    selection);
+var community = new GovernanceCommunityService(CreateGovernanceDatabase, CreateConfiguredDatabase, config);
+var punishments = new CourtPunishmentService(CreateGovernanceDatabase, CreateConfiguredDatabase);
+var moderation = new ModerationGovernanceService(CreateGovernanceDatabase, CreateConfiguredDatabase, community);
+var events = new EventGovernanceService(CreateGovernanceDatabase, community, selection, config);
+var coordinator = new CourtDiscordCoordinator(client, court, punishments, events, moderation, config);
 var services = new ServiceCollection()
     .AddSingleton(client)
     .AddSingleton(config)
+    .AddSingleton(selection)
     .AddSingleton(court)
+    .AddSingleton(community)
+    .AddSingleton(punishments)
+    .AddSingleton(moderation)
+    .AddSingleton(events)
     .AddSingleton(coordinator)
     .BuildServiceProvider();
 

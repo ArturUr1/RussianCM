@@ -89,6 +89,9 @@ public sealed class GovernanceCourtCase
     public long? DiscordThreadId { get; set; }
     public long? VerdictMessageId { get; set; }
     public DateTime? PublishedAt { get; set; }
+    public DateTime? OverturnedAt { get; set; }
+    public string? OverturnReason { get; set; }
+    public DateTime? FalseReportAt { get; set; }
 }
 
 public sealed class GovernanceCourtStatement
@@ -145,6 +148,198 @@ public sealed class GovernanceAuditEvent
     public string? TargetId { get; set; }
     public string EntityType { get; set; } = string.Empty;
     public string EntityId { get; set; } = string.Empty;
+    public DateTime CreatedAt { get; set; }
+    public string Payload { get; set; } = "{}";
+}
+
+public sealed class GovernanceCourtParticipant
+{
+    public long CaseId { get; set; }
+    public Guid UserId { get; set; }
+    public string Role { get; set; } = string.Empty;
+    public DateTime AddedAt { get; set; }
+}
+
+public sealed class GovernanceFriendship
+{
+    public long Id { get; set; }
+    public Guid UserId { get; set; }
+    public Guid FriendUserId { get; set; }
+    public Guid RequestedByUserId { get; set; }
+    public DateTime CreatedAt { get; set; }
+    public DateTime? ConfirmedAt { get; set; }
+}
+
+public sealed class GovernanceServiceAssignment
+{
+    public long Id { get; set; }
+    public Guid UserId { get; set; }
+    public string Track { get; set; } = string.Empty;
+    public string EntityType { get; set; } = string.Empty;
+    public string EntityId { get; set; } = string.Empty;
+    public DateTime AssignedAt { get; set; }
+    public DateTime? CompletedAt { get; set; }
+    public DateTime? FailedAt { get; set; }
+}
+
+public sealed class GovernanceDutySession
+{
+    public long Id { get; set; }
+    public Guid UserId { get; set; }
+    public int RoundId { get; set; }
+    public DateTime StartedAt { get; set; }
+    public DateTime ExpiresAt { get; set; }
+    public DateTime? EndedAt { get; set; }
+    public string Status { get; set; } = string.Empty;
+    public short QualificationAtStart { get; set; }
+    public bool ObserverConfirmed { get; set; }
+    public string IdempotencyKey { get; set; } = string.Empty;
+    public int Version { get; set; }
+}
+
+public sealed class GovernanceCapabilityGrant
+{
+    public long Id { get; set; }
+    public Guid UserId { get; set; }
+    public string Capability { get; set; } = string.Empty;
+    public string SourceType { get; set; } = string.Empty;
+    public string SourceId { get; set; } = string.Empty;
+    public string Scope { get; set; } = "{}";
+    public DateTime IssuedAt { get; set; }
+    public DateTime ExpiresAt { get; set; }
+    public DateTime? RevokedAt { get; set; }
+    public string IdempotencyKey { get; set; } = string.Empty;
+}
+
+public sealed class GovernancePunishmentExecution
+{
+    public long Id { get; set; }
+    public long CaseId { get; set; }
+    public string SanctionType { get; set; } = string.Empty;
+    public string ExternalReference { get; set; } = string.Empty;
+    public DateTime ExecutedAt { get; set; }
+    public string IdempotencyKey { get; set; } = string.Empty;
+    public DateTime? RevertedAt { get; set; }
+}
+
+public sealed class GovernanceLeadershipOverride
+{
+    public long Id { get; set; }
+    public string EntityType { get; set; } = string.Empty;
+    public string EntityId { get; set; } = string.Empty;
+    public string Action { get; set; } = string.Empty;
+    public string Reason { get; set; } = string.Empty;
+    public long ActorDiscordId { get; set; }
+    public DateTime CreatedAt { get; set; }
+}
+
+public sealed class GovernanceAHelpTicket
+{
+    public long Id { get; set; }
+    public int RoundId { get; set; }
+    public Guid ReporterUserId { get; set; }
+    public Guid? TargetUserId { get; set; }
+    public Guid? ClaimedByUserId { get; set; }
+    public string Status { get; set; } = string.Empty;
+    public string Summary { get; set; } = string.Empty;
+    public DateTime CreatedAt { get; set; }
+    public DateTime UpdatedAt { get; set; }
+    public long? DiscordThreadId { get; set; }
+}
+
+public sealed class GovernanceLiveIncident
+{
+    public long Id { get; set; }
+    public int RoundId { get; set; }
+    public Guid TargetUserId { get; set; }
+    public Guid? ReporterUserId { get; set; }
+    public Guid CreatedByUserId { get; set; }
+    public string Type { get; set; } = string.Empty;
+    public string Summary { get; set; } = string.Empty;
+    public string Status { get; set; } = string.Empty;
+    public DateTime CreatedAt { get; set; }
+    public DateTime? ClosedAt { get; set; }
+    public long? CourtCaseId { get; set; }
+}
+
+public sealed class GovernanceModerationAction
+{
+    public long Id { get; set; }
+    public long IncidentId { get; set; }
+    public Guid ActorUserId { get; set; }
+    public Guid TargetUserId { get; set; }
+    public string ActionType { get; set; } = string.Empty;
+    public string Reason { get; set; } = string.Empty;
+    public int? DurationSeconds { get; set; }
+    public string Status { get; set; } = string.Empty;
+    public short RequiredApprovals { get; set; }
+    public DateTime CreatedAt { get; set; }
+    public DateTime? ExecutedAt { get; set; }
+    public string IdempotencyKey { get; set; } = string.Empty;
+}
+
+public sealed class GovernanceModerationApproval
+{
+    public long ActionId { get; set; }
+    public Guid ApproverUserId { get; set; }
+    public string Decision { get; set; } = string.Empty;
+    public DateTime CreatedAt { get; set; }
+}
+
+public sealed class GovernanceEventProposal
+{
+    public long Id { get; set; }
+    public Guid OwnerUserId { get; set; }
+    public string Title { get; set; } = string.Empty;
+    public string Description { get; set; } = string.Empty;
+    public int DurationMinutes { get; set; }
+    public string Manifest { get; set; } = "[]";
+    public string Status { get; set; } = string.Empty;
+    public DateTime CreatedAt { get; set; }
+    public DateTime ReviewDeadline { get; set; }
+    public long? DiscordThreadId { get; set; }
+}
+
+public sealed class GovernanceEventReview
+{
+    public long Id { get; set; }
+    public long ProposalId { get; set; }
+    public Guid ReviewerUserId { get; set; }
+    public string Decision { get; set; } = string.Empty;
+    public string Reasoning { get; set; } = string.Empty;
+    public DateTime SubmittedAt { get; set; }
+}
+
+public sealed class GovernanceEventSession
+{
+    public long Id { get; set; }
+    public long ProposalId { get; set; }
+    public Guid DirectorUserId { get; set; }
+    public int? RoundId { get; set; }
+    public string Status { get; set; } = string.Empty;
+    public DateTime StartedAt { get; set; }
+    public DateTime ExpiresAt { get; set; }
+    public DateTime? EndedAt { get; set; }
+}
+
+public sealed class GovernanceEventManifestItem
+{
+    public long Id { get; set; }
+    public long SessionId { get; set; }
+    public string Capability { get; set; } = string.Empty;
+    public string Resource { get; set; } = string.Empty;
+    public int MaxUses { get; set; }
+    public int UsedCount { get; set; }
+}
+
+public sealed class GovernanceEventAction
+{
+    public long Id { get; set; }
+    public long SessionId { get; set; }
+    public Guid ActorUserId { get; set; }
+    public string Capability { get; set; } = string.Empty;
+    public string Resource { get; set; } = string.Empty;
+    public string Status { get; set; } = string.Empty;
     public DateTime CreatedAt { get; set; }
     public string Payload { get; set; } = "{}";
 }

@@ -8,7 +8,8 @@ namespace Content.DiscordBot.Governance;
 public sealed class CommunityCourtService(
     Func<GovernanceDbContext> governanceFactory,
     Func<ServerDbContext> gameFactory,
-    CourtPolicy policy)
+    CourtPolicy policy,
+    CandidateSelectionService selection)
 {
     public CourtPolicy Policy => policy;
 
@@ -81,6 +82,9 @@ public sealed class CommunityCourtService(
             EvidenceReference = evidenceReference,
             CreatedAt = now,
         });
+        governance.CourtParticipants.AddRange(
+            new GovernanceCourtParticipant { CaseId = courtCase.Id, UserId = claimantUser.Id, Role = "claimant", AddedAt = now },
+            new GovernanceCourtParticipant { CaseId = courtCase.Id, UserId = defendantUser.Id, Role = "defendant", AddedAt = now });
         AddAudit(governance, "court.case_filed", "discord_user", claimantDiscordId.ToString(), courtCase.Id,
             new { round_id = roundId, defendant_user_id = defendantUser.Id });
         await governance.SaveChangesAsync();
@@ -125,6 +129,81 @@ public sealed class CommunityCourtService(
         AddAudit(governance, "court.defense_submitted", "discord_user", discordId.ToString(), caseId, new { });
         await governance.SaveChangesAsync();
         await transaction.CommitAsync();
+        return statement;
+    }
+
+    public async Task AddWitnessAsync(long caseId, ulong defendantDiscordId, ulong witnessDiscordId)
+    {
+        var defendant = await RequireLinkedAccountAsync(defendantDiscordId);
+        var witness = await RequireLinkedAccountAsync(witnessDiscordId);
+        await using var governance = governanceFactory();
+        await using var transaction = await governance.Database.BeginTransactionAsync(IsolationLevel.Serializable);
+        await LockCaseAsync(governance, caseId);
+        var defendantUser = await EnsureGovernanceUserAsync(governance, defendant);
+        var witnessUser = await EnsureGovernanceUserAsync(governance, witness);
+        var courtCase = await governance.CourtCases.SingleOrDefaultAsync(value => value.Id == caseId)
+            ?? throw new CourtRuleException("Дело не найдено.");
+        if (courtCase.DefendantUserId != defendantUser.Id)
+            throw new CourtRuleException("Свидетелей может приглашать только ответчик.");
+        if (courtCase.Status != CourtStatuses.Defense || courtCase.DefenseDeadline <= DateTime.UtcNow)
+            throw new CourtRuleException("Список свидетелей уже закрыт.");
+        if (witnessUser.Id == courtCase.ClaimantUserId || witnessUser.Id == courtCase.DefendantUserId)
+            throw new CourtRuleException("Сторона дела не может быть добавлена как свидетель.");
+        if (await governance.CourtParticipants.AnyAsync(value => value.CaseId == caseId && value.UserId == witnessUser.Id))
+            return;
+        governance.CourtParticipants.Add(new GovernanceCourtParticipant
+        {
+            CaseId = caseId,
+            UserId = witnessUser.Id,
+            Role = "witness",
+            AddedAt = DateTime.UtcNow,
+        });
+        governance.Conflicts.Add(new GovernanceConflict
+        {
+            UserId = witnessUser.Id,
+            EntityType = "court_case",
+            EntityId = caseId.ToString(),
+            Reason = "witness",
+            StartsAt = DateTime.UtcNow,
+            CreatedByType = "system",
+        });
+        AddAudit(governance, "court.witness_added", "discord_user", defendantDiscordId.ToString(), caseId,
+            new { witness_user_id = witnessUser.Id });
+        await governance.SaveChangesAsync();
+        await transaction.CommitAsync();
+    }
+
+    public async Task<GovernanceCourtStatement> SubmitWitnessStatementAsync(
+        long caseId,
+        ulong witnessDiscordId,
+        string body,
+        string? evidenceReference)
+    {
+        body = body.Trim();
+        if (body.Length is < 20 or > 3000)
+            throw new CourtRuleException("Показание должно содержать от 20 до 3000 символов.");
+        var account = await RequireLinkedAccountAsync(witnessDiscordId);
+        await using var governance = governanceFactory();
+        var user = await EnsureGovernanceUserAsync(governance, account);
+        var courtCase = await governance.CourtCases.SingleOrDefaultAsync(value => value.Id == caseId)
+            ?? throw new CourtRuleException("Дело не найдено.");
+        if (courtCase.Status != CourtStatuses.Defense || courtCase.DefenseDeadline <= DateTime.UtcNow)
+            throw new CourtRuleException("Приём свидетельских показаний завершён.");
+        if (!await governance.CourtParticipants.AnyAsync(value => value.CaseId == caseId && value.UserId == user.Id && value.Role == "witness"))
+            throw new CourtRuleException("Вы не зарегистрированы свидетелем по этому делу.");
+        if (await governance.CourtStatements.AnyAsync(value => value.CaseId == caseId && value.AuthorUserId == user.Id && value.Kind == "witness"))
+            throw new CourtRuleException("Ваше показание уже принято.");
+        var statement = governance.CourtStatements.Add(new GovernanceCourtStatement
+        {
+            CaseId = caseId,
+            AuthorUserId = user.Id,
+            Kind = "witness",
+            Body = body,
+            EvidenceReference = string.IsNullOrWhiteSpace(evidenceReference) ? null : evidenceReference.Trim(),
+            CreatedAt = DateTime.UtcNow,
+        }).Entity;
+        AddAudit(governance, "court.witness_statement_submitted", "discord_user", witnessDiscordId.ToString(), caseId, new { });
+        await governance.SaveChangesAsync();
         return statement;
     }
 
@@ -344,7 +423,17 @@ public sealed class CommunityCourtService(
                     .Where(value => value.CaseId == courtCase.Id && value.Active && !voted.Contains(value.UserId))
                     .ToListAsync();
                 foreach (var juror in missing)
+                {
                     juror.Active = false;
+                    await AppendRatingAsync(governance, juror.UserId, -policy.AcceptReward, "jury_accept_reward_rollback",
+                        courtCase.Id, $"court:{courtCase.Id}:jury-rollback:{juror.UserId}");
+                    await AppendRatingAsync(governance, juror.UserId, -policy.FailurePenalty, "jury_duty_failed",
+                        courtCase.Id, $"court:{courtCase.Id}:jury-failure:{juror.UserId}");
+                    var assignment = await governance.ServiceAssignments.SingleOrDefaultAsync(value =>
+                        value.UserId == juror.UserId && value.Track == "jury" && value.EntityType == "court_case" && value.EntityId == courtCase.Id.ToString());
+                    if (assignment != null)
+                        assignment.FailedAt = now;
+                }
                 if (courtCase.Status == CourtStatuses.Jury)
                     courtCase.GuiltDeadline = null;
                 else
@@ -421,7 +510,7 @@ public sealed class CommunityCourtService(
     {
         await using var governance = governanceFactory();
         return await governance.CourtCases.AsNoTracking()
-            .Where(value => value.Status == CourtStatuses.Verdict && value.PublishedAt == null)
+            .Where(value => (value.Status == CourtStatuses.Verdict || value.Status == CourtStatuses.Executed) && value.PublishedAt == null)
             .OrderBy(value => value.Id)
             .ToListAsync();
     }
@@ -450,6 +539,39 @@ public sealed class CommunityCourtService(
             .OrderBy(value => value.CreatedAt).ToListAsync();
     }
 
+    public async Task<bool> CanWriteThreadAsync(ulong threadId, ulong discordId)
+    {
+        await using var governance = governanceFactory();
+        var userId = await governance.Users.AsNoTracking()
+            .Where(value => value.DiscordUserId == checked((long) discordId))
+            .Select(value => (Guid?) value.Id)
+            .SingleOrDefaultAsync();
+        if (userId == null)
+            return false;
+        var caseId = await governance.CourtCases.AsNoTracking()
+            .Where(value => value.DiscordThreadId == checked((long) threadId))
+            .Select(value => (long?) value.Id)
+            .SingleOrDefaultAsync();
+        return caseId != null && await governance.CourtParticipants.AsNoTracking()
+            .AnyAsync(value => value.CaseId == caseId && value.UserId == userId);
+    }
+
+    public async Task<bool> IsCourtThreadAsync(ulong threadId)
+    {
+        await using var governance = governanceFactory();
+        return await governance.CourtCases.AsNoTracking()
+            .AnyAsync(value => value.DiscordThreadId == checked((long) threadId));
+    }
+
+    public async Task<bool> IsSentencingJurorAsync(long caseId, ulong discordId)
+    {
+        var account = await RequireLinkedAccountAsync(discordId);
+        await using var governance = governanceFactory();
+        var userId = await governance.Users.Where(value => value.Ss14UserId == account.PlayerId).Select(value => value.Id).SingleAsync();
+        return await governance.CourtCases.AnyAsync(value => value.Id == caseId && value.Status == CourtStatuses.Sentencing) &&
+               await governance.Jurors.AnyAsync(value => value.CaseId == caseId && value.UserId == userId && value.Active);
+    }
+
     public async Task<LinkedGameAccount> GetAccountAsync(Guid governanceUserId)
     {
         await using var governance = governanceFactory();
@@ -473,43 +595,12 @@ public sealed class CommunityCourtService(
             return;
 
         var used = await governance.Jurors.Where(value => value.CaseId == caseId).Select(value => value.UserId).ToListAsync();
-        var conflicts = await governance.Conflicts
-            .Where(value => value.EndsAt == null || value.EndsAt > DateTime.UtcNow)
-            .Where(value =>
-                value.RelatedUserId == courtCase.ClaimantUserId || value.RelatedUserId == courtCase.DefendantUserId ||
-                value.UserId == courtCase.ClaimantUserId || value.UserId == courtCase.DefendantUserId)
-            .Select(value => value.UserId == courtCase.ClaimantUserId || value.UserId == courtCase.DefendantUserId
-                ? value.RelatedUserId
-                : value.UserId)
-            .Where(value => value != null)
-            .Select(value => value!.Value)
-            .ToListAsync();
-        var average = await governance.Users.AverageAsync(value => (double?) value.CivicRatingCache) ?? 0;
-        var candidates = await governance.Users.AsNoTracking()
-            .Where(value => !value.IsGovernanceSuspended && value.CivicRatingCache >= average)
-            .Where(value => value.Id != courtCase.ClaimantUserId && value.Id != courtCase.DefendantUserId)
-            .Where(value => !used.Contains(value.Id) && !conflicts.Contains(value.Id))
-            .ToListAsync();
-        if (availableDiscordIds != null)
-            candidates = candidates.Where(value => availableDiscordIds.Contains((ulong) value.DiscordUserId)).ToList();
+        var participants = await governance.CourtParticipants.Where(value => value.CaseId == caseId).Select(value => value.UserId).ToListAsync();
+        var excluded = used.Concat(participants).Append(courtCase.ClaimantUserId).Append(courtCase.DefendantUserId).Distinct().ToArray();
+        var candidates = await selection.SelectAsync("jury", 1, "court_case", caseId.ToString(), slots,
+            excluded, availableDiscordIds, policy.SelectionCooldown);
 
-        var candidatePlayerIds = candidates.Select(value => value.Ss14UserId).ToArray();
-        await using (var game = gameFactory())
-        {
-            var now = DateTime.UtcNow;
-            var banned = await game.Ban.AsNoTracking()
-                .Where(value => value.PlayerUserId != null && candidatePlayerIds.Contains(value.PlayerUserId.Value))
-                .Where(value => !value.Hidden && value.Unban == null && (value.ExpirationTime == null || value.ExpirationTime > now))
-                .Select(value => value.PlayerUserId!.Value)
-                .Concat(game.RoleBan.AsNoTracking()
-                    .Where(value => value.PlayerUserId != null && candidatePlayerIds.Contains(value.PlayerUserId.Value))
-                    .Where(value => !value.Hidden && value.Unban == null && (value.ExpirationTime == null || value.ExpirationTime > now))
-                    .Select(value => value.PlayerUserId!.Value))
-                .Distinct().ToListAsync();
-            candidates = candidates.Where(value => !banned.Contains(value.Ss14UserId)).ToList();
-        }
-
-        foreach (var candidate in candidates.OrderBy(_ => Guid.NewGuid()).Take(slots))
+        foreach (var candidate in candidates)
         {
             var invitation = governance.Invitations.Add(new GovernanceInvitation
             {
@@ -528,6 +619,14 @@ public sealed class CommunityCourtService(
                 CaseId = caseId,
                 UserId = candidate.Id,
                 InvitationId = invitation.Id,
+                AssignedAt = DateTime.UtcNow,
+            });
+            governance.ServiceAssignments.Add(new GovernanceServiceAssignment
+            {
+                UserId = candidate.Id,
+                Track = "jury",
+                EntityType = "court_case",
+                EntityId = caseId.ToString(),
                 AssignedAt = DateTime.UtcNow,
             });
             AddAudit(governance, "court.juror_invited", "system", null, caseId,
@@ -609,6 +708,11 @@ public sealed class CommunityCourtService(
             ON CONFLICT (ss14_user_id) DO UPDATE
             SET discord_user_id = EXCLUDED.discord_user_id, updated_at = now()
             """);
+        await governance.Database.ExecuteSqlInterpolatedAsync($"""
+            INSERT INTO governance.qualifications(user_id, track, level)
+            SELECT id, 'jury', 1 FROM governance.users WHERE ss14_user_id = {account.PlayerId}
+            ON CONFLICT (user_id, track) DO NOTHING
+            """);
     }
 
     private static async Task LockCaseAsync(GovernanceDbContext governance, long caseId)
@@ -644,8 +748,14 @@ public sealed class CommunityCourtService(
             ? await governance.SentencingVotes.Where(value => value.CaseId == caseId).Select(value => value.JurorUserId).ToListAsync()
             : await governance.GuiltVotes.Where(value => value.CaseId == caseId).Select(value => value.JurorUserId).ToListAsync();
         foreach (var juror in jurors)
+        {
             await AppendRatingAsync(governance, juror, policy.JuryReward, "jury_duty_completed", caseId,
                 $"court:{caseId}:jury-complete:{juror}");
+            var assignment = await governance.ServiceAssignments.SingleOrDefaultAsync(value => value.UserId == juror &&
+                value.Track == "jury" && value.EntityType == "court_case" && value.EntityId == caseId.ToString());
+            if (assignment != null)
+                assignment.CompletedAt = DateTime.UtcNow;
+        }
     }
 
     private static async Task AppendRatingAsync(

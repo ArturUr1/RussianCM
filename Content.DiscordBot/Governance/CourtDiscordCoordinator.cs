@@ -6,6 +6,9 @@ namespace Content.DiscordBot.Governance;
 public sealed class CourtDiscordCoordinator(
     DiscordSocketClient client,
     CommunityCourtService court,
+    CourtPunishmentService punishments,
+    EventGovernanceService events,
+    ModerationGovernanceService moderation,
     Config config)
 {
     private HashSet<ulong>? _guildMembers;
@@ -41,9 +44,12 @@ public sealed class CourtDiscordCoordinator(
         await ValidateCourtChannelAsync();
         var available = await GuildMembersAsync();
         await court.ProcessDeadlinesAsync(available);
+        await events.ProcessDeadlinesAsync();
+        await punishments.ExecutePendingAsync();
         foreach (var courtCase in await court.CasesWithoutThreadsAsync())
             await EnsureCaseThreadAsync(courtCase);
         await NotifyJurorsAsync();
+        await NotifyEventReviewersAsync();
         await PublishVerdictsAsync();
     }
 
@@ -146,6 +152,82 @@ public sealed class CourtDiscordCoordinator(
             .Build();
     }
 
+    public async Task PublishLeadershipNoticeAsync(long caseId, string title, string description, Color color)
+    {
+        var courtCase = await court.GetCaseAsync(caseId);
+        var thread = await EnsureCaseThreadAsync(courtCase);
+        await thread.ModifyAsync(properties => properties.Archived = false);
+        await thread.ModifyAsync(properties => properties.Locked = false);
+        await thread.SendMessageAsync(embed: new EmbedBuilder()
+            .WithTitle(title).WithDescription(description).WithColor(color).WithCurrentTimestamp().Build());
+        await thread.ModifyAsync(properties =>
+        {
+            properties.Locked = true;
+            properties.Archived = true;
+        });
+    }
+
+    public async Task<IThreadChannel> EnsureEventThreadAsync(GovernanceEventProposal proposal)
+    {
+        if (proposal.DiscordThreadId is { } existing && client.GetChannel((ulong) existing) is SocketThreadChannel cached)
+            return cached;
+        var channelId = config.GovernanceChannel != 0 ? config.GovernanceChannel : config.CourtChannel;
+        var channel = client.GetChannel(channelId)
+            ?? throw new InvalidOperationException($"Governance channel {channelId} is unavailable.");
+        var manifest = System.Text.Json.JsonSerializer.Deserialize<EventManifestRequest[]>(proposal.Manifest) ?? [];
+        var manifestText = string.Join("\n", manifest.Select(value => $"• `{value.Capability}` / `{value.Resource}` × {value.MaxUses}"));
+        var embed = new EmbedBuilder().WithTitle($"EventProposal №{proposal.Id} • {proposal.Title}")
+            .WithDescription(proposal.Description).AddField("Продолжительность", $"{proposal.DurationMinutes} мин.", true)
+            .AddField("Рецензирование до", $"<t:{new DateTimeOffset(proposal.ReviewDeadline).ToUnixTimeSeconds()}:F>", true)
+            .AddField("Манифест", manifestText).WithColor(Color.Teal).WithCurrentTimestamp().Build();
+        IThreadChannel thread;
+        if (channel is SocketForumChannel forum)
+            thread = await forum.CreatePostAsync($"событие-{proposal.Id:000000}", ThreadArchiveDuration.OneWeek, null, string.Empty, embed);
+        else if (channel is SocketTextChannel text)
+        {
+            thread = await text.CreateThreadAsync($"событие-{proposal.Id:000000}", ThreadType.PublicThread, ThreadArchiveDuration.OneWeek);
+            await thread.SendMessageAsync(embed: embed);
+        }
+        else
+            throw new InvalidOperationException($"Governance channel {channelId} is not a forum or text channel.");
+        await events.AttachThreadAsync(proposal.Id, thread.Id);
+        return thread;
+    }
+
+    public async Task PublishEventStatusAsync(long proposalId, string message)
+    {
+        var proposal = await events.GetProposalAsync(proposalId);
+        var thread = await EnsureEventThreadAsync(proposal);
+        await thread.SendMessageAsync(embed: new EmbedBuilder().WithTitle($"Состояние EventProposal №{proposalId}")
+            .WithDescription(message).AddField("Статус", proposal.Status).WithColor(Color.Teal).WithCurrentTimestamp().Build());
+    }
+
+    public async Task<IThreadChannel?> EnsureAHelpThreadAsync(GovernanceAHelpTicket ticket)
+    {
+        if (config.GovernanceChannel == 0)
+            return null;
+        if (ticket.DiscordThreadId is { } existing && client.GetChannel((ulong) existing) is SocketThreadChannel cached)
+            return cached;
+        var channel = client.GetChannel(config.GovernanceChannel)
+            ?? throw new InvalidOperationException($"Governance channel {config.GovernanceChannel} is unavailable.");
+        var reporter = await court.GetAccountAsync(ticket.ReporterUserId);
+        var embed = new EmbedBuilder().WithTitle($"AHelp №{ticket.Id} • раунд {ticket.RoundId}")
+            .WithDescription(ticket.Summary).AddField("Заявитель", $"<@{reporter.DiscordId}>", true)
+            .AddField("Статус", ticket.Status, true).WithColor(Color.Gold).WithCurrentTimestamp().Build();
+        IThreadChannel thread;
+        if (channel is SocketForumChannel forum)
+            thread = await forum.CreatePostAsync($"ahelp-{ticket.Id:000000}", ThreadArchiveDuration.OneWeek, null, string.Empty, embed);
+        else if (channel is SocketTextChannel text)
+        {
+            thread = await text.CreateThreadAsync($"ahelp-{ticket.Id:000000}", ThreadType.PublicThread, ThreadArchiveDuration.OneWeek);
+            await thread.SendMessageAsync(embed: embed);
+        }
+        else
+            throw new InvalidOperationException($"Governance channel {config.GovernanceChannel} is not a forum or text channel.");
+        await moderation.AttachThreadAsync(ticket.Id, thread.Id);
+        return thread;
+    }
+
     private async Task NotifyJurorsAsync()
     {
         foreach (var (invitation, user) in await court.PendingNotificationsAsync())
@@ -164,6 +246,26 @@ public sealed class CourtDiscordCoordinator(
             catch (Exception exception)
             {
                 await Logger.Error($"Could not notify juror {user.DiscordUserId} for invitation {invitation.Id}", exception);
+            }
+        }
+    }
+
+    private async Task NotifyEventReviewersAsync()
+    {
+        foreach (var (invitation, user, proposal) in await events.PendingReviewNotificationsAsync())
+        {
+            try
+            {
+                IUser discordUser = client.GetUser((ulong) user.DiscordUserId) ??
+                    (IUser) await client.Rest.GetUserAsync((ulong) user.DiscordUserId);
+                var dm = await discordUser.CreateDMChannelAsync();
+                await dm.SendMessageAsync($"Вы назначены независимым рецензентом EventProposal №{proposal.Id} «{proposal.Title}». " +
+                    $"Отправьте `/событие рецензия` до <t:{new DateTimeOffset(proposal.ReviewDeadline).ToUnixTimeSeconds()}:F>.");
+                await court.MarkInvitationNotifiedAsync(invitation.Id);
+            }
+            catch (Exception exception)
+            {
+                await Logger.Error($"Could not notify event reviewer {user.DiscordUserId} for proposal {proposal.Id}", exception);
             }
         }
     }

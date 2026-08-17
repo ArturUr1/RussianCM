@@ -51,7 +51,7 @@ public sealed class GovernanceFreezeCommand : IConsoleCommand
             return;
         }
 
-        if (args.Length < 4 || !int.TryParse(args[1], out var seconds))
+        if (args.Length < 4 || !int.TryParse(args[1], out var seconds) || !long.TryParse(args[2], out var actionId))
         {
             shell.WriteError(Help);
             return;
@@ -60,10 +60,9 @@ public sealed class GovernanceFreezeCommand : IConsoleCommand
         if (!CommandUtils.TryGetSessionByUsernameOrId(shell, args[0], actor, out var target))
             return;
 
-        var incidentId = args[2];
         var reason = string.Join(' ', args[3..]);
         var system = IoCManager.Resolve<IEntityManager>().System<GovernanceSystem>();
-        var result = await system.TryFreezeAsync(actor, target, seconds, incidentId, reason);
+        var result = await system.TryFreezeAsync(actor, target, seconds, actionId, reason);
         if (!result.Allowed)
         {
             shell.WriteError(Loc.GetString("cmd-governance-freeze-denied", ("reason", DenialText(result.Denial))));
@@ -74,7 +73,7 @@ public sealed class GovernanceFreezeCommand : IConsoleCommand
             "cmd-governance-freeze-success",
             ("target", target.Name),
             ("seconds", seconds),
-            ("incident", incidentId)));
+            ("incident", actionId)));
     }
 
     private static string DenialText(GovernanceDenial denial)
@@ -90,8 +89,41 @@ public sealed class GovernanceFreezeCommand : IConsoleCommand
             GovernanceDenial.InvalidDuration => "governance-denial-invalid-duration",
             GovernanceDenial.TargetUnavailable => "governance-denial-target-unavailable",
             GovernanceDenial.AlreadyFrozen => "governance-denial-already-frozen",
+            GovernanceDenial.ActionNotApproved => "governance-denial-action-not-approved",
             _ => "governance-denial-unknown",
         };
         return Loc.GetString(key);
+    }
+}
+
+public sealed class GovernanceRoundRemoveCommand : IConsoleCommand
+{
+    public string Command => "governance_round_remove";
+    public string Description => Loc.GetString("cmd-governance-round-remove-description");
+    public string Help => Loc.GetString("cmd-governance-round-remove-help", ("command", Command));
+
+    public async void Execute(IConsoleShell shell, string argStr, string[] args)
+    {
+        if (shell.Player is not { } actor)
+        {
+            shell.WriteError(Loc.GetString("cmd-governance-player-only"));
+            return;
+        }
+        if (args.Length < 3 || !long.TryParse(args[1], out var actionId))
+        {
+            shell.WriteError(Help);
+            return;
+        }
+        if (!CommandUtils.TryGetSessionByUsernameOrId(shell, args[0], actor, out var target))
+            return;
+        var reason = string.Join(' ', args[2..]);
+        var system = IoCManager.Resolve<IEntityManager>().System<GovernanceSystem>();
+        var result = await system.TryRoundRemoveAsync(actor, target, actionId, reason);
+        if (!result.Allowed)
+        {
+            shell.WriteError(Loc.GetString("cmd-governance-freeze-denied", ("reason", result.Denial.ToString())));
+            return;
+        }
+        shell.WriteLine(Loc.GetString("cmd-governance-round-remove-success", ("target", target.Name), ("action", actionId)));
     }
 }

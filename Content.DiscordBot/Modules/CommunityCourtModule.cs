@@ -7,6 +7,7 @@ namespace Content.DiscordBot.Modules;
 [Group("суд", "Community Court RUCM")]
 public sealed class CommunityCourtModule(
     CommunityCourtService court,
+    CourtPunishmentService punishments,
     CourtDiscordCoordinator discord,
     Config config) : InteractionModuleBase<SocketInteractionContext>
 {
@@ -43,6 +44,37 @@ public sealed class CommunityCourtModule(
             var statement = await court.SubmitDefenseAsync(caseId, Context.User.Id, body, attachment?.Url ?? evidenceUrl);
             await discord.PublishStatementAsync(caseId, statement);
             await FollowupAsync("Защита принята и опубликована в треде дела.", ephemeral: true);
+        });
+    }
+
+    [SlashCommand("свидетель-добавить", "Пригласить свидетеля защиты по делу")]
+    public async Task AddWitnessAsync(
+        [Summary("дело", "Номер дела")] long caseId,
+        [Summary("свидетель", "Привязанный Discord-пользователь")] IUser witness)
+    {
+        await DeferAsync(ephemeral: true);
+        await ExecuteAsync(async () =>
+        {
+            EnsureEnabled();
+            await court.AddWitnessAsync(caseId, Context.User.Id, witness.Id);
+            await FollowupAsync("Свидетель добавлен. Он может отправить одно показание до окончания стадии защиты.", ephemeral: true);
+        });
+    }
+
+    [SlashCommand("свидетельство", "Подать свидетельское показание")]
+    public async Task WitnessStatementAsync(
+        [Summary("дело", "Номер дела")] long caseId,
+        [Summary("текст", "Показание (20–3000 символов)")] string body,
+        [Summary("файл", "Файл доказательства")] IAttachment? attachment = null,
+        [Summary("ссылка", "Ссылка на доказательство")] string? evidenceUrl = null)
+    {
+        await DeferAsync(ephemeral: true);
+        await ExecuteAsync(async () =>
+        {
+            EnsureEnabled();
+            var statement = await court.SubmitWitnessStatementAsync(caseId, Context.User.Id, body, attachment?.Url ?? evidenceUrl);
+            await discord.PublishStatementAsync(caseId, statement);
+            await FollowupAsync("Свидетельское показание принято и опубликовано.", ephemeral: true);
         });
     }
 
@@ -111,6 +143,25 @@ public sealed class CommunityCourtModule(
         {
             EnsureEnabled();
             await FollowupAsync(embed: await discord.BuildStatusEmbedAsync(caseId), ephemeral: true);
+        });
+    }
+
+    [SlashCommand("история", "Показать историю ответчика присяжному на стадии наказания")]
+    public async Task HistoryAsync([Summary("дело", "Номер дела")] long caseId)
+    {
+        await DeferAsync(ephemeral: true);
+        await ExecuteAsync(async () =>
+        {
+            EnsureEnabled();
+            var history = await punishments.GetSentencingHistoryAsync(caseId, Context.User.Id);
+            var text = history.Count == 0
+                ? "История наказаний и публичных замечаний пуста."
+                : string.Join("\n", history.Select(value =>
+                    $"• <t:{new DateTimeOffset(value.CreatedAt).ToUnixTimeSeconds()}:d> **{value.Kind}** ({(value.Active ? "активно" : "завершено")}): {value.Description}"));
+            if (text.Length > 3900)
+                text = text[..3900] + "…";
+            await FollowupAsync(embed: new EmbedBuilder().WithTitle($"История для назначения меры • дело №{caseId}")
+                .WithDescription(text).WithColor(Color.DarkBlue).Build(), ephemeral: true);
         });
     }
 

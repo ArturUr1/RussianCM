@@ -5,9 +5,12 @@ cmd-governance-status-inactive = No active DutySession was found for the current
 cmd-governance-status-active = DutySession #{$session} is active for round #{$round} until {$expires}.
 
 cmd-governance-freeze-description = Temporarily freezes a player under an active Governance incident.
-cmd-governance-freeze-help = Usage: {$command} <player|UUID> <1-120 seconds> <incident-id> <reason>
+cmd-governance-freeze-help = Usage: {$command} <player|UUID> <1-120 seconds> <action-id> <reason>
 cmd-governance-freeze-denied = The server denied this action: {$reason}
-cmd-governance-freeze-success = {$target} was frozen for {$seconds} seconds. Incident: {$incident}.
+cmd-governance-freeze-success = {$target} was frozen for {$seconds} seconds. Approved action: {$incident}.
+cmd-governance-round-remove-description = Removes a player until round end under an approved Governance action.
+cmd-governance-round-remove-help = Usage: {$command} <player|UUID> <action-id> <reason>
+cmd-governance-round-remove-success = {$target} was removed until round end. Approved action: {$action}.
 
 governance-duty-observer-only = Active Community Governance duty only allows participation in this round as an observer.
 governance-duty-invite-title = RUCM Community Duty
@@ -48,4 +51,5 @@ governance-denial-self-target = responders cannot target themselves
 governance-denial-invalid-duration = the duration is outside the allowed range
 governance-denial-target-unavailable = the target is unavailable or has no attached entity
 governance-denial-already-frozen = another mechanism has already frozen the target
+governance-denial-action-not-approved = the action is missing, lacks quorum, or does not match the target and round
 governance-denial-unknown = an unknown authorization error occurred

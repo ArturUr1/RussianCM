@@ -15,6 +15,11 @@ public sealed record GovernanceAuthorization(
     string Capability,
     DateTimeOffset ExpiresAt);
 
+public sealed record GovernanceModerationActionAuthorization(
+    long ActionId,
+    long IncidentId,
+    string ActionType);
+
 public sealed record GovernanceDutyInvitation(
     long Id,
     NetUserId UserId,
@@ -62,6 +67,7 @@ public enum GovernanceDenial
     InvalidInput,
     TargetUnavailable,
     AlreadyFrozen,
+    ActionNotApproved,
 }
 
 public readonly record struct GovernanceActionResult(GovernanceDenial Denial)

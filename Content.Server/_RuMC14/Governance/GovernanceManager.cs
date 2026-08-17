@@ -121,6 +121,28 @@ public sealed class GovernanceManager : IPostInjectInit
         }
     }
 
+    public async Task<GovernanceModerationActionAuthorization?> AuthorizeActionAsync(
+        NetUserId actor,
+        NetUserId target,
+        int roundId,
+        long actionId,
+        string actionType)
+    {
+        if (!Enabled)
+            return null;
+        try
+        {
+            return await _database.AuthorizeGovernanceModerationActionAsync(actor, target, roundId, actionId, actionType);
+        }
+        catch (Exception exception)
+        {
+            _log.Error($"Failed to authorize moderation action {actionId}: {exception}");
+            return null;
+        }
+    }
+
+    public Task CompleteActionAsync(long actionId) => _database.CompleteGovernanceModerationActionAsync(actionId);
+
     // ReSharper disable once AsyncVoidMethod
     private async void OnPlayerStatusChanged(object? sender, SessionStatusEventArgs args)
     {

@@ -4,9 +4,11 @@
 the existing SS14 account linking flow and Community Court. The game server and the
 bot are separate processes from this repository and share the game PostgreSQL.
 
-Community Court uses `GovernanceDbContext`; PostgreSQL is authoritative for cases,
-statements, invitations, jurors, votes, deadlines, ratings, audits, Discord thread
-IDs, and verdict publication. The bot applies the idempotent EF migration on startup.
+Community Governance uses `GovernanceDbContext`; PostgreSQL is authoritative for
+identity, immutable civic-rating entries, qualifications, conflicts, invitations,
+court workflow, duty sessions, capability grants, AHelp, live incidents, quorum,
+event review/manifests, audits, Discord thread IDs, and publication. The bot applies
+the idempotent EF migration on startup.
 It also keeps a session-level PostgreSQL advisory lock, so a second Court process
 exits before logging into Discord. Never run two processes with the same bot token.
 
@@ -27,6 +29,8 @@ owner-only `/аккаунт панель` command to create the existing linking
 
 ```powershell
 dotnet run --project Content.DiscordBot/Content.DiscordBot.csproj
+dotnet run --project Content.DiscordBot/Content.DiscordBot.csproj -- --env-file .env --migrate-only
+dotnet run --project Content.DiscordBot/Content.DiscordBot.csproj -- --env-file .env --governance-doctor
 ```
 
 `rmc.discord_token` is unrelated: it belongs to the in-game admin/mentor chat bridge
@@ -36,12 +40,42 @@ runtime dependency and must not be started after this bot is deployed.
 ## Discord commands
 
 - `/суд жалоба` creates a PostgreSQL case and its public Discord thread.
-- `/суд защита` records and publishes the defendant statement.
+- `/суд защита`, `/суд свидетель-добавить`, and `/суд свидетельство` handle the
+  public defense. Thread ACL allows only the parties and registered witnesses to
+  write; jurors cannot discuss the case.
 - `/суд присяжный` mirrors the in-game invitation response transactionally.
 - `/суд голос` records a secret guilt-phase vote.
 - `/суд наказание` records a secret sentencing-phase vote.
+- `/суд история` exposes non-secret prior sanctions only to active sentencing jurors.
 - `/суд статус` displays the current PostgreSQL state.
+- `/управление профиль|друг-добавить|друг-удалить` manages transparent selection
+  conflicts and shows independent jury/moderation/event qualifications.
+- `/дежурство ...` owns AHelp, LiveIncident, scoped moderation proposals and quorum.
+  `freeze` needs one approval; `round_remove` needs two independent approvals.
+- `/событие ...` implements proposal, three-reviewer decision, a bounded resource
+  manifest, temporary `event.*` capabilities, action audit, and automatic revocation.
+- `/руководство ...` is limited to the configured role or guild owner. Every override
+  has a reason and immutable audit row; court cancellation also reverses an executed
+  game ban, job ban, or warning.
 
 The scheduler advances defense deadlines, expires invitations, synchronizes in-game
 responses, selects conflict-free above-average jurors, replaces timed-out nonvoters,
-sends DMs, and publishes and archives final decisions.
+sends DMs, executes warnings/bans/job bans directly in the game tables, and publishes
+and archives final decisions. Guilty measures are capped at seven days. No Discord
+administrator chooses the verdict and there is no ordinary appeal path.
+
+## In-game enforcement
+
+Set `governance.enabled true` on the game server. Observer-only duty staffing scales
+with online population and the open AHelp backlog. Accepted duty creates a bounded
+`DutySession`; qualification level 1 grants freeze/explanation/log capabilities and
+level 2 also grants `moderation.round_remove`. The actual commands require a matching
+approved PostgreSQL action and target:
+
+```text
+governance_freeze <player> <seconds> <action-id> <reason>
+governance_round_remove <player> <action-id> <reason>
+```
+
+Round removal blocks reconnects until the round changes. Capabilities expire or are
+revoked with their duty/event session; they are not permanent admin permissions.

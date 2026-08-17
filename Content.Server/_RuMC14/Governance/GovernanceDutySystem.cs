@@ -69,7 +69,17 @@ public sealed class GovernanceDutySystem : EntitySystem
                     observers.Add(session.UserId);
             }
 
-            var target = Math.Clamp(_cfg.GetCVar(CCCVars.GovernanceDutyTargetResponders), 0, 16);
+            var onlineTarget = connected.Count switch
+            {
+                < 30 => 1,
+                < 70 => 2,
+                < 120 => 3,
+                _ => 4,
+            };
+            var backlog = await _database.GetGovernanceOpenAHelpCountAsync();
+            var backlogTarget = backlog == 0 ? 0 : 1 + (backlog - 1) / 5;
+            var configuredTarget = _cfg.GetCVar(CCCVars.GovernanceDutyTargetResponders);
+            var target = Math.Clamp(Math.Max(configuredTarget, onlineTarget + backlogTarget), 0, 16);
             var inviteSeconds = Math.Clamp(_cfg.GetCVar(CCCVars.GovernanceDutyInviteSeconds), 30, 600);
             var acceptReward = Math.Clamp(_cfg.GetCVar(CCCVars.GovernanceDutyAcceptReward), 0, 1000);
             var declinePenalty = Math.Clamp(_cfg.GetCVar(CCCVars.GovernanceDutyDeclinePenalty), 0, 1000);
