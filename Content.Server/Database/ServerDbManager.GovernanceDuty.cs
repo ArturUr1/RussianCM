@@ -287,13 +287,13 @@ public sealed partial class ServerDbManager
                                     jsonb_build_object('round_id', round_id, 'status', status)
                              FROM ended
                          ), revoked AS (
-                             UPDATE governance.capability_grants AS grant
+                             UPDATE governance.capability_grants AS capability_grant
                              SET revoked_at = now()
                              FROM ended AS duty
-                             WHERE grant.source_type = 'duty_session'
-                               AND grant.source_id = duty.id::text
-                               AND grant.revoked_at IS NULL
-                             RETURNING grant.id, grant.source_id, grant.capability
+                             WHERE capability_grant.source_type = 'duty_session'
+                               AND capability_grant.source_id = duty.id::text
+                               AND capability_grant.revoked_at IS NULL
+                             RETURNING capability_grant.id, capability_grant.source_id, capability_grant.capability
                          ), capability_audited AS (
                              INSERT INTO governance.audit_events(
                                  event_type, actor_type, entity_type, entity_id, payload)

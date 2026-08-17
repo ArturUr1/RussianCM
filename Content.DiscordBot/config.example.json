@@ -1,5 +1,18 @@
 {
   "Token": "PUT_TEST_DISCORD_BOT_TOKEN_HERE",
   "DatabaseString": "Host=localhost;Port=5432;Database=russiancm_local;Username=postgres;Password=postgres",
-  "Guild": 123456789012345678
+  "Guild": 123456789012345678,
+  "CourtEnabled": false,
+  "CourtChannel": 123456789012345678,
+  "CourtSchedulerSeconds": 30,
+  "CourtComplaintWindowHours": 72,
+  "CourtDefenseHours": 48,
+  "CourtVoteHours": 48,
+  "CourtInvitationHours": 24,
+  "CourtJurySize": 3,
+  "CourtDecisionThreshold": 2,
+  "CourtAcceptReward": 10,
+  "CourtDeclinePenalty": 15,
+  "CourtExpiryPenalty": 20,
+  "CourtJuryReward": 15
 }

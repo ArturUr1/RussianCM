@@ -1,6 +1,7 @@
 ﻿using System.Collections.Immutable;
 using System.Reflection;
 using Content.DiscordBot.Modules;
+using Content.DiscordBot.Governance;
 using Content.Server.Database;
 using Discord;
 using Discord.Commands;
@@ -10,7 +11,14 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Content.DiscordBot;
 
-public sealed class CommandHandler(DiscordSocketClient client, CommandService commands, InteractionService interaction, ServerDbContext db, ulong guild)
+public sealed class CommandHandler(
+    DiscordSocketClient client,
+    CommandService commands,
+    InteractionService interaction,
+    Func<ServerDbContext> databaseFactory,
+    CommunityCourtService court,
+    IServiceProvider services,
+    ulong guild)
 {
     private ImmutableDictionary<ulong, RMCPatronTier>? _patronTiers;
     private ImmutableArray<RMCPatronTier> _tierPriority;
@@ -20,6 +28,7 @@ public sealed class CommandHandler(DiscordSocketClient client, CommandService co
 
     public async Task InstallCommandsAsync()
     {
+        await using var db = databaseFactory();
         var patronTiers = await db.RMCPatronTiers.ToListAsync();
         _tierPriority = [..patronTiers.OrderBy(t => t.Priority)];
         _patronTiers = patronTiers.ToImmutableDictionary(t => t.DiscordRole, t => t);
@@ -27,11 +36,28 @@ public sealed class CommandHandler(DiscordSocketClient client, CommandService co
         client.MessageReceived += HandleCommandAsync;
         client.ButtonExecuted += HandleButtonAsync;
         client.ModalSubmitted += HandleModalAsync;
-        await commands.AddModulesAsync(Assembly.GetEntryAssembly(), null);
+        client.InteractionCreated += HandleInteractionAsync;
+        client.Ready += RegisterInteractionsAsync;
+        await commands.AddModulesAsync(Assembly.GetEntryAssembly(), services);
+        await interaction.AddModulesAsync(Assembly.GetEntryAssembly(), services);
 
         interaction.AddModalInfo<LinkAccountModal>();
 
         _refreshPatronsTask = Task.Run(async () => await RefreshPatrons());
+    }
+
+    private async Task RegisterInteractionsAsync()
+    {
+        await interaction.RegisterCommandsToGuildAsync(guild, true);
+        await Logger.Info($"Registered Discord interactions in guild {guild}.");
+    }
+
+    private async Task HandleInteractionAsync(SocketInteraction socketInteraction)
+    {
+        var context = new SocketInteractionContext(client, socketInteraction);
+        var result = await interaction.ExecuteCommandAsync(context, services);
+        if (!result.IsSuccess && result.Error != InteractionCommandError.UnknownCommand)
+            await Logger.Info($"Interaction failed for {socketInteraction.User.Id}: {result.ErrorReason}");
     }
 
     private async Task HandleCommandAsync(SocketMessage messageParam)
@@ -77,6 +103,7 @@ public sealed class CommandHandler(DiscordSocketClient client, CommandService co
 
     private async Task HandleModalAsync(SocketModal modal)
     {
+        await using var db = databaseFactory();
         switch (modal.Data.CustomId)
         {
             case "link-ss14-account":
@@ -91,6 +118,7 @@ public sealed class CommandHandler(DiscordSocketClient client, CommandService co
                 if (!Guid.TryParse(codeStr, out var code))
                 {
                     await modal.FollowupAsync($"{codeStr} isn't a valid code! Get one in-game from the lobby at the top left of the screen.", ephemeral: true);
+                    break;
                 }
 
                 var author = modal.User;
@@ -114,6 +142,7 @@ public sealed class CommandHandler(DiscordSocketClient client, CommandService co
                 if (codes.CreationTime < DateTime.UtcNow.Subtract(TimeSpan.FromDays(1)))
                 {
                     await modal.FollowupAsync($"Code {codeStr} were generated too long ago, join the game server and get another code before trying again.", ephemeral: true);
+                    break;
                 }
 
                 if (discord?.LinkedAccount is { } linked)
@@ -153,6 +182,7 @@ public sealed class CommandHandler(DiscordSocketClient client, CommandService co
 
                 db.ChangeTracker.DetectChanges();
                 await db.SaveChangesAsync();
+                await court.SyncLinkedAccountAsync(discord.LinkedAccount.Player.UserId, authorId);
 
                 var msg = $"Linked SS14 account with name {codes.Player.LastSeenUserName}";
                 if (codes.Player.Patron != null)
@@ -169,6 +199,7 @@ public sealed class CommandHandler(DiscordSocketClient client, CommandService co
         {
             try
             {
+                await using var db = databaseFactory();
                 var patrons = await db.RMCLinkedAccounts
                     .Include(l => l.Player)
                     .ThenInclude(p => p.Patron)
