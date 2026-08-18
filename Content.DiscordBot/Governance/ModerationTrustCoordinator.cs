@@ -6,6 +6,7 @@ namespace Content.DiscordBot.Governance;
 public sealed class ModerationTrustCoordinator(
     DiscordSocketClient client,
     ModerationTrustService trust,
+    ModerationQualificationService qualifications,
     CommunityCourtService court,
     Config config)
 {
@@ -36,6 +37,7 @@ public sealed class ModerationTrustCoordinator(
         await trust.ProcessDeadlinesAsync();
         var available = await GuildMembersAsync();
         await trust.EnsureAutomaticReviewsAsync(available);
+        await qualifications.ReconcileAsync();
         await NotifyReviewersAsync();
     }
 
