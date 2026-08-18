@@ -35,7 +35,12 @@ public sealed class GovernanceAHelpQueueEui(GovernanceDutySystem dutySystem) : B
         _ = HandleAsync(action);
     }
 
-    public Task RefreshFromSystemAsync() => RefreshAsync();
+    public async Task RefreshFromSystemAsync()
+    {
+        if (_busy)
+            return;
+        await RefreshAsync();
+    }
 
     private async Task HandleAsync(GovernanceAHelpQueueMessage message)
     {
@@ -83,8 +88,6 @@ public sealed class GovernanceAHelpQueueEui(GovernanceDutySystem dutySystem) : B
 
     private async Task RefreshAsync()
     {
-        if (_busy)
-            return;
         var queue = await dutySystem.GetAHelpQueueAsync(Player);
         _tickets = queue.Select(value => new GovernanceAHelpQueueItem(
             value.Id,
