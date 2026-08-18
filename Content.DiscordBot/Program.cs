@@ -186,6 +186,7 @@ var moderation = new ModerationGovernanceService(CreateGovernanceDatabase, Creat
 var moderationTrust = new ModerationTrustService(CreateGovernanceDatabase, community, selection, config);
 var events = new EventGovernanceService(CreateGovernanceDatabase, community, selection, config);
 var coordinator = new CourtDiscordCoordinator(client, court, punishments, events, moderation, config);
+var moderationTrustCoordinator = new ModerationTrustCoordinator(client, moderationTrust, court, config);
 var services = new ServiceCollection()
     .AddSingleton(client)
     .AddSingleton(config)
@@ -197,6 +198,7 @@ var services = new ServiceCollection()
     .AddSingleton(moderationTrust)
     .AddSingleton(events)
     .AddSingleton(coordinator)
+    .AddSingleton(moderationTrustCoordinator)
     .BuildServiceProvider();
 
 await client.LoginAsync(TokenType.Bot, token);
@@ -222,6 +224,7 @@ AppDomain.CurrentDomain.ProcessExit += (_, _) =>
 
 await handler.InstallCommandsAsync();
 var scheduler = Task.Run(() => coordinator.RunSchedulerAsync(shutdown.Token));
+var moderationTrustScheduler = Task.Run(() => moderationTrustCoordinator.RunSchedulerAsync(shutdown.Token));
 
 // Block this task until the program is closed.
 try
@@ -237,7 +240,7 @@ await client.StopAsync();
 await services.DisposeAsync();
 try
 {
-    await scheduler;
+    await Task.WhenAll(scheduler, moderationTrustScheduler);
 }
 catch (OperationCanceledException)
 {
