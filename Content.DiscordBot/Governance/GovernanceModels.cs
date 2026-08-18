@@ -287,6 +287,17 @@ public sealed class GovernanceModerationApproval
     public DateTime CreatedAt { get; set; }
 }
 
+public sealed class GovernanceModerationReview
+{
+    public long Id { get; set; }
+    public long ActionId { get; set; }
+    public Guid ReviewerUserId { get; set; }
+    public string Outcome { get; set; } = string.Empty;
+    public string Reasoning { get; set; } = string.Empty;
+    public DateTime SubmittedAt { get; set; }
+    public string IdempotencyKey { get; set; } = string.Empty;
+}
+
 public sealed class GovernanceEventProposal
 {
     public long Id { get; set; }
