@@ -31,17 +31,6 @@ public static class ModerationReviewOutcomes
     };
 }
 
-public sealed class GovernanceModerationReview
-{
-    public long Id { get; set; }
-    public long ActionId { get; set; }
-    public Guid ReviewerUserId { get; set; }
-    public string Outcome { get; set; } = string.Empty;
-    public string Reasoning { get; set; } = string.Empty;
-    public DateTime SubmittedAt { get; set; }
-    public string IdempotencyKey { get; set; } = string.Empty;
-}
-
 public sealed record ModerationTrustProfile(
     Guid UserId,
     int TrustScore,
@@ -50,7 +39,7 @@ public sealed record ModerationTrustProfile(
     int ReliabilityScore,
     int Confidence,
     int ReviewedActions,
-    int ReviewSamples,
+    int ReviewCount,
     int CompletedDuties,
     int FailedDuties,
     int SeriousInterventions);
