@@ -56,23 +56,38 @@ governance-denial-unknown = неизвестная ошибка проверки
 
 cmd-governance-ahelp-description = Открывает очередь AHelp для активного дежурного сообщества.
 cmd-governance-ahelp-help = Использование: {$command}
-governance-ahelp-title = Очередь AHelp RUCM
-governance-ahelp-description = Открытые обращения видны всем дежурным. Взятые обращения доступны только назначенному исполнителю.
+governance-ahelp-title = Дежурство RUCM — очередь обращений
+governance-ahelp-header = [bold][color=#6fa8dc]ЦЕНТР ОБРАЩЕНИЙ[/color][/bold]
+governance-ahelp-description = [color=#a0a0a0]Открытые обращения видны всем дежурным. После принятия обращение закрепляется за одним исполнителем. Выберите карточку слева — вводить номер вручную больше не нужно.[/color]
+governance-ahelp-counter = В очереди: {$count}
+governance-ahelp-list-title = ОЧЕРЕДЬ
+governance-ahelp-details-title = КАРТОЧКА ОБРАЩЕНИЯ
+governance-ahelp-select-ticket = Выберите обращение из очереди.
+governance-ahelp-ticket-card = #{$id} • {$reporter} • {$status} • {$time}
+    {$summary}
+governance-ahelp-ticket-details = [bold]AHelp #{$id}[/bold]
+    [color=#8ab4f8]Заявитель:[/color] {$reporter}
+    [color=#8ab4f8]Статус:[/color] {$status}
+    [color=#8ab4f8]Создан:[/color] {$time}
+
+    [bold]Сообщение[/bold]
+    {$summary}
 governance-ahelp-ticket-placeholder = Номер AHelp
 governance-ahelp-refresh = Обновить
-governance-ahelp-claim = Взять
+governance-ahelp-claim = Взять обращение
 governance-ahelp-open = Открыть чат
-governance-ahelp-waiting = Ждём игрока
-governance-ahelp-resolve = Решено
-governance-ahelp-empty = Открытых или взятых вами AHelp сейчас нет.
-governance-ahelp-status-open = открыт
-governance-ahelp-status-mine = взят вами
+governance-ahelp-waiting = Ожидаю ответа
+governance-ahelp-resolve = Завершить
+governance-ahelp-empty = [color=#8a8a8a]Сейчас нет открытых обращений или AHelp, закреплённых за вами.[/color]
+governance-ahelp-status-open = ОТКРЫТ
+governance-ahelp-status-mine = ВАШ
 governance-ahelp-ticket-invalid = Укажите корректный номер AHelp.
 governance-ahelp-claim-failed = AHelp уже взят, закрыт или недоступен в этой смене.
 governance-ahelp-open-failed = Открыть можно только взятый вами AHelp текущего раунда.
 governance-ahelp-status-failed = Изменить состояние может только назначенный дежурный.
 governance-ahelp-unavailable = Очередь AHelp временно недоступна. Попробуйте обновить её позже.
 governance-ahelp-access-denied = Очередь AHelp доступна только активному дежурному-наблюдателю.
+governance-ahelp-new-alert = [Дежурство RUCM] Новый AHelp #{$ticket} от {$reporter}. Открытых обращений: {$count}. Используйте governance_ahelp.
 governance-explanation-message = [bold]Дежурный сообщества {$responder} запросил у вас объяснение[/bold] (действие №{$action}). Ответьте в этом AHelp. Причина: {$reason}
 cmd-governance-explanation-description = Отправляет игроку утверждённый запрос объяснения через AHelp.
 cmd-governance-explanation-help = Использование: {$command} <игрок|UUID> <action-id> <причина>
