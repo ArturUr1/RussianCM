@@ -264,13 +264,16 @@ public sealed class CourtDiscordCoordinator(
                 IUser discordUser = client.GetUser((ulong) user.DiscordUserId) ??
                     (IUser) await client.Rest.GetUserAsync((ulong) user.DiscordUserId);
                 var dm = await discordUser.CreateDMChannelAsync();
-                await dm.SendMessageAsync($"Вы назначены независимым рецензентом EventProposal №{proposal.Id} «{proposal.Title}». " +
-                    $"Отправьте `/событие рецензия` до <t:{new DateTimeOffset(proposal.ReviewDeadline).ToUnixTimeSeconds()}:F>.");
-                await court.MarkInvitationNotifiedAsync(invitation.Id);
+                await dm.SendMessageAsync(
+                    $"Вас пригласили стать независимым рецензентом EventProposal №{proposal.Id} «{proposal.Title}». " +
+                    $"До <t:{new DateTimeOffset(invitation.ExpiresAt).ToUnixTimeSeconds()}:F> ответьте через `/событие приглашение`. " +
+                    $"Согласие +{config.EventReviewAcceptReward} Civic Rating, отказ -{config.EventReviewDeclinePenalty}, самоотвод без штрафа. " +
+                    "Только после согласия станет доступна `/событие рецензия`.");
+                await events.MarkInvitationNotifiedAsync(invitation.Id);
             }
             catch (Exception exception)
             {
-                await Logger.Error($"Could not notify event reviewer {user.DiscordUserId} for proposal {proposal.Id}", exception);
+                await Logger.Error($"Could not notify event reviewer candidate {user.DiscordUserId} for proposal {proposal.Id}", exception);
             }
         }
     }
