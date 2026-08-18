@@ -62,6 +62,12 @@ public static class ConfigurationLoader
         config.EventReviewHours = Int("EVENT_REVIEW_HOURS") ?? config.EventReviewHours;
         config.EventReviewers = Int("EVENT_REVIEWERS") ?? config.EventReviewers;
         config.EventApprovalThreshold = Int("EVENT_APPROVAL_THRESHOLD") ?? config.EventApprovalThreshold;
+        config.EventReviewInvitationHours = Int("EVENT_REVIEW_INVITATION_HOURS") ?? config.EventReviewInvitationHours;
+        config.EventReviewAcceptReward = Int("EVENT_REVIEW_ACCEPT_REWARD") ?? config.EventReviewAcceptReward;
+        config.EventReviewCompletionReward = Int("EVENT_REVIEW_COMPLETION_REWARD") ?? config.EventReviewCompletionReward;
+        config.EventReviewDeclinePenalty = Int("EVENT_REVIEW_DECLINE_PENALTY") ?? config.EventReviewDeclinePenalty;
+        config.EventReviewExpiryPenalty = Int("EVENT_REVIEW_EXPIRY_PENALTY") ?? config.EventReviewExpiryPenalty;
+        config.EventReviewFailurePenalty = Int("EVENT_REVIEW_FAILURE_PENALTY") ?? config.EventReviewFailurePenalty;
         config.ModerationReviewMinimumQualification = Int("MODERATION_REVIEW_MIN_QUALIFICATION") ?? config.ModerationReviewMinimumQualification;
         config.ModerationReviewInvitationHours = Int("MODERATION_REVIEW_INVITATION_HOURS") ?? config.ModerationReviewInvitationHours;
         config.ModerationReviewHours = Int("MODERATION_REVIEW_HOURS") ?? config.ModerationReviewHours;
