@@ -12,7 +12,7 @@ public sealed class ModerationQualificationService(
         List<(Guid UserId, ulong DiscordId, short Level)> users;
         await using (var governance = governanceFactory())
         {
-            users = await governance.Users.AsNoTracking()
+            var rows = await governance.Users.AsNoTracking()
                 .Join(governance.Qualifications.AsNoTracking().Where(value => value.Track == "moderation"),
                     user => user.Id,
                     qualification => qualification.UserId,
@@ -24,8 +24,8 @@ public sealed class ModerationQualificationService(
                         user.IsGovernanceSuspended,
                     })
                 .Where(value => !value.IsGovernanceSuspended)
-                .Select(value => ValueTuple.Create(value.Id, checked((ulong) value.DiscordUserId), value.Level))
                 .ToListAsync();
+            users = rows.Select(value => (value.Id, checked((ulong) value.DiscordUserId), value.Level)).ToList();
         }
 
         var changed = 0;
