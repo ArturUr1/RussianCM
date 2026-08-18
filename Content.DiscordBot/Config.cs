@@ -49,4 +49,22 @@ public sealed class Config
     public int EventReviewers { get; set; } = 3;
 
     public int EventApprovalThreshold { get; set; } = 2;
+
+    public int ModerationReviewMinimumQualification { get; set; } = 2;
+
+    public int ModerationReviewInvitationHours { get; set; } = 24;
+
+    public int ModerationReviewHours { get; set; } = 48;
+
+    public int ModerationReviewSelectionCooldownHours { get; set; } = 24;
+
+    public int ModerationReviewAcceptReward { get; set; } = 10;
+
+    public int ModerationReviewCompletionReward { get; set; } = 15;
+
+    public int ModerationReviewDeclinePenalty { get; set; } = 15;
+
+    public int ModerationReviewExpiryPenalty { get; set; } = 20;
+
+    public int ModerationReviewFailurePenalty { get; set; } = 30;
 }
