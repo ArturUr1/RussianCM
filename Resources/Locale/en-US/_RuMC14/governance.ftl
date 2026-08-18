@@ -56,23 +56,38 @@ governance-denial-unknown = an unknown authorization error occurred
 
 cmd-governance-ahelp-description = Opens the AHelp queue for an active community responder.
 cmd-governance-ahelp-help = Usage: {$command}
-governance-ahelp-title = RUCM AHelp Queue
-governance-ahelp-description = Open tickets are visible to all responders. Claimed tickets are restricted to their assigned responder.
+governance-ahelp-title = RUCM Duty — AHelp Queue
+governance-ahelp-header = [bold][color=#6fa8dc]COMMUNITY RESPONSE CENTER[/color][/bold]
+governance-ahelp-description = [color=#a0a0a0]Open requests are visible to every active responder. Once claimed, a request is assigned to one responder. Select a ticket card on the left; manual ticket IDs are no longer required.[/color]
+governance-ahelp-counter = In queue: {$count}
+governance-ahelp-list-title = QUEUE
+governance-ahelp-details-title = REQUEST DETAILS
+governance-ahelp-select-ticket = Select a request from the queue.
+governance-ahelp-ticket-card = #{$id} • {$reporter} • {$status} • {$time}
+    {$summary}
+governance-ahelp-ticket-details = [bold]AHelp #{$id}[/bold]
+    [color=#8ab4f8]Reporter:[/color] {$reporter}
+    [color=#8ab4f8]Status:[/color] {$status}
+    [color=#8ab4f8]Created:[/color] {$time}
+
+    [bold]Message[/bold]
+    {$summary}
 governance-ahelp-ticket-placeholder = AHelp number
 governance-ahelp-refresh = Refresh
-governance-ahelp-claim = Claim
+governance-ahelp-claim = Claim request
 governance-ahelp-open = Open chat
-governance-ahelp-waiting = Waiting for player
-governance-ahelp-resolve = Resolved
-governance-ahelp-empty = There are no open AHelps or AHelps assigned to you.
-governance-ahelp-status-open = open
-governance-ahelp-status-mine = assigned to you
+governance-ahelp-waiting = Waiting for reply
+governance-ahelp-resolve = Complete
+governance-ahelp-empty = [color=#8a8a8a]There are currently no open requests or AHelps assigned to you.[/color]
+governance-ahelp-status-open = OPEN
+governance-ahelp-status-mine = YOURS
 governance-ahelp-ticket-invalid = Enter a valid AHelp number.
 governance-ahelp-claim-failed = This AHelp was already claimed, closed, or is unavailable during this duty session.
 governance-ahelp-open-failed = You can only open an AHelp assigned to you in the current round.
 governance-ahelp-status-failed = Only the assigned responder can change this AHelp state.
 governance-ahelp-unavailable = The AHelp queue is temporarily unavailable. Try refreshing it later.
 governance-ahelp-access-denied = The AHelp queue is only available to an active responder observer.
+governance-ahelp-new-alert = [RUCM Duty] New AHelp #{$ticket} from {$reporter}. Open requests: {$count}. Use governance_ahelp.
 governance-explanation-message = [bold]Community responder {$responder} requested an explanation[/bold] (action #{$action}). Reply in this AHelp. Reason: {$reason}
 cmd-governance-explanation-description = Sends an approved explanation request to a player through AHelp.
 cmd-governance-explanation-help = Usage: {$command} <player|UUID> <action-id> <reason>
