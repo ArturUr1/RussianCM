@@ -11,10 +11,20 @@ public sealed class EventGovernanceModule(EventGovernanceService events, CourtDi
     {
         var proposal = await events.ProposeAsync(Context.User.Id, title, description, minutes, manifest);
         await discord.EnsureEventThreadAsync(proposal);
-        await FollowupAsync($"Заявка события №{proposal.Id} создана. Рецензентов: назначено автоматически.", ephemeral: true);
+        await FollowupAsync($"Заявка события №{proposal.Id} создана. Независимым кандидатам отправляются приглашения на рецензирование.", ephemeral: true);
     });
 
-    [SlashCommand("рецензия", "Отправить назначенную независимую рецензию")]
+    [SlashCommand("приглашение", "Ответить на приглашение стать рецензентом события")]
+    public Task InvitationAsync(
+        long proposal,
+        [Choice("Принять", "accepted")][Choice("Отказаться", "declined")][Choice("Самоотвод", "recused")] string response,
+        string? reason = null) => ExecuteAsync(async () =>
+    {
+        var state = await events.RespondToReviewInvitationAsync(proposal, Context.User.Id, response, reason);
+        await FollowupAsync($"Ответ на приглашение по заявке №{proposal}: `{state}`.", ephemeral: true);
+    });
+
+    [SlashCommand("рецензия", "Отправить принятую независимую рецензию")]
     public Task ReviewAsync(long proposal,
         [Choice("Одобрить", "approve")][Choice("Отклонить", "reject")] string decision,
         string reasoning) => ExecuteAsync(async () =>
