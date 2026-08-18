@@ -58,4 +58,41 @@ public sealed class FullGovernancePolicyTests
             ModerationReviewOutcomes.AccuracyWeight(ModerationReviewOutcomes.ReasonableButWrong),
             Is.LessThan(100));
     }
+
+    [Test]
+    public void RoundRemovalIsAlwaysSelectedForAudit()
+    {
+        Assert.That(ModerationTrustService.ShouldAudit(99, "round_remove", 0), Is.True);
+        Assert.That(ModerationTrustService.ShouldAudit(24, "freeze", 25), Is.True);
+        Assert.That(ModerationTrustService.ShouldAudit(25, "freeze", 25), Is.False);
+    }
+
+    [TestCase(4, 0, 750, 75, 100, 10, 0, 1)]
+    [TestCase(5, 1, 700, 75, 80, 10, 0, 2)]
+    [TestCase(15, 0, 810, 90, 90, 45, 5, 3)]
+    [TestCase(30, 0, 900, 95, 95, 80, 12, 4)]
+    public void ModerationQualificationUsesServiceHistoryAndTrust(
+        int completed,
+        int failed,
+        int trust,
+        int procedure,
+        int reliability,
+        int confidence,
+        int reviewedActions,
+        short expected)
+    {
+        var profile = new ModerationTrustProfile(
+            Guid.NewGuid(),
+            trust,
+            trust / 10,
+            procedure,
+            reliability,
+            confidence,
+            reviewedActions,
+            reviewedActions,
+            completed,
+            failed,
+            0);
+        Assert.That(ModerationQualificationPolicy.EligibleLevel(profile), Is.EqualTo(expected));
+    }
 }
