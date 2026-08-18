@@ -7,6 +7,7 @@ namespace Content.DiscordBot.Modules;
 [Group("дежурство", "AHelp и модерация сообщества")]
 public sealed class ModerationGovernanceModule(
     ModerationGovernanceService moderation,
+    ModerationTrustService moderationTrust,
     CourtDiscordCoordinator discord) : InteractionModuleBase<SocketInteractionContext>
 {
     [SlashCommand("ahelp", "Создать AHelp в общей очереди")]
@@ -55,6 +56,50 @@ public sealed class ModerationGovernanceModule(
     {
         await moderation.CloseIncidentAsync(incident, Context.User.Id);
         await FollowupAsync($"Инцидент №{incident} закрыт.", ephemeral: true);
+    });
+
+    [SlashCommand("доверие", "Показать Moderation Trust пользователя")]
+    public Task TrustAsync(IUser? user = null) => ExecuteAsync(async () =>
+    {
+        var target = user ?? Context.User;
+        var profile = await moderationTrust.GetProfileAsync(target.Id);
+        var embed = new EmbedBuilder()
+            .WithTitle($"Moderation Trust • {target.Username}")
+            .AddField("Итог", $"{profile.TrustScore}/1000", true)
+            .AddField("Уверенность", $"{profile.Confidence}%", true)
+            .AddField("Точность решений", $"{profile.DecisionAccuracy}%", true)
+            .AddField("Процедурность", $"{profile.ProceduralScore}%", true)
+            .AddField("Надёжность", $"{profile.ReliabilityScore}%", true)
+            .AddField("Проверено действий", profile.ReviewedActions, true)
+            .AddField("Дежурства", $"{profile.CompletedDuties} успешно / {profile.FailedDuties} сорвано", true)
+            .AddField("Серьёзные вмешательства", profile.SeriousInterventions, true)
+            .WithColor(profile.TrustScore >= 800 ? Color.Green : profile.TrustScore >= 600 ? Color.Gold : Color.Orange)
+            .Build();
+        await FollowupAsync(embed: embed, ephemeral: true);
+    });
+
+    [SlashCommand("аудит-ответ", "Ответить на приглашение проверить действие дежурного")]
+    public Task AuditInvitationAsync(
+        long action,
+        [Choice("Принять", "accepted")][Choice("Отказаться", "declined")][Choice("Самоотвод", "recused")] string response,
+        string? reason = null) => ExecuteAsync(async () =>
+    {
+        var state = await moderationTrust.RespondToInvitationAsync(action, Context.User.Id, response, reason);
+        await FollowupAsync($"Ответ на приглашение по действию №{action}: `{state}`.", ephemeral: true);
+    });
+
+    [SlashCommand("аудит", "Отправить независимую оценку действия дежурного")]
+    public Task AuditAsync(
+        long action,
+        [Choice("Корректно", "correct")]
+        [Choice("Разумно, но ошибочно", "reasonable_but_wrong")]
+        [Choice("Процедурная ошибка", "procedural_error")]
+        [Choice("Небрежность", "negligent")]
+        [Choice("Злоупотребление", "abuse")] string outcome,
+        string reasoning) => ExecuteAsync(async () =>
+    {
+        await moderationTrust.SubmitReviewAsync(action, Context.User.Id, outcome, reasoning);
+        await FollowupAsync($"Независимый аудит действия №{action} сохранён: `{outcome}`.", ephemeral: true);
     });
 
     private async Task ExecuteAsync(Func<Task> action)
