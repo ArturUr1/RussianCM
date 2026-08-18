@@ -50,3 +50,20 @@ public sealed record ModerationReviewAssignment(
     Guid ReviewerUserId,
     long ReviewerDiscordId,
     DateTime ExpiresAt);
+
+public sealed record ModerationReviewPacket(
+    long ActionId,
+    string ActionType,
+    string Reason,
+    int? DurationSeconds,
+    DateTime CreatedAt,
+    DateTime? ExecutedAt,
+    short RequiredApprovals,
+    int Approvals,
+    int Rejections,
+    long IncidentId,
+    string IncidentType,
+    string IncidentSummary,
+    int RoundId,
+    string IncidentStatus,
+    bool EscalatedToCourt);
