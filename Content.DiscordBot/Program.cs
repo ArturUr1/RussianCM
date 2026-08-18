@@ -116,7 +116,7 @@ if (governanceDoctor)
         "court_cases", "court_participants", "court_statements", "jurors", "guilt_votes",
         "sentencing_votes", "friendships", "service_assignments", "punishment_executions",
         "duty_sessions", "capability_grants", "ahelp_tickets", "ahelp_messages", "live_incidents",
-        "moderation_actions", "moderation_approvals", "event_proposals", "event_reviews",
+        "moderation_actions", "moderation_approvals", "moderation_reviews", "event_proposals", "event_reviews",
         "event_sessions", "event_manifest_items", "event_actions", "leadership_overrides", "audit_events",
     };
     var existingTables = (await governance.Database.SqlQueryRaw<string>(
@@ -125,8 +125,8 @@ if (governanceDoctor)
     if (missing.Length > 0)
         throw new InvalidOperationException($"Governance schema is incomplete: {string.Join(", ", missing)}");
     var applied = await governance.Database.GetAppliedMigrationsAsync();
-    if (!applied.Contains("20260817020000_InGameAHelp"))
-        throw new InvalidOperationException("InGameAHelp migration is not recorded as applied.");
+    if (!applied.Contains("20260818000000_ModerationTrust"))
+        throw new InvalidOperationException("ModerationTrust migration is not recorded as applied.");
     var ahelpColumns = (await governance.Database.SqlQueryRaw<string>("""
         SELECT column_name || ':' || is_nullable AS "Value"
         FROM information_schema.columns
@@ -143,12 +143,20 @@ if (governanceDoctor)
         """).SingleAsync();
     if (immutableTrigger != 1)
         throw new InvalidOperationException("The immutable AHelp transcript trigger is unavailable.");
+    var moderationReviewTrigger = await governance.Database.SqlQueryRaw<int>("""
+        SELECT count(*)::integer AS "Value"
+        FROM pg_trigger
+        WHERE tgrelid = 'governance.moderation_reviews'::regclass
+          AND tgname = 'moderation_reviews_immutable' AND tgenabled <> 'D'
+        """).SingleAsync();
+    if (moderationReviewTrigger != 1)
+        throw new InvalidOperationException("The immutable moderation review trigger is unavailable.");
     await using var game = CreateConfiguredDatabase();
     _ = await game.Player.AsNoTracking().CountAsync();
     _ = await game.RMCLinkedAccounts.AsNoTracking().CountAsync();
     var doctorSelection = new CandidateSelectionService(CreateGovernanceDatabase, CreateConfiguredDatabase);
     _ = await doctorSelection.SelectAsync("jury", 1, "doctor", "read-only", 1, [], null, TimeSpan.Zero);
-    Console.WriteLine($"Governance doctor OK: {requiredTables.Count} workflow tables, in-game AHelp contract, game identity tables, candidate query, latest migration.");
+    Console.WriteLine($"Governance doctor OK: {requiredTables.Count} workflow tables, AHelp and moderation review contracts, game identity tables, candidate query, latest migration.");
     return;
 }
 
@@ -175,6 +183,7 @@ var court = new CommunityCourtService(
 var community = new GovernanceCommunityService(CreateGovernanceDatabase, CreateConfiguredDatabase, config);
 var punishments = new CourtPunishmentService(CreateGovernanceDatabase, CreateConfiguredDatabase);
 var moderation = new ModerationGovernanceService(CreateGovernanceDatabase, CreateConfiguredDatabase, community);
+var moderationTrust = new ModerationTrustService(CreateGovernanceDatabase, community, selection, config);
 var events = new EventGovernanceService(CreateGovernanceDatabase, community, selection, config);
 var coordinator = new CourtDiscordCoordinator(client, court, punishments, events, moderation, config);
 var services = new ServiceCollection()
@@ -185,6 +194,7 @@ var services = new ServiceCollection()
     .AddSingleton(community)
     .AddSingleton(punishments)
     .AddSingleton(moderation)
+    .AddSingleton(moderationTrust)
     .AddSingleton(events)
     .AddSingleton(coordinator)
     .BuildServiceProvider();
