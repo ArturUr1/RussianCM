@@ -184,9 +184,10 @@ var community = new GovernanceCommunityService(CreateGovernanceDatabase, CreateC
 var punishments = new CourtPunishmentService(CreateGovernanceDatabase, CreateConfiguredDatabase);
 var moderation = new ModerationGovernanceService(CreateGovernanceDatabase, CreateConfiguredDatabase, community);
 var moderationTrust = new ModerationTrustService(CreateGovernanceDatabase, community, selection, config);
+var moderationQualifications = new ModerationQualificationService(CreateGovernanceDatabase, moderationTrust);
 var events = new EventGovernanceService(CreateGovernanceDatabase, community, selection, config);
 var coordinator = new CourtDiscordCoordinator(client, court, punishments, events, moderation, config);
-var moderationTrustCoordinator = new ModerationTrustCoordinator(client, moderationTrust, court, config);
+var moderationTrustCoordinator = new ModerationTrustCoordinator(client, moderationTrust, moderationQualifications, court, config);
 var services = new ServiceCollection()
     .AddSingleton(client)
     .AddSingleton(config)
@@ -196,6 +197,7 @@ var services = new ServiceCollection()
     .AddSingleton(punishments)
     .AddSingleton(moderation)
     .AddSingleton(moderationTrust)
+    .AddSingleton(moderationQualifications)
     .AddSingleton(events)
     .AddSingleton(coordinator)
     .AddSingleton(moderationTrustCoordinator)
