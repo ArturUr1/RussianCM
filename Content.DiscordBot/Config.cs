@@ -85,4 +85,8 @@ public sealed class Config
     public int ModerationReviewSchedulerSeconds { get; set; } = 30;
 
     public int ModerationReviewBatchSize { get; set; } = 5;
+
+    public int ModerationAppealReviewers { get; set; } = 3;
+
+    public int ModerationAppealWindowHours { get; set; } = 72;
 }
