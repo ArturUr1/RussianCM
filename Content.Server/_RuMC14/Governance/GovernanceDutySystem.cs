@@ -35,6 +35,7 @@ public sealed class GovernanceDutySystem : EntitySystem
     private bool _checking;
     private readonly HashSet<long> _shownJuryInvitations = new();
     private readonly HashSet<NetUserId> _ahelpAccess = new();
+    private readonly HashSet<long> _knownOpenAHelpTickets = new();
 
     public override void Update(float frameTime)
     {
@@ -43,6 +44,7 @@ public sealed class GovernanceDutySystem : EntitySystem
         if (!_governance.Enabled || _ticker.RunLevel != GameRunLevel.InRound)
         {
             RevokeAHelpAccess();
+            _knownOpenAHelpTickets.Clear();
             return;
         }
 
@@ -65,8 +67,6 @@ public sealed class GovernanceDutySystem : EntitySystem
         {
             var observers = new List<NetUserId>();
             var connected = new List<NetUserId>();
-            var connectedSet = connected.ToHashSet();
-            _ahelpAccess.RemoveWhere(userId => !connectedSet.Contains(userId));
             foreach (var session in _players.Sessions)
             {
                 if (session.Status is not (SessionStatus.Connected or SessionStatus.InGame))
@@ -76,6 +76,9 @@ public sealed class GovernanceDutySystem : EntitySystem
                 if (session.AttachedEntity is { } entity && HasComp<GhostComponent>(entity))
                     observers.Add(session.UserId);
             }
+
+            var connectedSet = connected.ToHashSet();
+            _ahelpAccess.RemoveWhere(userId => !connectedSet.Contains(userId));
 
             var onlineTarget = connected.Count switch
             {
@@ -163,6 +166,8 @@ public sealed class GovernanceDutySystem : EntitySystem
                 if (active ? _ahelpAccess.Add(session.UserId) : _ahelpAccess.Remove(session.UserId))
                     RaiseNetworkEvent(new GovernanceAHelpAccessUpdated(active), session);
             }
+
+            await NotifyOpenAHelpsAsync();
         }
         catch (Exception exception)
         {
@@ -171,6 +176,53 @@ public sealed class GovernanceDutySystem : EntitySystem
         finally
         {
             _checking = false;
+        }
+    }
+
+    private async Task NotifyOpenAHelpsAsync()
+    {
+        var responders = _players.Sessions
+            .Where(session => session.Status is SessionStatus.Connected or SessionStatus.InGame &&
+                              _ahelpAccess.Contains(session.UserId))
+            .ToArray();
+        if (responders.Length == 0)
+            return;
+
+        IReadOnlyList<GovernanceAHelpTicketInfo>? queue = null;
+        foreach (var responder in responders)
+        {
+            queue = await GetAHelpQueueAsync(responder);
+            if (queue.Count > 0)
+                break;
+        }
+
+        queue ??= [];
+        var open = queue.Where(ticket => ticket.Status == "open").ToArray();
+        var openIds = open.Select(ticket => ticket.Id).ToHashSet();
+        _knownOpenAHelpTickets.IntersectWith(openIds);
+        var fresh = open.Where(ticket => _knownOpenAHelpTickets.Add(ticket.Id)).ToArray();
+        if (fresh.Length == 0)
+            return;
+
+        foreach (var ticket in fresh)
+        {
+            var summary = ticket.Summary.Length > 180 ? ticket.Summary[..180] + "…" : ticket.Summary;
+            foreach (var responder in responders)
+            {
+                RaiseNetworkEvent(new GovernanceAHelpQueueChanged(
+                    ticket.Id,
+                    ticket.ReporterUserId,
+                    ticket.ReporterName,
+                    summary,
+                    open.Length), responder);
+                _chat.DispatchServerMessage(
+                    responder,
+                    Loc.GetString(
+                        "governance-ahelp-new-alert",
+                        ("ticket", ticket.Id),
+                        ("reporter", ticket.ReporterName),
+                        ("count", open.Length)));
+            }
         }
     }
 
@@ -255,6 +307,7 @@ public sealed class GovernanceDutySystem : EntitySystem
                 _ahelpAccess.Add(player.UserId);
                 RaiseNetworkEvent(new GovernanceAHelpAccessUpdated(true), player);
                 OpenAHelpQueue(player);
+                _elapsed = float.MaxValue;
             }
 
             if (kind == GovernanceInviteKind.Jury)
@@ -293,14 +346,23 @@ public sealed class GovernanceDutySystem : EntitySystem
 
     public async Task<bool> ClaimAHelpAsync(ICommonSession player, long ticketId)
     {
-        return await CanUseAHelpAsync(player) &&
-               await _database.ClaimGovernanceAHelpAsync(ticketId, player.UserId, _ticker.RoundId);
+        var claimed = await CanUseAHelpAsync(player) &&
+                      await _database.ClaimGovernanceAHelpAsync(ticketId, player.UserId, _ticker.RoundId);
+        if (claimed)
+        {
+            _knownOpenAHelpTickets.Remove(ticketId);
+            _elapsed = float.MaxValue;
+        }
+        return claimed;
     }
 
     public async Task<bool> SetAHelpStatusAsync(ICommonSession player, long ticketId, string status)
     {
-        return await CanUseAHelpAsync(player) &&
-               await _database.SetGovernanceAHelpStatusAsync(ticketId, player.UserId, _ticker.RoundId, status);
+        var changed = await CanUseAHelpAsync(player) &&
+                      await _database.SetGovernanceAHelpStatusAsync(ticketId, player.UserId, _ticker.RoundId, status);
+        if (changed)
+            _elapsed = float.MaxValue;
+        return changed;
     }
 
     public async Task<bool> OpenAHelpChatAsync(ICommonSession player, long ticketId)
