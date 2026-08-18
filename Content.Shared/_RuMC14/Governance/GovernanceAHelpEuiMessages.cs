@@ -62,3 +62,18 @@ public sealed class GovernanceAHelpOpenChannel(NetUserId reporterUserId) : Entit
 {
     public readonly NetUserId ReporterUserId = reporterUserId;
 }
+
+[Serializable, NetSerializable]
+public sealed class GovernanceAHelpQueueChanged(
+    long ticketId,
+    NetUserId reporterUserId,
+    string reporterName,
+    string summary,
+    int openCount) : EntityEventArgs
+{
+    public readonly long TicketId = ticketId;
+    public readonly NetUserId ReporterUserId = reporterUserId;
+    public readonly string ReporterName = reporterName;
+    public readonly string Summary = summary;
+    public readonly int OpenCount = openCount;
+}
