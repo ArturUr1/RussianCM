@@ -59,6 +59,53 @@ public sealed class ModerationTrustService(
             seriousInterventions);
     }
 
+    public static bool ShouldAudit(long actionId, string actionType, int samplePercent)
+    {
+        if (actionType == "round_remove")
+            return true;
+        samplePercent = Math.Clamp(samplePercent, 0, 100);
+        if (samplePercent == 0)
+            return false;
+        if (samplePercent == 100)
+            return true;
+        return actionId % 100 < samplePercent;
+    }
+
+    public async Task<IReadOnlyList<ModerationReviewAssignment>> EnsureAutomaticReviewsAsync(
+        IReadOnlySet<ulong>? availableDiscordIds = null)
+    {
+        var batchSize = Math.Clamp(config.ModerationReviewBatchSize, 1, 50);
+        await using var governance = governanceFactory();
+        var candidates = await governance.ModerationActions.AsNoTracking()
+            .Where(action => action.Status == "executed")
+            .Where(action => !governance.ModerationReviews.Any(review => review.ActionId == action.Id))
+            .Where(action => !governance.ServiceAssignments.Any(assignment =>
+                assignment.Track == "moderation" && assignment.EntityType == "moderation_action_review" &&
+                assignment.EntityId == action.Id.ToString() && assignment.CompletedAt == null && assignment.FailedAt == null))
+            .OrderByDescending(action => action.ExecutedAt ?? action.CreatedAt)
+            .Take(batchSize * 4)
+            .ToListAsync();
+
+        var result = new List<ModerationReviewAssignment>();
+        foreach (var action in candidates)
+        {
+            if (result.Count >= batchSize || !ShouldAudit(action.Id, action.ActionType, config.ModerationReviewSamplePercent))
+                continue;
+            try
+            {
+                result.Add(await AssignRandomReviewAsync(action.Id, availableDiscordIds));
+            }
+            catch (CourtRuleException exception) when (
+                exception.Message.Contains("нет независимого кандидата", StringComparison.OrdinalIgnoreCase) ||
+                exception.Message.Contains("уже назначен", StringComparison.OrdinalIgnoreCase) ||
+                exception.Message.Contains("уже прошло", StringComparison.OrdinalIgnoreCase))
+            {
+                // Temporary lack of eligible reviewers is expected. A later scheduler pass retries.
+            }
+        }
+        return result;
+    }
+
     public async Task<ModerationReviewAssignment> AssignRandomReviewAsync(
         long actionId,
         IReadOnlySet<ulong>? availableDiscordIds = null)
@@ -79,7 +126,16 @@ public sealed class ModerationTrustService(
             .Where(value => value.ActionId == actionId)
             .Select(value => value.ApproverUserId)
             .ToListAsync();
-        var excluded = approvers.Append(action.ActorUserId).Append(action.TargetUserId).ToHashSet();
+        var previousReviewers = await governance.ServiceAssignments.AsNoTracking()
+            .Where(value => value.Track == "moderation" && value.EntityType == "moderation_action_review" &&
+                            value.EntityId == actionId.ToString())
+            .Select(value => value.UserId)
+            .ToListAsync();
+        var excluded = approvers
+            .Concat(previousReviewers)
+            .Append(action.ActorUserId)
+            .Append(action.TargetUserId)
+            .ToHashSet();
         var candidates = await selection.SelectAsync(
             "moderation",
             checked((short) config.ModerationReviewMinimumQualification),
@@ -116,6 +172,60 @@ public sealed class ModerationTrustService(
             new { reviewer_user_id = reviewer.Id, invitation_expires_at = invitation.ExpiresAt });
         await governance.SaveChangesAsync();
         return new ModerationReviewAssignment(actionId, invitation.Id, reviewer.Id, reviewer.DiscordUserId, invitation.ExpiresAt);
+    }
+
+    public async Task<IReadOnlyList<(GovernanceInvitation Invitation, GovernanceUser User)>> PendingReviewNotificationsAsync()
+    {
+        await using var governance = governanceFactory();
+        return await governance.Invitations.AsNoTracking()
+            .Where(value => value.Purpose == "moderation_review" && value.State == InvitationStates.Pending &&
+                            value.DiscordNotifiedAt == null && value.ExpiresAt > DateTime.UtcNow)
+            .Join(governance.Users, invitation => invitation.UserId, user => user.Id,
+                (invitation, user) => ValueTuple.Create(invitation, user))
+            .ToListAsync();
+    }
+
+    public async Task MarkInvitationNotifiedAsync(long invitationId)
+    {
+        await using var governance = governanceFactory();
+        var invitation = await governance.Invitations.SingleAsync(value => value.Id == invitationId);
+        invitation.DiscordNotifiedAt = DateTime.UtcNow;
+        await governance.SaveChangesAsync();
+    }
+
+    public async Task<ModerationReviewPacket> GetReviewPacketAsync(long actionId, ulong reviewerDiscordId)
+    {
+        var reviewer = await community.RequireUserAsync(reviewerDiscordId);
+        await using var governance = governanceFactory();
+        var invitation = await governance.Invitations.AsNoTracking().SingleOrDefaultAsync(value =>
+            value.UserId == reviewer.Id && value.EntityType == "moderation_action" &&
+            value.EntityId == actionId.ToString() && value.Purpose == "moderation_review")
+            ?? throw new CourtRuleException("Вы не назначены рецензентом этого действия.");
+        if (invitation.State != InvitationStates.Accepted || invitation.ExpiresAt <= DateTime.UtcNow)
+            throw new CourtRuleException("Сначала примите действующее приглашение на аудит.");
+
+        var action = await governance.ModerationActions.AsNoTracking().SingleAsync(value => value.Id == actionId);
+        var incident = await governance.LiveIncidents.AsNoTracking().SingleAsync(value => value.Id == action.IncidentId);
+        var approvals = await governance.ModerationApprovals.AsNoTracking().CountAsync(value =>
+            value.ActionId == actionId && value.Decision == "approve");
+        var rejections = await governance.ModerationApprovals.AsNoTracking().CountAsync(value =>
+            value.ActionId == actionId && value.Decision == "reject");
+        return new ModerationReviewPacket(
+            action.Id,
+            action.ActionType,
+            action.Reason,
+            action.DurationSeconds,
+            action.CreatedAt,
+            action.ExecutedAt,
+            action.RequiredApprovals,
+            approvals,
+            rejections,
+            incident.Id,
+            incident.Type,
+            incident.Summary,
+            incident.RoundId,
+            incident.Status,
+            incident.CourtCaseId != null);
     }
 
     public async Task<string> RespondToInvitationAsync(
