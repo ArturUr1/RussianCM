@@ -27,6 +27,7 @@ public sealed class GovernanceDbContext(DbContextOptions<GovernanceDbContext> op
     public DbSet<GovernanceLiveIncident> LiveIncidents => Set<GovernanceLiveIncident>();
     public DbSet<GovernanceModerationAction> ModerationActions => Set<GovernanceModerationAction>();
     public DbSet<GovernanceModerationApproval> ModerationApprovals => Set<GovernanceModerationApproval>();
+    public DbSet<GovernanceModerationReview> ModerationReviews => Set<GovernanceModerationReview>();
     public DbSet<GovernanceEventProposal> EventProposals => Set<GovernanceEventProposal>();
     public DbSet<GovernanceEventReview> EventReviews => Set<GovernanceEventReview>();
     public DbSet<GovernanceEventSession> EventSessions => Set<GovernanceEventSession>();
@@ -53,6 +54,7 @@ public sealed class GovernanceDbContext(DbContextOptions<GovernanceDbContext> op
         Configure<GovernanceAHelpTicket>(modelBuilder, "ahelp_tickets");
         Configure<GovernanceLiveIncident>(modelBuilder, "live_incidents");
         Configure<GovernanceModerationAction>(modelBuilder, "moderation_actions");
+        Configure<GovernanceModerationReview>(modelBuilder, "moderation_reviews");
         Configure<GovernanceEventProposal>(modelBuilder, "event_proposals");
         Configure<GovernanceEventReview>(modelBuilder, "event_reviews");
         Configure<GovernanceEventSession>(modelBuilder, "event_sessions");
@@ -88,6 +90,8 @@ public sealed class GovernanceDbContext(DbContextOptions<GovernanceDbContext> op
         modelBuilder.Entity<GovernanceFriendship>().HasIndex(value => new { value.UserId, value.FriendUserId }).IsUnique();
         modelBuilder.Entity<GovernancePunishmentExecution>().HasIndex(value => value.CaseId).IsUnique();
         modelBuilder.Entity<GovernanceModerationAction>().HasIndex(value => value.IdempotencyKey).IsUnique();
+        modelBuilder.Entity<GovernanceModerationReview>().HasIndex(value => value.IdempotencyKey).IsUnique();
+        modelBuilder.Entity<GovernanceModerationReview>().HasIndex(value => new { value.ActionId, value.ReviewerUserId }).IsUnique();
         modelBuilder.Entity<GovernanceDutySession>().HasIndex(value => value.IdempotencyKey).IsUnique();
         modelBuilder.Entity<GovernanceCapabilityGrant>().HasIndex(value => value.IdempotencyKey).IsUnique();
         modelBuilder.Entity<GovernanceEventReview>().HasIndex(value => new { value.ProposalId, value.ReviewerUserId }).IsUnique();
