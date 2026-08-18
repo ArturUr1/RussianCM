@@ -36,6 +36,7 @@ public sealed class GovernanceDutySystem : EntitySystem
     private readonly HashSet<long> _shownJuryInvitations = new();
     private readonly HashSet<NetUserId> _ahelpAccess = new();
     private readonly HashSet<long> _knownOpenAHelpTickets = new();
+    private readonly HashSet<GovernanceAHelpQueueEui> _ahelpEuis = new();
 
     public override void Update(float frameTime)
     {
@@ -182,7 +183,7 @@ public sealed class GovernanceDutySystem : EntitySystem
     private async Task NotifyOpenAHelpsAsync()
     {
         var responders = _players.Sessions
-            .Where(session => session.Status is SessionStatus.Connected or SessionStatus.InGame &&
+            .Where(session => (session.Status is SessionStatus.Connected or SessionStatus.InGame) &&
                               _ahelpAccess.Contains(session.UserId))
             .ToArray();
         if (responders.Length == 0)
@@ -224,6 +225,24 @@ public sealed class GovernanceDutySystem : EntitySystem
                         ("count", open.Length)));
             }
         }
+
+        await RefreshAHelpEuisAsync();
+    }
+
+    public void RegisterAHelpEui(GovernanceAHelpQueueEui eui)
+    {
+        _ahelpEuis.Add(eui);
+    }
+
+    public void UnregisterAHelpEui(GovernanceAHelpQueueEui eui)
+    {
+        _ahelpEuis.Remove(eui);
+    }
+
+    private async Task RefreshAHelpEuisAsync()
+    {
+        foreach (var eui in _ahelpEuis.ToArray())
+            await eui.RefreshFromSystemAsync();
     }
 
     public async Task RespondToInvitationAsync(
@@ -352,6 +371,7 @@ public sealed class GovernanceDutySystem : EntitySystem
         {
             _knownOpenAHelpTickets.Remove(ticketId);
             _elapsed = float.MaxValue;
+            await RefreshAHelpEuisAsync();
         }
         return claimed;
     }
@@ -361,7 +381,10 @@ public sealed class GovernanceDutySystem : EntitySystem
         var changed = await CanUseAHelpAsync(player) &&
                       await _database.SetGovernanceAHelpStatusAsync(ticketId, player.UserId, _ticker.RoundId, status);
         if (changed)
+        {
             _elapsed = float.MaxValue;
+            await RefreshAHelpEuisAsync();
+        }
         return changed;
     }
 
