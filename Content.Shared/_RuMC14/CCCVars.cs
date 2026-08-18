@@ -91,7 +91,7 @@ public sealed class CCCVars : CVars
     /// Making everyone a pacifist at the end of a round.
     /// </summary>
     public static readonly CVarDef<bool> PeacefulRoundEnd =
-        CVarDef.Create("game.peaceful_end", false, CVar.SERVERONLY);
+        CVarDef.Create("game.peaceful_end", true, CVar.SERVERONLY);
 
     /*
      * Station Goal
@@ -132,10 +132,11 @@ public sealed class CCCVars : CVars
         CVarDef.Create("governance.duty_target_responders", 1, CVar.SERVERONLY | CVar.ARCHIVE);
 
     /// <summary>
-    /// Interval between server-side duty staffing checks.
+    /// Interval between server-side duty staffing and open AHelp checks.
+    /// Kept short because this is also the responder notification latency.
     /// </summary>
     public static readonly CVarDef<int> GovernanceDutyCheckSeconds =
-        CVarDef.Create("governance.duty_check_seconds", 30, CVar.SERVERONLY | CVar.ARCHIVE);
+        CVarDef.Create("governance.duty_check_seconds", 10, CVar.SERVERONLY | CVar.ARCHIVE);
 
     /// <summary>
     /// Time an in-game duty invitation remains open.
