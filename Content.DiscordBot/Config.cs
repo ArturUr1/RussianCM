@@ -67,4 +67,10 @@ public sealed class Config
     public int ModerationReviewExpiryPenalty { get; set; } = 20;
 
     public int ModerationReviewFailurePenalty { get; set; } = 30;
+
+    public int ModerationReviewSamplePercent { get; set; } = 25;
+
+    public int ModerationReviewSchedulerSeconds { get; set; } = 30;
+
+    public int ModerationReviewBatchSize { get; set; } = 5;
 }
