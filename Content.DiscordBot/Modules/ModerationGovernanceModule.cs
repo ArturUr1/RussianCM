@@ -88,6 +88,25 @@ public sealed class ModerationGovernanceModule(
         await FollowupAsync($"Ответ на приглашение по действию №{action}: `{state}`.", ephemeral: true);
     });
 
+    [SlashCommand("аудит-материалы", "Показать материалы назначенного независимого аудита")]
+    public Task AuditMaterialsAsync(long action) => ExecuteAsync(async () =>
+    {
+        var packet = await moderationTrust.GetReviewPacketAsync(action, Context.User.Id);
+        var embed = new EmbedBuilder()
+            .WithTitle($"Независимый аудит • действие №{packet.ActionId}")
+            .AddField("Раунд", packet.RoundId, true)
+            .AddField("Инцидент", $"#{packet.IncidentId} • {packet.IncidentType}", true)
+            .AddField("Тип действия", packet.ActionType, true)
+            .AddField("Кворум", $"{packet.Approvals}/{packet.RequiredApprovals}; отклонений {packet.Rejections}", true)
+            .AddField("Причина дежурного", packet.Reason)
+            .AddField("Контекст инцидента", packet.IncidentSummary)
+            .AddField("Выполнено", packet.ExecutedAt?.ToString("u") ?? "нет данных", true)
+            .AddField("Передано в суд", packet.EscalatedToCourt ? "да" : "нет", true)
+            .WithColor(Color.Blue)
+            .Build();
+        await FollowupAsync(embed: embed, ephemeral: true);
+    });
+
     [SlashCommand("аудит", "Отправить независимую оценку действия дежурного")]
     public Task AuditAsync(
         long action,
