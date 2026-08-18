@@ -10,6 +10,7 @@ public sealed class GovernanceLeadershipModule(
     GovernanceCommunityService community,
     CourtPunishmentService punishments,
     CourtDiscordCoordinator discord,
+    ModerationTrustService moderationTrust,
     Config config) : InteractionModuleBase<SocketInteractionContext>
 {
     [SlashCommand("отменить-решение", "Отменить решение суда и откатить наказание")]
@@ -44,6 +45,16 @@ public sealed class GovernanceLeadershipModule(
     {
         await community.SetSuspendedAsync(Context.User.Id, user.Id, suspended, reason);
         await FollowupAsync($"Допуск пользователя {user.Mention}: {(suspended ? "приостановлен" : "восстановлен")}.", ephemeral: true);
+    });
+
+    [SlashCommand("аудит-действия", "Случайно назначить независимый аудит исполненного действия дежурного")]
+    public Task AssignModerationAuditAsync(long action) => ExecuteAsync(async () =>
+    {
+        var assignment = await moderationTrust.AssignRandomReviewAsync(action);
+        await FollowupAsync(
+            $"Для действия №{action} назначен независимый рецензент <@{assignment.ReviewerDiscordId}>. " +
+            $"Приглашение №{assignment.InvitationId} действительно до {assignment.ExpiresAt:u}.",
+            ephemeral: true);
     });
 
     private async Task ExecuteAsync(Func<Task> action)
