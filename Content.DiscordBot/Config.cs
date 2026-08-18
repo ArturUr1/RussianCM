@@ -50,6 +50,18 @@ public sealed class Config
 
     public int EventApprovalThreshold { get; set; } = 2;
 
+    public int EventReviewInvitationHours { get; set; } = 24;
+
+    public int EventReviewAcceptReward { get; set; } = 10;
+
+    public int EventReviewCompletionReward { get; set; } = 15;
+
+    public int EventReviewDeclinePenalty { get; set; } = 15;
+
+    public int EventReviewExpiryPenalty { get; set; } = 20;
+
+    public int EventReviewFailurePenalty { get; set; } = 30;
+
     public int ModerationReviewMinimumQualification { get; set; } = 2;
 
     public int ModerationReviewInvitationHours { get; set; } = 24;
