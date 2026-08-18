@@ -71,6 +71,9 @@ public static class ConfigurationLoader
         config.ModerationReviewDeclinePenalty = Int("MODERATION_REVIEW_DECLINE_PENALTY") ?? config.ModerationReviewDeclinePenalty;
         config.ModerationReviewExpiryPenalty = Int("MODERATION_REVIEW_EXPIRY_PENALTY") ?? config.ModerationReviewExpiryPenalty;
         config.ModerationReviewFailurePenalty = Int("MODERATION_REVIEW_FAILURE_PENALTY") ?? config.ModerationReviewFailurePenalty;
+        config.ModerationReviewSamplePercent = Int("MODERATION_REVIEW_SAMPLE_PERCENT") ?? config.ModerationReviewSamplePercent;
+        config.ModerationReviewSchedulerSeconds = Int("MODERATION_REVIEW_SCHEDULER_SECONDS") ?? config.ModerationReviewSchedulerSeconds;
+        config.ModerationReviewBatchSize = Int("MODERATION_REVIEW_BATCH_SIZE") ?? config.ModerationReviewBatchSize;
     }
 
     public static string? NormalizePostgresConnectionString(string? value)
