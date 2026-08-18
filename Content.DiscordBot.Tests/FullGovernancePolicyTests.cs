@@ -32,4 +32,30 @@ public sealed class FullGovernancePolicyTests
         Assert.Throws<CourtRuleException>(() => CommunityCourtService.NormalizeGameNickname("   "));
         Assert.Throws<CourtRuleException>(() => CommunityCourtService.NormalizeGameNickname(new string('x', 65)));
     }
+
+    [TestCase(ModerationReviewOutcomes.Correct, 100, 100)]
+    [TestCase(ModerationReviewOutcomes.ReasonableButWrong, 85, 100)]
+    [TestCase(ModerationReviewOutcomes.ProceduralError, 60, 35)]
+    [TestCase(ModerationReviewOutcomes.Negligent, 25, 20)]
+    [TestCase(ModerationReviewOutcomes.Abuse, 0, 0)]
+    public void ModerationReviewOutcomesSeparateAccuracyFromProcedure(
+        string outcome,
+        int accuracy,
+        int procedure)
+    {
+        Assert.That(ModerationReviewOutcomes.IsValid(outcome), Is.True);
+        Assert.That(ModerationReviewOutcomes.AccuracyWeight(outcome), Is.EqualTo(accuracy));
+        Assert.That(ModerationReviewOutcomes.ProcedureWeight(outcome), Is.EqualTo(procedure));
+    }
+
+    [Test]
+    public void ReasonableButWrongDoesNotCountAsProceduralFailure()
+    {
+        Assert.That(
+            ModerationReviewOutcomes.ProcedureWeight(ModerationReviewOutcomes.ReasonableButWrong),
+            Is.EqualTo(100));
+        Assert.That(
+            ModerationReviewOutcomes.AccuracyWeight(ModerationReviewOutcomes.ReasonableButWrong),
+            Is.LessThan(100));
+    }
 }
