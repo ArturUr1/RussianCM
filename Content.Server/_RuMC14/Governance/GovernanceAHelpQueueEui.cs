@@ -15,7 +15,14 @@ public sealed class GovernanceAHelpQueueEui(GovernanceDutySystem dutySystem) : B
     public override void Opened()
     {
         base.Opened();
+        dutySystem.RegisterAHelpEui(this);
         _ = HandleAsync(new GovernanceAHelpQueueMessage(GovernanceAHelpQueueAction.Refresh));
+    }
+
+    public override void Closed()
+    {
+        dutySystem.UnregisterAHelpEui(this);
+        base.Closed();
     }
 
     public override EuiStateBase GetNewState() => new GovernanceAHelpQueueEuiState(_tickets, _error);
@@ -27,6 +34,8 @@ public sealed class GovernanceAHelpQueueEui(GovernanceDutySystem dutySystem) : B
             return;
         _ = HandleAsync(action);
     }
+
+    public Task RefreshFromSystemAsync() => RefreshAsync();
 
     private async Task HandleAsync(GovernanceAHelpQueueMessage message)
     {
@@ -74,6 +83,8 @@ public sealed class GovernanceAHelpQueueEui(GovernanceDutySystem dutySystem) : B
 
     private async Task RefreshAsync()
     {
+        if (_busy)
+            return;
         var queue = await dutySystem.GetAHelpQueueAsync(Player);
         _tickets = queue.Select(value => new GovernanceAHelpQueueItem(
             value.Id,
