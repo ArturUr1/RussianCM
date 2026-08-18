@@ -62,6 +62,15 @@ public static class ConfigurationLoader
         config.EventReviewHours = Int("EVENT_REVIEW_HOURS") ?? config.EventReviewHours;
         config.EventReviewers = Int("EVENT_REVIEWERS") ?? config.EventReviewers;
         config.EventApprovalThreshold = Int("EVENT_APPROVAL_THRESHOLD") ?? config.EventApprovalThreshold;
+        config.ModerationReviewMinimumQualification = Int("MODERATION_REVIEW_MIN_QUALIFICATION") ?? config.ModerationReviewMinimumQualification;
+        config.ModerationReviewInvitationHours = Int("MODERATION_REVIEW_INVITATION_HOURS") ?? config.ModerationReviewInvitationHours;
+        config.ModerationReviewHours = Int("MODERATION_REVIEW_HOURS") ?? config.ModerationReviewHours;
+        config.ModerationReviewSelectionCooldownHours = Int("MODERATION_REVIEW_SELECTION_COOLDOWN_HOURS") ?? config.ModerationReviewSelectionCooldownHours;
+        config.ModerationReviewAcceptReward = Int("MODERATION_REVIEW_ACCEPT_REWARD") ?? config.ModerationReviewAcceptReward;
+        config.ModerationReviewCompletionReward = Int("MODERATION_REVIEW_COMPLETION_REWARD") ?? config.ModerationReviewCompletionReward;
+        config.ModerationReviewDeclinePenalty = Int("MODERATION_REVIEW_DECLINE_PENALTY") ?? config.ModerationReviewDeclinePenalty;
+        config.ModerationReviewExpiryPenalty = Int("MODERATION_REVIEW_EXPIRY_PENALTY") ?? config.ModerationReviewExpiryPenalty;
+        config.ModerationReviewFailurePenalty = Int("MODERATION_REVIEW_FAILURE_PENALTY") ?? config.ModerationReviewFailurePenalty;
     }
 
     public static string? NormalizePostgresConnectionString(string? value)
