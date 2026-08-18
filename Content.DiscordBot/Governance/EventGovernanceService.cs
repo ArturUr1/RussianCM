@@ -16,12 +16,21 @@ public sealed class EventGovernanceService(
     {
         await using var governance = governanceFactory();
         var rows = await governance.Invitations.AsNoTracking()
-            .Where(value => value.Purpose == "event_review" && value.DiscordNotifiedAt == null && value.ExpiresAt > DateTime.UtcNow)
+            .Where(value => value.Purpose == "event_review" && value.State == InvitationStates.Pending &&
+                            value.DiscordNotifiedAt == null && value.ExpiresAt > DateTime.UtcNow)
             .Join(governance.Users, invitation => invitation.UserId, user => user.Id, (invitation, user) => new { invitation, user })
             .Join(governance.EventProposals, row => row.invitation.EntityId, proposal => proposal.Id.ToString(),
                 (row, proposal) => new { row.invitation, row.user, proposal })
             .ToListAsync();
         return rows.Select(value => (value.invitation, value.user, value.proposal)).ToArray();
+    }
+
+    public async Task MarkInvitationNotifiedAsync(long invitationId)
+    {
+        await using var governance = governanceFactory();
+        var invitation = await governance.Invitations.SingleAsync(value => value.Id == invitationId);
+        invitation.DiscordNotifiedAt = DateTime.UtcNow;
+        await governance.SaveChangesAsync();
     }
 
     public async Task<GovernanceEventProposal> GetProposalAsync(long proposalId)
@@ -56,41 +65,105 @@ public sealed class EventGovernanceService(
         var now = DateTime.UtcNow;
         var proposal = governance.EventProposals.Add(new GovernanceEventProposal
         {
-            OwnerUserId = owner.Id, Title = title, Description = description, DurationMinutes = durationMinutes,
-            Manifest = JsonSerializer.Serialize(manifest), Status = "review", CreatedAt = now,
+            OwnerUserId = owner.Id,
+            Title = title,
+            Description = description,
+            DurationMinutes = durationMinutes,
+            Manifest = JsonSerializer.Serialize(manifest),
+            Status = "review",
+            CreatedAt = now,
             ReviewDeadline = now.AddHours(config.EventReviewHours),
         }).Entity;
         await governance.SaveChangesAsync();
-
-        var reviewers = await selection.SelectAsync("event", 1, "event_proposal", proposal.Id.ToString(),
-            config.EventReviewers, new HashSet<Guid> { owner.Id }, null, TimeSpan.FromHours(config.CourtSelectionCooldownHours));
-        if (reviewers.Count < config.EventReviewers)
-        {
-            proposal.Status = "rejected";
-            AddAudit(governance, "event.proposal_unstaffed", ownerDiscordId, "event_proposal", proposal.Id.ToString(),
-                new { required = config.EventReviewers, selected = reviewers.Count });
-            await governance.SaveChangesAsync();
-            throw new CourtRuleException($"Недостаточно независимых рецензентов ({reviewers.Count}/{config.EventReviewers}). Заявка №{proposal.Id} отклонена.");
-        }
-        foreach (var reviewer in reviewers)
-        {
-            governance.ServiceAssignments.Add(new GovernanceServiceAssignment
-            {
-                UserId = reviewer.Id, Track = "event", EntityType = "event_proposal",
-                EntityId = proposal.Id.ToString(), AssignedAt = now,
-            });
-            governance.Invitations.Add(new GovernanceInvitation
-            {
-                UserId = reviewer.Id, EntityType = "event_proposal", EntityId = proposal.Id.ToString(),
-                Purpose = "event_review", State = InvitationStates.Accepted, CreatedAt = now,
-                ExpiresAt = proposal.ReviewDeadline, RespondedAt = now,
-                IdempotencyKey = $"event:{proposal.Id}:reviewer:{reviewer.Id}",
-            });
-        }
         AddAudit(governance, "event.proposal_created", ownerDiscordId, "event_proposal", proposal.Id.ToString(),
-            new { reviewers = reviewers.Select(value => value.Id), manifest });
+            new { manifest });
         await governance.SaveChangesAsync();
+        await EnsureReviewerInvitationsAsync(proposal.Id);
         return proposal;
+    }
+
+    public async Task<string> RespondToReviewInvitationAsync(
+        long proposalId,
+        ulong reviewerDiscordId,
+        string response,
+        string? recusalReason)
+    {
+        if (response is not (InvitationStates.Accepted or InvitationStates.Declined or InvitationStates.Recused))
+            throw new CourtRuleException("Неизвестный ответ на приглашение.");
+        if (response == InvitationStates.Recused && string.IsNullOrWhiteSpace(recusalReason))
+            throw new CourtRuleException("Для самоотвода нужно указать причину.");
+
+        var reviewer = await community.RequireUserAsync(reviewerDiscordId);
+        await using var governance = governanceFactory();
+        var proposal = await governance.EventProposals.SingleOrDefaultAsync(value => value.Id == proposalId)
+            ?? throw new CourtRuleException("Заявка события не найдена.");
+        if (proposal.Status != "review" || proposal.ReviewDeadline <= DateTime.UtcNow)
+            throw new CourtRuleException("Рецензирование этой заявки уже завершено.");
+
+        var invitation = await governance.Invitations.SingleOrDefaultAsync(value =>
+            value.UserId == reviewer.Id && value.EntityType == "event_proposal" &&
+            value.EntityId == proposalId.ToString() && value.Purpose == "event_review")
+            ?? throw new CourtRuleException("У вас нет приглашения на рецензирование этой заявки.");
+        if (invitation.State != InvitationStates.Pending)
+        {
+            if (invitation.State == response)
+                return invitation.State;
+            throw new CourtRuleException("Ответ на приглашение уже зафиксирован.");
+        }
+
+        var now = DateTime.UtcNow;
+        if (invitation.ExpiresAt <= now)
+        {
+            invitation.State = InvitationStates.Expired;
+            invitation.RespondedAt = now;
+            invitation.Version++;
+            await AppendRatingAsync(governance, reviewer.Id, -config.EventReviewExpiryPenalty,
+                "event_review_invite_expired", proposalId, $"event:{proposalId}:invitation:{invitation.Id}:expire", "system");
+            AddAudit(governance, "event.review_invitation.expired", 0, "event_proposal", proposalId.ToString(),
+                new { invitation_id = invitation.Id, reviewer_user_id = reviewer.Id });
+            await governance.SaveChangesAsync();
+            await EnsureReviewerInvitationsAsync(proposalId);
+            throw new CourtRuleException("Срок ответа на приглашение истёк.");
+        }
+
+        invitation.State = response;
+        invitation.RespondedAt = now;
+        invitation.RecusalReason = response == InvitationStates.Recused ? recusalReason!.Trim() : null;
+        invitation.Version++;
+
+        if (response == InvitationStates.Accepted)
+        {
+            invitation.ExpiresAt = proposal.ReviewDeadline;
+            if (!await governance.ServiceAssignments.AnyAsync(value => value.UserId == reviewer.Id && value.Track == "event" &&
+                    value.EntityType == "event_proposal" && value.EntityId == proposalId.ToString()))
+            {
+                governance.ServiceAssignments.Add(new GovernanceServiceAssignment
+                {
+                    UserId = reviewer.Id,
+                    Track = "event",
+                    EntityType = "event_proposal",
+                    EntityId = proposalId.ToString(),
+                    AssignedAt = now,
+                });
+            }
+            await AppendRatingAsync(governance, reviewer.Id, config.EventReviewAcceptReward,
+                "event_review_invite_accepted", proposalId, $"event:{proposalId}:invitation:{invitation.Id}:accept",
+                reviewerDiscordId.ToString());
+        }
+        else if (response == InvitationStates.Declined)
+        {
+            await AppendRatingAsync(governance, reviewer.Id, -config.EventReviewDeclinePenalty,
+                "event_review_invite_declined", proposalId, $"event:{proposalId}:invitation:{invitation.Id}:decline",
+                reviewerDiscordId.ToString());
+        }
+
+        AddAudit(governance, $"event.review_invitation.{response}", reviewerDiscordId,
+            "event_proposal", proposalId.ToString(), new { invitation_id = invitation.Id, recusal_reason = invitation.RecusalReason });
+        await governance.SaveChangesAsync();
+
+        if (response is InvitationStates.Declined or InvitationStates.Recused)
+            await EnsureReviewerInvitationsAsync(proposalId);
+        return response;
     }
 
     public async Task<EventReviewOutcome> ReviewAsync(long proposalId, ulong reviewerDiscordId, string decision, string reasoning)
@@ -105,20 +178,33 @@ public sealed class EventGovernanceService(
             ?? throw new CourtRuleException("Заявка события не найдена.");
         if (proposal.Status != "review" || proposal.ReviewDeadline <= DateTime.UtcNow)
             throw new CourtRuleException("Рецензирование этой заявки завершено.");
+        var invitation = await governance.Invitations.AsNoTracking().SingleOrDefaultAsync(value =>
+            value.UserId == reviewer.Id && value.EntityType == "event_proposal" && value.EntityId == proposalId.ToString() &&
+            value.Purpose == "event_review");
+        if (invitation == null || invitation.State != InvitationStates.Accepted || invitation.ExpiresAt <= DateTime.UtcNow)
+            throw new CourtRuleException("Сначала примите действующее приглашение на рецензирование.");
         if (!await governance.ServiceAssignments.AnyAsync(value => value.UserId == reviewer.Id && value.Track == "event" &&
                 value.EntityType == "event_proposal" && value.EntityId == proposalId.ToString()))
             throw new CourtRuleException("Вы не назначены независимым рецензентом этой заявки.");
         if (await governance.EventReviews.AnyAsync(value => value.ProposalId == proposalId && value.ReviewerUserId == reviewer.Id))
             throw new CourtRuleException("Ваша рецензия уже принята.");
+
         governance.EventReviews.Add(new GovernanceEventReview
         {
-            ProposalId = proposalId, ReviewerUserId = reviewer.Id, Decision = decision,
-            Reasoning = reasoning.Trim(), SubmittedAt = DateTime.UtcNow,
+            ProposalId = proposalId,
+            ReviewerUserId = reviewer.Id,
+            Decision = decision,
+            Reasoning = reasoning.Trim(),
+            SubmittedAt = DateTime.UtcNow,
         });
         var assignment = await governance.ServiceAssignments.SingleAsync(value => value.UserId == reviewer.Id &&
             value.Track == "event" && value.EntityType == "event_proposal" && value.EntityId == proposalId.ToString());
         assignment.CompletedAt = DateTime.UtcNow;
+        await AppendRatingAsync(governance, reviewer.Id, config.EventReviewCompletionReward,
+            "event_review_completed", proposalId, $"event:{proposalId}:review:{reviewer.Id}:completed",
+            reviewerDiscordId.ToString());
         await governance.SaveChangesAsync();
+
         var approvals = await governance.EventReviews.CountAsync(value => value.ProposalId == proposalId && value.Decision == "approve");
         var rejections = await governance.EventReviews.CountAsync(value => value.ProposalId == proposalId && value.Decision == "reject");
         if (approvals >= config.EventApprovalThreshold)
@@ -147,8 +233,12 @@ public sealed class EventGovernanceService(
         var now = DateTime.UtcNow;
         var session = governance.EventSessions.Add(new GovernanceEventSession
         {
-            ProposalId = proposalId, DirectorUserId = director.Id, RoundId = roundId, Status = "active",
-            StartedAt = now, ExpiresAt = now.AddMinutes(proposal.DurationMinutes),
+            ProposalId = proposalId,
+            DirectorUserId = director.Id,
+            RoundId = roundId,
+            Status = "active",
+            StartedAt = now,
+            ExpiresAt = now.AddMinutes(proposal.DurationMinutes),
         }).Entity;
         proposal.Status = "active";
         await governance.SaveChangesAsync();
@@ -156,7 +246,9 @@ public sealed class EventGovernanceService(
         {
             governance.EventManifestItems.Add(new GovernanceEventManifestItem
             {
-                SessionId = session.Id, Capability = item.Capability, Resource = item.Resource,
+                SessionId = session.Id,
+                Capability = item.Capability,
+                Resource = item.Resource,
                 MaxUses = item.MaxUses,
             });
         }
@@ -164,9 +256,13 @@ public sealed class EventGovernanceService(
         {
             governance.CapabilityGrants.Add(new GovernanceCapabilityGrant
             {
-                UserId = director.Id, Capability = capability, SourceType = "event_session", SourceId = session.Id.ToString(),
+                UserId = director.Id,
+                Capability = capability,
+                SourceType = "event_session",
+                SourceId = session.Id.ToString(),
                 Scope = JsonSerializer.Serialize(new { round_id = roundId, event_session_id = session.Id }),
-                IssuedAt = now, ExpiresAt = session.ExpiresAt,
+                IssuedAt = now,
+                ExpiresAt = session.ExpiresAt,
                 IdempotencyKey = $"event-session:{session.Id}:{capability}",
             });
         }
@@ -192,8 +288,12 @@ public sealed class EventGovernanceService(
             value.Capability == capability && value.RevokedAt == null && value.ExpiresAt > DateTime.UtcNow);
         var action = governance.EventActions.Add(new GovernanceEventAction
         {
-            SessionId = sessionId, ActorUserId = actor.Id, Capability = capability, Resource = resource,
-            Status = allowed ? "executed" : "denied", CreatedAt = DateTime.UtcNow,
+            SessionId = sessionId,
+            ActorUserId = actor.Id,
+            Capability = capability,
+            Resource = resource,
+            Status = allowed ? "executed" : "denied",
+            CreatedAt = DateTime.UtcNow,
             Payload = NormalizeJson(payload),
         }).Entity;
         if (allowed)
@@ -228,20 +328,138 @@ public sealed class EventGovernanceService(
 
     public async Task ProcessDeadlinesAsync()
     {
-        await using var governance = governanceFactory();
         var now = DateTime.UtcNow;
-        foreach (var proposal in await governance.EventProposals.Where(value => value.Status == "review" && value.ReviewDeadline <= now).ToListAsync())
-            proposal.Status = "rejected";
-        foreach (var session in await governance.EventSessions.Where(value => value.Status == "active" && value.ExpiresAt <= now).ToListAsync())
+        List<long> proposalsToRefill;
+        await using (var governance = governanceFactory())
         {
-            session.Status = "completed";
-            session.EndedAt = now;
-            var proposal = await governance.EventProposals.SingleAsync(value => value.Id == session.ProposalId);
-            proposal.Status = "completed";
-            foreach (var grant in await governance.CapabilityGrants.Where(value => value.SourceType == "event_session" &&
-                         value.SourceId == session.Id.ToString() && value.RevokedAt == null).ToListAsync())
-                grant.RevokedAt = now;
+            var expiredInvitations = await governance.Invitations
+                .Where(value => value.Purpose == "event_review" && value.ExpiresAt <= now &&
+                                (value.State == InvitationStates.Pending || value.State == InvitationStates.Accepted))
+                .ToListAsync();
+            foreach (var invitation in expiredInvitations)
+            {
+                var proposalId = long.Parse(invitation.EntityId);
+                if (invitation.State == InvitationStates.Pending)
+                {
+                    invitation.State = InvitationStates.Expired;
+                    invitation.RespondedAt = now;
+                    invitation.Version++;
+                    await AppendRatingAsync(governance, invitation.UserId, -config.EventReviewExpiryPenalty,
+                        "event_review_invite_expired", proposalId, $"event:{proposalId}:invitation:{invitation.Id}:expire", "system");
+                    AddAudit(governance, "event.review_invitation.expired", 0, "event_proposal", proposalId.ToString(),
+                        new { invitation_id = invitation.Id, reviewer_user_id = invitation.UserId });
+                }
+                else
+                {
+                    var completed = await governance.EventReviews.AsNoTracking().AnyAsync(value =>
+                        value.ProposalId == proposalId && value.ReviewerUserId == invitation.UserId);
+                    if (completed)
+                        continue;
+                    invitation.State = InvitationStates.Failed;
+                    invitation.Version++;
+                    await AppendRatingAsync(governance, invitation.UserId, -config.EventReviewAcceptReward,
+                        "event_review_accept_reward_rollback", proposalId,
+                        $"event:{proposalId}:invitation:{invitation.Id}:accept-rollback", "system");
+                    await AppendRatingAsync(governance, invitation.UserId, -config.EventReviewFailurePenalty,
+                        "event_review_failed", proposalId,
+                        $"event:{proposalId}:invitation:{invitation.Id}:failure", "system");
+                    var assignment = await governance.ServiceAssignments.SingleOrDefaultAsync(value =>
+                        value.UserId == invitation.UserId && value.Track == "event" &&
+                        value.EntityType == "event_proposal" && value.EntityId == proposalId.ToString());
+                    if (assignment != null && assignment.CompletedAt == null && assignment.FailedAt == null)
+                        assignment.FailedAt = now;
+                    AddAudit(governance, "event.review_failed", 0, "event_proposal", proposalId.ToString(),
+                        new { invitation_id = invitation.Id, reviewer_user_id = invitation.UserId });
+                }
+            }
+
+            foreach (var proposal in await governance.EventProposals
+                         .Where(value => value.Status == "review" && value.ReviewDeadline <= now)
+                         .ToListAsync())
+            {
+                proposal.Status = "rejected";
+                AddAudit(governance, "event.review_deadline_rejected", 0, "event_proposal", proposal.Id.ToString(), new { });
+            }
+
+            foreach (var session in await governance.EventSessions
+                         .Where(value => value.Status == "active" && value.ExpiresAt <= now)
+                         .ToListAsync())
+            {
+                session.Status = "completed";
+                session.EndedAt = now;
+                var proposal = await governance.EventProposals.SingleAsync(value => value.Id == session.ProposalId);
+                proposal.Status = "completed";
+                foreach (var grant in await governance.CapabilityGrants.Where(value => value.SourceType == "event_session" &&
+                             value.SourceId == session.Id.ToString() && value.RevokedAt == null).ToListAsync())
+                    grant.RevokedAt = now;
+            }
+
+            proposalsToRefill = await governance.EventProposals.AsNoTracking()
+                .Where(value => value.Status == "review" && value.ReviewDeadline > now)
+                .Select(value => value.Id)
+                .ToListAsync();
+            await governance.SaveChangesAsync();
         }
+
+        foreach (var proposalId in proposalsToRefill)
+            await EnsureReviewerInvitationsAsync(proposalId);
+    }
+
+    private async Task EnsureReviewerInvitationsAsync(long proposalId)
+    {
+        await using var governance = governanceFactory();
+        var proposal = await governance.EventProposals.AsNoTracking().SingleOrDefaultAsync(value => value.Id == proposalId)
+            ?? throw new CourtRuleException("Заявка события не найдена.");
+        var now = DateTime.UtcNow;
+        if (proposal.Status != "review" || proposal.ReviewDeadline <= now)
+            return;
+
+        var invitations = await governance.Invitations.AsNoTracking()
+            .Where(value => value.EntityType == "event_proposal" && value.EntityId == proposalId.ToString() &&
+                            value.Purpose == "event_review")
+            .ToListAsync();
+        var reviewedUsers = await governance.EventReviews.AsNoTracking()
+            .Where(value => value.ProposalId == proposalId)
+            .Select(value => value.ReviewerUserId)
+            .ToListAsync();
+        var activeInvitedUsers = invitations
+            .Where(value => value.State is InvitationStates.Pending or InvitationStates.Accepted)
+            .Select(value => value.UserId)
+            .Concat(reviewedUsers)
+            .Distinct()
+            .ToHashSet();
+        var needed = Math.Max(0, config.EventReviewers - activeInvitedUsers.Count);
+        if (needed == 0)
+            return;
+
+        var excluded = invitations.Select(value => value.UserId)
+            .Concat(reviewedUsers)
+            .Append(proposal.OwnerUserId)
+            .ToHashSet();
+        var reviewers = await selection.SelectAsync("event", 1, "event_proposal", proposalId.ToString(),
+            needed, excluded, null, TimeSpan.FromHours(config.CourtSelectionCooldownHours));
+        if (reviewers.Count == 0)
+            return;
+
+        var expiresAt = now.AddHours(config.EventReviewInvitationHours);
+        if (expiresAt > proposal.ReviewDeadline)
+            expiresAt = proposal.ReviewDeadline;
+        foreach (var reviewer in reviewers)
+        {
+            governance.Invitations.Add(new GovernanceInvitation
+            {
+                UserId = reviewer.Id,
+                EntityType = "event_proposal",
+                EntityId = proposalId.ToString(),
+                Purpose = "event_review",
+                State = InvitationStates.Pending,
+                CreatedAt = now,
+                ExpiresAt = expiresAt,
+                IdempotencyKey = $"event:{proposalId}:reviewer:{reviewer.Id}",
+            });
+        }
+        AddAudit(governance, "event.review_candidates_invited", 0, "event_proposal", proposalId.ToString(),
+            new { reviewers = reviewers.Select(value => value.Id).ToArray(), expires_at = expiresAt });
         await governance.SaveChangesAsync();
     }
 
@@ -269,12 +487,30 @@ public sealed class EventGovernanceService(
         catch (JsonException) { throw new CourtRuleException("payload должен быть корректным JSON."); }
     }
 
+    private static Task AppendRatingAsync(
+        GovernanceDbContext governance,
+        Guid userId,
+        int amount,
+        string reason,
+        long proposalId,
+        string idempotencyKey,
+        string createdById)
+    {
+        return governance.Database.ExecuteSqlRawAsync(
+            "SELECT governance.append_rating_entry({0}, {1}, {2}, 'event_proposal', {3}, 'governance', {4}, {5}, '{}'::jsonb)",
+            userId, amount, reason, proposalId.ToString(), createdById, idempotencyKey);
+    }
+
     private static void AddAudit(GovernanceDbContext db, string eventType, ulong actorDiscordId, string entityType, string entityId, object payload)
     {
         db.AuditEvents.Add(new GovernanceAuditEvent
         {
-            EventType = eventType, ActorType = "discord_user", ActorId = actorDiscordId.ToString(),
-            EntityType = entityType, EntityId = entityId, CreatedAt = DateTime.UtcNow,
+            EventType = eventType,
+            ActorType = actorDiscordId == 0 ? "system" : "discord_user",
+            ActorId = actorDiscordId == 0 ? null : actorDiscordId.ToString(),
+            EntityType = entityType,
+            EntityId = entityId,
+            CreatedAt = DateTime.UtcNow,
             Payload = JsonSerializer.Serialize(payload),
         });
     }
