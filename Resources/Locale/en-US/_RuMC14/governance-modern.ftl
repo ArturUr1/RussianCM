@@ -65,3 +65,47 @@ governance-ahelp-incident-self-target = A responder cannot create an incident ag
 governance-ahelp-incident-type-invalid = Incident type must be between 2 and 64 characters.
 governance-ahelp-incident-access-denied = You do not have the temporary capability required to create a live incident.
 governance-ahelp-incident-create-failed = Could not create the incident. Make sure the ticket is still assigned to you.
+
+governance-ahelp-actions-heading = [bold]Incident actions[/bold]
+governance-ahelp-action-reason-placeholder = Action reason (10–512 characters)…
+governance-ahelp-action-freeze-seconds-placeholder = Seconds
+governance-ahelp-action-request-explanation = Request explanation
+governance-ahelp-action-view-logs = View logs
+governance-ahelp-action-freeze = Freeze
+governance-ahelp-action-round-remove = Remove for round
+governance-ahelp-action-history-heading = [bold]Action history[/bold]
+governance-ahelp-action-history-empty = [color=#8c96a8]No moderation actions have been created for this incident.[/color]
+governance-ahelp-action-card = #{$id} • [bold]{$type}[/bold] • {$status} • {$approvals}/{$required}{$duration}
+    {$reason}
+governance-ahelp-action-duration =  • {$seconds}s
+governance-ahelp-action-type-explanation = Explanation request
+governance-ahelp-action-type-logs = Log access
+governance-ahelp-action-type-freeze = Freeze
+governance-ahelp-action-type-round-remove = Round removal
+governance-ahelp-action-status-proposed = [color=#ffd166]waiting for approval[/color]
+governance-ahelp-action-status-approved = [color=#72d572]approved[/color]
+governance-ahelp-action-status-executed = [color=#72d572]executed[/color]
+governance-ahelp-action-status-rejected = [color=#ff5a5a]rejected[/color]
+governance-ahelp-action-status-expired = expired
+
+governance-ahelp-approval-heading = [bold]Awaiting your decision[/bold]
+governance-ahelp-approval-empty = [color=#8c96a8]No actions currently require a second vote.[/color]
+governance-ahelp-approval-card = Action #{$id} • incident #{$incident}
+    {$actor} → {$target} • [bold]{$type}[/bold] • {$approvals}/{$required}
+    {$reason}
+governance-ahelp-approval-approve = Approve
+governance-ahelp-approval-reject = Reject
+
+governance-ahelp-logs-heading = [bold]Target logs[/bold]
+governance-ahelp-logs-empty = [color=#8c96a8]Logs are not loaded. Press “View logs”.[/color]
+governance-ahelp-log-line = [color=#8c96a8]{$time}[/color] [bold]{$type}[/bold] {$message}
+
+governance-ahelp-action-access-denied = You do not have the temporary capability required for this action.
+governance-ahelp-action-no-incident = Create an incident for this ticket first.
+governance-ahelp-action-invalid = Unknown incident moderation action.
+governance-ahelp-action-reason-invalid = Enter a reason between 10 and 512 characters.
+governance-ahelp-action-freeze-duration-invalid = Freeze duration must be between 1 and 120 seconds.
+governance-ahelp-action-create-failed = Could not create the moderation action.
+governance-ahelp-action-target-unavailable = The action target or its author is currently unavailable on the server.
+governance-ahelp-action-execution-failed = The action was approved, but the server could not execute it. Check target state and capabilities.
+governance-ahelp-action-review-failed = Could not record the decision. You may be ineligible to vote or the action may already be resolved.
