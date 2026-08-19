@@ -218,7 +218,13 @@ public sealed class GovernanceAHelpSystem : EntitySystem
 
     public void RegisterPlayerEui(NetUserId userId, GovernanceAHelpPlayerEui eui)
     {
-        _playerEuis.GetOrNew(userId).Add(eui);
+        if (!_playerEuis.TryGetValue(userId, out var euis))
+        {
+            euis = new HashSet<GovernanceAHelpPlayerEui>();
+            _playerEuis[userId] = euis;
+        }
+
+        euis.Add(eui);
     }
 
     public void UnregisterPlayerEui(NetUserId userId, GovernanceAHelpPlayerEui eui)
