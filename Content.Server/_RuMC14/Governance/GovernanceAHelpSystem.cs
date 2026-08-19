@@ -176,6 +176,18 @@ public sealed class GovernanceAHelpSystem : EntitySystem
 
         await RefreshPlayerEuisAsync(player.UserId);
         await RefreshResponderEuisAsync();
+
+        var responderId = await _database.GetGovernanceAHelpResponderAsync(player.UserId, _ticker.RoundId);
+        if (responderId != null && _players.TryGetSessionById(responderId.Value, out var responderSession))
+        {
+            var preview = text.Trim();
+            if (preview.Length > 160)
+                preview = preview[..160] + "…";
+            RaiseNetworkEvent(
+                new GovernanceAHelpResponderReplyReceived(ticketId.Value, player.Name, preview),
+                responderSession);
+        }
+
         return true;
     }
 
