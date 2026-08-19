@@ -25,7 +25,6 @@ namespace Content.Client.Viewport;
 
 public sealed partial class ScalingViewport
 {
-    [Dependency] private IMapManager _mapManager = default!;
     [Dependency] private ITileDefinitionManager _tile = default!;
     [Dependency] private IConfigurationManager _config = default!;
     [Dependency] private ProfManager _prof = default!;
@@ -137,7 +136,6 @@ public sealed partial class ScalingViewport
             maxOpeningBounds,
             exactOpeningBounds,
             _zLevelGrids,
-            _mapManager,
             _mapSystem,
             _transform,
             _tile);
@@ -1154,6 +1152,77 @@ public sealed partial class ScalingViewport
     {
         if (_drawStairPreviewComposite)
             DrawStairPreviewComposite(handle.DrawingHandleScreen, drawBox);
+
+        // AU14 (building overhaul): the faint upper-level ghost is just the offscreen upper pass drawn at
+        // low alpha over the frame - no stencil/LOS masking, that's the point (see everything above you).
+        if (_drawFaintUpperComposite && _stairPreviewViewport is not null)
+        {
+            handle.DrawingHandleScreen.DrawTextureRect(
+                _stairPreviewViewport.RenderTarget.Texture,
+                drawBox,
+                Color.White.WithAlpha(_faintUpperAlpha));
+        }
+    }
+
+    // AU14 (building overhaul): render the level directly above into the offscreen viewport so it can be
+    // composited faintly. Skipped when the viewer is under a ceiling (a non-empty tile straight above them):
+    // there the roof legitimately hides the upper level, and ghosting it through a roof would be wall-hacks.
+    private void RenderFaintUpperComposite(
+        IClydeViewport viewport,
+        IEye fallbackEye,
+        TransformComponent viewXform,
+        int lowestDepth,
+        MapId weatherSourceMapId)
+    {
+        if (!_config.GetCVar(CMUZLevelsCVars.FaintUpperEnabled))
+            return;
+
+        if (_zLevels is null || _transform is null || _mapSystem is null || viewXform.MapUid is not { } mapUid)
+            return;
+
+        if (!_zLevels.TryMapOffset(mapUid, 1, out _, out var upperMapComp))
+            return;
+
+        // Ceiling check: any non-empty tile on the upper map straight above the viewer means we're indoors.
+        var viewerPos = _transform.GetWorldPosition(viewXform);
+        var aboveCoords = new MapCoordinates(viewerPos, upperMapComp.MapId);
+        if (_mapSystem.TryFindGridAt(aboveCoords, out var upperGridUid, out var upperGridComp))
+        {
+            var tileRef = _mapSystem.GetTileRef(upperGridUid, upperGridComp, aboveCoords);
+            if (!tileRef.Tile.IsEmpty)
+                return;
+        }
+
+        EnsureStairPreviewViewport(viewport);
+        if (_stairPreviewViewport is null)
+            return;
+
+        Angle rotation = fallbackEye.Rotation * -1;
+        var offset = rotation.ToWorldVec() * CMUClientZLevelsSystem.ZLevelOffset;
+
+        _zEye.LowestDepth = lowestDepth;
+        _zEye.Depth = 1;
+        _zEye.HighestDepth = 1;
+        _zEye.BaseMapId = viewXform.MapID;
+        _zEye.WeatherSourceMapId = weatherSourceMapId;
+        _zEye.Position = new MapCoordinates(fallbackEye.Position.Position, upperMapComp.MapId);
+        // Keep FOV on (matches the real look-up upper pass): without it the ghost leaked through walls
+        // and the viewer's own field-of-view cone, which is a wall-hack.
+        _zEye.DrawFov = fallbackEye.DrawFov;
+        _zEye.DrawLight = fallbackEye.DrawLight;
+        _zEye.Offset = fallbackEye.Offset + offset;
+        _zEye.Rotation = fallbackEye.Rotation;
+        _zEye.Scale = fallbackEye.Scale;
+        _zEye.VisualZOffset = offset;
+        _zEye.BlurCurrentLevel = false;
+        _zEye.ConfigureVisibleEntityIndicators(false, _zOpeningBounds);
+
+        _stairPreviewViewport.Eye = _zEye;
+        _stairPreviewViewport.ClearColor = Color.Transparent;
+        _stairPreviewViewport.Render();
+
+        _faintUpperAlpha = Math.Clamp(_config.GetCVar(CMUZLevelsCVars.FaintUpperAlpha), 0.05f, 0.80f);
+        _drawFaintUpperComposite = true;
     }
 
     private void DrawStairPreviewComposite(DrawingHandleScreen screen, UIBox2 drawBox)
