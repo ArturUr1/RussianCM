@@ -1,5 +1,4 @@
 using Content.Server.Chat.Managers;
-using Content.Server.Administration.Systems;
 using Content.Server.Database;
 using Content.Server.EUI;
 using Content.Server.GameTicking;
@@ -11,14 +10,15 @@ using Robust.Shared.Configuration;
 using Robust.Shared.Enums;
 using Robust.Shared.Network;
 using Robust.Shared.Player;
-using System.Threading.Tasks;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Content.Server._RuMC14.Governance;
 
 /// <summary>
 /// Keeps the current round staffed with temporary community responders and owns the in-game
 /// invitation flow. PostgreSQL remains authoritative for eligibility, responses, rating and grants.
+/// Governance AHelp is handled exclusively by <see cref="GovernanceAHelpSystem"/>.
 /// </summary>
 public sealed class GovernanceDutySystem : EntitySystem
 {
@@ -29,14 +29,12 @@ public sealed class GovernanceDutySystem : EntitySystem
     [Dependency] private readonly GameTicker _ticker = default!;
     [Dependency] private readonly GovernanceManager _governance = default!;
     [Dependency] private readonly IPlayerManager _players = default!;
-    [Dependency] private readonly BwoinkSystem _bwoink = default!;
 
     private float _elapsed = float.MaxValue;
     private bool _checking;
     private readonly HashSet<long> _shownJuryInvitations = new();
     private readonly HashSet<NetUserId> _ahelpAccess = new();
     private readonly HashSet<long> _knownOpenAHelpTickets = new();
-    private readonly HashSet<GovernanceAHelpQueueEui> _ahelpEuis = new();
 
     public override void Update(float frameTime)
     {
@@ -163,9 +161,12 @@ public sealed class GovernanceDutySystem : EntitySystem
             {
                 if (session.Status is not (SessionStatus.Connected or SessionStatus.InGame))
                     continue;
+
                 var active = _governance.HasActiveDuty(session.UserId, _ticker.RoundId);
-                if (active ? _ahelpAccess.Add(session.UserId) : _ahelpAccess.Remove(session.UserId))
-                    RaiseNetworkEvent(new GovernanceAHelpAccessUpdated(active), session);
+                if (active)
+                    _ahelpAccess.Add(session.UserId);
+                else
+                    _ahelpAccess.Remove(session.UserId);
             }
 
             await NotifyOpenAHelpsAsync();
@@ -226,23 +227,7 @@ public sealed class GovernanceDutySystem : EntitySystem
             }
         }
 
-        await RefreshAHelpEuisAsync();
-    }
-
-    public void RegisterAHelpEui(GovernanceAHelpQueueEui eui)
-    {
-        _ahelpEuis.Add(eui);
-    }
-
-    public void UnregisterAHelpEui(GovernanceAHelpQueueEui eui)
-    {
-        _ahelpEuis.Remove(eui);
-    }
-
-    private async Task RefreshAHelpEuisAsync()
-    {
-        foreach (var eui in _ahelpEuis.ToArray())
-            await eui.RefreshFromSystemAsync();
+        await EntityManager.System<GovernanceAHelpSystem>().RefreshResponderEuisAsync();
     }
 
     public async Task RespondToInvitationAsync(
@@ -324,7 +309,6 @@ public sealed class GovernanceDutySystem : EntitySystem
             {
                 await _governance.RefreshDutyAsync(player.UserId);
                 _ahelpAccess.Add(player.UserId);
-                RaiseNetworkEvent(new GovernanceAHelpAccessUpdated(true), player);
                 OpenAHelpQueue(player);
                 _elapsed = float.MaxValue;
             }
@@ -353,6 +337,7 @@ public sealed class GovernanceDutySystem : EntitySystem
         if (!_governance.Enabled || _ticker.RunLevel != GameRunLevel.InRound ||
             player.AttachedEntity is not { } entity || !HasComp<GhostComponent>(entity))
             return false;
+
         return await _governance.AuthorizeAsync(player.UserId, _ticker.RoundId, "moderation.ahelp") != null;
     }
 
@@ -360,48 +345,8 @@ public sealed class GovernanceDutySystem : EntitySystem
     {
         if (!await CanUseAHelpAsync(player))
             return [];
+
         return await _database.GetGovernanceAHelpQueueAsync(player.UserId, _ticker.RoundId);
-    }
-
-    public async Task<bool> ClaimAHelpAsync(ICommonSession player, long ticketId)
-    {
-        var claimed = await CanUseAHelpAsync(player) &&
-                      await _database.ClaimGovernanceAHelpAsync(ticketId, player.UserId, _ticker.RoundId);
-        if (claimed)
-        {
-            _knownOpenAHelpTickets.Remove(ticketId);
-            _elapsed = float.MaxValue;
-            await RefreshAHelpEuisAsync();
-        }
-        return claimed;
-    }
-
-    public async Task<bool> SetAHelpStatusAsync(ICommonSession player, long ticketId, string status)
-    {
-        var changed = await CanUseAHelpAsync(player) &&
-                      await _database.SetGovernanceAHelpStatusAsync(ticketId, player.UserId, _ticker.RoundId, status);
-        if (changed)
-        {
-            _elapsed = float.MaxValue;
-            await RefreshAHelpEuisAsync();
-        }
-        return changed;
-    }
-
-    public async Task<bool> OpenAHelpChatAsync(ICommonSession player, long ticketId)
-    {
-        if (!await CanUseAHelpAsync(player))
-            return false;
-        var ticket = (await _database.GetGovernanceAHelpQueueAsync(player.UserId, _ticker.RoundId))
-            .SingleOrDefault(value => value.Id == ticketId && value.ClaimedByMe);
-        if (ticket == null)
-            return false;
-        var transcript = await _database.GetGovernanceAHelpTranscriptAsync(
-            ticketId,
-            player.UserId,
-            _ticker.RoundId);
-        _bwoink.OpenGovernanceAHelp(player, ticket.ReporterUserId, transcript);
-        return true;
     }
 
     public async void OpenAHelpQueue(ICommonSession player)
@@ -411,18 +356,12 @@ public sealed class GovernanceDutySystem : EntitySystem
             _chat.DispatchServerMessage(player, Loc.GetString("governance-ahelp-access-denied"));
             return;
         }
+
         _euis.OpenEui(new GovernanceAHelpQueueEui(this), player);
     }
 
     private void RevokeAHelpAccess()
     {
-        if (_ahelpAccess.Count == 0)
-            return;
-        foreach (var userId in _ahelpAccess)
-        {
-            if (_players.TryGetSessionById(userId, out var session))
-                RaiseNetworkEvent(new GovernanceAHelpAccessUpdated(false), session);
-        }
         _ahelpAccess.Clear();
     }
 
