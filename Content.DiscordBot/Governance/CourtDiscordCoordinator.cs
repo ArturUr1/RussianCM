@@ -80,6 +80,9 @@ public sealed class CourtDiscordCoordinator(
         var members = new HashSet<ulong>();
         foreach (var discordId in await court.LinkedDiscordIdsAsync())
         {
+            if (discordId == 0 || discordId > long.MaxValue)
+                continue;
+
             try
             {
                 if (await client.Rest.GetGuildUserAsync(config.Guild, discordId) != null)
@@ -237,10 +240,14 @@ public sealed class CourtDiscordCoordinator(
     {
         foreach (var (invitation, user) in await court.PendingNotificationsAsync())
         {
+            if (user.DiscordUserId <= 0)
+                continue;
+
             try
             {
-                IUser discordUser = client.GetUser((ulong) user.DiscordUserId) ??
-                    (IUser) await client.Rest.GetUserAsync((ulong) user.DiscordUserId);
+                var discordId = checked((ulong) user.DiscordUserId);
+                IUser discordUser = client.GetUser(discordId) ??
+                    await client.Rest.GetUserAsync(discordId);
                 var dm = await discordUser.CreateDMChannelAsync();
                 await dm.SendMessageAsync(
                     $"Вас пригласили в присяжные RUCM по делу №{invitation.EntityId}. " +
@@ -259,10 +266,14 @@ public sealed class CourtDiscordCoordinator(
     {
         foreach (var (invitation, user, proposal) in await events.PendingReviewNotificationsAsync())
         {
+            if (user.DiscordUserId <= 0)
+                continue;
+
             try
             {
-                IUser discordUser = client.GetUser((ulong) user.DiscordUserId) ??
-                    (IUser) await client.Rest.GetUserAsync((ulong) user.DiscordUserId);
+                var discordId = checked((ulong) user.DiscordUserId);
+                IUser discordUser = client.GetUser(discordId) ??
+                    await client.Rest.GetUserAsync(discordId);
                 var dm = await discordUser.CreateDMChannelAsync();
                 await dm.SendMessageAsync(
                     $"Вас пригласили стать независимым рецензентом EventProposal №{proposal.Id} «{proposal.Title}». " +
