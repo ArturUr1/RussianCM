@@ -1,7 +1,10 @@
 using System.Numerics;
+using Content.Client.Stylesheets;
+using Content.Client.UserInterface.Controls;
 using Content.Shared._RuMC14.Governance;
 using Robust.Client.UserInterface.Controls;
 using Robust.Client.UserInterface.CustomControls;
+using Robust.Shared.IoC;
 using Robust.Shared.Utility;
 using static Robust.Client.UserInterface.Controls.BoxContainer;
 
@@ -22,7 +25,9 @@ public sealed class GovernanceAHelpPlayerWindow : DefaultWindow
     public GovernanceAHelpPlayerWindow()
     {
         Title = Loc.GetString("governance-ahelp-player-title");
-        MinSize = new Vector2(700, 560);
+        MinSize = new Vector2(720, 580);
+        Stylesheet = IoCManager.Resolve<IStylesheetManager>().SheetNano;
+        CrtLobbyTheme.ApplyWindow(this, includeChat: true, useCrtTypography: false);
 
         var root = new BoxContainer
         {
@@ -34,6 +39,7 @@ public sealed class GovernanceAHelpPlayerWindow : DefaultWindow
 
         var hero = new PanelContainer
         {
+            StyleClasses = { StyleNano.StyleClassCrtPanel },
             HorizontalExpand = true,
         };
         var heroContent = new BoxContainer
@@ -53,10 +59,16 @@ public sealed class GovernanceAHelpPlayerWindow : DefaultWindow
         hero.AddChild(heroContent);
         root.AddChild(hero);
 
+        var metaPanel = new PanelContainer
+        {
+            StyleClasses = { StyleNano.StyleClassCrtInsetPanel },
+            HorizontalExpand = true,
+        };
         var meta = new BoxContainer
         {
             Orientation = LayoutOrientation.Horizontal,
             SeparationOverride = 16,
+            HorizontalExpand = true,
         };
         _status = new RichTextLabel
         {
@@ -68,10 +80,12 @@ public sealed class GovernanceAHelpPlayerWindow : DefaultWindow
         };
         meta.AddChild(_status);
         meta.AddChild(_assignee);
-        root.AddChild(meta);
+        metaPanel.AddChild(meta);
+        root.AddChild(metaPanel);
 
         var transcriptPanel = new PanelContainer
         {
+            StyleClasses = { StyleNano.StyleClassCrtInsetPanel },
             HorizontalExpand = true,
             VerticalExpand = true,
         };
@@ -102,11 +116,10 @@ public sealed class GovernanceAHelpPlayerWindow : DefaultWindow
         transcriptPanel.AddChild(transcriptColumn);
         root.AddChild(transcriptPanel);
 
-        var tips = new RichTextLabel
+        root.AddChild(new RichTextLabel
         {
             Text = Loc.GetString("governance-ahelp-player-tips"),
-        };
-        root.AddChild(tips);
+        });
 
         var composer = new BoxContainer
         {
@@ -116,6 +129,7 @@ public sealed class GovernanceAHelpPlayerWindow : DefaultWindow
         _message = new LineEdit
         {
             HorizontalExpand = true,
+            PlaceHolder = Loc.GetString("governance-ahelp-player-message-placeholder"),
         };
         _message.OnTextEntered += args => Send(args.Text);
         _send = new Button
