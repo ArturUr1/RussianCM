@@ -19,9 +19,20 @@ public sealed class GovernanceAHelpNotificationSystem : EntitySystem
     {
         base.Initialize();
         SubscribeNetworkEvent<GovernanceAHelpQueueChanged>(OnQueueChanged);
+        SubscribeNetworkEvent<GovernanceAHelpResponderReplyReceived>(OnResponderReply);
     }
 
     private void OnQueueChanged(GovernanceAHelpQueueChanged message, EntitySessionEventArgs args)
+    {
+        Notify();
+    }
+
+    private void OnResponderReply(GovernanceAHelpResponderReplyReceived message, EntitySessionEventArgs args)
+    {
+        Notify();
+    }
+
+    private void Notify()
     {
         var sound = _configuration.GetCVar(CCVars.AHelpSound);
         if (!string.IsNullOrWhiteSpace(sound))
