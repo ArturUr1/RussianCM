@@ -275,12 +275,12 @@ public sealed partial class ServerDbManager
                 WHERE ticket.id = @ticket_id AND ticket.round_id = @round_id
                   AND ticket.status = 'open'
                   AND ticket.reporter_ss14_user_id <> @responder
-                RETURNING ticket.id, actor.id
+                RETURNING ticket.id AS ticket_id
             ), audited AS (
                 INSERT INTO governance.audit_events(
                     event_type, actor_type, actor_id, entity_type, entity_id, payload)
                 SELECT 'ahelp.claimed', 'ss14_user', @responder::text,
-                       'ahelp_ticket', claimed.id::text,
+                       'ahelp_ticket', claimed.ticket_id::text,
                        jsonb_build_object('round_id', @round_id)
                 FROM claimed
             )
