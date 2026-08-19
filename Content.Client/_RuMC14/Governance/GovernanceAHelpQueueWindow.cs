@@ -16,7 +16,10 @@ public sealed class GovernanceAHelpQueueWindow : DefaultWindow
     public event Action<GovernanceAHelpQueueAction, long, string?, string?>? ActionRequested;
 
     private readonly BoxContainer _ticketList;
+    private readonly BoxContainer _approvalList;
     private readonly BoxContainer _transcript;
+    private readonly BoxContainer _incidentActionList;
+    private readonly BoxContainer _logList;
     private readonly Label _counter;
     private readonly RichTextLabel _ticketHeader;
     private readonly RichTextLabel _ticketMeta;
@@ -31,6 +34,12 @@ public sealed class GovernanceAHelpQueueWindow : DefaultWindow
     private readonly LineEdit _incidentTarget;
     private readonly LineEdit _incidentType;
     private readonly Button _createIncident;
+    private readonly LineEdit _actionReason;
+    private readonly LineEdit _freezeSeconds;
+    private readonly Button _requestExplanation;
+    private readonly Button _viewLogs;
+    private readonly Button _freeze;
+    private readonly Button _roundRemove;
 
     private IReadOnlyList<GovernanceAHelpQueueItem> _tickets = [];
     private long _selectedTicketId;
@@ -40,7 +49,7 @@ public sealed class GovernanceAHelpQueueWindow : DefaultWindow
     public GovernanceAHelpQueueWindow()
     {
         Title = Loc.GetString("governance-ahelp-title");
-        MinSize = new Vector2(1040, 650);
+        MinSize = new Vector2(1180, 720);
         Stylesheet = IoCManager.Resolve<IStylesheetManager>().SheetNano;
         CrtLobbyTheme.ApplyWindow(this, includeChat: true, useCrtTypography: false);
 
@@ -135,6 +144,32 @@ public sealed class GovernanceAHelpQueueWindow : DefaultWindow
         };
         queueScroll.AddChild(_ticketList);
         queueColumn.AddChild(queueScroll);
+
+        var approvalPanel = new PanelContainer
+        {
+            StyleClasses = { StyleNano.StyleClassCrtPanel },
+            HorizontalExpand = true,
+        };
+        var approvalColumn = new BoxContainer
+        {
+            Orientation = LayoutOrientation.Vertical,
+            SeparationOverride = 5,
+            HorizontalExpand = true,
+        };
+        approvalColumn.AddChild(new RichTextLabel
+        {
+            Text = Loc.GetString("governance-ahelp-approval-heading"),
+        });
+        _approvalList = new BoxContainer
+        {
+            Orientation = LayoutOrientation.Vertical,
+            SeparationOverride = 5,
+            HorizontalExpand = true,
+        };
+        approvalColumn.AddChild(_approvalList);
+        approvalPanel.AddChild(approvalColumn);
+        queueColumn.AddChild(approvalPanel);
+
         queuePanel.AddChild(queueColumn);
         body.AddChild(queuePanel);
 
@@ -206,6 +241,79 @@ public sealed class GovernanceAHelpQueueWindow : DefaultWindow
         incidentInputs.AddChild(_incidentType);
         incidentInputs.AddChild(_createIncident);
         incidentColumn.AddChild(incidentInputs);
+
+        incidentColumn.AddChild(new RichTextLabel
+        {
+            Text = Loc.GetString("governance-ahelp-actions-heading"),
+        });
+        var actionInputs = new BoxContainer
+        {
+            Orientation = LayoutOrientation.Horizontal,
+            SeparationOverride = 6,
+            HorizontalExpand = true,
+        };
+        _actionReason = new LineEdit
+        {
+            HorizontalExpand = true,
+            PlaceHolder = Loc.GetString("governance-ahelp-action-reason-placeholder"),
+        };
+        _freezeSeconds = new LineEdit
+        {
+            Text = "60",
+            PlaceHolder = Loc.GetString("governance-ahelp-action-freeze-seconds-placeholder"),
+        };
+        actionInputs.AddChild(_actionReason);
+        actionInputs.AddChild(_freezeSeconds);
+        incidentColumn.AddChild(actionInputs);
+
+        var moderationButtons = new BoxContainer
+        {
+            Orientation = LayoutOrientation.Horizontal,
+            SeparationOverride = 6,
+            HorizontalExpand = true,
+        };
+        _requestExplanation = IncidentActionButton(
+            Loc.GetString("governance-ahelp-action-request-explanation"),
+            GovernanceAHelpQueueAction.RequestExplanation);
+        _viewLogs = IncidentActionButton(
+            Loc.GetString("governance-ahelp-action-view-logs"),
+            GovernanceAHelpQueueAction.ViewLogs);
+        _freeze = IncidentActionButton(
+            Loc.GetString("governance-ahelp-action-freeze"),
+            GovernanceAHelpQueueAction.Freeze);
+        _roundRemove = IncidentActionButton(
+            Loc.GetString("governance-ahelp-action-round-remove"),
+            GovernanceAHelpQueueAction.RoundRemove);
+        moderationButtons.AddChild(_requestExplanation);
+        moderationButtons.AddChild(_viewLogs);
+        moderationButtons.AddChild(_freeze);
+        moderationButtons.AddChild(_roundRemove);
+        incidentColumn.AddChild(moderationButtons);
+
+        incidentColumn.AddChild(new RichTextLabel
+        {
+            Text = Loc.GetString("governance-ahelp-action-history-heading"),
+        });
+        _incidentActionList = new BoxContainer
+        {
+            Orientation = LayoutOrientation.Vertical,
+            SeparationOverride = 4,
+            HorizontalExpand = true,
+        };
+        incidentColumn.AddChild(_incidentActionList);
+
+        incidentColumn.AddChild(new RichTextLabel
+        {
+            Text = Loc.GetString("governance-ahelp-logs-heading"),
+        });
+        _logList = new BoxContainer
+        {
+            Orientation = LayoutOrientation.Vertical,
+            SeparationOverride = 2,
+            HorizontalExpand = true,
+        };
+        incidentColumn.AddChild(_logList);
+
         incidentPanel.AddChild(incidentColumn);
         conversation.AddChild(incidentPanel);
 
@@ -300,7 +408,13 @@ public sealed class GovernanceAHelpQueueWindow : DefaultWindow
             ("mine", mine));
 
         RebuildTicketList();
-        UpdateSelectedTicket(state.Transcript, state.IncidentTargetName, state.IncidentType);
+        RebuildPendingApprovals(state.PendingApprovals);
+        UpdateSelectedTicket(
+            state.Transcript,
+            state.IncidentTargetName,
+            state.IncidentType,
+            state.IncidentActions,
+            state.Logs);
         UpdateActionState();
     }
 
@@ -351,19 +465,99 @@ public sealed class GovernanceAHelpQueueWindow : DefaultWindow
         }
     }
 
+    private void RebuildPendingApprovals(IReadOnlyList<GovernanceAHelpPendingApprovalEntry> approvals)
+    {
+        _approvalList.RemoveAllChildren();
+        if (approvals.Count == 0)
+        {
+            _approvalList.AddChild(new RichTextLabel
+            {
+                Text = Loc.GetString("governance-ahelp-approval-empty"),
+            });
+            return;
+        }
+
+        foreach (var approval in approvals)
+        {
+            var card = new BoxContainer
+            {
+                Orientation = LayoutOrientation.Vertical,
+                SeparationOverride = 3,
+                HorizontalExpand = true,
+            };
+            card.AddChild(new RichTextLabel
+            {
+                Text = Loc.GetString(
+                    "governance-ahelp-approval-card",
+                    ("id", approval.ActionId),
+                    ("incident", approval.IncidentId),
+                    ("actor", FormattedMessage.EscapeText(approval.ActorName)),
+                    ("target", FormattedMessage.EscapeText(approval.TargetName)),
+                    ("type", ActionTypeText(approval.ActionType)),
+                    ("reason", FormattedMessage.EscapeText(approval.Reason)),
+                    ("approvals", approval.Approvals),
+                    ("required", approval.RequiredApprovals)),
+            });
+
+            var reviewButtons = new BoxContainer
+            {
+                Orientation = LayoutOrientation.Horizontal,
+                SeparationOverride = 4,
+                HorizontalExpand = true,
+            };
+            var approve = new Button
+            {
+                Text = Loc.GetString("governance-ahelp-approval-approve"),
+                HorizontalExpand = true,
+            };
+            var reject = new Button
+            {
+                Text = Loc.GetString("governance-ahelp-approval-reject"),
+                HorizontalExpand = true,
+            };
+            var actionId = approval.ActionId;
+            approve.OnPressed += _ => ActionRequested?.Invoke(
+                GovernanceAHelpQueueAction.ApproveModerationAction,
+                actionId,
+                null,
+                null);
+            reject.OnPressed += _ => ActionRequested?.Invoke(
+                GovernanceAHelpQueueAction.RejectModerationAction,
+                actionId,
+                null,
+                null);
+            reviewButtons.AddChild(approve);
+            reviewButtons.AddChild(reject);
+            card.AddChild(reviewButtons);
+            _approvalList.AddChild(card);
+        }
+    }
+
     private void UpdateSelectedTicket(
         IReadOnlyList<GovernanceAHelpTranscriptEntry> transcript,
         string incidentTargetName,
-        string incidentType)
+        string incidentType,
+        IReadOnlyList<GovernanceAHelpModerationActionEntry> incidentActions,
+        IReadOnlyList<GovernanceAHelpLogEntry> logs)
     {
         var selected = _tickets.FirstOrDefault(ticket => ticket.Id == _selectedTicketId);
         _transcript.RemoveAllChildren();
+        _incidentActionList.RemoveAllChildren();
+        _logList.RemoveAllChildren();
 
         if (selected == null)
         {
             _ticketHeader.Text = Loc.GetString("governance-ahelp-select-ticket");
             _ticketMeta.Text = string.Empty;
             _incidentStatus.Text = Loc.GetString("governance-ahelp-incident-none");
+            _incidentActionList.AddChild(new RichTextLabel
+            {
+                Text = Loc.GetString("governance-ahelp-action-history-empty"),
+            });
+            _logList.AddChild(new RichTextLabel
+            {
+                Text = Loc.GetString("governance-ahelp-logs-empty"),
+            });
             _transcript.AddChild(new RichTextLabel
             {
                 Text = Loc.GetString("governance-ahelp-no-selection-hint"),
@@ -376,6 +570,8 @@ public sealed class GovernanceAHelpQueueWindow : DefaultWindow
             _lastRenderedTicketId = selected.Id;
             _incidentTarget.Clear();
             _incidentType.Text = Loc.GetString("governance-ahelp-incident-type-default");
+            _actionReason.Clear();
+            _freezeSeconds.Text = "60";
         }
 
         _ticketHeader.Text = Loc.GetString(
@@ -395,6 +591,9 @@ public sealed class GovernanceAHelpQueueWindow : DefaultWindow
                 ("target", FormattedMessage.EscapeText(incidentTargetName)),
                 ("type", FormattedMessage.EscapeText(incidentType)))
             : Loc.GetString("governance-ahelp-incident-none");
+
+        RebuildIncidentActions(incidentActions);
+        RebuildLogs(logs);
 
         if (!selected.ClaimedByMe)
         {
@@ -435,6 +634,61 @@ public sealed class GovernanceAHelpQueueWindow : DefaultWindow
         }
     }
 
+    private void RebuildIncidentActions(IReadOnlyList<GovernanceAHelpModerationActionEntry> actions)
+    {
+        if (actions.Count == 0)
+        {
+            _incidentActionList.AddChild(new RichTextLabel
+            {
+                Text = Loc.GetString("governance-ahelp-action-history-empty"),
+            });
+            return;
+        }
+
+        foreach (var action in actions)
+        {
+            var duration = action.DurationSeconds > 0
+                ? Loc.GetString("governance-ahelp-action-duration", ("seconds", action.DurationSeconds))
+                : string.Empty;
+            _incidentActionList.AddChild(new RichTextLabel
+            {
+                Text = Loc.GetString(
+                    "governance-ahelp-action-card",
+                    ("id", action.Id),
+                    ("type", ActionTypeText(action.ActionType)),
+                    ("status", ActionStatusText(action.Status)),
+                    ("approvals", action.Approvals),
+                    ("required", action.RequiredApprovals),
+                    ("duration", duration),
+                    ("reason", FormattedMessage.EscapeText(action.Reason))),
+            });
+        }
+    }
+
+    private void RebuildLogs(IReadOnlyList<GovernanceAHelpLogEntry> logs)
+    {
+        if (logs.Count == 0)
+        {
+            _logList.AddChild(new RichTextLabel
+            {
+                Text = Loc.GetString("governance-ahelp-logs-empty"),
+            });
+            return;
+        }
+
+        foreach (var log in logs.Take(30))
+        {
+            _logList.AddChild(new RichTextLabel
+            {
+                Text = Loc.GetString(
+                    "governance-ahelp-log-line",
+                    ("time", log.CreatedAt.ToLocalTime().ToString("HH:mm:ss")),
+                    ("type", FormattedMessage.EscapeText(log.Type)),
+                    ("message", FormattedMessage.EscapeText(log.Message))),
+            });
+        }
+    }
+
     private void CreateIncident()
     {
         if (_selectedTicketId == 0)
@@ -456,6 +710,46 @@ public sealed class GovernanceAHelpQueueWindow : DefaultWindow
             _selectedTicketId,
             target,
             type);
+    }
+
+    private Button IncidentActionButton(string text, GovernanceAHelpQueueAction action)
+    {
+        var button = new Button
+        {
+            Text = text,
+            HorizontalExpand = true,
+        };
+        button.OnPressed += _ => RunIncidentAction(action);
+        return button;
+    }
+
+    private void RunIncidentAction(GovernanceAHelpQueueAction action)
+    {
+        if (_selectedTicketId == 0 || _incidentId == 0)
+        {
+            _error.Text = Loc.GetString("governance-ahelp-action-no-incident");
+            return;
+        }
+
+        var reason = _actionReason.Text.Trim();
+        if (reason.Length is < 10 or > 512)
+        {
+            _error.Text = Loc.GetString("governance-ahelp-action-reason-invalid");
+            return;
+        }
+
+        string? auxiliary = null;
+        if (action == GovernanceAHelpQueueAction.Freeze)
+        {
+            if (!int.TryParse(_freezeSeconds.Text.Trim(), out var seconds) || seconds < 1 || seconds > 120)
+            {
+                _error.Text = Loc.GetString("governance-ahelp-action-freeze-duration-invalid");
+                return;
+            }
+            auxiliary = seconds.ToString();
+        }
+
+        ActionRequested?.Invoke(action, _selectedTicketId, reason, auxiliary);
     }
 
     private void SendReply(string text)
@@ -505,6 +799,14 @@ public sealed class GovernanceAHelpQueueWindow : DefaultWindow
         _incidentTarget.Editable = canCreateIncident;
         _incidentType.Editable = canCreateIncident;
         _createIncident.Disabled = !canCreateIncident;
+
+        var canAct = mine && _incidentId > 0;
+        _actionReason.Editable = canAct;
+        _freezeSeconds.Editable = canAct;
+        _requestExplanation.Disabled = !canAct;
+        _viewLogs.Disabled = !canAct;
+        _freeze.Disabled = !canAct;
+        _roundRemove.Disabled = !canAct;
     }
 
     private static string StatusText(GovernanceAHelpQueueItem ticket)
@@ -522,6 +824,31 @@ public sealed class GovernanceAHelpQueueWindow : DefaultWindow
         {
             "open" => Loc.GetString("governance-ahelp-status-open"),
             _ => ticket.Status,
+        };
+    }
+
+    private static string ActionTypeText(string actionType)
+    {
+        return actionType switch
+        {
+            "request_explanation" => Loc.GetString("governance-ahelp-action-type-explanation"),
+            "view_logs" => Loc.GetString("governance-ahelp-action-type-logs"),
+            "freeze" => Loc.GetString("governance-ahelp-action-type-freeze"),
+            "round_remove" => Loc.GetString("governance-ahelp-action-type-round-remove"),
+            _ => actionType,
+        };
+    }
+
+    private static string ActionStatusText(string status)
+    {
+        return status switch
+        {
+            "proposed" => Loc.GetString("governance-ahelp-action-status-proposed"),
+            "approved" => Loc.GetString("governance-ahelp-action-status-approved"),
+            "executed" => Loc.GetString("governance-ahelp-action-status-executed"),
+            "rejected" => Loc.GetString("governance-ahelp-action-status-rejected"),
+            "expired" => Loc.GetString("governance-ahelp-action-status-expired"),
+            _ => status,
         };
     }
 }
