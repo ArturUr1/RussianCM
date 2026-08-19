@@ -15,6 +15,9 @@ public sealed class GovernanceAHelpQueueEui : BaseEui
 
     private GovernanceAHelpQueueItem[] _tickets = [];
     private GovernanceAHelpTranscriptEntry[] _transcript = [];
+    private GovernanceAHelpModerationActionEntry[] _incidentActions = [];
+    private GovernanceAHelpPendingApprovalEntry[] _pendingApprovals = [];
+    private GovernanceAHelpLogEntry[] _logs = [];
     private long _selectedTicketId;
     private long _incidentId;
     private string _incidentTargetName = string.Empty;
@@ -42,6 +45,9 @@ public sealed class GovernanceAHelpQueueEui : BaseEui
         _incidentId,
         _incidentTargetName,
         _incidentType,
+        _incidentActions,
+        _pendingApprovals,
+        _logs,
         _error);
 
     public override void HandleMessage(EuiMessageBase msg)
@@ -70,6 +76,7 @@ public sealed class GovernanceAHelpQueueEui : BaseEui
                     break;
                 case GovernanceAHelpQueueAction.SelectTicket:
                     _selectedTicketId = message.TicketId;
+                    _logs = [];
                     break;
                 case GovernanceAHelpQueueAction.Claim:
                     if (!await _system.ClaimAsync(Player, message.TicketId))
@@ -95,6 +102,7 @@ public sealed class GovernanceAHelpQueueEui : BaseEui
                         _error = Loc.GetString("governance-ahelp-status-failed");
                     break;
                 case GovernanceAHelpQueueAction.CreateIncident:
+                {
                     var incidentError = await _system.CreateIncidentAsync(
                         Player,
                         message.TicketId,
@@ -102,6 +110,28 @@ public sealed class GovernanceAHelpQueueEui : BaseEui
                         message.AuxiliaryText ?? string.Empty);
                     if (incidentError != null)
                         _error = Loc.GetString(incidentError);
+                    break;
+                }
+                case GovernanceAHelpQueueAction.RequestExplanation:
+                    await RunIncidentActionAsync(message, "request_explanation", null);
+                    break;
+                case GovernanceAHelpQueueAction.ViewLogs:
+                    await RunIncidentActionAsync(message, "view_logs", null);
+                    break;
+                case GovernanceAHelpQueueAction.Freeze:
+                {
+                    int? duration = int.TryParse(message.AuxiliaryText, out var seconds) ? seconds : null;
+                    await RunIncidentActionAsync(message, "freeze", duration);
+                    break;
+                }
+                case GovernanceAHelpQueueAction.RoundRemove:
+                    await RunIncidentActionAsync(message, "round_remove", null);
+                    break;
+                case GovernanceAHelpQueueAction.ApproveModerationAction:
+                    await ReviewActionAsync(message.TicketId, "approve");
+                    break;
+                case GovernanceAHelpQueueAction.RejectModerationAction:
+                    await ReviewActionAsync(message.TicketId, "reject");
                     break;
             }
 
@@ -120,6 +150,37 @@ public sealed class GovernanceAHelpQueueEui : BaseEui
         }
     }
 
+    private async Task RunIncidentActionAsync(
+        GovernanceAHelpQueueMessage message,
+        string actionType,
+        int? durationSeconds)
+    {
+        var result = await _system.ProposeIncidentActionAsync(
+            Player,
+            message.TicketId,
+            actionType,
+            message.Text ?? string.Empty,
+            durationSeconds);
+        ApplyActionResult(result);
+    }
+
+    private async Task ReviewActionAsync(long actionId, string decision)
+    {
+        var result = await _system.ReviewIncidentActionAsync(Player, actionId, decision);
+        ApplyActionResult(result);
+    }
+
+    private void ApplyActionResult(GovernanceAHelpActionExecutionResult result)
+    {
+        if (result.ErrorLocaleKey != null)
+            _error = Loc.GetString(result.ErrorLocaleKey);
+
+        _logs = result.Logs.Select(log => new GovernanceAHelpLogEntry(
+            log.CreatedAt.UtcDateTime,
+            log.Type,
+            log.Message)).ToArray();
+    }
+
     private async Task RefreshAsync()
     {
         var queue = await _system.GetQueueAsync(Player);
@@ -132,6 +193,19 @@ public sealed class GovernanceAHelpQueueEui : BaseEui
             value.CreatedAt.UtcDateTime,
             value.ClaimedByMe)).ToArray();
 
+        _pendingApprovals = (await _system.GetPendingActionApprovalsAsync(Player))
+            .Select(action => new GovernanceAHelpPendingApprovalEntry(
+                action.Id,
+                action.IncidentId,
+                action.ActorName,
+                action.TargetName,
+                action.ActionType,
+                action.Reason,
+                action.DurationSeconds ?? 0,
+                action.Approvals,
+                action.RequiredApprovals))
+            .ToArray();
+
         if (_selectedTicketId == 0 || _tickets.All(ticket => ticket.Id != _selectedTicketId))
         {
             _selectedTicketId = _tickets.FirstOrDefault(ticket => ticket.ClaimedByMe)?.Id
@@ -143,6 +217,7 @@ public sealed class GovernanceAHelpQueueEui : BaseEui
         _incidentId = 0;
         _incidentTargetName = string.Empty;
         _incidentType = string.Empty;
+        _incidentActions = [];
 
         if (selected?.ClaimedByMe == true)
         {
@@ -159,6 +234,16 @@ public sealed class GovernanceAHelpQueueEui : BaseEui
                 _incidentId = incident.Id;
                 _incidentTargetName = incident.TargetName;
                 _incidentType = incident.Type;
+                _incidentActions = (await _system.GetIncidentActionsAsync(Player, incident.Id))
+                    .Select(action => new GovernanceAHelpModerationActionEntry(
+                        action.Id,
+                        action.ActionType,
+                        action.Reason,
+                        action.DurationSeconds ?? 0,
+                        action.Status,
+                        action.Approvals,
+                        action.RequiredApprovals))
+                    .ToArray();
             }
         }
         else
