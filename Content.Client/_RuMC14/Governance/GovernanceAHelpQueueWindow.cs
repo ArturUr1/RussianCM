@@ -1,8 +1,11 @@
 using System.Linq;
 using System.Numerics;
+using Content.Client.Stylesheets;
+using Content.Client.UserInterface.Controls;
 using Content.Shared._RuMC14.Governance;
 using Robust.Client.UserInterface.Controls;
 using Robust.Client.UserInterface.CustomControls;
+using Robust.Shared.IoC;
 using Robust.Shared.Utility;
 using static Robust.Client.UserInterface.Controls.BoxContainer;
 
@@ -18,6 +21,7 @@ public sealed class GovernanceAHelpQueueWindow : DefaultWindow
     private readonly RichTextLabel _ticketHeader;
     private readonly RichTextLabel _ticketMeta;
     private readonly Label _error;
+    private readonly LineEdit _filter;
     private readonly LineEdit _reply;
     private readonly Button _claim;
     private readonly Button _send;
@@ -31,17 +35,27 @@ public sealed class GovernanceAHelpQueueWindow : DefaultWindow
     {
         Title = Loc.GetString("governance-ahelp-title");
         MinSize = new Vector2(1040, 650);
+        Stylesheet = IoCManager.Resolve<IStylesheetManager>().SheetNano;
+        CrtLobbyTheme.ApplyWindow(this, includeChat: true, useCrtTypography: false);
 
         var root = new BoxContainer
         {
             Orientation = LayoutOrientation.Vertical,
             SeparationOverride = 12,
+            HorizontalExpand = true,
+            VerticalExpand = true,
         };
 
-        var header = new BoxContainer
+        var header = new PanelContainer
+        {
+            StyleClasses = { StyleNano.StyleClassCrtPanel },
+            HorizontalExpand = true,
+        };
+        var headerContent = new BoxContainer
         {
             Orientation = LayoutOrientation.Horizontal,
             SeparationOverride = 12,
+            HorizontalExpand = true,
         };
         var heading = new BoxContainer
         {
@@ -60,9 +74,10 @@ public sealed class GovernanceAHelpQueueWindow : DefaultWindow
         _counter = new Label();
         var refresh = new Button { Text = Loc.GetString("governance-ahelp-refresh") };
         refresh.OnPressed += _ => ActionRequested?.Invoke(GovernanceAHelpQueueAction.Refresh, 0, null);
-        header.AddChild(heading);
-        header.AddChild(_counter);
-        header.AddChild(refresh);
+        headerContent.AddChild(heading);
+        headerContent.AddChild(_counter);
+        headerContent.AddChild(refresh);
+        header.AddChild(headerContent);
         root.AddChild(header);
 
         var body = new BoxContainer
@@ -75,6 +90,7 @@ public sealed class GovernanceAHelpQueueWindow : DefaultWindow
 
         var queuePanel = new PanelContainer
         {
+            StyleClasses = { StyleNano.StyleClassCrtInsetPanel },
             HorizontalExpand = true,
             VerticalExpand = true,
         };
@@ -93,6 +109,13 @@ public sealed class GovernanceAHelpQueueWindow : DefaultWindow
         {
             Text = Loc.GetString("governance-ahelp-list-hint"),
         });
+        _filter = new LineEdit
+        {
+            HorizontalExpand = true,
+            PlaceHolder = Loc.GetString("governance-ahelp-filter-placeholder"),
+        };
+        _filter.OnTextChanged += _ => RebuildTicketList();
+        queueColumn.AddChild(_filter);
         var queueScroll = new ScrollContainer
         {
             HorizontalExpand = true,
@@ -111,6 +134,7 @@ public sealed class GovernanceAHelpQueueWindow : DefaultWindow
 
         var conversationPanel = new PanelContainer
         {
+            StyleClasses = { StyleNano.StyleClassCrtInsetPanel },
             HorizontalExpand = true,
             VerticalExpand = true,
         };
@@ -167,6 +191,7 @@ public sealed class GovernanceAHelpQueueWindow : DefaultWindow
         _reply = new LineEdit
         {
             HorizontalExpand = true,
+            PlaceHolder = Loc.GetString("governance-ahelp-reply-placeholder"),
         };
         _reply.OnTextEntered += args => SendReply(args.Text);
         _send = new Button
@@ -210,7 +235,12 @@ public sealed class GovernanceAHelpQueueWindow : DefaultWindow
         _tickets = state.Tickets;
         _selectedTicketId = state.SelectedTicketId;
         _error.Text = state.Error ?? string.Empty;
-        _counter.Text = Loc.GetString("governance-ahelp-counter", ("count", state.Tickets.Length));
+        var mine = state.Tickets.Count(ticket => ticket.ClaimedByMe);
+        var open = state.Tickets.Count(ticket => !ticket.ClaimedByMe && ticket.Status == "open");
+        _counter.Text = Loc.GetString(
+            "governance-ahelp-counter-modern",
+            ("open", open),
+            ("mine", mine));
 
         RebuildTicketList();
         UpdateSelectedTicket(state.Transcript);
@@ -220,16 +250,26 @@ public sealed class GovernanceAHelpQueueWindow : DefaultWindow
     private void RebuildTicketList()
     {
         _ticketList.RemoveAllChildren();
-        if (_tickets.Count == 0)
+        var filter = _filter.Text.Trim();
+        var visible = _tickets
+            .Where(ticket => string.IsNullOrWhiteSpace(filter) ||
+                             ticket.Id.ToString().Contains(filter, StringComparison.OrdinalIgnoreCase) ||
+                             ticket.ReporterName.Contains(filter, StringComparison.OrdinalIgnoreCase) ||
+                             ticket.Summary.Contains(filter, StringComparison.OrdinalIgnoreCase))
+            .ToArray();
+
+        if (visible.Length == 0)
         {
             _ticketList.AddChild(new RichTextLabel
             {
-                Text = Loc.GetString("governance-ahelp-empty-modern"),
+                Text = _tickets.Count == 0
+                    ? Loc.GetString("governance-ahelp-empty-modern")
+                    : Loc.GetString("governance-ahelp-filter-empty"),
             });
             return;
         }
 
-        foreach (var ticket in _tickets)
+        foreach (var ticket in visible)
         {
             var summary = ticket.Summary.Length > 110 ? ticket.Summary[..110] + "…" : ticket.Summary;
             var status = StatusText(ticket);
