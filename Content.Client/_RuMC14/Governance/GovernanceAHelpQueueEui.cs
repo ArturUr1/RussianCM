@@ -37,9 +37,13 @@ public sealed class GovernanceAHelpQueueEui : BaseEui
             _window?.UpdateState(queue);
     }
 
-    private void SendAction(GovernanceAHelpQueueAction action, long ticketId, string? text)
+    private void SendAction(
+        GovernanceAHelpQueueAction action,
+        long ticketId,
+        string? text,
+        string? auxiliaryText)
     {
-        SendMessage(new GovernanceAHelpQueueMessage(action, ticketId, text));
+        SendMessage(new GovernanceAHelpQueueMessage(action, ticketId, text, auxiliaryText));
     }
 
     private void OnClosed()
