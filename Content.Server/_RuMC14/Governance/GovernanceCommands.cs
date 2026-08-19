@@ -1,12 +1,14 @@
 using System;
 using Content.Server.Commands;
 using Content.Server.GameTicking;
+using Content.Shared.Administration;
 using Robust.Shared.Console;
 using Robust.Shared.GameObjects;
 
 namespace Content.Server._RuMC14.Governance;
 
-public sealed class GovernanceStatusCommand : IConsoleCommand
+[AnyCommand]
+public sealed partial class GovernanceStatusCommand : IConsoleCommand
 {
     public string Command => "governance_status";
     public string Description => Loc.GetString("cmd-governance-status-description");
@@ -37,7 +39,8 @@ public sealed class GovernanceStatusCommand : IConsoleCommand
     }
 }
 
-public sealed class GovernanceAHelpCommand : IConsoleCommand
+[AnyCommand]
+public sealed partial class GovernanceAHelpCommand : IConsoleCommand
 {
     public string Command => "governance_ahelp";
     public string Description => Loc.GetString("cmd-governance-ahelp-description");
@@ -54,7 +57,8 @@ public sealed class GovernanceAHelpCommand : IConsoleCommand
     }
 }
 
-public sealed class GovernanceFreezeCommand : IConsoleCommand
+[AnyCommand]
+public sealed partial class GovernanceFreezeCommand : IConsoleCommand
 {
     public string Command => "governance_freeze";
     public string Description => Loc.GetString("cmd-governance-freeze-description");
@@ -113,7 +117,8 @@ public sealed class GovernanceFreezeCommand : IConsoleCommand
     }
 }
 
-public sealed class GovernanceRoundRemoveCommand : IConsoleCommand
+[AnyCommand]
+public sealed partial class GovernanceRoundRemoveCommand : IConsoleCommand
 {
     public string Command => "governance_round_remove";
     public string Description => Loc.GetString("cmd-governance-round-remove-description");
@@ -145,7 +150,8 @@ public sealed class GovernanceRoundRemoveCommand : IConsoleCommand
     }
 }
 
-public sealed class GovernanceExplanationCommand : IConsoleCommand
+[AnyCommand]
+public sealed partial class GovernanceExplanationCommand : IConsoleCommand
 {
     public string Command => "governance_explanation";
     public string Description => Loc.GetString("cmd-governance-explanation-description");
@@ -180,7 +186,8 @@ public sealed class GovernanceExplanationCommand : IConsoleCommand
     }
 }
 
-public sealed class GovernanceLogsCommand : IConsoleCommand
+[AnyCommand]
+public sealed partial class GovernanceLogsCommand : IConsoleCommand
 {
     public string Command => "governance_logs";
     public string Description => Loc.GetString("cmd-governance-logs-description");
