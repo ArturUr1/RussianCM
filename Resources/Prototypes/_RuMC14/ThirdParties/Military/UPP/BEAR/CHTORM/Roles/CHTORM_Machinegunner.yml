@@ -1,14 +1,14 @@
 - type: job
   parent: CMJobBase
-  id: RuMCUPPBEARRifleman
+  id: RuMCUPPBEARMachinegunner
   roundSide: ThirdParty
   roundForce: BEAR
-  roundRole: RuMCUPPBEARRifleman
+  roundRole: RuMCUPPBEARMachinegunner
   roundComponents:
   - type: TacticalMapIcon
     icon:
       sprite: /Textures/_RMC14/Interface/map_blips.rsi
-      state: upp_pvt
+      state: upp_sapper
   - type: AssignSquad
     whitelist:
       tags:
@@ -26,10 +26,11 @@
       RMCSkillVehicles: 2
       RMCSkillJtac: 1
       RMCSkillEndurance: 2
+      RMCSkillSmartGun: 1
   - type: EquipEntityPreset
-    preset: RuMCBEARPreset
+    preset: RuMCBEARmachinegunPreset
   - type: JobPrefix
-    prefix: au-14-job-prefix-rmcrrt-commander
+    prefix: au-14-job-prefix-bear-machinegunner # RuMC edit
   - type: MarineOrders
   - type: RMCTrackable
   - type: RMCPointing
@@ -53,44 +54,57 @@
     currentLanguage: Russian
     defaultLanguage: Russian
 
-  name: rumc-job-name-bear-rifleman
-  description: rumc-job-name-bear-rifleman
-  playTimeTracker: RuMCJobUPPBEARRifleman
+  name: rumc-job-name-bear-machinegunner # RuMC edit
+  description: rumc-job-callsign-bear-machinegunner # RuMC edit
+  playTimeTracker: RuMCJobUPPBEARMachinegunner
   ranks:
     RMCRankCivilian: []
   chevrons:
-    UPP_SeniorSergeant:
-      entity: AU14ChevronUPPNISeniorSergeant
+    UPP_Private:
+      entity: AU14ChevronUPPNIPrivate
+      requirements: []
+    UPP_Gefreiter:
+      entity: AU14ChevronUPPNIGefreiter
       requirements:
       - !type:RoleTimeRequirement
-        role: RuMCJobUPPBEARRifleman
-        time: 36000 # 10 hours
-    UPP_Sergeant:
-      entity: AU14ChevronUPPNISergeant
+        role: RuMCJobUPPBEARMachinegunner
+        time: 1800 # 0.5 hours
+    UPP_SeniorGefreiter:
+      entity: AU14ChevronUPPNISeniorGefreiter
       requirements:
       - !type:RoleTimeRequirement
-        role: RuMCJobUPPBEARRifleman
-        time: 18000 # 5 hours
+        role: RuMCJobUPPBEARMachinegunner
+        time: 5400 # 1.5 hours
+    UPP_Corporal:
+      entity: AU14ChevronUPPNICorporal
+      requirements:
+      - !type:RoleTimeRequirement
+        role: RuMCJobUPPBEARMachinegunner
+        time: 7200 # 2 hours
     UPP_Plutonowy:
       entity: AU14ChevronUPPNIPlutonowy
-      requirements: []
-  spawnMenuRoleName: BEAR Rifleman
-  startingGear: RuMCGearUPPBEARRifleman
+      requirements:
+      - !type:RoleTimeRequirement
+        role: RuMCJobUPPBEARMachinegunner
+        time: 10800 # 3 hours
+  spawnMenuRoleName: CHTORM Machine Gunner
+  startingGear: RuMCGearUPPBEARMachinegunner
   greeting: Вы член секретного спецподразделения ЧВК «Медведи» (BEAR) при СПН! Существование связи между BEAR и СПН строжайше секретно. Никто не должен знать, кто вы и что вы здесь делаете. Вы дружественны к СПН. Враждебны к ЧВК VAI и ЧВК We-Y. Работайте скрытно. Выполняйте задачи. Не оставляйте следов.
-  icon: "RuMCJobIconUPPBEARRifleman"
+  icon: "RuMCJobIconUPPBEARMachinegunner"
   joinNotifyCrew: false
   supervisors: au14-job-supervisors-govfor
   accessGroups:
   - AU14GovforCommand
+  - AU14GovforSquad
   hidden: false
 
 - type: entity
   parent: RuMCBaseMobSpeciesOrganicUPPBEAR
-  id: RuMCJobUPPBEARRifleman
-  name: BEAR Rifleman
+  id: RuMCJobUPPBEARMachinegunner
+  name: CHTORM Machine Gunner
   components:
   - type: EquipEntityPreset
-    preset: RuMCBEARPreset
+    preset: RuMCBEARmachinegunPreset
   - type: GhostTakeoverAvailable
   - type: GhostRoleApplySpecial
     squad: RuMCSquadBEAR
@@ -98,33 +112,32 @@
     makeSentient: true
     allowSpeech: true
     allowMovement: true
-    name: rumc-job-name-bear-rifleman
-    description: rumc-ghostrole-description-bear-rifleman
-    job: RuMCUPPBEARRifleman
+    name: rumc-job-callsign-bear-machinegunner # RuMC edit
+    description: rumc-ghostrole-description-bear-machinegunner # RuMC edit
+    job: RuMCUPPBEARMachinegunner
     raffle:
       settings: short
 
 - type: startingGear
   parent: RuMCGearUPPBEARbase
-  id: RuMCGearUPPBEARRifleman
+  id: RuMCGearUPPBEARMachinegunner
   equipment:
-    id: RuCMIDCardUPPBEARRifleman
+    id: RuCMIDCardUPPBEARMachinegunner
     ears: RuMCHeadsetBEAR
   storage:
     back:
-    - RMCMRESPP
-    - AU14PacketGrenadeHighExplosiveUPPFilled
-    - AU14PacketGrenadeHighExplosiveUPPFilled
-    - AU14PacketGrenadeSmokeUPPFilled
-    - RMCExplosiveBreachingCharge
+    - AU14GrenadeHighExplosiveUPP
+    - AU14GrenadeHighExplosiveUPP
+    - AU14GrenadeHighExplosiveUPP
+    - AU14GrenadeSmokeUPP
     - RMCExplosiveBreachingCharge
 
 - type: jobIcon
   parent: CMJobIconBase
-  id: RuMCJobIconUPPBEARRifleman
+  id: RuMCJobIconUPPBEARMachinegunner
   icon:
     sprite: _RMC14/Interface/cm_job_icons.rsi
-    state: upp_pvt
+    state: upp_sapper
 
 - type: playTimeTracker
-  id: RuMCJobUPPBEARRifleman
+  id: RuMCJobUPPBEARMachinegunner

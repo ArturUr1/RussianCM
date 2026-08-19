@@ -1,36 +1,39 @@
 - type: job
   parent: CMJobBase
-  id: RuMCUPPBEARGrenader
+  id: RuMCUPPBEARCommander
   roundSide: ThirdParty
   roundForce: BEAR
-  roundRole: RuMCUPPBEARGrenader
+  roundRole: RuMCUPPBEARCommander
   roundComponents:
   - type: TacticalMapIcon
     icon:
       sprite: /Textures/_RMC14/Interface/map_blips.rsi
-      state: upp_spec
+      state: upp_sl_a
   - type: AssignSquad
     whitelist:
       tags:
       - RuMCSquadBEAR
   - type: Skills
     skills:
-      RMCSkillCqc: 1
-      RMCSkillEngineer: 4
-      RMCSkillConstruction: 3
+      RMCSkillCqc: 2
+      RMCSkillEngineer: 2
+      RMCSkillConstruction: 2
       RMCSkillFirearms: 2
+      RMCSkillOverwatch: 1
       RMCSkillMedical: 1
       RMCSkillMeleeWeapons: 1
+      RMCSkillPilot: 1
       RMCSkillPolice: 2
       RMCSkillFireman: 2
       RMCSkillPowerLoader: 1
       RMCSkillVehicles: 2
-      RMCSkillJtac: 3
-      RMCSkillEndurance: 2
+      RMCSkillJtac: 4
+      RMCSkillEndurance: 4
+      RMCSkillLeadership: 3
   - type: EquipEntityPreset
     preset: RuMCBEARPreset
   - type: JobPrefix
-    prefix: au-14-job-prefix-rmcrrt-commander
+    prefix: au-14-job-prefix-bear-commander # RuMC edit
   - type: MarineOrders
   - type: RMCTrackable
   - type: RMCPointing
@@ -54,41 +57,54 @@
     currentLanguage: Russian
     defaultLanguage: Russian
 
-  name: rumc-job-name-bear-grenadier
-  description: rumc-job-name-bear-grenadier
-  playTimeTracker: RuMCJobUPPBEARGrenader
+  name: rumc-job-name-bear-commander # RuMC edit
+  description: rumc-job-callsign-bear-commander # RuMC edit
+  playTimeTracker: RuMCJobUPPBEARCommander
   ranks:
     RMCRankCivilian: []
   chevrons:
-    UPP_SeniorSergeant:
-      entity: AU14ChevronUPPNISeniorSergeant
-      requirements:
-      - !type:RoleTimeRequirement
-        role: RuMCJobUPPBEARGrenader
-        time: 36000 # 10 hours
+    UPP_Plutonowy:
+      entity: AU14ChevronUPPNIPlutonowy
+      requirements: []
     UPP_Sergeant:
       entity: AU14ChevronUPPNISergeant
       requirements:
       - !type:RoleTimeRequirement
-        role: RuMCJobUPPBEARGrenader
-        time: 18000 # 5 hours
-    UPP_Plutonowy:
-      entity: AU14ChevronUPPNIPlutonowy
-      requirements: []
-  spawnMenuRoleName: BEAR Grenadier
-  startingGear: RuMCGearUPPBEARGrenader
+        role: RuMCJobUPPBEARCommander
+        time: 1800 # 0.5 hours
+    UPP_SeniorSergeant:
+      entity: AU14ChevronUPPNISeniorSergeant
+      requirements:
+      - !type:RoleTimeRequirement
+        role: RuMCJobUPPBEARCommander
+        time: 5400 # 1.5 hours
+    UPP_JuniorLieutenant:
+      entity: AU14ChevronUPPNIJuniorLieutenant
+      requirements:
+      - !type:RoleTimeRequirement
+        role: RuMCJobUPPBEARCommander
+        time: 7200 # 2 hours
+    UPP_Lieutenant:
+      entity: AU14ChevronUPPNILieutenant
+      requirements:
+      - !type:RoleTimeRequirement
+        role: RuMCJobUPPBEARCommander
+        time: 10800 # 3 hours
+  spawnMenuRoleName: CHTORM Squad Leader
+  startingGear: RuMCGearUPPBEARCommander
   greeting: Вы член секретного спецподразделения ЧВК «Медведи» (BEAR) при СПН! Существование связи между BEAR и СПН строжайше секретно. Никто не должен знать, кто вы и что вы здесь делаете. Вы дружественны к СПН. Враждебны к ЧВК VAI и ЧВК We-Y. Работайте скрытно. Выполняйте задачи. Не оставляйте следов.
-  icon: "RuMCJobIconUPPBEARGrenader"
+  icon: "RuMCJobIconUPPBEARCommander"
   joinNotifyCrew: false
   supervisors: au14-job-supervisors-govfor
   accessGroups:
   - AU14GovforCommand
+  - AU14GovforSquad
   hidden: false
 
 - type: entity
   parent: RuMCBaseMobSpeciesOrganicUPPBEAR
-  id: RuMCJobUPPBEARGrenader
-  name: BEAR Grenadier
+  id: RuMCJobUPPBEARCommander
+  name: CHTORM Squad Leader
   components:
   - type: EquipEntityPreset
     preset: RuMCBEARPreset
@@ -99,37 +115,36 @@
     makeSentient: true
     allowSpeech: true
     allowMovement: true
-    name: rumc-job-name-bear-grenadier
-    description: rumc-ghostrole-description-bear-grenadier
-    job: RuMCUPPBEARGrenader
+    name: rumc-job-callsign-bear-commander # RuMC edit
+    description: rumc-ghostrole-description-bear-commander # RuMC edit
+    job: RuMCUPPBEARCommander
     raffle:
       settings: short
 
 - type: startingGear
   parent: RuMCGearUPPBEARbase
-  id: RuMCGearUPPBEARGrenader
+  id: RuMCGearUPPBEARCommander
   equipment:
-    id: RuCMIDCardUPPBEARGrenader
+    id: RuCMIDCardUPPBEARCommander
     ears: RuMCHeadsetBEAR
-    back: AU14SatchelDemoSpecUPP
   storage:
+    outerClothing:
+    - RMCLaserDesignator
     back:
-    - RuMCRocketRPG_Termobaric
-    - RuMCRocketRPG_Termobaric
-    - RuMCRocketRPG_Termobaric
-    - RuMCRocketRPG_Termobaric
-    - RMCRocketHJRA12HE
-    - RMCRocketHJRA12HE
-    - RMCRocketHJRA12HE
-  inhand:
-    - RuMCWeaponLauncherRPG32
+    - RuMCGrenadeTermobaric
+    - AU14GrenadeHighExplosiveUPP
+    - AU14GrenadeHighExplosiveUPP
+    - AU14GrenadeSmokeUPP
+    - AU14GrenadeSmokeUPP
+    - RMCExplosiveBreachingCharge
+    - RMCExplosiveBreachingCharge
 
 - type: jobIcon
   parent: CMJobIconBase
-  id: RuMCJobIconUPPBEARGrenader
+  id: RuMCJobIconUPPBEARCommander
   icon:
     sprite: _RMC14/Interface/cm_job_icons.rsi
-    state: upp_spec
+    state: upp_sl_a
 
 - type: playTimeTracker
-  id: RuMCJobUPPBEARGrenader
+  id: RuMCJobUPPBEARCommander

@@ -19,7 +19,8 @@
       RMCSkillEngineer: 1
       RMCSkillConstruction: 1
       RMCSkillFirearms: 2
-      RMCSkillMedical: 1
+      RMCSkillMedical: 2
+      RMCSkillSurgery: 3
       RMCSkillMeleeWeapons: 1
       RMCSkillPolice: 2
       RMCSkillFireman: 3
@@ -29,7 +30,7 @@
   - type: EquipEntityPreset
     preset: RuMCBEARMedicPreset
   - type: JobPrefix
-    prefix: au-14-job-prefix-rmcrrt-commander
+    prefix: au-14-job-prefix-bear-medic # RuMC edit
   - type: MarineOrders
   - type: RMCTrackable
   - type: RMCPointing
@@ -53,28 +54,40 @@
     currentLanguage: Russian
     defaultLanguage: Russian
 
-  name: rumc-job-name-bear-medic
-  description: rumc-job-name-bear-medic
+  name: rumc-job-name-bear-medic # RuMC edit
+  description: rumc-job-callsign-bear-medic # RuMC edit
   playTimeTracker: RuMCJobUPPBEARMedic
   ranks:
     RMCRankCivilian: []
   chevrons:
-    UPP_SeniorSergeant:
-      entity: AU14ChevronUPPNISeniorSergeant
+    UPP_Private:
+      entity: AU14ChevronUPPNIPrivate
+      requirements: []
+    UPP_Gefreiter:
+      entity: AU14ChevronUPPNIGefreiter
       requirements:
       - !type:RoleTimeRequirement
         role: RuMCJobUPPBEARMedic
-        time: 36000 # 10 hours
-    UPP_Sergeant:
-      entity: AU14ChevronUPPNISergeant
+        time: 1800 # 0.5 hours
+    UPP_SeniorGefreiter:
+      entity: AU14ChevronUPPNISeniorGefreiter
       requirements:
       - !type:RoleTimeRequirement
         role: RuMCJobUPPBEARMedic
-        time: 18000 # 5 hours
+        time: 5400 # 1.5 hours
+    UPP_Corporal:
+      entity: AU14ChevronUPPNICorporal
+      requirements:
+      - !type:RoleTimeRequirement
+        role: RuMCJobUPPBEARMedic
+        time: 7200 # 2 hours
     UPP_Plutonowy:
       entity: AU14ChevronUPPNIPlutonowy
-      requirements: []
-  spawnMenuRoleName: BEAR Medic
+      requirements:
+      - !type:RoleTimeRequirement
+        role: RuMCJobUPPBEARMedic
+        time: 10800 # 3 hours
+  spawnMenuRoleName: CHTORM Medic
   startingGear: RuMCGearUPPBEARMedic
   greeting: Вы член секретного спецподразделения ЧВК «Медведи» (BEAR) при СПН! Существование связи между BEAR и СПН строжайше секретно. Никто не должен знать, кто вы и что вы здесь делаете. Вы дружественны к СПН. Враждебны к ЧВК VAI и ЧВК We-Y. Работайте скрытно. Выполняйте задачи. Не оставляйте следов.
   icon: "RuMCJobIconUPPBEARMedic"
@@ -82,12 +95,14 @@
   supervisors: au14-job-supervisors-govfor
   accessGroups:
   - AU14GovforCommand
+  - AU14GovforCorpsman
+  - AU14GovforSquad
   hidden: false
 
 - type: entity
   parent: RuMCBaseMobSpeciesOrganicUPPBEAR
   id: RuMCJobUPPBEARMedic
-  name: BEAR Medic
+  name: CHTORM Medic
   components:
   - type: EquipEntityPreset
     preset: RuMCBEARMedicPreset
@@ -98,8 +113,8 @@
     makeSentient: true
     allowSpeech: true
     allowMovement: true
-    name: rumc-job-name-bear-medic
-    description: rumc-ghostrole-description-bear-medic
+    name: rumc-job-callsign-bear-medic # RuMC edit
+    description: rumc-ghostrole-description-bear-medic # RuMC edit
     job: RuMCUPPBEARMedic
     raffle:
       settings: short
@@ -113,9 +128,12 @@
   storage:
     back:
     - RMCMRESPP
-    - AU14PacketGrenadeHighExplosiveUPPFilled
-    - AU14PacketGrenadeSmokeUPPFilled
+    - AU14GrenadeSmokeUPP
     - AU14CMDefibrillator
+    - CMSurgicalCaseFilled
+    - CMPortableSurgicalBedSpawnFolded
+    - ClothingHandsGlovesNitrile
+
 
 - type: jobIcon
   parent: CMJobIconBase
