@@ -14,12 +14,7 @@ cmd-governance-round-remove-success = {$target} удалён до конца р�
 
 governance-duty-observer-only = Активная смена Community Governance допускает участие в раунде только наблюдателем.
 governance-duty-invite-title = Общественное дежурство RUCM
-governance-duty-invite-description =
-    На раунд #{$round} требуется общественный дежурный.
-
-    Дежурство доступно только наблюдателю и выдаёт временные ограниченные полномочия до конца смены. Согласие увеличит Civic Rating на {$acceptReward}, отказ уменьшит его на {$declinePenalty}, самоотвод не изменит рейтинг. Игнорирование приглашения уменьшит рейтинг на {$expiryPenalty}.
-
-    Ответьте до {$expires}.
+governance-duty-invite-description = На раунд #{$round} требуется общественный дежурный. Дежурство доступно только наблюдателю и выдаёт временные ограниченные полномочия до конца смены. Согласие увеличит Civic Rating на {$acceptReward}, отказ уменьшит его на {$declinePenalty}, самоотвод не изменит рейтинг. Игнорирование приглашения уменьшит рейтинг на {$expiryPenalty}. Ответьте до {$expires}.
 governance-duty-invite-accept = Согласиться (+{$reward})
 governance-duty-invite-decline = Отказаться (-{$penalty})
 governance-duty-invite-recuse = Недоступен / самоотвод
@@ -31,12 +26,7 @@ governance-duty-response-handled = Это приглашение уже было
 governance-duty-response-invalid = Приглашение больше недействительно или Governance недоступна.
 governance-duty-response-observer-required = Принять дежурство можно только находясь наблюдателем.
 governance-jury-invite-title = Приглашение в присяжные RUCM
-governance-jury-invite-description =
-    Вы случайно выбраны кандидатом в присяжные по делу #{$case}.
-
-    Само дело и доказательства доступны в публичном Discord-треде. Согласие увеличит Civic Rating на {$acceptReward}, отказ уменьшит его на {$declinePenalty}, самоотвод не изменит рейтинг. Игнорирование приглашения уменьшит рейтинг на {$expiryPenalty}.
-
-    Ответьте до {$expires}. После ответа бот автоматически продолжит дело в Discord.
+governance-jury-invite-description = Вы случайно выбраны кандидатом в присяжные по делу #{$case}. Само дело и доказательства доступны в публичном Discord-треде. Согласие увеличит Civic Rating на {$acceptReward}, отказ уменьшит его на {$declinePenalty}, самоотвод не изменит рейтинг. Игнорирование приглашения уменьшит рейтинг на {$expiryPenalty}. Ответьте до {$expires}. После ответа бот автоматически продолжит дело в Discord.
 governance-jury-response-accepted = Вы согласились стать присяжным. Ответ передан в Discord, ваш Civic Rating: {$rating}.
 governance-jury-response-declined = Вы отказались от судейства. Ответ передан в Discord, ваш Civic Rating: {$rating}.
 governance-jury-response-recused = Самоотвод принят без изменения рейтинга. Бот выберет замену.
@@ -63,14 +53,8 @@ governance-ahelp-counter = В очереди: {$count}
 governance-ahelp-list-title = ОЧЕРЕДЬ
 governance-ahelp-details-title = КАРТОЧКА ОБРАЩЕНИЯ
 governance-ahelp-select-ticket = Выберите обращение из очереди.
-governance-ahelp-ticket-card = #{$id} • {$reporter} • {$status} • {$time}
-    {$summary}
-governance-ahelp-ticket-details = [bold]AHelp #{$id}[/bold]
-    [color=#8ab4f8]Заявитель:[/color] {$reporter}
-    [color=#8ab4f8]Статус:[/color] {$status}
-    [color=#8ab4f8]Создан:[/color] {$time}
-    [bold]Сообщение[/bold]
-    {$summary}
+governance-ahelp-ticket-card = #{$id} • {$reporter} • {$status} • {$time} {$summary}
+governance-ahelp-ticket-details = [bold]AHelp #{$id}[/bold] [color=#8ab4f8]Заявитель:[/color] {$reporter} [color=#8ab4f8]Статус:[/color] {$status} [color=#8ab4f8]Создан:[/color] {$time} [bold]Сообщение[/bold] {$summary}
 governance-ahelp-ticket-placeholder = Номер AHelp
 governance-ahelp-refresh = Обновить
 governance-ahelp-claim = Взять обращение
