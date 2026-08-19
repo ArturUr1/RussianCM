@@ -25,7 +25,7 @@ governance-ahelp-unclaimed-preview = [color=#8c96a8]Предпросмотр о�
     {$summary}
     [italic]Возьмите обращение, чтобы открыть переписку и ответить игроку.[/italic]
 governance-ahelp-transcript-empty = [color=#8c96a8]В этом обращении пока нет сообщений.[/color]
-governance-ahelp-message-role-responder = Дежурный
+governance-ahelp-message-role-responder = [color=#ff5a5a]● Дежурный[/color]
 governance-ahelp-message-role-player = Игрок
 governance-ahelp-message-line = [color=#8c96a8]{$time}[/color] [bold]{$role} • {$sender}[/bold]
     {$body}
@@ -44,7 +44,7 @@ governance-ahelp-player-send = Отправить
 governance-ahelp-player-resolve = Проблема решена
 governance-ahelp-player-status = [bold]Статус:[/bold] {$status}
 governance-ahelp-player-assignee-waiting = [bold]Дежурный:[/bold] ожидается
-governance-ahelp-player-assignee = [bold]Дежурный:[/bold] {$name}
+governance-ahelp-player-assignee = [color=#ff5a5a][bold]● Дежурный:[/bold] {$name}[/color]
 governance-ahelp-player-empty = [color=#8c96a8]У вас пока нет активного обращения. Напишите сообщение ниже, чтобы создать его.[/color]
 governance-ahelp-player-status-new = Новое обращение
 governance-ahelp-player-status-open = В очереди
