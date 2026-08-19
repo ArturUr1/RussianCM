@@ -26,7 +26,6 @@ public sealed class GovernanceSystem : EntitySystem
 
     [Dependency] private readonly IAdminLogManager _adminLogs = default!;
     [Dependency] private readonly AdminFrozenSystem _adminFrozen = default!;
-    [Dependency] private readonly BwoinkSystem _bwoink = default!;
     [Dependency] private readonly IConfigurationManager _cfg = default!;
     [Dependency] private readonly GameTicker _gameTicker = default!;
     [Dependency] private readonly GovernanceManager _governance = default!;
@@ -168,11 +167,19 @@ public sealed class GovernanceSystem : EntitySystem
             return await DenyAsync(GovernanceDenial.NotObserver, actor, target, actionId, 0, "request_explanation");
         if (target.AttachedEntity is not { } targetEntity || Deleted(targetEntity))
             return await DenyAsync(GovernanceDenial.TargetUnavailable, actor, target, actionId, 0, "request_explanation");
+
+        long ticketId;
         try
         {
-            if (await _database.OpenGovernanceExplanationAHelpAsync(
-                    target.UserId, actor.UserId, _gameTicker.RoundId, reason) == null)
+            var created = await _database.OpenGovernanceExplanationAHelpAsync(
+                target.UserId,
+                actor.UserId,
+                _gameTicker.RoundId,
+                reason);
+            if (created == null)
                 return await DenyAsync(GovernanceDenial.AHelpUnavailable, actor, target, actionId, 0, "request_explanation");
+
+            ticketId = created.Value;
         }
         catch (Exception exception)
         {
@@ -180,7 +187,11 @@ public sealed class GovernanceSystem : EntitySystem
             return await DenyAsync(GovernanceDenial.DatabaseUnavailable, actor, target, actionId, 0, "request_explanation");
         }
 
-        _bwoink.SendGovernanceExplanationRequest(actor, target, actionId, reason);
+        var ahelp = EntityManager.System<GovernanceAHelpSystem>();
+        await ahelp.RefreshResponderEuisAsync();
+        ahelp.OpenPlayerHelp(target);
+        await ahelp.RefreshPlayerEuisAsync(target.UserId);
+
         await _governance.CompleteActionAsync(actionId);
         await _governance.AuditAsync(
             "moderation.request_explanation.executed",
@@ -188,7 +199,7 @@ public sealed class GovernanceSystem : EntitySystem
             target.UserId,
             "live_incident",
             action.IncidentId.ToString(),
-            new { round_id = _gameTicker.RoundId, reason, moderation_action_id = actionId });
+            new { round_id = _gameTicker.RoundId, reason, moderation_action_id = actionId, ahelp_ticket_id = ticketId });
         return GovernanceActionResult.Success;
     }
 
