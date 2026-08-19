@@ -26,13 +26,6 @@ public sealed class ModerationGovernanceModule(
         await FollowupAsync($"AHelp №{ahelp}: `{status}`.", ephemeral: true);
     });
 
-    [SlashCommand("инцидент", "Эскалировать взятый AHelp в активный инцидент")]
-    public Task IncidentAsync(long ahelp, string type) => ExecuteAsync(async () =>
-    {
-        var incident = await moderation.EscalateToIncidentAsync(ahelp, Context.User.Id, type);
-        await FollowupAsync($"Создан LiveIncident №{incident.Id}. Все действия требуют временного полномочия и кворума.", ephemeral: true);
-    });
-
     [SlashCommand("действие", "Предложить действие по активному инциденту")]
     public Task ActionAsync(long incident,
         [Choice("Заморозить", "freeze")][Choice("Удалить до конца раунда", "round_remove")]
