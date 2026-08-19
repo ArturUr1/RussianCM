@@ -14,6 +14,12 @@ public enum GovernanceAHelpQueueAction
     WaitingPlayer,
     Resolve,
     CreateIncident,
+    RequestExplanation,
+    ViewLogs,
+    Freeze,
+    RoundRemove,
+    ApproveModerationAction,
+    RejectModerationAction,
 }
 
 [Serializable, NetSerializable]
@@ -49,6 +55,59 @@ public sealed class GovernanceAHelpQueueItem(
 }
 
 [Serializable, NetSerializable]
+public sealed class GovernanceAHelpModerationActionEntry(
+    long id,
+    string actionType,
+    string reason,
+    int durationSeconds,
+    string status,
+    int approvals,
+    int requiredApprovals)
+{
+    public readonly long Id = id;
+    public readonly string ActionType = actionType;
+    public readonly string Reason = reason;
+    public readonly int DurationSeconds = durationSeconds;
+    public readonly string Status = status;
+    public readonly int Approvals = approvals;
+    public readonly int RequiredApprovals = requiredApprovals;
+}
+
+[Serializable, NetSerializable]
+public sealed class GovernanceAHelpPendingApprovalEntry(
+    long actionId,
+    long incidentId,
+    string actorName,
+    string targetName,
+    string actionType,
+    string reason,
+    int durationSeconds,
+    int approvals,
+    int requiredApprovals)
+{
+    public readonly long ActionId = actionId;
+    public readonly long IncidentId = incidentId;
+    public readonly string ActorName = actorName;
+    public readonly string TargetName = targetName;
+    public readonly string ActionType = actionType;
+    public readonly string Reason = reason;
+    public readonly int DurationSeconds = durationSeconds;
+    public readonly int Approvals = approvals;
+    public readonly int RequiredApprovals = requiredApprovals;
+}
+
+[Serializable, NetSerializable]
+public sealed class GovernanceAHelpLogEntry(
+    DateTime createdAt,
+    string type,
+    string message)
+{
+    public readonly DateTime CreatedAt = createdAt;
+    public readonly string Type = type;
+    public readonly string Message = message;
+}
+
+[Serializable, NetSerializable]
 public sealed class GovernanceAHelpQueueEuiState(
     GovernanceAHelpQueueItem[] tickets,
     long selectedTicketId,
@@ -56,6 +115,9 @@ public sealed class GovernanceAHelpQueueEuiState(
     long incidentId = 0,
     string incidentTargetName = "",
     string incidentType = "",
+    GovernanceAHelpModerationActionEntry[]? incidentActions = null,
+    GovernanceAHelpPendingApprovalEntry[]? pendingApprovals = null,
+    GovernanceAHelpLogEntry[]? logs = null,
     string? error = null) : EuiStateBase
 {
     public readonly GovernanceAHelpQueueItem[] Tickets = tickets;
@@ -64,6 +126,9 @@ public sealed class GovernanceAHelpQueueEuiState(
     public readonly long IncidentId = incidentId;
     public readonly string IncidentTargetName = incidentTargetName;
     public readonly string IncidentType = incidentType;
+    public readonly GovernanceAHelpModerationActionEntry[] IncidentActions = incidentActions ?? [];
+    public readonly GovernanceAHelpPendingApprovalEntry[] PendingApprovals = pendingApprovals ?? [];
+    public readonly GovernanceAHelpLogEntry[] Logs = logs ?? [];
     public readonly string? Error = error;
 }
 
