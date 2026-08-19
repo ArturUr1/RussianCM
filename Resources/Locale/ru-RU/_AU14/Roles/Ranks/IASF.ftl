@@ -29,7 +29,7 @@ rank-IASF_SergeantMajor = Сержант-майор
   .prefix = Серж-майор
 
 rank-IASF_SecondWarrantOfficer = Второй уоррент-офицер
-  .prefix = 2й УО
+  .prefix = 2УО
 
 rank-IASF_FirstWarrantOfficer = Первый уоррент-офицер
   .prefix = 1й УО
