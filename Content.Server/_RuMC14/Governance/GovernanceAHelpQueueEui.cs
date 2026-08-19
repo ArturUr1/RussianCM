@@ -8,7 +8,7 @@ using Robust.Shared.IoC;
 
 namespace Content.Server._RuMC14.Governance;
 
-public sealed class GovernanceAHelpQueueEui(GovernanceDutySystem _) : BaseEui
+public sealed class GovernanceAHelpQueueEui : BaseEui
 {
     private readonly GovernanceAHelpSystem _system =
         IoCManager.Resolve<IEntityManager>().System<GovernanceAHelpSystem>();
