@@ -2,6 +2,10 @@ governance-ahelp-workspace-header = [bold]Центр обращений[/bold]
 governance-ahelp-workspace-subtitle = Очередь, переписка и действия дежурного в одном окне.
 governance-ahelp-list-heading = [bold]Очередь[/bold]
 governance-ahelp-list-hint = Сначала возьмите свободное обращение. После этого здесь откроется полная переписка.
+governance-ahelp-filter-placeholder = Поиск по игроку, ID или тексту обращения…
+governance-ahelp-filter-empty = [color=#8c96a8]По этому запросу ничего не найдено.[/color]
+governance-ahelp-reply-placeholder = Напишите ответ игроку…
+governance-ahelp-counter-modern = Открыто: {$open} • Моих: {$mine}
 governance-ahelp-template-greeting = Приветствие
 governance-ahelp-template-greeting-text = Здравствуйте. Я взял ваше обращение и сейчас разбираюсь в ситуации.
 governance-ahelp-template-details = Уточнить
