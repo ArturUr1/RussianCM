@@ -190,16 +190,16 @@ public sealed partial class ServerDbManager
                 SELECT users.id
                 FROM governance.users AS users
                 JOIN governance.duty_sessions AS duty ON duty.user_id = users.id
-                JOIN governance.capability_grants AS grant
-                  ON grant.user_id = users.id
-                 AND grant.source_type = 'duty_session'
-                 AND grant.source_id = duty.id::text
+                JOIN governance.capability_grants AS capability_grant
+                  ON capability_grant.user_id = users.id
+                 AND capability_grant.source_type = 'duty_session'
+                 AND capability_grant.source_id = duty.id::text
                 WHERE users.ss14_user_id = @responder
                   AND NOT users.is_governance_suspended
                   AND duty.round_id = @round_id AND duty.status = 'active'
                   AND duty.observer_confirmed AND duty.expires_at > now()
-                  AND grant.capability = 'moderation.ahelp'
-                  AND grant.expires_at > now() AND grant.revoked_at IS NULL
+                  AND capability_grant.capability = 'moderation.ahelp'
+                  AND capability_grant.expires_at > now() AND capability_grant.revoked_at IS NULL
                 LIMIT 1
             )
             SELECT ticket.id, ticket.round_id, ticket.reporter_ss14_user_id,
@@ -257,14 +257,14 @@ public sealed partial class ServerDbManager
                 SELECT users.id
                 FROM governance.users AS users
                 JOIN governance.duty_sessions AS duty ON duty.user_id = users.id
-                JOIN governance.capability_grants AS grant
-                  ON grant.user_id = users.id AND grant.source_type = 'duty_session'
-                 AND grant.source_id = duty.id::text
+                JOIN governance.capability_grants AS capability_grant
+                  ON capability_grant.user_id = users.id AND capability_grant.source_type = 'duty_session'
+                 AND capability_grant.source_id = duty.id::text
                 WHERE users.ss14_user_id = @responder
                   AND duty.round_id = @round_id AND duty.status = 'active'
                   AND duty.observer_confirmed AND duty.expires_at > now()
-                  AND grant.capability = 'moderation.ahelp'
-                  AND grant.expires_at > now() AND grant.revoked_at IS NULL
+                  AND capability_grant.capability = 'moderation.ahelp'
+                  AND capability_grant.expires_at > now() AND capability_grant.revoked_at IS NULL
                   AND NOT users.is_governance_suspended
                 LIMIT 1
             ), claimed AS (
@@ -316,14 +316,14 @@ public sealed partial class ServerDbManager
                 SELECT users.id
                 FROM governance.users AS users
                 JOIN governance.duty_sessions AS duty ON duty.user_id = users.id
-                JOIN governance.capability_grants AS grant
-                  ON grant.user_id = users.id AND grant.source_type = 'duty_session'
-                 AND grant.source_id = duty.id::text
+                JOIN governance.capability_grants AS capability_grant
+                  ON capability_grant.user_id = users.id AND capability_grant.source_type = 'duty_session'
+                 AND capability_grant.source_id = duty.id::text
                 WHERE users.ss14_user_id = @responder
                   AND duty.round_id = @round_id AND duty.status = 'active'
                   AND duty.observer_confirmed AND duty.expires_at > now()
-                  AND grant.capability = 'moderation.ahelp'
-                  AND grant.expires_at > now() AND grant.revoked_at IS NULL
+                  AND capability_grant.capability = 'moderation.ahelp'
+                  AND capability_grant.expires_at > now() AND capability_grant.revoked_at IS NULL
                 LIMIT 1
             ), changed AS (
                 UPDATE governance.ahelp_tickets AS ticket
@@ -368,10 +368,10 @@ public sealed partial class ServerDbManager
             JOIN governance.duty_sessions AS duty
               ON duty.user_id = users.id AND duty.round_id = ticket.round_id
              AND duty.status = 'active' AND duty.observer_confirmed AND duty.expires_at > now()
-            JOIN governance.capability_grants AS grant
-              ON grant.user_id = users.id AND grant.source_type = 'duty_session'
-             AND grant.source_id = duty.id::text AND grant.capability = 'moderation.ahelp'
-             AND grant.expires_at > now() AND grant.revoked_at IS NULL
+            JOIN governance.capability_grants AS capability_grant
+              ON capability_grant.user_id = users.id AND capability_grant.source_type = 'duty_session'
+             AND capability_grant.source_id = duty.id::text AND capability_grant.capability = 'moderation.ahelp'
+             AND capability_grant.expires_at > now() AND capability_grant.revoked_at IS NULL
             WHERE ticket.reporter_ss14_user_id = @reporter AND ticket.round_id = @round_id
               AND ticket.status IN ('claimed', 'waiting_player')
             LIMIT 1
@@ -466,15 +466,15 @@ public sealed partial class ServerDbManager
                          SELECT users.id
                          FROM governance.users AS users
                          JOIN governance.duty_sessions AS duty ON duty.user_id = users.id
-                         JOIN governance.capability_grants AS grant
-                           ON grant.user_id = users.id AND grant.source_type = 'duty_session'
-                          AND grant.source_id = duty.id::text
+                         JOIN governance.capability_grants AS capability_grant
+                           ON capability_grant.user_id = users.id AND capability_grant.source_type = 'duty_session'
+                          AND capability_grant.source_id = duty.id::text
                          WHERE users.ss14_user_id = @responder
                            AND NOT users.is_governance_suspended
                            AND duty.round_id = @round_id AND duty.status = 'active'
                            AND duty.observer_confirmed AND duty.expires_at > now()
-                           AND grant.capability = 'moderation.request_explanation'
-                           AND grant.expires_at > now() AND grant.revoked_at IS NULL
+                           AND capability_grant.capability = 'moderation.request_explanation'
+                           AND capability_grant.expires_at > now() AND capability_grant.revoked_at IS NULL
                          LIMIT 1
                          """,
                          connection,
