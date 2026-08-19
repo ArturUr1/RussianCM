@@ -1,237 +1,382 @@
+using System.Linq;
 using System.Numerics;
 using Content.Shared._RuMC14.Governance;
 using Robust.Client.UserInterface.Controls;
 using Robust.Client.UserInterface.CustomControls;
 using Robust.Shared.Utility;
 using static Robust.Client.UserInterface.Controls.BoxContainer;
-using System.Linq;
 
 namespace Content.Client._RuMC14.Governance;
 
 public sealed class GovernanceAHelpQueueWindow : DefaultWindow
 {
-    public event Action<GovernanceAHelpQueueAction, long>? ActionRequested;
+    public event Action<GovernanceAHelpQueueAction, long, string?>? ActionRequested;
 
     private readonly BoxContainer _ticketList;
-    private readonly RichTextLabel _details;
+    private readonly BoxContainer _transcript;
     private readonly Label _counter;
+    private readonly RichTextLabel _ticketHeader;
+    private readonly RichTextLabel _ticketMeta;
     private readonly Label _error;
+    private readonly LineEdit _reply;
     private readonly Button _claim;
-    private readonly Button _open;
+    private readonly Button _send;
     private readonly Button _waiting;
     private readonly Button _resolve;
 
     private IReadOnlyList<GovernanceAHelpQueueItem> _tickets = [];
-    private long? _selectedTicketId;
+    private long _selectedTicketId;
 
     public GovernanceAHelpQueueWindow()
     {
         Title = Loc.GetString("governance-ahelp-title");
-        MinSize = new Vector2(820, 560);
+        MinSize = new Vector2(1040, 650);
 
         var root = new BoxContainer
         {
             Orientation = LayoutOrientation.Vertical,
-            SeparationOverride = 10,
+            SeparationOverride = 12,
         };
 
         var header = new BoxContainer
         {
             Orientation = LayoutOrientation.Horizontal,
-            SeparationOverride = 8,
+            SeparationOverride = 12,
         };
-        var title = new RichTextLabel
+        var heading = new BoxContainer
         {
-            Text = Loc.GetString("governance-ahelp-header"),
+            Orientation = LayoutOrientation.Vertical,
             HorizontalExpand = true,
+            SeparationOverride = 2,
         };
+        heading.AddChild(new RichTextLabel
+        {
+            Text = Loc.GetString("governance-ahelp-workspace-header"),
+        });
+        heading.AddChild(new RichTextLabel
+        {
+            Text = Loc.GetString("governance-ahelp-workspace-subtitle"),
+        });
         _counter = new Label();
-        var refresh = Button(Loc.GetString("governance-ahelp-refresh"), GovernanceAHelpQueueAction.Refresh, false);
-        header.AddChild(title);
+        var refresh = new Button { Text = Loc.GetString("governance-ahelp-refresh") };
+        refresh.OnPressed += _ => ActionRequested?.Invoke(GovernanceAHelpQueueAction.Refresh, 0, null);
+        header.AddChild(heading);
         header.AddChild(_counter);
         header.AddChild(refresh);
+        root.AddChild(header);
 
         var body = new BoxContainer
         {
             Orientation = LayoutOrientation.Horizontal,
             SeparationOverride = 12,
+            HorizontalExpand = true,
             VerticalExpand = true,
         };
 
+        var queuePanel = new PanelContainer
+        {
+            HorizontalExpand = true,
+            VerticalExpand = true,
+        };
         var queueColumn = new BoxContainer
-        {
-            Orientation = LayoutOrientation.Vertical,
-            SeparationOverride = 6,
-            HorizontalExpand = true,
-            VerticalExpand = true,
-        };
-        queueColumn.AddChild(new Label { Text = Loc.GetString("governance-ahelp-list-title") });
-        var scroll = new ScrollContainer
-        {
-            VerticalExpand = true,
-            HorizontalExpand = true,
-        };
-        _ticketList = new BoxContainer
-        {
-            Orientation = LayoutOrientation.Vertical,
-            SeparationOverride = 5,
-            HorizontalExpand = true,
-        };
-        scroll.AddChild(_ticketList);
-        queueColumn.AddChild(scroll);
-
-        var detailsColumn = new BoxContainer
         {
             Orientation = LayoutOrientation.Vertical,
             SeparationOverride = 8,
             HorizontalExpand = true,
             VerticalExpand = true,
         };
-        detailsColumn.AddChild(new Label { Text = Loc.GetString("governance-ahelp-details-title") });
-        _details = new RichTextLabel
+        queueColumn.AddChild(new RichTextLabel
         {
-            Text = Loc.GetString("governance-ahelp-select-ticket"),
+            Text = Loc.GetString("governance-ahelp-list-heading"),
+        });
+        queueColumn.AddChild(new RichTextLabel
+        {
+            Text = Loc.GetString("governance-ahelp-list-hint"),
+        });
+        var queueScroll = new ScrollContainer
+        {
+            HorizontalExpand = true,
             VerticalExpand = true,
         };
-        detailsColumn.AddChild(_details);
+        _ticketList = new BoxContainer
+        {
+            Orientation = LayoutOrientation.Vertical,
+            SeparationOverride = 6,
+            HorizontalExpand = true,
+        };
+        queueScroll.AddChild(_ticketList);
+        queueColumn.AddChild(queueScroll);
+        queuePanel.AddChild(queueColumn);
+        body.AddChild(queuePanel);
 
-        _claim = Button(Loc.GetString("governance-ahelp-claim"), GovernanceAHelpQueueAction.Claim);
-        _open = Button(Loc.GetString("governance-ahelp-open"), GovernanceAHelpQueueAction.OpenChat);
-        _waiting = Button(Loc.GetString("governance-ahelp-waiting"), GovernanceAHelpQueueAction.WaitingPlayer);
-        _resolve = Button(Loc.GetString("governance-ahelp-resolve"), GovernanceAHelpQueueAction.Resolve);
+        var conversationPanel = new PanelContainer
+        {
+            HorizontalExpand = true,
+            VerticalExpand = true,
+        };
+        var conversation = new BoxContainer
+        {
+            Orientation = LayoutOrientation.Vertical,
+            SeparationOverride = 8,
+            HorizontalExpand = true,
+            VerticalExpand = true,
+        };
+        _ticketHeader = new RichTextLabel
+        {
+            Text = Loc.GetString("governance-ahelp-select-ticket"),
+        };
+        _ticketMeta = new RichTextLabel();
+        conversation.AddChild(_ticketHeader);
+        conversation.AddChild(_ticketMeta);
 
-        var primaryActions = new BoxContainer
+        var transcriptScroll = new ScrollContainer
+        {
+            HorizontalExpand = true,
+            VerticalExpand = true,
+        };
+        _transcript = new BoxContainer
+        {
+            Orientation = LayoutOrientation.Vertical,
+            SeparationOverride = 7,
+            HorizontalExpand = true,
+        };
+        transcriptScroll.AddChild(_transcript);
+        conversation.AddChild(transcriptScroll);
+
+        var templates = new BoxContainer
         {
             Orientation = LayoutOrientation.Horizontal,
             SeparationOverride = 6,
         };
-        primaryActions.AddChild(_claim);
-        primaryActions.AddChild(_open);
+        var helloTemplate = new Button { Text = Loc.GetString("governance-ahelp-template-greeting") };
+        helloTemplate.OnPressed += _ => _reply.Text = Loc.GetString("governance-ahelp-template-greeting-text");
+        var detailsTemplate = new Button { Text = Loc.GetString("governance-ahelp-template-details") };
+        detailsTemplate.OnPressed += _ => _reply.Text = Loc.GetString("governance-ahelp-template-details-text");
+        var waitTemplate = new Button { Text = Loc.GetString("governance-ahelp-template-wait") };
+        waitTemplate.OnPressed += _ => _reply.Text = Loc.GetString("governance-ahelp-template-wait-text");
+        templates.AddChild(helloTemplate);
+        templates.AddChild(detailsTemplate);
+        templates.AddChild(waitTemplate);
+        conversation.AddChild(templates);
 
-        var statusActions = new BoxContainer
+        var composer = new BoxContainer
         {
             Orientation = LayoutOrientation.Horizontal,
             SeparationOverride = 6,
         };
-        statusActions.AddChild(_waiting);
-        statusActions.AddChild(_resolve);
+        _reply = new LineEdit
+        {
+            HorizontalExpand = true,
+        };
+        _reply.OnTextEntered += args => SendReply(args.Text);
+        _send = new Button
+        {
+            Text = Loc.GetString("governance-ahelp-send"),
+        };
+        _send.OnPressed += _ => SendReply(_reply.Text);
+        composer.AddChild(_reply);
+        composer.AddChild(_send);
+        conversation.AddChild(composer);
 
-        detailsColumn.AddChild(primaryActions);
-        detailsColumn.AddChild(statusActions);
+        var actions = new BoxContainer
+        {
+            Orientation = LayoutOrientation.Horizontal,
+            SeparationOverride = 6,
+        };
+        _claim = ActionButton(Loc.GetString("governance-ahelp-claim"), GovernanceAHelpQueueAction.Claim);
+        _waiting = ActionButton(Loc.GetString("governance-ahelp-waiting"), GovernanceAHelpQueueAction.WaitingPlayer);
+        _resolve = ActionButton(Loc.GetString("governance-ahelp-resolve"), GovernanceAHelpQueueAction.Resolve);
+        actions.AddChild(_claim);
+        actions.AddChild(_waiting);
+        actions.AddChild(_resolve);
+        conversation.AddChild(actions);
 
-        body.AddChild(queueColumn);
-        body.AddChild(detailsColumn);
+        _error = new Label
+        {
+            StyleClasses = { "LabelDanger" },
+        };
+        conversation.AddChild(_error);
 
-        _error = new Label { StyleClasses = { "LabelDanger" } };
-
-        root.AddChild(header);
-        root.AddChild(new RichTextLabel { Text = Loc.GetString("governance-ahelp-description") });
+        conversationPanel.AddChild(conversation);
+        body.AddChild(conversationPanel);
         root.AddChild(body);
-        root.AddChild(_error);
         Contents.AddChild(root);
 
         UpdateActionState();
     }
 
-    public void UpdateQueue(IReadOnlyList<GovernanceAHelpQueueItem> tickets, string? error)
+    public void UpdateState(GovernanceAHelpQueueEuiState state)
     {
-        _tickets = tickets;
-        _error.Text = error ?? string.Empty;
-        _counter.Text = Loc.GetString("governance-ahelp-counter", ("count", tickets.Count));
-        _ticketList.RemoveAllChildren();
+        _tickets = state.Tickets;
+        _selectedTicketId = state.SelectedTicketId;
+        _error.Text = state.Error ?? string.Empty;
+        _counter.Text = Loc.GetString("governance-ahelp-counter", ("count", state.Tickets.Length));
 
-        if (tickets.Count == 0)
+        RebuildTicketList();
+        UpdateSelectedTicket(state.Transcript);
+        UpdateActionState();
+    }
+
+    private void RebuildTicketList()
+    {
+        _ticketList.RemoveAllChildren();
+        if (_tickets.Count == 0)
         {
-            _ticketList.AddChild(new RichTextLabel { Text = Loc.GetString("governance-ahelp-empty") });
-            _selectedTicketId = null;
-            UpdateSelection();
+            _ticketList.AddChild(new RichTextLabel
+            {
+                Text = Loc.GetString("governance-ahelp-empty-modern"),
+            });
             return;
         }
 
-        foreach (var ticket in tickets)
+        foreach (var ticket in _tickets)
         {
-            var summary = ticket.Summary.Length > 120 ? ticket.Summary[..120] + "…" : ticket.Summary;
-            var status = ticket.ClaimedByMe
-                ? Loc.GetString("governance-ahelp-status-mine")
-                : Loc.GetString("governance-ahelp-status-open");
+            var summary = ticket.Summary.Length > 110 ? ticket.Summary[..110] + "…" : ticket.Summary;
+            var status = StatusText(ticket);
+            var selected = ticket.Id == _selectedTicketId
+                ? Loc.GetString("governance-ahelp-selected-marker")
+                : string.Empty;
             var button = new Button
             {
+                HorizontalExpand = true,
                 Text = Loc.GetString(
-                    "governance-ahelp-ticket-card",
+                    "governance-ahelp-ticket-card-modern",
+                    ("selected", selected),
                     ("id", ticket.Id),
                     ("reporter", ticket.ReporterName),
                     ("status", status),
                     ("time", ticket.CreatedAt.ToLocalTime().ToString("HH:mm")),
                     ("summary", summary)),
-                HorizontalExpand = true,
             };
-            var selectedId = ticket.Id;
-            button.OnPressed += _ =>
-            {
-                _selectedTicketId = selectedId;
-                UpdateSelection();
-            };
+            var id = ticket.Id;
+            button.OnPressed += _ => ActionRequested?.Invoke(GovernanceAHelpQueueAction.SelectTicket, id, null);
             _ticketList.AddChild(button);
         }
-
-        if (_selectedTicketId == null || tickets.All(ticket => ticket.Id != _selectedTicketId.Value))
-            _selectedTicketId = tickets[0].Id;
-        UpdateSelection();
     }
 
-    private void UpdateSelection()
+    private void UpdateSelectedTicket(IReadOnlyList<GovernanceAHelpTranscriptEntry> transcript)
     {
-        var selected = _selectedTicketId == null
-            ? null
-            : _tickets.FirstOrDefault(ticket => ticket.Id == _selectedTicketId.Value);
+        var selected = _tickets.FirstOrDefault(ticket => ticket.Id == _selectedTicketId);
+        _transcript.RemoveAllChildren();
+
         if (selected == null)
         {
-            _details.Text = Loc.GetString("governance-ahelp-select-ticket");
-            UpdateActionState();
+            _ticketHeader.Text = Loc.GetString("governance-ahelp-select-ticket");
+            _ticketMeta.Text = string.Empty;
+            _transcript.AddChild(new RichTextLabel
+            {
+                Text = Loc.GetString("governance-ahelp-no-selection-hint"),
+            });
             return;
         }
 
-        var summary = FormattedMessage.EscapeText(selected.Summary);
-        var reporter = FormattedMessage.EscapeText(selected.ReporterName);
-        var status = selected.ClaimedByMe
-            ? Loc.GetString("governance-ahelp-status-mine")
-            : Loc.GetString("governance-ahelp-status-open");
-        _details.Text = Loc.GetString(
-            "governance-ahelp-ticket-details",
+        _ticketHeader.Text = Loc.GetString(
+            "governance-ahelp-conversation-header",
             ("id", selected.Id),
-            ("reporter", reporter),
-            ("status", status),
+            ("reporter", FormattedMessage.EscapeText(selected.ReporterName)));
+        _ticketMeta.Text = Loc.GetString(
+            "governance-ahelp-conversation-meta",
+            ("status", StatusText(selected)),
             ("time", selected.CreatedAt.ToLocalTime().ToString("HH:mm:ss")),
-            ("summary", summary));
-        UpdateActionState();
+            ("uuid", selected.ReporterUserId.ToString()));
+
+        if (!selected.ClaimedByMe)
+        {
+            _transcript.AddChild(new RichTextLabel
+            {
+                Text = Loc.GetString(
+                    "governance-ahelp-unclaimed-preview",
+                    ("summary", FormattedMessage.EscapeText(selected.Summary))),
+            });
+            return;
+        }
+
+        if (transcript.Count == 0)
+        {
+            _transcript.AddChild(new RichTextLabel
+            {
+                Text = Loc.GetString("governance-ahelp-transcript-empty"),
+            });
+            return;
+        }
+
+        foreach (var line in transcript)
+        {
+            var sender = FormattedMessage.EscapeText(line.SenderName);
+            var body = FormattedMessage.EscapeText(line.Body);
+            var role = line.FromResponder
+                ? Loc.GetString("governance-ahelp-message-role-responder")
+                : Loc.GetString("governance-ahelp-message-role-player");
+            _transcript.AddChild(new RichTextLabel
+            {
+                Text = Loc.GetString(
+                    "governance-ahelp-message-line",
+                    ("time", line.CreatedAt.ToLocalTime().ToString("HH:mm")),
+                    ("role", role),
+                    ("sender", sender),
+                    ("body", body)),
+            });
+        }
     }
 
-    private void UpdateActionState()
+    private void SendReply(string text)
     {
-        var selected = _selectedTicketId == null
-            ? null
-            : _tickets.FirstOrDefault(ticket => ticket.Id == _selectedTicketId.Value);
-        var hasSelection = selected != null;
-        var mine = selected?.ClaimedByMe == true;
-        _claim.Disabled = !hasSelection || mine;
-        _open.Disabled = !mine;
-        _waiting.Disabled = !mine;
-        _resolve.Disabled = !mine;
+        if (string.IsNullOrWhiteSpace(text) || _selectedTicketId == 0)
+            return;
+
+        ActionRequested?.Invoke(
+            GovernanceAHelpQueueAction.SendMessage,
+            _selectedTicketId,
+            text.Trim());
+        _reply.Clear();
     }
 
-    private Button Button(string text, GovernanceAHelpQueueAction action, bool ticketRequired = true)
+    private Button ActionButton(string text, GovernanceAHelpQueueAction action)
     {
-        var button = new Button { Text = text, HorizontalExpand = true };
+        var button = new Button
+        {
+            Text = text,
+            HorizontalExpand = true,
+        };
         button.OnPressed += _ =>
         {
-            var ticketId = _selectedTicketId ?? 0;
-            if (ticketRequired && ticketId == 0)
+            if (_selectedTicketId == 0)
             {
                 _error.Text = Loc.GetString("governance-ahelp-select-ticket");
                 return;
             }
-            ActionRequested?.Invoke(action, ticketRequired ? ticketId : 0);
+
+            ActionRequested?.Invoke(action, _selectedTicketId, null);
         };
         return button;
+    }
+
+    private void UpdateActionState()
+    {
+        var selected = _tickets.FirstOrDefault(ticket => ticket.Id == _selectedTicketId);
+        var mine = selected?.ClaimedByMe == true;
+        _claim.Disabled = selected == null || mine;
+        _waiting.Disabled = !mine;
+        _resolve.Disabled = !mine;
+        _reply.Editable = mine;
+        _send.Disabled = !mine;
+    }
+
+    private static string StatusText(GovernanceAHelpQueueItem ticket)
+    {
+        if (ticket.ClaimedByMe)
+        {
+            return ticket.Status switch
+            {
+                "waiting_player" => Loc.GetString("governance-ahelp-status-waiting-player"),
+                _ => Loc.GetString("governance-ahelp-status-mine"),
+            };
+        }
+
+        return ticket.Status switch
+        {
+            "open" => Loc.GetString("governance-ahelp-status-open"),
+            _ => ticket.Status,
+        };
     }
 }
