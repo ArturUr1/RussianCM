@@ -39,6 +39,7 @@ governance-ahelp-player-header = [bold]Need help?[/bold]
 governance-ahelp-player-description = Describe the issue in your own words. The ticket will enter the responder queue and the entire conversation will stay here.
 governance-ahelp-player-conversation-title = [bold]Conversation[/bold]
 governance-ahelp-player-tips = [color=#8c96a8]Tell us what happened, where you are, and who is involved. Do not create multiple tickets for the same issue.[/color]
+governance-ahelp-player-message-placeholder = Describe the problem or reply to the responder…
 governance-ahelp-player-send = Send
 governance-ahelp-player-resolve = Problem solved
 governance-ahelp-player-status = [bold]Status:[/bold] {$status}
