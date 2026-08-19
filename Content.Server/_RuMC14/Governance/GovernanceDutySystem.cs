@@ -357,7 +357,7 @@ public sealed class GovernanceDutySystem : EntitySystem
             return;
         }
 
-        _euis.OpenEui(new GovernanceAHelpQueueEui(this), player);
+        _euis.OpenEui(new GovernanceAHelpQueueEui(), player);
     }
 
     private void RevokeAHelpAccess()
