@@ -113,53 +113,67 @@ public sealed partial class ServerDbManager
                 FROM governance.users
                 WHERE ss14_user_id = @target
                 LIMIT 1
-            ), ticket AS (
-                UPDATE governance.ahelp_tickets AS ticket
-                SET target_user_id = target_user.id,
-                    updated_at = now()
-                FROM actor, target_user
+            ), authorized_ticket AS (
+                SELECT ticket.id,
+                       ticket.reporter_user_id,
+                       ticket.summary,
+                       actor.id AS actor_id
+                FROM governance.ahelp_tickets AS ticket
+                CROSS JOIN actor
                 WHERE ticket.id = @ticket_id
                   AND ticket.round_id = @round_id
                   AND ticket.claimed_by_user_id = actor.id
                   AND ticket.status IN ('claimed', 'waiting_player')
+                LIMIT 1
+            ), existing AS (
+                SELECT incident.id, incident.target_user_id, incident.type
+                FROM governance.live_incidents AS incident
+                JOIN authorized_ticket ON authorized_ticket.id = incident.ahelp_ticket_id
+                LIMIT 1
+            ), updated_ticket AS (
+                UPDATE governance.ahelp_tickets AS ticket
+                SET target_user_id = target_user.id,
+                    updated_at = now()
+                FROM authorized_ticket, target_user
+                WHERE ticket.id = authorized_ticket.id
+                  AND NOT EXISTS (SELECT 1 FROM existing)
                 RETURNING ticket.id,
                           ticket.reporter_user_id,
                           ticket.summary,
-                          actor.id AS actor_id,
-                          target_user.id AS target_user_id,
-                          target_user.ss14_user_id AS target_ss14_user_id
+                          authorized_ticket.actor_id,
+                          target_user.id AS target_user_id
             ), created AS (
                 INSERT INTO governance.live_incidents(
                     round_id, target_user_id, reporter_user_id, created_by_user_id,
                     type, summary, status, created_at, ahelp_ticket_id)
-                SELECT @round_id, ticket.target_user_id, ticket.reporter_user_id, ticket.actor_id,
-                       @type, ticket.summary, 'active', now(), ticket.id
-                FROM ticket
+                SELECT @round_id, updated_ticket.target_user_id, updated_ticket.reporter_user_id,
+                       updated_ticket.actor_id, @type, updated_ticket.summary, 'active', now(), updated_ticket.id
+                FROM updated_ticket
                 ON CONFLICT (ahelp_ticket_id) WHERE ahelp_ticket_id IS NOT NULL
                 DO NOTHING
                 RETURNING id, target_user_id, type
             ), selected AS (
+                SELECT existing.id, existing.target_user_id, existing.type
+                FROM existing
+                UNION ALL
                 SELECT created.id, created.target_user_id, created.type
                 FROM created
-                UNION ALL
-                SELECT incident.id, incident.target_user_id, incident.type
-                FROM governance.live_incidents AS incident
-                JOIN ticket ON ticket.id = incident.ahelp_ticket_id
-                WHERE NOT EXISTS (SELECT 1 FROM created)
                 LIMIT 1
             ), audited AS (
                 INSERT INTO governance.audit_events(
                     event_type, actor_type, actor_id, target_type, target_id,
                     entity_type, entity_id, payload)
                 SELECT 'incident.created_from_ahelp', 'ss14_user', @responder::text,
-                       'ss14_user', @target::text,
+                       'ss14_user', selected_target.ss14_user_id::text,
                        'live_incident', selected.id::text,
                        jsonb_build_object(
                            'round_id', @round_id,
                            'ticket_id', @ticket_id,
-                           'type', @type,
-                           'target_name', @target_name)
+                           'type', selected.type,
+                           'target_name', COALESCE(player.last_seen_user_name, selected_target.ss14_user_id::text))
                 FROM selected
+                JOIN governance.users AS selected_target ON selected_target.id = selected.target_user_id
+                LEFT JOIN player ON player.user_id = selected_target.ss14_user_id
                 WHERE NOT EXISTS (
                     SELECT 1 FROM governance.audit_events AS old
                     WHERE old.event_type = 'incident.created_from_ahelp'
@@ -167,18 +181,18 @@ public sealed partial class ServerDbManager
                       AND old.entity_id = selected.id::text)
             )
             SELECT selected.id,
-                   target_user.ss14_user_id,
-                   @target_name,
+                   selected_target.ss14_user_id,
+                   COALESCE(player.last_seen_user_name, selected_target.ss14_user_id::text),
                    selected.type
             FROM selected
-            JOIN target_user ON target_user.id = selected.target_user_id
+            JOIN governance.users AS selected_target ON selected_target.id = selected.target_user_id
+            LEFT JOIN player ON player.user_id = selected_target.ss14_user_id
             """,
             connection,
             transaction);
         command.Parameters.AddWithValue("ticket_id", ticketId);
         command.Parameters.AddWithValue("responder", responder.UserId);
         command.Parameters.AddWithValue("target", target.UserId);
-        command.Parameters.AddWithValue("target_name", targetName);
         command.Parameters.AddWithValue("round_id", roundId);
         command.Parameters.AddWithValue("type", type);
 
@@ -243,7 +257,6 @@ public sealed partial class ServerDbManager
             LEFT JOIN player ON player.user_id = target.ss14_user_id
             WHERE ticket.id = @ticket_id
               AND ticket.round_id = @round_id
-              AND incident.status IN ('active', 'contained')
             LIMIT 1
             """,
             connection);
