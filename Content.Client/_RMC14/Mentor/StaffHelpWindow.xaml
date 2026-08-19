@@ -7,7 +7,7 @@
             <PanelContainer StyleClasses="CrtInsetPanel" HorizontalExpand="True">
                 <BoxContainer Orientation="Vertical" Margin="8 6" SeparationOverride="5">
                     <RichTextLabel Text="{Loc 'rmc-staff-help-admin-description'}" />
-                    <Button Name="AdminHelpButton" Access="Public" Text="{Loc 'rmc-staff-help-admin-button'}" />
+                    <controls:GovernanceSupportButton Name="AdminHelpButton" Access="Public" Text="{Loc 'rmc-staff-help-admin-button'}" />
                 </BoxContainer>
             </PanelContainer>
             <PanelContainer StyleClasses="CrtInsetPanel" HorizontalExpand="True">
