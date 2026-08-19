@@ -115,6 +115,17 @@ public sealed class GovernanceAHelpPlayerReplyReceived(long ticketId, string pre
     public readonly string Preview = preview;
 }
 
+[Serializable, NetSerializable]
+public sealed class GovernanceAHelpResponderReplyReceived(
+    long ticketId,
+    string reporterName,
+    string preview) : EntityEventArgs
+{
+    public readonly long TicketId = ticketId;
+    public readonly string ReporterName = reporterName;
+    public readonly string Preview = preview;
+}
+
 /// <summary>
 /// Compatibility event for the old AHelpUIController. Governance responders must never be promoted
 /// into the legacy AdminAHelpUIHandler, so Active intentionally remains false. The actual responder
