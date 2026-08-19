@@ -1,6 +1,8 @@
 using Content.Client._RuMC14.Governance;
 using Robust.Client.UserInterface;
 using Robust.Client.UserInterface.Controls;
+using Robust.Shared.GameObjects;
+using Robust.Shared.IoC;
 
 namespace Content.Client._RMC14.Mentor;
 
