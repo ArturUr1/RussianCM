@@ -51,3 +51,17 @@ governance-ahelp-player-status-open = In queue
 governance-ahelp-player-status-claimed = In progress
 governance-ahelp-player-status-waiting = Waiting for your reply
 governance-ahelp-player-status-escalated = Escalated to incident
+
+governance-ahelp-incident-heading = [bold]Incident[/bold]
+governance-ahelp-incident-none = [color=#8c96a8]No active incident has been created for this ticket.[/color]
+governance-ahelp-incident-active = [bold]LiveIncident #{$id}[/bold] • target: {$target} • type: {$type}
+governance-ahelp-incident-target-placeholder = Player name or SS14 UUID
+governance-ahelp-incident-type-placeholder = Incident type
+governance-ahelp-incident-type-default = rules violation
+governance-ahelp-incident-create = Create incident
+governance-ahelp-incident-target-required = Specify the player targeted by the incident.
+governance-ahelp-incident-target-not-found = No player with that name or SS14 UUID is currently available on the server.
+governance-ahelp-incident-self-target = A responder cannot create an incident against themselves.
+governance-ahelp-incident-type-invalid = Incident type must be between 2 and 64 characters.
+governance-ahelp-incident-access-denied = You do not have the temporary capability required to create a live incident.
+governance-ahelp-incident-create-failed = Could not create the incident. Make sure the ticket is still assigned to you.
