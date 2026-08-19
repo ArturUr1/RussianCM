@@ -33,7 +33,7 @@
   - type: EquipEntityPreset
     preset: RuMCBEARPreset
   - type: JobPrefix
-    prefix: Commander
+    prefix: au-14-job-prefix-bear-commander # RuMC edit
   - type: MarineOrders
   - type: RMCTrackable
   - type: RMCPointing
@@ -57,8 +57,8 @@
     currentLanguage: Russian
     defaultLanguage: Russian
 
-  name: BEAR Squad Leader
-  description: CHTORM Squad Leader
+  name: rumc-job-name-bear-commander # RuMC edit
+  description: rumc-job-callsign-bear-commander # RuMC edit
   playTimeTracker: RuMCJobUPPBEARCommander
   ranks:
     RMCRankCivilian: []
@@ -115,8 +115,8 @@
     makeSentient: true
     allowSpeech: true
     allowMovement: true
-    name: CHTORM Squad Leader
-    description:  The squad leader of the BEAR PMC. Responsible for mission execution, team coordination, and on-ground decision-making. Carries secret communication with the UPP. First in battle, last to retreat.
+    name: rumc-job-callsign-bear-commander # RuMC edit
+    description: rumc-ghostrole-description-bear-commander # RuMC edit
     job: RuMCUPPBEARCommander
     raffle:
       settings: short

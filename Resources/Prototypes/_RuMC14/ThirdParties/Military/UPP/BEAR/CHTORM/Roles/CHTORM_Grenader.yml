@@ -30,7 +30,7 @@
   - type: EquipEntityPreset
     preset: RuMCBEARPreset
   - type: JobPrefix
-    prefix: Grenader
+    prefix: au-14-job-prefix-bear-grenadier # RuMC edit
   - type: MarineOrders
   - type: RMCTrackable
   - type: RMCPointing
@@ -54,8 +54,8 @@
     currentLanguage: Russian
     defaultLanguage: Russian
 
-  name: BEAR Grenadier
-  description: CHTORM Grenadier
+  name: rumc-job-name-bear-grenadier # RuMC edit
+  description: rumc-job-callsign-bear-grenadier # RuMC edit
   playTimeTracker: RuMCJobUPPBEARGrenader
   ranks:
     RMCRankCivilian: []
@@ -112,8 +112,8 @@
     makeSentient: true
     allowSpeech: true
     allowMovement: true
-    name: CHTORM Grenadier
-    description: Fortification assault specialist. Armed with the RPG-32 with thermobaric rounds. Destroys cover, vehicles, and infantry groups. Operates under the cover of the machine gunner.
+    name: rumc-job-callsign-bear-grenadier # RuMC edit
+    description: rumc-ghostrole-description-bear-grenadier # RuMC edit
     job: RuMCUPPBEARGrenader
     raffle:
       settings: short
