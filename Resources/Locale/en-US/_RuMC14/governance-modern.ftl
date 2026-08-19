@@ -25,7 +25,7 @@ governance-ahelp-unclaimed-preview = [color=#8c96a8]Ticket preview[/color]
     {$summary}
     [italic]Claim the ticket to open the conversation and reply to the player.[/italic]
 governance-ahelp-transcript-empty = [color=#8c96a8]There are no messages in this ticket yet.[/color]
-governance-ahelp-message-role-responder = Responder
+governance-ahelp-message-role-responder = [color=#ff5a5a]● Responder[/color]
 governance-ahelp-message-role-player = Player
 governance-ahelp-message-line = [color=#8c96a8]{$time}[/color] [bold]{$role} • {$sender}[/bold]
     {$body}
@@ -44,7 +44,7 @@ governance-ahelp-player-send = Send
 governance-ahelp-player-resolve = Problem solved
 governance-ahelp-player-status = [bold]Status:[/bold] {$status}
 governance-ahelp-player-assignee-waiting = [bold]Responder:[/bold] waiting
-governance-ahelp-player-assignee = [bold]Responder:[/bold] {$name}
+governance-ahelp-player-assignee = [color=#ff5a5a][bold]● Responder:[/bold] {$name}[/color]
 governance-ahelp-player-empty = [color=#8c96a8]You do not have an active ticket yet. Send a message below to create one.[/color]
 governance-ahelp-player-status-new = New ticket
 governance-ahelp-player-status-open = In queue
