@@ -34,12 +34,12 @@ public sealed class GovernanceAHelpQueueEui : BaseEui
     {
         base.HandleState(state);
         if (state is GovernanceAHelpQueueEuiState queue)
-            _window?.UpdateQueue(queue.Tickets, queue.Error);
+            _window?.UpdateState(queue);
     }
 
-    private void SendAction(GovernanceAHelpQueueAction action, long ticketId)
+    private void SendAction(GovernanceAHelpQueueAction action, long ticketId, string? text)
     {
-        SendMessage(new GovernanceAHelpQueueMessage(action, ticketId));
+        SendMessage(new GovernanceAHelpQueueMessage(action, ticketId, text));
     }
 
     private void OnClosed()
