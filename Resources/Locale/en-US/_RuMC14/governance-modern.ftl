@@ -2,6 +2,10 @@ governance-ahelp-workspace-header = [bold]Support workspace[/bold]
 governance-ahelp-workspace-subtitle = Queue, conversation and responder actions in one place.
 governance-ahelp-list-heading = [bold]Queue[/bold]
 governance-ahelp-list-hint = Claim an open ticket first. Its full conversation will then be available here.
+governance-ahelp-filter-placeholder = Search player, ticket ID or message…
+governance-ahelp-filter-empty = [color=#8c96a8]No tickets match this search.[/color]
+governance-ahelp-reply-placeholder = Write a reply to the player…
+governance-ahelp-counter-modern = Open: {$open} • Mine: {$mine}
 governance-ahelp-template-greeting = Greeting
 governance-ahelp-template-greeting-text = Hello. I have taken your ticket and I am reviewing the situation now.
 governance-ahelp-template-details = Ask details
