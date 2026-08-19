@@ -49,6 +49,9 @@ public sealed class ModerationTrustCoordinator(
         var members = new HashSet<ulong>();
         foreach (var discordId in await court.LinkedDiscordIdsAsync())
         {
+            if (discordId == 0 || discordId > long.MaxValue)
+                continue;
+
             try
             {
                 if (await client.Rest.GetGuildUserAsync(config.Guild, discordId) != null)
@@ -69,6 +72,9 @@ public sealed class ModerationTrustCoordinator(
     {
         foreach (var (invitation, user) in await trust.PendingReviewNotificationsAsync())
         {
+            if (user.DiscordUserId <= 0)
+                continue;
+
             try
             {
                 var discordId = (ulong) user.DiscordUserId;

@@ -21,23 +21,62 @@ public sealed class GovernanceCommunityService(
             .SingleOrDefaultAsync();
         if (linked == Guid.Empty)
             throw new CourtRuleException("Discord-аккаунт не привязан к аккаунту SS14.");
+
+        var storedDiscordId = checked((long) discordId);
         await using var governance = governanceFactory();
         var now = DateTime.UtcNow;
-        var user = await governance.Users.SingleOrDefaultAsync(value => value.Ss14UserId == linked);
+        var bySs14 = await governance.Users.SingleOrDefaultAsync(value => value.Ss14UserId == linked);
+        var byDiscord = await governance.Users.SingleOrDefaultAsync(value => value.DiscordUserId == storedDiscordId);
+
+        if (bySs14 != null && byDiscord != null && bySs14.Id != byDiscord.Id)
+        {
+            throw new CourtRuleException(
+                "Обнаружен конфликт привязки Governance: SS14 и Discord уже принадлежат разным профилям. " +
+                "Необходимо проверить историю перепривязки аккаунта.");
+        }
+
+        var user = bySs14 ?? byDiscord;
         if (user == null)
         {
             user = governance.Users.Add(new GovernanceUser
             {
-                Id = Guid.NewGuid(), Ss14UserId = linked, DiscordUserId = checked((long) discordId),
-                CreatedAt = now, UpdatedAt = now,
+                Id = Guid.NewGuid(),
+                Ss14UserId = linked,
+                DiscordUserId = storedDiscordId,
+                CreatedAt = now,
+                UpdatedAt = now,
             }).Entity;
             await governance.SaveChangesAsync();
         }
-        else if (user.DiscordUserId != checked((long) discordId))
+        else
         {
-            user.DiscordUserId = checked((long) discordId);
-            user.UpdatedAt = now;
+            var rebound = user.Ss14UserId != linked || user.DiscordUserId != storedDiscordId;
+            if (rebound)
+            {
+                var previousSs14UserId = user.Ss14UserId;
+                var previousDiscordUserId = user.DiscordUserId;
+                user.Ss14UserId = linked;
+                user.DiscordUserId = storedDiscordId;
+                user.UpdatedAt = now;
+                governance.AuditEvents.Add(new GovernanceAuditEvent
+                {
+                    EventType = "identity.rebound",
+                    ActorType = "system",
+                    EntityType = "user",
+                    EntityId = user.Id.ToString(),
+                    CreatedAt = now,
+                    Payload = JsonSerializer.Serialize(new
+                    {
+                        previous_ss14_user_id = previousSs14UserId,
+                        previous_discord_user_id = previousDiscordUserId,
+                        ss14_user_id = linked,
+                        discord_user_id = storedDiscordId,
+                    }),
+                });
+                await governance.SaveChangesAsync();
+            }
         }
+
         foreach (var track in new[] { "jury", "moderation", "event" })
         {
             if (!await governance.Qualifications.AnyAsync(value => value.UserId == user.Id && value.Track == track))
