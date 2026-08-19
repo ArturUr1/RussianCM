@@ -23,15 +23,32 @@ public sealed class ModerationQualificationService(
                         qualification.Level,
                         user.IsGovernanceSuspended,
                     })
-                .Where(value => !value.IsGovernanceSuspended)
+                .Where(value => !value.IsGovernanceSuspended && value.DiscordUserId > 0)
                 .ToListAsync();
-            users = rows.Select(value => (value.Id, checked((ulong) value.DiscordUserId), value.Level)).ToList();
+
+            // governance.users may contain synthetic/test identities represented by non-positive
+            // signed bigint values. They are not Discord snowflakes and must never participate in
+            // Discord-backed qualification reconciliation.
+            users = rows
+                .Select(value => (value.Id, (ulong) value.DiscordUserId, value.Level))
+                .ToList();
         }
 
         var changed = 0;
         foreach (var (userId, discordId, currentLevel) in users)
         {
-            var profile = await trust.GetProfileAsync(discordId);
+            ModerationTrustProfile profile;
+            try
+            {
+                profile = await trust.GetProfileAsync(discordId);
+            }
+            catch (CourtRuleException)
+            {
+                // A stale Governance identity may outlive its current SS14↔Discord link.
+                // Skip it instead of aborting the entire scheduler iteration.
+                continue;
+            }
+
             var eligibleLevel = ModerationQualificationPolicy.EligibleLevel(profile);
             if (eligibleLevel <= currentLevel)
                 continue;
