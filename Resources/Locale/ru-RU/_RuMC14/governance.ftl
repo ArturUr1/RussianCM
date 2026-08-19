@@ -69,7 +69,6 @@ governance-ahelp-ticket-details = [bold]AHelp #{$id}[/bold]
     [color=#8ab4f8]Заявитель:[/color] {$reporter}
     [color=#8ab4f8]Статус:[/color] {$status}
     [color=#8ab4f8]Создан:[/color] {$time}
-
     [bold]Сообщение[/bold]
     {$summary}
 governance-ahelp-ticket-placeholder = Номер AHelp
