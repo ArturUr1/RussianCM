@@ -39,6 +39,7 @@ governance-ahelp-player-header = [bold]Нужна помощь?[/bold]
 governance-ahelp-player-description = Опишите проблему своими словами. Обращение попадёт свободному дежурному, а вся переписка останется здесь.
 governance-ahelp-player-conversation-title = [bold]Переписка[/bold]
 governance-ahelp-player-tips = [color=#8c96a8]Укажите, что произошло, где вы находитесь и кого касается ситуация. Не создавайте несколько обращений по одной проблеме.[/color]
+governance-ahelp-player-message-placeholder = Опишите проблему или ответьте дежурному…
 governance-ahelp-player-send = Отправить
 governance-ahelp-player-resolve = Проблема решена
 governance-ahelp-player-status = [bold]Статус:[/bold] {$status}
