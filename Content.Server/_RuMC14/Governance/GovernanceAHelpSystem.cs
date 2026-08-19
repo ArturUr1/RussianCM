@@ -5,13 +5,22 @@ using Content.Server.Database;
 using Content.Server.EUI;
 using Content.Server.GameTicking;
 using Content.Shared._RuMC14.Governance;
+using Content.Shared.Corvax.CCCVars;
 using Content.Shared.Ghost;
 using Robust.Server.Player;
+using Robust.Shared.Configuration;
 using Robust.Shared.Enums;
 using Robust.Shared.Network;
 using Robust.Shared.Player;
 
 namespace Content.Server._RuMC14.Governance;
+
+public sealed record GovernanceAHelpActionExecutionResult(
+    string? ErrorLocaleKey,
+    IReadOnlyList<GovernanceLogLine> Logs)
+{
+    public static GovernanceAHelpActionExecutionResult Success => new(null, []);
+}
 
 /// <summary>
 /// Owns the modern in-game Governance AHelp surface for both players and temporary responders.
@@ -21,6 +30,7 @@ namespace Content.Server._RuMC14.Governance;
 public sealed class GovernanceAHelpSystem : EntitySystem
 {
     [Dependency] private readonly IChatManager _chat = default!;
+    [Dependency] private readonly IConfigurationManager _cfg = default!;
     [Dependency] private readonly IServerDbManager _database = default!;
     [Dependency] private readonly EuiManager _euis = default!;
     [Dependency] private readonly GameTicker _ticker = default!;
@@ -210,6 +220,154 @@ public sealed class GovernanceAHelpSystem : EntitySystem
             return null;
 
         return await _database.GetGovernanceAHelpIncidentAsync(ticketId, player.UserId, _ticker.RoundId);
+    }
+
+    public async Task<IReadOnlyList<GovernanceIncidentActionInfo>> GetIncidentActionsAsync(
+        ICommonSession player,
+        long incidentId)
+    {
+        if (!await CanUseResponderAsync(player))
+            return [];
+
+        return await _database.GetGovernanceIncidentActionsAsync(incidentId, player.UserId, _ticker.RoundId);
+    }
+
+    public async Task<IReadOnlyList<GovernanceIncidentActionInfo>> GetPendingActionApprovalsAsync(ICommonSession player)
+    {
+        if (!await CanUseResponderAsync(player))
+            return [];
+
+        return await _database.GetGovernancePendingActionApprovalsAsync(player.UserId, _ticker.RoundId);
+    }
+
+    public async Task<GovernanceAHelpActionExecutionResult> ProposeIncidentActionAsync(
+        ICommonSession player,
+        long ticketId,
+        string actionType,
+        string reason,
+        int? durationSeconds)
+    {
+        if (!await CanUseResponderAsync(player))
+            return new GovernanceAHelpActionExecutionResult("governance-ahelp-action-access-denied", []);
+
+        var incident = await GetIncidentAsync(player, ticketId);
+        if (incident == null)
+            return new GovernanceAHelpActionExecutionResult("governance-ahelp-action-no-incident", []);
+
+        if (actionType is not ("freeze" or "round_remove" or "request_explanation" or "view_logs"))
+            return new GovernanceAHelpActionExecutionResult("governance-ahelp-action-invalid", []);
+
+        reason = reason.Trim();
+        if (reason.Length is < 10 or > 512)
+            return new GovernanceAHelpActionExecutionResult("governance-ahelp-action-reason-invalid", []);
+
+        var capability = $"moderation.{actionType}";
+        if (await _governance.AuthorizeAsync(player.UserId, _ticker.RoundId, capability) == null)
+            return new GovernanceAHelpActionExecutionResult("governance-ahelp-action-access-denied", []);
+
+        if (actionType == "freeze")
+        {
+            var maxSeconds = Math.Clamp(_cfg.GetCVar(CCCVars.GovernanceFreezeMaxSeconds), 1, 120);
+            if (durationSeconds is null || durationSeconds < 1 || durationSeconds > maxSeconds)
+                return new GovernanceAHelpActionExecutionResult("governance-ahelp-action-freeze-duration-invalid", []);
+        }
+        else
+        {
+            durationSeconds = null;
+        }
+
+        short requiredApprovals = actionType == "round_remove" ? (short) 2 : (short) 1;
+        var action = await _database.ProposeGovernanceIncidentActionAsync(
+            incident.Id,
+            player.UserId,
+            _ticker.RoundId,
+            actionType,
+            reason,
+            durationSeconds,
+            requiredApprovals);
+        if (action == null)
+            return new GovernanceAHelpActionExecutionResult("governance-ahelp-action-create-failed", []);
+
+        GovernanceAHelpActionExecutionResult execution = GovernanceAHelpActionExecutionResult.Success;
+        if (action.Status == "approved")
+            execution = await ExecuteApprovedActionAsync(action);
+
+        await RefreshResponderEuisAsync();
+        return execution;
+    }
+
+    public async Task<GovernanceAHelpActionExecutionResult> ReviewIncidentActionAsync(
+        ICommonSession player,
+        long actionId,
+        string decision)
+    {
+        if (!await CanUseResponderAsync(player) || decision is not ("approve" or "reject"))
+            return new GovernanceAHelpActionExecutionResult("governance-ahelp-action-review-failed", []);
+
+        var action = await _database.ReviewGovernanceIncidentActionAsync(
+            actionId,
+            player.UserId,
+            _ticker.RoundId,
+            decision);
+        if (action == null)
+            return new GovernanceAHelpActionExecutionResult("governance-ahelp-action-review-failed", []);
+
+        GovernanceAHelpActionExecutionResult execution = GovernanceAHelpActionExecutionResult.Success;
+        if (action.Status == "approved")
+            execution = await ExecuteApprovedActionAsync(action);
+
+        await RefreshResponderEuisAsync();
+        return execution;
+    }
+
+    private async Task<GovernanceAHelpActionExecutionResult> ExecuteApprovedActionAsync(
+        GovernanceIncidentActionInfo action)
+    {
+        if (!_players.TryGetSessionById(action.ActorUserId, out var actor) ||
+            !_players.TryGetSessionById(action.TargetUserId, out var target))
+        {
+            return new GovernanceAHelpActionExecutionResult("governance-ahelp-action-target-unavailable", []);
+        }
+
+        var system = EntityManager.System<GovernanceSystem>();
+        switch (action.ActionType)
+        {
+            case "request_explanation":
+            {
+                var result = await system.TryRequestExplanationAsync(actor, target, action.Id, action.Reason);
+                return result.Allowed
+                    ? GovernanceAHelpActionExecutionResult.Success
+                    : new GovernanceAHelpActionExecutionResult("governance-ahelp-action-execution-failed", []);
+            }
+            case "view_logs":
+            {
+                var result = await system.TryViewLogsAsync(actor, target, action.Id);
+                return result.Allowed
+                    ? new GovernanceAHelpActionExecutionResult(null, result.Logs)
+                    : new GovernanceAHelpActionExecutionResult("governance-ahelp-action-execution-failed", []);
+            }
+            case "freeze":
+            {
+                var result = await system.TryFreezeAsync(
+                    actor,
+                    target,
+                    action.DurationSeconds ?? 0,
+                    action.Id,
+                    action.Reason);
+                return result.Allowed
+                    ? GovernanceAHelpActionExecutionResult.Success
+                    : new GovernanceAHelpActionExecutionResult("governance-ahelp-action-execution-failed", []);
+            }
+            case "round_remove":
+            {
+                var result = await system.TryRoundRemoveAsync(actor, target, action.Id, action.Reason);
+                return result.Allowed
+                    ? GovernanceAHelpActionExecutionResult.Success
+                    : new GovernanceAHelpActionExecutionResult("governance-ahelp-action-execution-failed", []);
+            }
+            default:
+                return new GovernanceAHelpActionExecutionResult("governance-ahelp-action-invalid", []);
+        }
     }
 
     public Task<GovernanceAHelpPlayerTicketInfo?> GetPlayerTicketAsync(ICommonSession player)
