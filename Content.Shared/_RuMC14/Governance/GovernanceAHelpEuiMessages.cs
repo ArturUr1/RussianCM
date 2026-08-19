@@ -115,15 +115,20 @@ public sealed class GovernanceAHelpPlayerReplyReceived(long ticketId, string pre
     public readonly string Preview = preview;
 }
 
+/// <summary>
+/// Compatibility event for the old AHelpUIController. Governance responders must never be promoted
+/// into the legacy AdminAHelpUIHandler, so Active intentionally remains false. The actual responder
+/// workspace is opened and authorized by GovernanceAHelpSystem.
+/// </summary>
 [Serializable, NetSerializable]
-public sealed class GovernanceAHelpAccessUpdated(bool active) : EntityEventArgs
+public sealed class GovernanceAHelpAccessUpdated(bool _) : EntityEventArgs
 {
-    public readonly bool Active = active;
+    public readonly bool Active = false;
 }
 
 /// <summary>
-/// Legacy bridge event kept only so old Bwoink integration can compile while the Governance UI
-/// migration is in progress. New Governance AHelp code does not emit this event.
+/// Legacy bridge event kept only so old Bwoink integration can compile. New Governance AHelp code
+/// never emits it and never opens a Bwoink channel.
 /// </summary>
 [Serializable, NetSerializable]
 public sealed class GovernanceAHelpOpenChannel(NetUserId reporterUserId) : EntityEventArgs
