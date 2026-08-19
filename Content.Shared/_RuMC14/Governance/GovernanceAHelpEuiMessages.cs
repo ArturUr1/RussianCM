@@ -13,6 +13,7 @@ public enum GovernanceAHelpQueueAction
     SendMessage,
     WaitingPlayer,
     Resolve,
+    CreateIncident,
 }
 
 [Serializable, NetSerializable]
@@ -52,11 +53,17 @@ public sealed class GovernanceAHelpQueueEuiState(
     GovernanceAHelpQueueItem[] tickets,
     long selectedTicketId,
     GovernanceAHelpTranscriptEntry[] transcript,
+    long incidentId = 0,
+    string incidentTargetName = "",
+    string incidentType = "",
     string? error = null) : EuiStateBase
 {
     public readonly GovernanceAHelpQueueItem[] Tickets = tickets;
     public readonly long SelectedTicketId = selectedTicketId;
     public readonly GovernanceAHelpTranscriptEntry[] Transcript = transcript;
+    public readonly long IncidentId = incidentId;
+    public readonly string IncidentTargetName = incidentTargetName;
+    public readonly string IncidentType = incidentType;
     public readonly string? Error = error;
 }
 
@@ -64,11 +71,13 @@ public sealed class GovernanceAHelpQueueEuiState(
 public sealed class GovernanceAHelpQueueMessage(
     GovernanceAHelpQueueAction action,
     long ticketId = 0,
-    string? text = null) : EuiMessageBase
+    string? text = null,
+    string? auxiliaryText = null) : EuiMessageBase
 {
     public readonly GovernanceAHelpQueueAction Action = action;
     public readonly long TicketId = ticketId;
     public readonly string? Text = text;
+    public readonly string? AuxiliaryText = auxiliaryText;
 }
 
 [Serializable, NetSerializable]
