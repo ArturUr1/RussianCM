@@ -51,3 +51,17 @@ governance-ahelp-player-status-open = В очереди
 governance-ahelp-player-status-claimed = В работе
 governance-ahelp-player-status-waiting = Ожидает вашего ответа
 governance-ahelp-player-status-escalated = Передано в инцидент
+
+governance-ahelp-incident-heading = [bold]Инцидент[/bold]
+governance-ahelp-incident-none = [color=#8c96a8]Активный инцидент для этого обращения не создан.[/color]
+governance-ahelp-incident-active = [bold]LiveIncident #{$id}[/bold] • цель: {$target} • тип: {$type}
+governance-ahelp-incident-target-placeholder = Ник игрока или SS14 UUID
+governance-ahelp-incident-type-placeholder = Тип инцидента
+governance-ahelp-incident-type-default = нарушение правил
+governance-ahelp-incident-create = Создать инцидент
+governance-ahelp-incident-target-required = Укажите игрока, которого касается инцидент.
+governance-ahelp-incident-target-not-found = Игрок с таким ником или SS14 UUID сейчас не найден на сервере.
+governance-ahelp-incident-self-target = Дежурный не может создать инцидент против самого себя.
+governance-ahelp-incident-type-invalid = Тип инцидента должен содержать от 2 до 64 символов.
+governance-ahelp-incident-access-denied = У вас нет временного полномочия на создание live-инцидента.
+governance-ahelp-incident-create-failed = Не удалось создать инцидент. Убедитесь, что обращение всё ещё закреплено за вами.
