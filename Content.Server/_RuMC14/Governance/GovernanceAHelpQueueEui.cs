@@ -16,6 +16,9 @@ public sealed class GovernanceAHelpQueueEui : BaseEui
     private GovernanceAHelpQueueItem[] _tickets = [];
     private GovernanceAHelpTranscriptEntry[] _transcript = [];
     private long _selectedTicketId;
+    private long _incidentId;
+    private string _incidentTargetName = string.Empty;
+    private string _incidentType = string.Empty;
     private string? _error;
     private bool _busy;
 
@@ -36,6 +39,9 @@ public sealed class GovernanceAHelpQueueEui : BaseEui
         _tickets,
         _selectedTicketId,
         _transcript,
+        _incidentId,
+        _incidentTargetName,
+        _incidentType,
         _error);
 
     public override void HandleMessage(EuiMessageBase msg)
@@ -88,6 +94,15 @@ public sealed class GovernanceAHelpQueueEui : BaseEui
                     if (!await _system.SetStatusAsync(Player, message.TicketId, "resolved"))
                         _error = Loc.GetString("governance-ahelp-status-failed");
                     break;
+                case GovernanceAHelpQueueAction.CreateIncident:
+                    var incidentError = await _system.CreateIncidentAsync(
+                        Player,
+                        message.TicketId,
+                        message.Text ?? string.Empty,
+                        message.AuxiliaryText ?? string.Empty);
+                    if (incidentError != null)
+                        _error = Loc.GetString(incidentError);
+                    break;
             }
 
             await RefreshAsync();
@@ -125,6 +140,10 @@ public sealed class GovernanceAHelpQueueEui : BaseEui
         }
 
         var selected = _tickets.FirstOrDefault(ticket => ticket.Id == _selectedTicketId);
+        _incidentId = 0;
+        _incidentTargetName = string.Empty;
+        _incidentType = string.Empty;
+
         if (selected?.ClaimedByMe == true)
         {
             var transcript = await _system.GetResponderTranscriptAsync(Player, selected.Id);
@@ -133,6 +152,14 @@ public sealed class GovernanceAHelpQueueEui : BaseEui
                 line.Body,
                 line.CreatedAt.UtcDateTime,
                 line.SenderUserId == Player.UserId)).ToArray();
+
+            var incident = await _system.GetIncidentAsync(Player, selected.Id);
+            if (incident != null)
+            {
+                _incidentId = incident.Id;
+                _incidentTargetName = incident.TargetName;
+                _incidentType = incident.Type;
+            }
         }
         else
         {
