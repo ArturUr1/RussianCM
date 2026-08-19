@@ -5,6 +5,7 @@ using Content.Client.Administration.Systems;
 using Content.Client.Lobby.UI;
 using Content.Client.Stylesheets;
 using Content.Client.UserInterface.Systems.Bwoink;
+using Content.Client._RuMC14.Governance;
 using Content.Shared._RMC14.CCVar;
 using Content.Shared._RMC14.Mentor;
 using Content.Shared.Input;
@@ -35,6 +36,7 @@ public sealed partial class StaffHelpUIController : UIController, IOnSystemChang
     [Dependency] private IPlayerManager _player = default!;
     [Dependency] private IGameTiming _timing = default!;
     [UISystemDependency] private AudioSystem? _audio = default!;
+    [UISystemDependency] private GovernanceAHelpClientSystem _governanceAHelp = default!;
 
     private readonly Dictionary<NetUserId, List<MentorMessage>> _messages = new();
     private readonly Dictionary<NetUserId, string> _destinationNames = new();
@@ -276,7 +278,7 @@ public sealed partial class StaffHelpUIController : UIController, IOnSystemChang
 
         _staffHelpWindow.AdminHelpButton.OnPressed += _ =>
         {
-            _aHelp.Open();
+            _governanceAHelp.RequestOpen();
             _staffHelpWindow.Close();
             SetAHelpButtonPressed(false);
         };
