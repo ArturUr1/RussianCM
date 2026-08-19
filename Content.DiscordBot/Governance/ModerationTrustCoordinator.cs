@@ -71,8 +71,14 @@ public sealed class ModerationTrustCoordinator(
         {
             try
             {
-                IUser discordUser = client.GetUser((ulong) user.DiscordUserId) ??
-                                    await client.Rest.GetUserAsync((ulong) user.DiscordUserId);
+                var discordId = (ulong) user.DiscordUserId;
+
+                IUser? discordUser = client.GetUser(discordId);
+                discordUser ??= await client.Rest.GetUserAsync(discordId);
+
+                if (discordUser == null)
+                    continue;
+
                 var dm = await discordUser.CreateDMChannelAsync();
                 await dm.SendMessageAsync(
                     $"RUCM выбрал вас для независимого аудита действия дежурного №{invitation.EntityId}. " +
