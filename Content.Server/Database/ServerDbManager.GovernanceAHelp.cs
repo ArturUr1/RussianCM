@@ -203,10 +203,11 @@ public sealed partial class ServerDbManager
                 LIMIT 1
             )
             SELECT ticket.id, ticket.round_id, ticket.reporter_ss14_user_id,
-                   player.last_seen_user_name, ticket.summary, ticket.status,
-                   ticket.created_at, ticket.claimed_by_user_id = actor.id
+                   COALESCE(player.last_seen_user_name, ticket.reporter_ss14_user_id::text),
+                   ticket.summary, ticket.status,
+                   ticket.created_at, COALESCE(ticket.claimed_by_user_id = actor.id, false)
             FROM governance.ahelp_tickets AS ticket
-            JOIN player ON player.user_id = ticket.reporter_ss14_user_id
+            LEFT JOIN player ON player.user_id = ticket.reporter_ss14_user_id
             CROSS JOIN actor
             WHERE ticket.round_id = @round_id
               AND (ticket.status = 'open' OR
