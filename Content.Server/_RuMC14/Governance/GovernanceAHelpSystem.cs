@@ -35,8 +35,14 @@ public sealed class GovernanceAHelpSystem : EntitySystem
         SubscribeNetworkEvent<GovernanceAHelpOpenRequest>(OnOpenRequest);
     }
 
-    private void OnOpenRequest(GovernanceAHelpOpenRequest message, EntitySessionEventArgs args)
+    private async void OnOpenRequest(GovernanceAHelpOpenRequest message, EntitySessionEventArgs args)
     {
+        if (await CanUseResponderAsync(args.SenderSession))
+        {
+            EntityManager.System<GovernanceDutySystem>().OpenAHelpQueue(args.SenderSession);
+            return;
+        }
+
         OpenPlayerHelp(args.SenderSession);
     }
 
