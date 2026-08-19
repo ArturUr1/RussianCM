@@ -173,11 +173,11 @@ public sealed class GovernanceAHelpQueueWindow : DefaultWindow
             SeparationOverride = 6,
         };
         var helloTemplate = new Button { Text = Loc.GetString("governance-ahelp-template-greeting") };
-        helloTemplate.OnPressed += _ => _reply.Text = Loc.GetString("governance-ahelp-template-greeting-text");
+        helloTemplate.OnPressed += _ => _reply!.Text = Loc.GetString("governance-ahelp-template-greeting-text");
         var detailsTemplate = new Button { Text = Loc.GetString("governance-ahelp-template-details") };
-        detailsTemplate.OnPressed += _ => _reply.Text = Loc.GetString("governance-ahelp-template-details-text");
+        detailsTemplate.OnPressed += _ => _reply!.Text = Loc.GetString("governance-ahelp-template-details-text");
         var waitTemplate = new Button { Text = Loc.GetString("governance-ahelp-template-wait") };
-        waitTemplate.OnPressed += _ => _reply.Text = Loc.GetString("governance-ahelp-template-wait-text");
+        waitTemplate.OnPressed += _ => _reply!.Text = Loc.GetString("governance-ahelp-template-wait-text");
         templates.AddChild(helloTemplate);
         templates.AddChild(detailsTemplate);
         templates.AddChild(waitTemplate);
