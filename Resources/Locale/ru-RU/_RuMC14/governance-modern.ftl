@@ -65,3 +65,47 @@ governance-ahelp-incident-self-target = Дежурный не может соз�
 governance-ahelp-incident-type-invalid = Тип инцидента должен содержать от 2 до 64 символов.
 governance-ahelp-incident-access-denied = У вас нет временного полномочия на создание live-инцидента.
 governance-ahelp-incident-create-failed = Не удалось создать инцидент. Убедитесь, что обращение всё ещё закреплено за вами.
+
+governance-ahelp-actions-heading = [bold]Действия по инциденту[/bold]
+governance-ahelp-action-reason-placeholder = Основание действия (10–512 символов)…
+governance-ahelp-action-freeze-seconds-placeholder = Секунды
+governance-ahelp-action-request-explanation = Запросить объяснение
+governance-ahelp-action-view-logs = Просмотреть логи
+governance-ahelp-action-freeze = Заморозить
+governance-ahelp-action-round-remove = Удалить до конца раунда
+governance-ahelp-action-history-heading = [bold]История действий[/bold]
+governance-ahelp-action-history-empty = [color=#8c96a8]По этому инциденту действий пока нет.[/color]
+governance-ahelp-action-card = #{$id} • [bold]{$type}[/bold] • {$status} • {$approvals}/{$required}{$duration}
+    {$reason}
+governance-ahelp-action-duration =  • {$seconds} сек.
+governance-ahelp-action-type-explanation = Запрос объяснения
+governance-ahelp-action-type-logs = Просмотр логов
+governance-ahelp-action-type-freeze = Заморозка
+governance-ahelp-action-type-round-remove = Удаление до конца раунда
+governance-ahelp-action-status-proposed = [color=#ffd166]ожидает одобрения[/color]
+governance-ahelp-action-status-approved = [color=#72d572]одобрено[/color]
+governance-ahelp-action-status-executed = [color=#72d572]выполнено[/color]
+governance-ahelp-action-status-rejected = [color=#ff5a5a]отклонено[/color]
+governance-ahelp-action-status-expired = истекло
+
+governance-ahelp-approval-heading = [bold]Ожидают вашего решения[/bold]
+governance-ahelp-approval-empty = [color=#8c96a8]Нет действий, требующих второго голоса.[/color]
+governance-ahelp-approval-card = Действие #{$id} • инцидент #{$incident}
+    {$actor} → {$target} • [bold]{$type}[/bold] • {$approvals}/{$required}
+    {$reason}
+governance-ahelp-approval-approve = Одобрить
+governance-ahelp-approval-reject = Отклонить
+
+governance-ahelp-logs-heading = [bold]Логи цели[/bold]
+governance-ahelp-logs-empty = [color=#8c96a8]Логи не загружены. Нажмите «Просмотреть логи».[/color]
+governance-ahelp-log-line = [color=#8c96a8]{$time}[/color] [bold]{$type}[/bold] {$message}
+
+governance-ahelp-action-access-denied = У вас нет временного полномочия для этого действия.
+governance-ahelp-action-no-incident = Сначала создайте инцидент для этого обращения.
+governance-ahelp-action-invalid = Неизвестное действие по инциденту.
+governance-ahelp-action-reason-invalid = Укажите основание длиной от 10 до 512 символов.
+governance-ahelp-action-freeze-duration-invalid = Длительность заморозки должна быть от 1 до 120 секунд.
+governance-ahelp-action-create-failed = Не удалось создать действие по инциденту.
+governance-ahelp-action-target-unavailable = Цель или автор действия сейчас недоступны на сервере.
+governance-ahelp-action-execution-failed = Действие одобрено, но сервер не смог его выполнить. Проверьте состояние цели и полномочия.
+governance-ahelp-action-review-failed = Не удалось записать решение. Возможно, вы не можете голосовать за это действие или оно уже рассмотрено.
