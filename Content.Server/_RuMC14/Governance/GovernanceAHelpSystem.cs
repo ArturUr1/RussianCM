@@ -7,6 +7,7 @@ using Content.Server.GameTicking;
 using Content.Shared._RuMC14.Governance;
 using Content.Shared.Ghost;
 using Robust.Server.Player;
+using Robust.Shared.Enums;
 using Robust.Shared.Network;
 using Robust.Shared.Player;
 
@@ -150,6 +151,65 @@ public sealed class GovernanceAHelpSystem : EntitySystem
         await RefreshResponderEuisAsync();
         await RefreshPlayerEuisAsync(ticket.ReporterUserId);
         return true;
+    }
+
+    public async Task<string?> CreateIncidentAsync(
+        ICommonSession player,
+        long ticketId,
+        string targetQuery,
+        string incidentType)
+    {
+        if (!await CanUseResponderAsync(player))
+            return "governance-ahelp-incident-access-denied";
+
+        if (await _governance.AuthorizeAsync(player.UserId, _ticker.RoundId, "moderation.freeze") == null)
+            return "governance-ahelp-incident-access-denied";
+
+        targetQuery = targetQuery.Trim();
+        if (string.IsNullOrWhiteSpace(targetQuery))
+            return "governance-ahelp-incident-target-required";
+
+        incidentType = incidentType.Trim();
+        if (incidentType.Length is < 2 or > 64)
+            return "governance-ahelp-incident-type-invalid";
+
+        ICommonSession? target = null;
+        if (Guid.TryParse(targetQuery, out var targetGuid))
+        {
+            _players.TryGetSessionById(new NetUserId(targetGuid), out target);
+        }
+        else
+        {
+            target = _players.Sessions.FirstOrDefault(session =>
+                session.Status is SessionStatus.Connected or SessionStatus.InGame &&
+                session.Name.Equals(targetQuery, StringComparison.OrdinalIgnoreCase));
+        }
+
+        if (target == null)
+            return "governance-ahelp-incident-target-not-found";
+        if (target.UserId == player.UserId)
+            return "governance-ahelp-incident-self-target";
+
+        var incident = await _database.CreateGovernanceAHelpIncidentAsync(
+            ticketId,
+            player.UserId,
+            target.UserId,
+            target.Name,
+            _ticker.RoundId,
+            incidentType);
+        if (incident == null)
+            return "governance-ahelp-incident-create-failed";
+
+        await RefreshResponderEuisAsync();
+        return null;
+    }
+
+    public async Task<GovernanceAHelpIncidentInfo?> GetIncidentAsync(ICommonSession player, long ticketId)
+    {
+        if (!await CanUseResponderAsync(player))
+            return null;
+
+        return await _database.GetGovernanceAHelpIncidentAsync(ticketId, player.UserId, _ticker.RoundId);
     }
 
     public Task<GovernanceAHelpPlayerTicketInfo?> GetPlayerTicketAsync(ICommonSession player)
