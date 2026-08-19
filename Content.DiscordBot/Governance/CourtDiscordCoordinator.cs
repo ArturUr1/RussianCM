@@ -246,8 +246,11 @@ public sealed class CourtDiscordCoordinator(
             try
             {
                 var discordId = checked((ulong) user.DiscordUserId);
-                IUser discordUser = client.GetUser(discordId) ??
-                    await client.Rest.GetUserAsync(discordId);
+                IUser? discordUser = client.GetUser(discordId);
+                discordUser ??= await client.Rest.GetUserAsync(discordId);
+                if (discordUser == null)
+                    continue;
+
                 var dm = await discordUser.CreateDMChannelAsync();
                 await dm.SendMessageAsync(
                     $"Вас пригласили в присяжные RUCM по делу №{invitation.EntityId}. " +
@@ -272,8 +275,11 @@ public sealed class CourtDiscordCoordinator(
             try
             {
                 var discordId = checked((ulong) user.DiscordUserId);
-                IUser discordUser = client.GetUser(discordId) ??
-                    await client.Rest.GetUserAsync(discordId);
+                IUser? discordUser = client.GetUser(discordId);
+                discordUser ??= await client.Rest.GetUserAsync(discordId);
+                if (discordUser == null)
+                    continue;
+
                 var dm = await discordUser.CreateDMChannelAsync();
                 await dm.SendMessageAsync(
                     $"Вас пригласили стать независимым рецензентом EventProposal №{proposal.Id} «{proposal.Title}». " +
