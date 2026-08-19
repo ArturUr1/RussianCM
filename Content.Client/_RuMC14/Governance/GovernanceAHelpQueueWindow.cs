@@ -13,7 +13,7 @@ namespace Content.Client._RuMC14.Governance;
 
 public sealed class GovernanceAHelpQueueWindow : DefaultWindow
 {
-    public event Action<GovernanceAHelpQueueAction, long, string?>? ActionRequested;
+    public event Action<GovernanceAHelpQueueAction, long, string?, string?>? ActionRequested;
 
     private readonly BoxContainer _ticketList;
     private readonly BoxContainer _transcript;
@@ -27,9 +27,15 @@ public sealed class GovernanceAHelpQueueWindow : DefaultWindow
     private readonly Button _send;
     private readonly Button _waiting;
     private readonly Button _resolve;
+    private readonly RichTextLabel _incidentStatus;
+    private readonly LineEdit _incidentTarget;
+    private readonly LineEdit _incidentType;
+    private readonly Button _createIncident;
 
     private IReadOnlyList<GovernanceAHelpQueueItem> _tickets = [];
     private long _selectedTicketId;
+    private long _incidentId;
+    private long _lastRenderedTicketId;
 
     public GovernanceAHelpQueueWindow()
     {
@@ -73,7 +79,7 @@ public sealed class GovernanceAHelpQueueWindow : DefaultWindow
         });
         _counter = new Label();
         var refresh = new Button { Text = Loc.GetString("governance-ahelp-refresh") };
-        refresh.OnPressed += _ => ActionRequested?.Invoke(GovernanceAHelpQueueAction.Refresh, 0, null);
+        refresh.OnPressed += _ => ActionRequested?.Invoke(GovernanceAHelpQueueAction.Refresh, 0, null, null);
         headerContent.AddChild(heading);
         headerContent.AddChild(_counter);
         headerContent.AddChild(refresh);
@@ -153,6 +159,56 @@ public sealed class GovernanceAHelpQueueWindow : DefaultWindow
         conversation.AddChild(_ticketHeader);
         conversation.AddChild(_ticketMeta);
 
+        var incidentPanel = new PanelContainer
+        {
+            StyleClasses = { StyleNano.StyleClassCrtPanel },
+            HorizontalExpand = true,
+        };
+        var incidentColumn = new BoxContainer
+        {
+            Orientation = LayoutOrientation.Vertical,
+            SeparationOverride = 6,
+            HorizontalExpand = true,
+        };
+        incidentColumn.AddChild(new RichTextLabel
+        {
+            Text = Loc.GetString("governance-ahelp-incident-heading"),
+        });
+        _incidentStatus = new RichTextLabel
+        {
+            Text = Loc.GetString("governance-ahelp-incident-none"),
+        };
+        incidentColumn.AddChild(_incidentStatus);
+
+        var incidentInputs = new BoxContainer
+        {
+            Orientation = LayoutOrientation.Horizontal,
+            SeparationOverride = 6,
+            HorizontalExpand = true,
+        };
+        _incidentTarget = new LineEdit
+        {
+            HorizontalExpand = true,
+            PlaceHolder = Loc.GetString("governance-ahelp-incident-target-placeholder"),
+        };
+        _incidentType = new LineEdit
+        {
+            HorizontalExpand = true,
+            Text = Loc.GetString("governance-ahelp-incident-type-default"),
+            PlaceHolder = Loc.GetString("governance-ahelp-incident-type-placeholder"),
+        };
+        _createIncident = new Button
+        {
+            Text = Loc.GetString("governance-ahelp-incident-create"),
+        };
+        _createIncident.OnPressed += _ => CreateIncident();
+        incidentInputs.AddChild(_incidentTarget);
+        incidentInputs.AddChild(_incidentType);
+        incidentInputs.AddChild(_createIncident);
+        incidentColumn.AddChild(incidentInputs);
+        incidentPanel.AddChild(incidentColumn);
+        conversation.AddChild(incidentPanel);
+
         var transcriptScroll = new ScrollContainer
         {
             HorizontalExpand = true,
@@ -173,11 +229,8 @@ public sealed class GovernanceAHelpQueueWindow : DefaultWindow
             SeparationOverride = 6,
         };
         var helloTemplate = new Button { Text = Loc.GetString("governance-ahelp-template-greeting") };
-        helloTemplate.OnPressed += _ => _reply!.Text = Loc.GetString("governance-ahelp-template-greeting-text");
         var detailsTemplate = new Button { Text = Loc.GetString("governance-ahelp-template-details") };
-        detailsTemplate.OnPressed += _ => _reply!.Text = Loc.GetString("governance-ahelp-template-details-text");
         var waitTemplate = new Button { Text = Loc.GetString("governance-ahelp-template-wait") };
-        waitTemplate.OnPressed += _ => _reply!.Text = Loc.GetString("governance-ahelp-template-wait-text");
         templates.AddChild(helloTemplate);
         templates.AddChild(detailsTemplate);
         templates.AddChild(waitTemplate);
@@ -193,6 +246,9 @@ public sealed class GovernanceAHelpQueueWindow : DefaultWindow
             HorizontalExpand = true,
             PlaceHolder = Loc.GetString("governance-ahelp-reply-placeholder"),
         };
+        helloTemplate.OnPressed += _ => _reply.Text = Loc.GetString("governance-ahelp-template-greeting-text");
+        detailsTemplate.OnPressed += _ => _reply.Text = Loc.GetString("governance-ahelp-template-details-text");
+        waitTemplate.OnPressed += _ => _reply.Text = Loc.GetString("governance-ahelp-template-wait-text");
         _reply.OnTextEntered += args => SendReply(args.Text);
         _send = new Button
         {
@@ -234,6 +290,7 @@ public sealed class GovernanceAHelpQueueWindow : DefaultWindow
     {
         _tickets = state.Tickets;
         _selectedTicketId = state.SelectedTicketId;
+        _incidentId = state.IncidentId;
         _error.Text = state.Error ?? string.Empty;
         var mine = state.Tickets.Count(ticket => ticket.ClaimedByMe);
         var open = state.Tickets.Count(ticket => !ticket.ClaimedByMe && ticket.Status == "open");
@@ -243,7 +300,7 @@ public sealed class GovernanceAHelpQueueWindow : DefaultWindow
             ("mine", mine));
 
         RebuildTicketList();
-        UpdateSelectedTicket(state.Transcript);
+        UpdateSelectedTicket(state.Transcript, state.IncidentTargetName, state.IncidentType);
         UpdateActionState();
     }
 
@@ -289,12 +346,15 @@ public sealed class GovernanceAHelpQueueWindow : DefaultWindow
                     ("summary", summary)),
             };
             var id = ticket.Id;
-            button.OnPressed += _ => ActionRequested?.Invoke(GovernanceAHelpQueueAction.SelectTicket, id, null);
+            button.OnPressed += _ => ActionRequested?.Invoke(GovernanceAHelpQueueAction.SelectTicket, id, null, null);
             _ticketList.AddChild(button);
         }
     }
 
-    private void UpdateSelectedTicket(IReadOnlyList<GovernanceAHelpTranscriptEntry> transcript)
+    private void UpdateSelectedTicket(
+        IReadOnlyList<GovernanceAHelpTranscriptEntry> transcript,
+        string incidentTargetName,
+        string incidentType)
     {
         var selected = _tickets.FirstOrDefault(ticket => ticket.Id == _selectedTicketId);
         _transcript.RemoveAllChildren();
@@ -303,11 +363,19 @@ public sealed class GovernanceAHelpQueueWindow : DefaultWindow
         {
             _ticketHeader.Text = Loc.GetString("governance-ahelp-select-ticket");
             _ticketMeta.Text = string.Empty;
+            _incidentStatus.Text = Loc.GetString("governance-ahelp-incident-none");
             _transcript.AddChild(new RichTextLabel
             {
                 Text = Loc.GetString("governance-ahelp-no-selection-hint"),
             });
             return;
+        }
+
+        if (_lastRenderedTicketId != selected.Id)
+        {
+            _lastRenderedTicketId = selected.Id;
+            _incidentTarget.Clear();
+            _incidentType.Text = Loc.GetString("governance-ahelp-incident-type-default");
         }
 
         _ticketHeader.Text = Loc.GetString(
@@ -319,6 +387,14 @@ public sealed class GovernanceAHelpQueueWindow : DefaultWindow
             ("status", StatusText(selected)),
             ("time", selected.CreatedAt.ToLocalTime().ToString("HH:mm:ss")),
             ("uuid", selected.ReporterUserId.ToString()));
+
+        _incidentStatus.Text = _incidentId > 0
+            ? Loc.GetString(
+                "governance-ahelp-incident-active",
+                ("id", _incidentId),
+                ("target", FormattedMessage.EscapeText(incidentTargetName)),
+                ("type", FormattedMessage.EscapeText(incidentType)))
+            : Loc.GetString("governance-ahelp-incident-none");
 
         if (!selected.ClaimedByMe)
         {
@@ -359,6 +435,29 @@ public sealed class GovernanceAHelpQueueWindow : DefaultWindow
         }
     }
 
+    private void CreateIncident()
+    {
+        if (_selectedTicketId == 0)
+        {
+            _error.Text = Loc.GetString("governance-ahelp-select-ticket");
+            return;
+        }
+
+        var target = _incidentTarget.Text.Trim();
+        var type = _incidentType.Text.Trim();
+        if (string.IsNullOrWhiteSpace(target))
+        {
+            _error.Text = Loc.GetString("governance-ahelp-incident-target-required");
+            return;
+        }
+
+        ActionRequested?.Invoke(
+            GovernanceAHelpQueueAction.CreateIncident,
+            _selectedTicketId,
+            target,
+            type);
+    }
+
     private void SendReply(string text)
     {
         if (string.IsNullOrWhiteSpace(text) || _selectedTicketId == 0)
@@ -367,7 +466,8 @@ public sealed class GovernanceAHelpQueueWindow : DefaultWindow
         ActionRequested?.Invoke(
             GovernanceAHelpQueueAction.SendMessage,
             _selectedTicketId,
-            text.Trim());
+            text.Trim(),
+            null);
         _reply.Clear();
     }
 
@@ -386,7 +486,7 @@ public sealed class GovernanceAHelpQueueWindow : DefaultWindow
                 return;
             }
 
-            ActionRequested?.Invoke(action, _selectedTicketId, null);
+            ActionRequested?.Invoke(action, _selectedTicketId, null, null);
         };
         return button;
     }
@@ -400,6 +500,11 @@ public sealed class GovernanceAHelpQueueWindow : DefaultWindow
         _resolve.Disabled = !mine;
         _reply.Editable = mine;
         _send.Disabled = !mine;
+
+        var canCreateIncident = mine && _incidentId == 0;
+        _incidentTarget.Editable = canCreateIncident;
+        _incidentType.Editable = canCreateIncident;
+        _createIncident.Disabled = !canCreateIncident;
     }
 
     private static string StatusText(GovernanceAHelpQueueItem ticket)
