@@ -64,6 +64,11 @@ public sealed partial class ScalingViewport
     private readonly ZEye _stairPreviewEye = new();
     private IClydeViewport? _stairPreviewViewport;
     private bool _drawStairPreviewComposite;
+    // AU14 (building overhaul): "faint upper" rooftop-awareness pass. Reuses the stair-preview offscreen
+    // viewport (the two are mutually exclusive: the faint pass only runs when neither LookUp nor
+    // StairPreviewUp is active, which is exactly when the stair-preview composite is idle).
+    private bool _drawFaintUpperComposite;
+    private float _faintUpperAlpha;
     private EntityUid? _lastZLevelEyeEntity;
     private EntityUid? _lastZLevelViewEntity;
     private TimeSpan _zLowerRenderGraceUntil = TimeSpan.Zero;
@@ -435,6 +440,11 @@ public sealed partial class ScalingViewport
                 }
             }
         }
+
+        // AU14 (building overhaul): stage 1 of the look-up cycle. When the viewer toggled faint mode, is not
+        // already looking up and is not under a ceiling, ghost the level directly above at low alpha.
+        if (lookUp == 0 && zLevelViewer.FaintUp)
+            RenderFaintUpperComposite(viewport, fallbackEye, viewXform, lowestDepth, weatherSourceMapId);
 
         // Restore the Eye
         Eye = fallbackEye;
@@ -1413,6 +1423,7 @@ public sealed partial class ScalingViewport
     private void ClearZLevelCompositeState()
     {
         _drawStairPreviewComposite = false;
+        _drawFaintUpperComposite = false; // AU14: faint upper ghost is re-decided every frame
     }
 
     internal static void NoteZRenderBypassed(string reason)
