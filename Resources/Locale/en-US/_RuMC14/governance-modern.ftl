@@ -1,8 +1,10 @@
 governance-ahelp-workspace-header = [bold]Support workspace[/bold]
 governance-ahelp-workspace-subtitle = Queue, conversation and responder actions in one place.
+governance-ahelp-workspace-subtitle-modern = Conversation in the center; investigation and live actions on the right.
 governance-ahelp-list-heading = [bold]Queue[/bold]
 governance-ahelp-list-hint = Claim an open ticket first. Its full conversation will then be available here.
 governance-ahelp-filter-placeholder = Search player, ticket ID or message…
+governance-ahelp-filter-placeholder-short = Search queue…
 governance-ahelp-filter-empty = [color=#8c96a8]No tickets match this search.[/color]
 governance-ahelp-reply-placeholder = Write a reply to the player…
 governance-ahelp-counter-modern = Open: {$open} • Mine: {$mine}
@@ -17,6 +19,8 @@ governance-ahelp-empty-modern = [color=#8c96a8]There are no open support tickets
 governance-ahelp-selected-marker = ▶
 governance-ahelp-ticket-card-modern = {$selected} #{$id} • {$reporter} • {$status} • {$time}
     {$summary}
+governance-ahelp-ticket-card-compact = {$selected}#{$id} • {$reporter}
+    {$status} • {$time}
 governance-ahelp-no-selection-hint = [color=#8c96a8]Select a ticket on the left to view its details.[/color]
 governance-ahelp-conversation-header = [bold]Ticket #{$id}[/bold] • {$reporter}
 governance-ahelp-conversation-meta = Status: {$status}  •  Created: {$time}
@@ -59,10 +63,23 @@ governance-ahelp-records-open-logs = Full logs
 governance-ahelp-records-access-denied = Full moderation records are available only to an active duty responder.
 governance-ahelp-notes-target-required = Enter a player name or SS14 UUID whose notes should be opened.
 governance-ahelp-notes-target-not-found = No player with that name or SS14 UUID was found in the database.
+governance-ahelp-context-heading = [bold]Investigation[/bold]
+governance-ahelp-tool-full-logs = Full logs
+governance-ahelp-tool-reporter-notes = Reporter notes
+governance-ahelp-tool-target-notes = Target notes
+governance-duty-verb-notes = Player notes
+governance-duty-verb-teleport-to = Teleport to player
 
 governance-ahelp-incident-heading = [bold]Incident[/bold]
 governance-ahelp-incident-none = [color=#8c96a8]No active incident has been created for this ticket.[/color]
 governance-ahelp-incident-active = [bold]LiveIncident #{$id}[/bold] • target: {$target} • type: {$type}
+governance-ahelp-incident-active-character = [bold]LiveIncident #{$id}[/bold]
+    Account: {$target}
+    Character: [bold]{$character}[/bold]
+    Type: {$type}
+governance-ahelp-incident-court = [color=#d8a34a][bold]LiveIncident #{$incident} → Community Court #{$case}[/bold][/color]
+    Account: {$target}
+    Character: [bold]{$character}[/bold]
 governance-ahelp-incident-target-placeholder = Player name or SS14 UUID
 governance-ahelp-incident-type-placeholder = Incident type
 governance-ahelp-incident-type-default = rules violation
@@ -76,20 +93,22 @@ governance-ahelp-incident-create-failed = Could not create the incident. Make su
 
 governance-ahelp-court-none = [color=#8c96a8]No Community Court case has been created for this incident.[/color]
 governance-ahelp-court-active = [color=#d8a34a][bold]Referred to Community Court • case #{$id}[/bold][/color]
-governance-ahelp-court-escalate = Refer to court
-governance-ahelp-court-reason-invalid = Enter a court referral reason between 10 and 512 characters.
+governance-ahelp-court-escalate = Refer to Community Court
+governance-ahelp-court-reason-invalid = Enter a court referral reason between 10 and 1500 characters.
 governance-ahelp-court-access-denied = Only the active responder handling this ticket may refer the incident to court.
 governance-ahelp-court-create-failed = Could not create the Community Court case. Check the incident and database state.
 
 governance-ahelp-actions-heading = [bold]Incident actions[/bold]
-governance-ahelp-action-reason-placeholder = Action / court referral reason (10–512 characters)…
-governance-ahelp-action-freeze-seconds-placeholder = Seconds
+governance-ahelp-containment-heading = [bold]Live containment[/bold]
+governance-ahelp-action-reason-placeholder = Action / court referral reason…
+governance-ahelp-action-freeze-seconds-placeholder = Sec.
 governance-ahelp-action-request-explanation = Request explanation
 governance-ahelp-action-view-logs = View logs
 governance-ahelp-action-freeze = Freeze
 governance-ahelp-action-round-remove = Remove for round
-governance-ahelp-action-history-heading = [bold]Action history[/bold]
-governance-ahelp-action-history-empty = [color=#8c96a8]No moderation actions have been created for this incident.[/color]
+governance-ahelp-action-round-remove-short = Remove from round
+governance-ahelp-action-history-heading = [bold]Intervention history[/bold]
+governance-ahelp-action-history-empty = [color=#8c96a8]No live interventions have been created for this incident.[/color]
 governance-ahelp-action-card = #{$id} • [bold]{$type}[/bold] • {$status} • {$approvals}/{$required}{$duration}
     {$reason}
 governance-ahelp-action-duration =  • {$seconds}s
@@ -103,7 +122,7 @@ governance-ahelp-action-status-executed = [color=#72d572]executed[/color]
 governance-ahelp-action-status-rejected = [color=#ff5a5a]rejected[/color]
 governance-ahelp-action-status-expired = expired
 
-governance-ahelp-approval-heading = [bold]Awaiting your decision[/bold]
+governance-ahelp-approval-heading = [bold]Requires second decision[/bold]
 governance-ahelp-approval-empty = [color=#8c96a8]No actions currently require a second vote.[/color]
 governance-ahelp-approval-card = Action #{$id} • incident #{$incident}
     {$actor} → {$target} • [bold]{$type}[/bold] • {$approvals}/{$required}
@@ -112,7 +131,7 @@ governance-ahelp-approval-approve = Approve
 governance-ahelp-approval-reject = Reject
 
 governance-ahelp-logs-heading = [bold]Target logs[/bold]
-governance-ahelp-logs-empty = [color=#8c96a8]Logs are not loaded. Press “View logs”.[/color]
+governance-ahelp-logs-empty = [color=#8c96a8]Logs are not loaded.[/color]
 governance-ahelp-log-line = [color=#8c96a8]{$time}[/color] [bold]{$type}[/bold] {$message}
 
 governance-ahelp-action-access-denied = You do not have the temporary capability required for this action.
