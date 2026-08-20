@@ -1,6 +1,7 @@
 using Content.Client._CMU14.Administration.Console;
 using Content.Client._RMC14.Commendations;
 using Content.Client._RMC14.LinkAccount;
+using Content.Client._RMC14.Mentor;
 using Content.Client._RMC14.PlayTimeTracking;
 using Content.Client._RMC14.TacticalMap;
 using Content.Client.Administration.Managers;
@@ -74,6 +75,7 @@ namespace Content.Client.IoC
 
             // RMC14
             collection.Register<LinkAccountManager>();
+            collection.Register<MentorWireCompatibilityManager>();
             collection.Register<RMCPlayTimeManager>();
             collection.Register<SharedRMCPlayTimeManager, RMCPlayTimeManager>();
             collection.Register<CommendationsManager>();
