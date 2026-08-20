@@ -1,3 +1,4 @@
+using System.Text;
 using Discord;
 using Discord.WebSocket;
 
@@ -6,6 +7,7 @@ namespace Content.DiscordBot.Governance;
 public sealed class CourtDiscordCoordinator(
     DiscordSocketClient client,
     CommunityCourtService court,
+    CourtSourceMaterialService materials,
     CourtPunishmentService punishments,
     EventGovernanceService events,
     ModerationGovernanceService moderation,
@@ -39,7 +41,7 @@ public sealed class CourtDiscordCoordinator(
             return;
         if (client.ConnectionState != ConnectionState.Connected)
             return;
-        var guild = client.GetGuild(config.Guild)
+        _ = client.GetGuild(config.Guild)
             ?? throw new InvalidOperationException($"Discord bot cannot access configured guild {config.Guild}.");
         await ValidateCourtChannelAsync();
         var available = await GuildMembersAsync();
@@ -48,6 +50,8 @@ public sealed class CourtDiscordCoordinator(
         await punishments.ExecutePendingAsync();
         foreach (var courtCase in await court.CasesWithoutThreadsAsync())
             await EnsureCaseThreadAsync(courtCase);
+        foreach (var caseId in await materials.CasesNeedingMaterialsAsync())
+            await PublishCaseMaterialsAsync(caseId);
         foreach (var ticket in await moderation.AHelpsWithoutThreadsAsync())
             await EnsureAHelpThreadAsync(ticket);
         await NotifyJurorsAsync();
@@ -131,6 +135,78 @@ public sealed class CourtDiscordCoordinator(
         return thread;
     }
 
+    private async Task PublishCaseMaterialsAsync(long caseId)
+    {
+        var courtCase = await court.GetCaseAsync(caseId);
+        var thread = await EnsureCaseThreadAsync(courtCase);
+        var source = await materials.GetAsync(caseId);
+        if (source == null)
+        {
+            await materials.MarkMaterialsPublishedAsync(caseId);
+            return;
+        }
+
+        var transcriptLines = source.Transcript.Select(line =>
+        {
+            var role = line.FromResponder ? "Дежурный" : "Игрок";
+            return $"**{line.CreatedAt.ToLocalTime():HH:mm:ss} • {role} • {EscapeDiscord(line.SenderName)}**\n{EscapeDiscord(line.Body)}";
+        });
+        await PublishChunksAsync(
+            thread,
+            $"AHelp #{source.AHelpTicketId} • полный диалог",
+            transcriptLines,
+            Color.Blue,
+            "В исходном AHelp нет сообщений.");
+
+        var historyLines = source.PlayerHistory.Select(entry =>
+            $"**{entry.CreatedAt.ToLocalTime():dd.MM.yyyy HH:mm} • {EscapeDiscord(entry.Kind)}**\n{EscapeDiscord(entry.Message)}");
+        await PublishChunksAsync(
+            thread,
+            $"История ответчика • {EscapeDiscord(source.DefendantName)}",
+            historyLines,
+            Color.DarkGrey,
+            "У ответчика нет сохранённых заметок, watchlist-записей или отображаемых банов.");
+
+        await materials.MarkMaterialsPublishedAsync(caseId);
+    }
+
+    private static async Task PublishChunksAsync(
+        IThreadChannel thread,
+        string title,
+        IEnumerable<string> lines,
+        Color color,
+        string emptyText)
+    {
+        var chunks = new List<string>();
+        var buffer = new StringBuilder();
+        foreach (var line in lines)
+        {
+            var safeLine = line.Length > 3400 ? line[..3400] + "…" : line;
+            if (buffer.Length > 0 && buffer.Length + safeLine.Length + 2 > 3800)
+            {
+                chunks.Add(buffer.ToString());
+                buffer.Clear();
+            }
+            if (buffer.Length > 0)
+                buffer.Append("\n\n");
+            buffer.Append(safeLine);
+        }
+        if (buffer.Length > 0)
+            chunks.Add(buffer.ToString());
+        if (chunks.Count == 0)
+            chunks.Add(emptyText);
+
+        for (var index = 0; index < chunks.Count; index++)
+        {
+            var partTitle = chunks.Count == 1 ? title : $"{title} • {index + 1}/{chunks.Count}";
+            await thread.SendMessageAsync(embed: new EmbedBuilder()
+                .WithTitle(partTitle)
+                .WithDescription(chunks[index])
+                .WithColor(color)
+                .Build());
+        }
+    }
+
     public async Task PublishStatementAsync(long caseId, GovernanceCourtStatement statement)
     {
         var courtCase = await court.GetCaseAsync(caseId);
@@ -194,7 +270,7 @@ public sealed class CourtDiscordCoordinator(
             await thread.SendMessageAsync(embed: embed);
         }
         else
-            throw new InvalidOperationException($"Governance channel {channelId} is not a forum or text channel.");
+            throw new InvalidOperationException($"Governance channel {channelId} is unavailable as a forum or text channel.");
         await events.AttachThreadAsync(proposal.Id, thread.Id);
         return thread;
     }
@@ -318,8 +394,15 @@ public sealed class CourtDiscordCoordinator(
 
     private async Task<Embed> BuildCaseEmbedAsync(GovernanceCourtCase courtCase)
     {
+        var source = await materials.GetAsync(courtCase.Id);
         var claimantText = await CourtAccountTextAsync(courtCase.ClaimantUserId);
         var defendantText = await CourtAccountTextAsync(courtCase.DefendantUserId);
+        if (source != null)
+        {
+            claimantText += $"\nSS14 `{source.ClaimantSs14UserId}`";
+            defendantText = $"{defendantText}\nПерсонаж: **{EscapeDiscord(source.DefendantCharacterName)}**\nSS14 `{source.DefendantSs14UserId}`";
+        }
+
         var statements = await court.GetStatementsAsync(courtCase.Id);
         var complaint = statements.FirstOrDefault(value => value.Kind == "complaint");
         var embed = new EmbedBuilder()
@@ -333,7 +416,7 @@ public sealed class CourtDiscordCoordinator(
             .AddField("Срок защиты", $"<t:{new DateTimeOffset(courtCase.DefenseDeadline).ToUnixTimeSeconds()}:F>", true)
             .WithCurrentTimestamp();
         if (!string.IsNullOrWhiteSpace(complaint?.EvidenceReference))
-            embed.AddField("Доказательство", complaint.EvidenceReference);
+            embed.AddField("Источник дела", complaint.EvidenceReference);
         return embed.Build();
     }
 
@@ -343,15 +426,19 @@ public sealed class CourtDiscordCoordinator(
         {
             var account = await court.GetAccountAsync(governanceUserId);
             return account.DiscordId > 0
-                ? $"<@{account.DiscordId}> ({account.Name})"
-                : $"{account.Name} • Discord не привязан";
+                ? $"<@{account.DiscordId}> ({EscapeDiscord(account.Name)})"
+                : $"{EscapeDiscord(account.Name)} • Discord не привязан";
         }
         catch (CourtRuleException)
         {
-            // Live incidents may target an SS14 account that has not linked Discord yet. The case
-            // summary/evidence contains the target nickname and SS14 UUID; keep publication working.
             return $"Governance `{governanceUserId}` • Discord не привязан";
         }
+    }
+
+    private static string EscapeDiscord(string value)
+    {
+        return value.Replace("@", "@\u200B", StringComparison.Ordinal)
+            .Replace("`", "ˋ", StringComparison.Ordinal);
     }
 
     private static string StatusText(string status) => status switch
