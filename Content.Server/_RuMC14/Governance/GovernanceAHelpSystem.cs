@@ -203,11 +203,15 @@ public sealed class GovernanceAHelpSystem : EntitySystem
         if (target.UserId == player.UserId)
             return "governance-ahelp-incident-self-target";
 
+        var targetCharacterName = target.AttachedEntity is { } targetEntity
+            ? MetaData(targetEntity).EntityName
+            : target.Name;
         var incident = await _database.CreateGovernanceAHelpIncidentAsync(
             ticketId,
             player.UserId,
             target.UserId,
             target.Name,
+            targetCharacterName,
             _ticker.RoundId,
             incidentType);
         if (incident == null)
