@@ -52,7 +52,6 @@ public sealed partial class AHelpUIController: UIController, IOnSystemChanged<Bw
     private bool _hasUnreadMHelp;
     private bool _bwoinkSoundEnabled;
     private string? _aHelpSound;
-    private bool _governanceResponder;
 
     protected override string SawmillName => "c.s.go.es.bwoink";
 
@@ -62,7 +61,6 @@ public sealed partial class AHelpUIController: UIController, IOnSystemChanged<Bw
 
         SubscribeNetworkEvent<BwoinkDiscordRelayUpdated>(DiscordRelayUpdated);
         SubscribeNetworkEvent<BwoinkPlayerTypingUpdated>(PeopleTypingUpdated);
-        SubscribeNetworkEvent<GovernanceAHelpAccessUpdated>(GovernanceAccessUpdated);
         SubscribeNetworkEvent<GovernanceAHelpOpenChannel>(GovernanceOpenChannel);
 
         _adminManager.AdminStatusUpdated += OnAdminStatusUpdated;
@@ -167,7 +165,7 @@ public sealed partial class AHelpUIController: UIController, IOnSystemChanged<Bw
 
     public void EnsureUIHelper()
     {
-        var isAdmin = _adminManager.HasFlag(AdminFlags.Adminhelp) || _governanceResponder;
+        var isAdmin = _adminManager.HasFlag(AdminFlags.Adminhelp);
 
         if (UIHelper != null && UIHelper.IsAdmin == isAdmin)
             return;
@@ -271,10 +269,20 @@ public sealed partial class AHelpUIController: UIController, IOnSystemChanged<Bw
 
     private void UpdateHelpButtons()
     {
-        if (GameAHelpButton != null)
-            GameAHelpButton.Alert = _hasUnreadAHelp || _hasUnreadMHelp;
-        if (LobbyAHelpButton != null)
-            LobbyAHelpButton.Alert = _hasUnreadAHelp || _hasUnreadMHelp;
+        var isAdmin = _adminManager.HasFlag(AdminFlags.Adminhelp);
+        var isMentor = _staffHelp.IsMentor;
+        var red = isAdmin && _hasUnreadAHelp || isMentor && _hasUnreadMHelp;
+
+        if (red)
+        {
+            GameAHelpButton?.StyleClasses.Add(MenuButton.StyleClassRedTopButton);
+            LobbyAHelpButton?.StyleClasses.Add(StyleNano.StyleClassButtonColorRed);
+        }
+        else
+        {
+            GameAHelpButton?.StyleClasses.Remove(MenuButton.StyleClassRedTopButton);
+            LobbyAHelpButton?.StyleClasses.Remove(StyleNano.StyleClassButtonColorRed);
+        }
     }
 
     public void OnStateEntered(GameplayState state)
@@ -295,11 +303,6 @@ public sealed partial class AHelpUIController: UIController, IOnSystemChanged<Bw
     public void OnStateExited(LobbyState state)
     {
         UnloadButton();
-    }
-
-    private void GovernanceAccessUpdated(GovernanceAHelpAccessUpdated args, EntitySessionEventArgs session)
-    {
-        _governanceResponder = args.IsResponder;
     }
 
     private void GovernanceOpenChannel(GovernanceAHelpOpenChannel args, EntitySessionEventArgs session)
