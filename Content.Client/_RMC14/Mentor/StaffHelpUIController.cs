@@ -11,23 +11,26 @@ namespace Content.Client._RMC14.Mentor;
 /// Legacy controller name retained for existing menu references.
 /// Mentor Help is retired: F1 and the old Help entry open the Governance Support Center directly.
 /// </summary>
-public sealed partial class StaffHelpUIController : UIController
+public sealed partial class StaffHelpUIController : UIController, IOnSystemChanged<GovernanceAHelpClientSystem>
 {
     [UISystemDependency] private GovernanceAHelpClientSystem _governanceAHelp = default!;
 
     public bool IsMentor => false;
     public event Action? MentorStatusUpdated;
 
-    public override void Initialize()
+    public void OnSystemLoaded(GovernanceAHelpClientSystem system)
     {
-        base.Initialize();
-
         CommandBinds.Builder
             .BindBefore(
                 ContentKeyFunctions.OpenAHelp,
-                InputCmdHandler.FromDelegate(_ => _governanceAHelp.RequestOpen()),
+                InputCmdHandler.FromDelegate(_ => system.RequestOpen()),
                 typeof(AHelpUIController))
-            .Register<StaffHelpUIController>();
+            .Register<GovernanceAHelpClientSystem>();
+    }
+
+    public void OnSystemUnloaded(GovernanceAHelpClientSystem system)
+    {
+        CommandBinds.Unregister<GovernanceAHelpClientSystem>();
     }
 
     public void ToggleWindow()
