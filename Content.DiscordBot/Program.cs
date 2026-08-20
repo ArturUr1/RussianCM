@@ -125,8 +125,8 @@ if (governanceDoctor)
     if (missing.Length > 0)
         throw new InvalidOperationException($"Governance schema is incomplete: {string.Join(", ", missing)}");
     var applied = await governance.Database.GetAppliedMigrationsAsync();
-    if (!applied.Contains("20260818000000_ModerationTrust"))
-        throw new InvalidOperationException("ModerationTrust migration is not recorded as applied.");
+    if (!applied.Contains("20260820010000_CourtCaseMaterials"))
+        throw new InvalidOperationException("CourtCaseMaterials migration is not recorded as applied.");
     var ahelpColumns = (await governance.Database.SqlQueryRaw<string>("""
         SELECT column_name || ':' || is_nullable AS "Value"
         FROM information_schema.columns
@@ -180,19 +180,21 @@ var court = new CommunityCourtService(
     CreateConfiguredDatabase,
     CourtPolicy.FromConfig(config),
     selection);
+var courtMaterials = new CourtSourceMaterialService(CreateGovernanceDatabase, CreateConfiguredDatabase);
 var community = new GovernanceCommunityService(CreateGovernanceDatabase, CreateConfiguredDatabase, config);
 var punishments = new CourtPunishmentService(CreateGovernanceDatabase, CreateConfiguredDatabase);
 var moderation = new ModerationGovernanceService(CreateGovernanceDatabase, CreateConfiguredDatabase, community);
 var moderationTrust = new ModerationTrustService(CreateGovernanceDatabase, community, selection, config);
 var moderationQualifications = new ModerationQualificationService(CreateGovernanceDatabase, moderationTrust);
 var events = new EventGovernanceService(CreateGovernanceDatabase, community, selection, config);
-var coordinator = new CourtDiscordCoordinator(client, court, punishments, events, moderation, config);
+var coordinator = new CourtDiscordCoordinator(client, court, courtMaterials, punishments, events, moderation, config);
 var moderationTrustCoordinator = new ModerationTrustCoordinator(client, moderationTrust, moderationQualifications, court, config);
 var services = new ServiceCollection()
     .AddSingleton(client)
     .AddSingleton(config)
     .AddSingleton(selection)
     .AddSingleton(court)
+    .AddSingleton(courtMaterials)
     .AddSingleton(community)
     .AddSingleton(punishments)
     .AddSingleton(moderation)
