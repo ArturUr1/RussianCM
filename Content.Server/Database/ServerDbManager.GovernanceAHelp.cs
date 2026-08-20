@@ -211,7 +211,7 @@ public sealed partial class ServerDbManager
             CROSS JOIN actor
             WHERE ticket.round_id = @round_id
               AND (ticket.status = 'open' OR
-                   (ticket.claimed_by_user_id = actor.id AND ticket.status IN ('claimed', 'waiting_player')))
+                   (ticket.claimed_by_user_id = actor.id AND ticket.status IN ('claimed', 'waiting_player', 'escalated_to_court')))
             ORDER BY ticket.status <> 'open', ticket.created_at
             """,
             connection);
@@ -332,7 +332,9 @@ public sealed partial class ServerDbManager
                 FROM actor
                 WHERE ticket.id = @ticket_id AND ticket.round_id = @round_id
                   AND ticket.claimed_by_user_id = actor.id
-                  AND ticket.status IN ('claimed', 'waiting_player')
+                  AND (
+                      (@status = 'waiting_player' AND ticket.status IN ('claimed', 'waiting_player'))
+                      OR (@status = 'resolved' AND ticket.status IN ('claimed', 'waiting_player', 'escalated_to_court')))
                 RETURNING ticket.id
             ), audited AS (
                 INSERT INTO governance.audit_events(
