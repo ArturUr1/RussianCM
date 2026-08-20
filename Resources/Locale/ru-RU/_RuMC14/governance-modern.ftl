@@ -17,23 +17,14 @@ governance-ahelp-template-wait-text = Спасибо. Мне нужно немн
 governance-ahelp-send = Отправить
 governance-ahelp-empty-modern = [color=#8c96a8]Открытых обращений сейчас нет.[/color]
 governance-ahelp-selected-marker = ▶
-governance-ahelp-ticket-card-modern =
-    {$selected} #{$id} • {$reporter} • {$status} • {$time}
-    {$summary}
-governance-ahelp-ticket-card-compact =
-    {$selected}#{$id} • {$reporter}
-    {$status} • {$time}
+governance-ahelp-ticket-card-modern = {$selected} #{$id} • {$reporter} • {$status} • {$time} • {$summary}
+governance-ahelp-ticket-card-compact = {$selected}#{$id} • {$reporter} • {$status} • {$time}
 governance-ahelp-no-selection-hint = [color=#8c96a8]Выберите обращение слева, чтобы посмотреть подробности.[/color]
 governance-ahelp-conversation-header = [bold]Обращение #{$id}[/bold] • {$reporter}
-governance-ahelp-conversation-meta =
-    Статус: {$status}  •  Создано: {$time}
-    SS14: {$uuid}
-governance-ahelp-unclaimed-preview =
-    [color=#8c96a8]Предпросмотр обращения[/color]
-    {$summary}
-    [italic]Возьмите обращение, чтобы открыть переписку и ответить игроку.[/italic]
+governance-ahelp-conversation-meta = Статус: {$status} • Создано: {$time} • SS14: {$uuid}
+governance-ahelp-unclaimed-preview = [color=#8c96a8]Предпросмотр обращения[/color] • {$summary} • [italic]Возьмите обращение, чтобы открыть переписку и ответить игроку.[/italic]
 governance-ahelp-transcript-empty = [color=#8c96a8]В этом обращении пока нет сообщений.[/color]
-governance-ahelp-message-role-responder = Дежурный
+governance-ahelp-message-role-responder = [color=#ff5a5a][bold]● Дежурный[/bold][/color]
 governance-ahelp-message-role-player = Игрок
 governance-ahelp-message-line = {$time} • {$role} • {$sender}: {$body}
 governance-ahelp-status-waiting-player = Ожидает игрока
@@ -76,15 +67,8 @@ governance-duty-verb-teleport-to = Телепортироваться к игр�
 governance-ahelp-incident-heading = [bold]Инцидент[/bold]
 governance-ahelp-incident-none = [color=#8c96a8]Активный инцидент для этого обращения не создан.[/color]
 governance-ahelp-incident-active = [bold]LiveIncident #{$id}[/bold] • цель: {$target} • тип: {$type}
-governance-ahelp-incident-active-character =
-    [bold]LiveIncident #{$id}[/bold]
-    Аккаунт: {$target}
-    Персонаж: [bold]{$character}[/bold]
-    Тип: {$type}
-governance-ahelp-incident-court =
-    [color=#d8a34a][bold]LiveIncident #{$incident} → Community Court #{$case}[/bold][/color]
-    Аккаунт: {$target}
-    Персонаж: [bold]{$character}[/bold]
+governance-ahelp-incident-active-character = [bold]LiveIncident #{$id}[/bold] • Аккаунт: {$target} • Персонаж: [bold]{$character}[/bold] • Тип: {$type}
+governance-ahelp-incident-court = [color=#d8a34a][bold]LiveIncident #{$incident} → Community Court #{$case}[/bold][/color] • Аккаунт: {$target} • Персонаж: [bold]{$character}[/bold]
 governance-ahelp-incident-target-placeholder = Ник игрока или SS14 UUID
 governance-ahelp-incident-type-placeholder = Тип инцидента
 governance-ahelp-incident-type-default = нарушение правил
@@ -114,9 +98,7 @@ governance-ahelp-action-round-remove = Удалить до конца раунд
 governance-ahelp-action-round-remove-short = Удалить из раунда
 governance-ahelp-action-history-heading = [bold]История вмешательств[/bold]
 governance-ahelp-action-history-empty = [color=#8c96a8]Live-вмешательств по этому инциденту пока нет.[/color]
-governance-ahelp-action-card =
-    #{$id} • [bold]{$type}[/bold] • {$status} • {$approvals}/{$required}{$duration}
-    {$reason}
+governance-ahelp-action-card = #{$id} • [bold]{$type}[/bold] • {$status} • {$approvals}/{$required}{$duration} • {$reason}
 governance-ahelp-action-duration =  • {$seconds} сек.
 governance-ahelp-action-type-explanation = Запрос объяснения
 governance-ahelp-action-type-logs = Просмотр логов
@@ -130,10 +112,7 @@ governance-ahelp-action-status-expired = истекло
 
 governance-ahelp-approval-heading = [bold]Требуют второго решения[/bold]
 governance-ahelp-approval-empty = [color=#8c96a8]Нет действий, требующих второго голоса.[/color]
-governance-ahelp-approval-card =
-    Действие #{$id} • инцидент #{$incident}
-    {$actor} → {$target} • [bold]{$type}[/bold] • {$approvals}/{$required}
-    {$reason}
+governance-ahelp-approval-card = Действие #{$id} • инцидент #{$incident} • {$actor} → {$target} • [bold]{$type}[/bold] • {$approvals}/{$required} • {$reason}
 governance-ahelp-approval-approve = Одобрить
 governance-ahelp-approval-reject = Отклонить
 
