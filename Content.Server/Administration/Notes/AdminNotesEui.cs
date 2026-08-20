@@ -23,7 +23,11 @@ public sealed partial class AdminNotesEui : BaseEui
 
     private readonly bool _governanceDutyReadOnly;
 
-    public AdminNotesEui(bool governanceDutyReadOnly = false)
+    public AdminNotesEui() : this(false)
+    {
+    }
+
+    public AdminNotesEui(bool governanceDutyReadOnly)
     {
         _governanceDutyReadOnly = governanceDutyReadOnly;
         IoCManager.InjectDependencies(this);
