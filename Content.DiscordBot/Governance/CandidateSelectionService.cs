@@ -5,7 +5,8 @@ namespace Content.DiscordBot.Governance;
 
 public sealed class CandidateSelectionService(
     Func<GovernanceDbContext> governanceFactory,
-    Func<ServerDbContext> gameFactory)
+    Func<ServerDbContext> gameFactory,
+    Config? config = null)
 {
     public async Task<IReadOnlyList<GovernanceUser>> SelectAsync(
         string track,
@@ -30,7 +31,7 @@ public sealed class CandidateSelectionService(
                 qualification => qualification.UserId,
                 (user, _) => user)
             .Where(user => !user.IsGovernanceSuspended && !excludedUsers.Contains(user.Id));
-        if (aboveAverage)
+        if (aboveAverage && config?.CourtTestMode != true)
             qualified = qualified.Where(user => user.CivicRatingCache > average);
 
         var candidates = await qualified.ToListAsync();
