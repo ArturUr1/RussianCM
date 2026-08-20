@@ -1,4 +1,6 @@
+using System;
 using System.Text.Json;
+using System.Threading.Tasks;
 using Content.Server.Chat.Managers;
 using Content.Server.Database;
 using Content.Server.GameTicking;
@@ -15,7 +17,6 @@ public sealed class GovernanceEventActionSystem : EntitySystem
 {
     private const float PollIntervalSeconds = 1f;
     private const int MaxActionsPerPoll = 10;
-    private const int MaxSpawnCount = 10;
     private const int MaxAnnouncementLength = 1000;
 
     [Dependency] private readonly IChatManager _chat = default!;
@@ -81,14 +82,14 @@ public sealed class GovernanceEventActionSystem : EntitySystem
         {
             "event.spawn" => ExecuteSpawn(action),
             "event.announce" => ExecuteAnnouncement(action),
-            _ => $"Capability «{action.Capability}» не имеет игрового исполнителя.",
+            _ => $"Полномочие «{action.Capability}» не имеет игрового исполнителя.",
         };
     }
 
     private string? ExecuteSpawn(GovernanceEventExecutionAction action)
     {
         if (!_prototypes.TryIndex<EntityPrototype>(action.Resource, out _))
-            return $"Prototype «{action.Resource}» не найден.";
+            return $"Прототип «{action.Resource}» не найден.";
 
         if (!_players.TryGetSessionById(action.ActorUserId, out var director) ||
             director.AttachedEntity is not { } directorEntity || Deleted(directorEntity))
@@ -99,24 +100,20 @@ public sealed class GovernanceEventActionSystem : EntitySystem
         if (!TryReadObject(action.Payload, out var payload, out var payloadError))
             return payloadError;
 
-        var count = 1;
-        if (payload.TryGetProperty("count", out var countElement))
+        if (payload.TryGetProperty("count", out var countElement) &&
+            (!countElement.TryGetInt32(out var count) || count != 1))
         {
-            if (!countElement.TryGetInt32(out count) || count is < 1 or > MaxSpawnCount)
-                return $"Поле count должно быть целым числом от 1 до {MaxSpawnCount}.";
+            return "Одно применение event.spawn создаёт ровно одну сущность; количество ограничивается max_uses манифеста.";
         }
 
-        var coordinates = Transform(directorEntity).Coordinates;
-        for (var index = 0; index < count; index++)
-            EntityManager.SpawnEntity(action.Resource, coordinates);
-
+        EntityManager.SpawnEntity(action.Resource, Transform(directorEntity).Coordinates);
         return null;
     }
 
     private string? ExecuteAnnouncement(GovernanceEventExecutionAction action)
     {
         if (!action.Resource.Equals("server", StringComparison.OrdinalIgnoreCase))
-            return "Для event.announce разрешён только resource «server».";
+            return "Для event.announce разрешён только ресурс «server».";
 
         if (!TryReadObject(action.Payload, out var payload, out var payloadError))
             return payloadError;
