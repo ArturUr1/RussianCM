@@ -45,6 +45,8 @@ public sealed class GovernanceEventActionSystem : EntitySystem
         _processing = true;
         try
         {
+            await _database.FailUnexecutableGovernanceEventActionsAsync(_ticker.RoundId);
+
             for (var index = 0; index < MaxActionsPerPoll; index++)
             {
                 var action = await _database.ClaimGovernanceEventActionAsync(_ticker.RoundId);
