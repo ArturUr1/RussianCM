@@ -52,6 +52,14 @@ governance-ahelp-player-status-claimed = In progress
 governance-ahelp-player-status-waiting = Waiting for your reply
 governance-ahelp-player-status-escalated = Escalated to incident
 
+governance-ahelp-records-heading = [bold]Responder tools[/bold]
+governance-ahelp-records-target-placeholder = Player name or SS14 UUID for notes…
+governance-ahelp-records-open-notes = Player notes
+governance-ahelp-records-open-logs = Full logs
+governance-ahelp-records-access-denied = Full moderation records are available only to an active duty responder.
+governance-ahelp-notes-target-required = Enter a player name or SS14 UUID whose notes should be opened.
+governance-ahelp-notes-target-not-found = No player with that name or SS14 UUID was found in the database.
+
 governance-ahelp-incident-heading = [bold]Incident[/bold]
 governance-ahelp-incident-none = [color=#8c96a8]No active incident has been created for this ticket.[/color]
 governance-ahelp-incident-active = [bold]LiveIncident #{$id}[/bold] • target: {$target} • type: {$type}
@@ -66,8 +74,15 @@ governance-ahelp-incident-type-invalid = Incident type must be between 2 and 64 
 governance-ahelp-incident-access-denied = You do not have the temporary capability required to create a live incident.
 governance-ahelp-incident-create-failed = Could not create the incident. Make sure the ticket is still assigned to you.
 
+governance-ahelp-court-none = [color=#8c96a8]No Community Court case has been created for this incident.[/color]
+governance-ahelp-court-active = [color=#d8a34a][bold]Referred to Community Court • case #{$id}[/bold][/color]
+governance-ahelp-court-escalate = Refer to court
+governance-ahelp-court-reason-invalid = Enter a court referral reason between 10 and 512 characters.
+governance-ahelp-court-access-denied = Only the active responder handling this ticket may refer the incident to court.
+governance-ahelp-court-create-failed = Could not create the Community Court case. Check the incident and database state.
+
 governance-ahelp-actions-heading = [bold]Incident actions[/bold]
-governance-ahelp-action-reason-placeholder = Action reason (10–512 characters)…
+governance-ahelp-action-reason-placeholder = Action / court referral reason (10–512 characters)…
 governance-ahelp-action-freeze-seconds-placeholder = Seconds
 governance-ahelp-action-request-explanation = Request explanation
 governance-ahelp-action-view-logs = View logs
@@ -109,3 +124,4 @@ governance-ahelp-action-create-failed = Could not create the moderation action.
 governance-ahelp-action-target-unavailable = The action target or its author is currently unavailable on the server.
 governance-ahelp-action-execution-failed = The action was approved, but the server could not execute it. Check target state and capabilities.
 governance-ahelp-action-review-failed = Could not record the decision. You may be ineligible to vote or the action may already be resolved.
+governance-ahelp-action-court-escalated = This incident has already been referred to Community Court; new live actions are disabled.
