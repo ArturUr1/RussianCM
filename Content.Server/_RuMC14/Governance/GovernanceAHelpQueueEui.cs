@@ -22,6 +22,7 @@ public sealed class GovernanceAHelpQueueEui : BaseEui
     private long _incidentId;
     private long _courtCaseId;
     private string _incidentTargetName = string.Empty;
+    private string _incidentTargetCharacterName = string.Empty;
     private string _incidentType = string.Empty;
     private string? _error;
     private bool _busy;
@@ -45,6 +46,7 @@ public sealed class GovernanceAHelpQueueEui : BaseEui
         _transcript,
         _incidentId,
         _incidentTargetName,
+        _incidentTargetCharacterName,
         _incidentType,
         _courtCaseId,
         _incidentActions,
@@ -82,13 +84,9 @@ public sealed class GovernanceAHelpQueueEui : BaseEui
                     break;
                 case GovernanceAHelpQueueAction.Claim:
                     if (!await _system.ClaimAsync(Player, message.TicketId))
-                    {
                         _error = Loc.GetString("governance-ahelp-claim-failed");
-                    }
                     else
-                    {
                         _selectedTicketId = message.TicketId;
-                    }
                     break;
                 case GovernanceAHelpQueueAction.SendMessage:
                     if (string.IsNullOrWhiteSpace(message.Text) ||
@@ -114,12 +112,6 @@ public sealed class GovernanceAHelpQueueEui : BaseEui
                         _error = Loc.GetString(incidentError);
                     break;
                 }
-                case GovernanceAHelpQueueAction.RequestExplanation:
-                    await RunIncidentActionAsync(message, "request_explanation", null);
-                    break;
-                case GovernanceAHelpQueueAction.ViewLogs:
-                    await RunIncidentActionAsync(message, "view_logs", null);
-                    break;
                 case GovernanceAHelpQueueAction.Freeze:
                 {
                     int? duration = int.TryParse(message.AuxiliaryText, out var seconds) ? seconds : null;
@@ -159,6 +151,11 @@ public sealed class GovernanceAHelpQueueEui : BaseEui
                         _error = Loc.GetString(courtError);
                     break;
                 }
+                case GovernanceAHelpQueueAction.RequestExplanation:
+                case GovernanceAHelpQueueAction.ViewLogs:
+                    // Retired from the responder workspace. Conversation is handled in AHelp and logs
+                    // are available through the full native Admin Logs viewer.
+                    break;
             }
 
             await RefreshAsync();
@@ -243,6 +240,7 @@ public sealed class GovernanceAHelpQueueEui : BaseEui
         _incidentId = 0;
         _courtCaseId = 0;
         _incidentTargetName = string.Empty;
+        _incidentTargetCharacterName = string.Empty;
         _incidentType = string.Empty;
         _incidentActions = [];
 
@@ -261,6 +259,7 @@ public sealed class GovernanceAHelpQueueEui : BaseEui
                 _incidentId = incident.Id;
                 _courtCaseId = incident.CourtCaseId ?? 0;
                 _incidentTargetName = incident.TargetName;
+                _incidentTargetCharacterName = incident.TargetCharacterName;
                 _incidentType = incident.Type;
                 _incidentActions = (await _system.GetIncidentActionsAsync(Player, incident.Id))
                     .Select(action => new GovernanceAHelpModerationActionEntry(
