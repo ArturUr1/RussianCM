@@ -318,14 +318,8 @@ public sealed class CourtDiscordCoordinator(
 
     private async Task<Embed> BuildCaseEmbedAsync(GovernanceCourtCase courtCase)
     {
-        var claimant = await court.GetAccountAsync(courtCase.ClaimantUserId);
-        var defendant = await court.GetAccountAsync(courtCase.DefendantUserId);
-        var claimantText = claimant.DiscordId > 0
-            ? $"<@{claimant.DiscordId}> ({claimant.Name})"
-            : $"{claimant.Name} • Discord не привязан";
-        var defendantText = defendant.DiscordId > 0
-            ? $"<@{defendant.DiscordId}> ({defendant.Name})"
-            : $"{defendant.Name} • Discord не привязан";
+        var claimantText = await CourtAccountTextAsync(courtCase.ClaimantUserId);
+        var defendantText = await CourtAccountTextAsync(courtCase.DefendantUserId);
         var statements = await court.GetStatementsAsync(courtCase.Id);
         var complaint = statements.FirstOrDefault(value => value.Kind == "complaint");
         var embed = new EmbedBuilder()
@@ -341,6 +335,23 @@ public sealed class CourtDiscordCoordinator(
         if (!string.IsNullOrWhiteSpace(complaint?.EvidenceReference))
             embed.AddField("Доказательство", complaint.EvidenceReference);
         return embed.Build();
+    }
+
+    private async Task<string> CourtAccountTextAsync(Guid governanceUserId)
+    {
+        try
+        {
+            var account = await court.GetAccountAsync(governanceUserId);
+            return account.DiscordId > 0
+                ? $"<@{account.DiscordId}> ({account.Name})"
+                : $"{account.Name} • Discord не привязан";
+        }
+        catch (CourtRuleException)
+        {
+            // Live incidents may target an SS14 account that has not linked Discord yet. The case
+            // summary/evidence contains the target nickname and SS14 UUID; keep publication working.
+            return $"Governance `{governanceUserId}` • Discord не привязан";
+        }
     }
 
     private static string StatusText(string status) => status switch
