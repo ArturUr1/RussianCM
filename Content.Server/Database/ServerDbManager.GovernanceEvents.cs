@@ -54,6 +54,9 @@ public sealed partial class ServerDbManager
                        action.capability,
                        action.resource,
                        CASE
+                           WHEN action.server_status = 'executing'
+                                AND action.server_executed_at < now() - interval '5 minutes'
+                               THEN 'Игровой сервер не подтвердил завершение действия; повторное выполнение запрещено во избежание двойного эффекта.'
                            WHEN action.status = 'denied' THEN 'Действие отклонено Governance до передачи игровому серверу.'
                            WHEN session.status <> 'active' THEN 'Сессия события уже завершена или отозвана.'
                            WHEN session.expires_at <= now() THEN 'Срок действия сессии события истёк.'
@@ -67,7 +70,7 @@ public sealed partial class ServerDbManager
                                  AND prior.status = 'executed'
                                  AND prior.id <= action.id) > manifest.max_uses
                                THEN 'Лимит использований ресурса из утверждённого манифеста исчерпан.'
-                           WHEN grant.id IS NULL THEN 'Полномочие события отсутствует, истекло или отозвано.'
+                           WHEN capability_grant.id IS NULL THEN 'Полномочие события отсутствует, истекло или отозвано.'
                            ELSE NULL
                        END AS error
                 FROM governance.event_actions AS action
@@ -76,31 +79,34 @@ public sealed partial class ServerDbManager
                   ON manifest.session_id = session.id
                  AND manifest.capability = action.capability
                  AND manifest.resource = action.resource
-                LEFT JOIN governance.capability_grants AS grant
-                  ON grant.user_id = action.actor_user_id
-                 AND grant.source_type = 'event_session'
-                 AND grant.source_id = session.id::text
-                 AND grant.capability = action.capability
-                 AND grant.issued_at <= now()
-                 AND grant.expires_at > now()
-                 AND grant.revoked_at IS NULL
-                 AND grant.scope @> jsonb_build_object('round_id', @round_id, 'event_session_id', session.id)
-                WHERE action.server_status = 'pending'
-                  AND session.round_id = @round_id
+                LEFT JOIN governance.capability_grants AS capability_grant
+                  ON capability_grant.user_id = action.actor_user_id
+                 AND capability_grant.source_type = 'event_session'
+                 AND capability_grant.source_id = session.id::text
+                 AND capability_grant.capability = action.capability
+                 AND capability_grant.issued_at <= now()
+                 AND capability_grant.expires_at > now()
+                 AND capability_grant.revoked_at IS NULL
+                 AND capability_grant.scope @> jsonb_build_object('round_id', @round_id, 'event_session_id', session.id)
+                WHERE session.round_id = @round_id
                   AND (
-                      action.status = 'denied'
-                      OR session.status <> 'active'
-                      OR session.expires_at <= now()
-                      OR manifest.id IS NULL
-                      OR (manifest.id IS NOT NULL AND action.status = 'executed' AND (
-                          SELECT count(*)
-                          FROM governance.event_actions AS prior
-                          WHERE prior.session_id = action.session_id
-                            AND prior.capability = action.capability
-                            AND prior.resource = action.resource
-                            AND prior.status = 'executed'
-                            AND prior.id <= action.id) > manifest.max_uses)
-                      OR grant.id IS NULL)
+                      (action.server_status = 'executing'
+                       AND action.server_executed_at < now() - interval '5 minutes')
+                      OR (action.server_status = 'pending' AND (
+                          action.status = 'denied'
+                          OR session.status <> 'active'
+                          OR session.expires_at <= now()
+                          OR manifest.id IS NULL
+                          OR (manifest.id IS NOT NULL AND action.status = 'executed' AND (
+                              SELECT count(*)
+                              FROM governance.event_actions AS prior
+                              WHERE prior.session_id = action.session_id
+                                AND prior.capability = action.capability
+                                AND prior.resource = action.resource
+                                AND prior.status = 'executed'
+                                AND prior.id <= action.id) > manifest.max_uses)
+                          OR capability_grant.id IS NULL))
+                  )
                 FOR UPDATE OF action SKIP LOCKED
             ), changed AS (
                 UPDATE governance.event_actions AS action
@@ -109,7 +115,7 @@ public sealed partial class ServerDbManager
                     server_execution_error = invalid.error
                 FROM invalid
                 WHERE action.id = invalid.id
-                  AND action.server_status = 'pending'
+                  AND action.server_status IN ('pending', 'executing')
                 RETURNING action.id,
                           action.session_id,
                           action.actor_user_id,
@@ -164,20 +170,20 @@ public sealed partial class ServerDbManager
                   ON manifest.session_id = session.id
                  AND manifest.capability = action.capability
                  AND manifest.resource = action.resource
-                JOIN governance.capability_grants AS grant
-                  ON grant.user_id = action.actor_user_id
-                 AND grant.source_type = 'event_session'
-                 AND grant.source_id = session.id::text
-                 AND grant.capability = action.capability
+                JOIN governance.capability_grants AS capability_grant
+                  ON capability_grant.user_id = action.actor_user_id
+                 AND capability_grant.source_type = 'event_session'
+                 AND capability_grant.source_id = session.id::text
+                 AND capability_grant.capability = action.capability
                 WHERE action.status = 'executed'
                   AND action.server_status = 'pending'
                   AND session.round_id = @round_id
                   AND session.status = 'active'
                   AND session.expires_at > now()
-                  AND grant.issued_at <= now()
-                  AND grant.expires_at > now()
-                  AND grant.revoked_at IS NULL
-                  AND grant.scope @> jsonb_build_object('round_id', @round_id, 'event_session_id', session.id)
+                  AND capability_grant.issued_at <= now()
+                  AND capability_grant.expires_at > now()
+                  AND capability_grant.revoked_at IS NULL
+                  AND capability_grant.scope @> jsonb_build_object('round_id', @round_id, 'event_session_id', session.id)
                   AND (
                       SELECT count(*)
                       FROM governance.event_actions AS prior
@@ -192,6 +198,7 @@ public sealed partial class ServerDbManager
             ), claimed AS (
                 UPDATE governance.event_actions AS action
                 SET server_status = 'executing',
+                    server_executed_at = now(),
                     server_execution_error = NULL
                 FROM candidate
                 WHERE action.id = candidate.id
