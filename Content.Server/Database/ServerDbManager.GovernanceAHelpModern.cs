@@ -95,7 +95,7 @@ public sealed partial class ServerDbManager
                          FROM governance.ahelp_tickets
                          WHERE round_id = @round_id
                            AND reporter_ss14_user_id = @reporter
-                           AND status IN ('open', 'claimed', 'waiting_player', 'escalated_to_incident')
+                           AND status IN ('open', 'claimed', 'waiting_player', 'escalated_to_incident', 'escalated_to_court')
                          ORDER BY created_at DESC
                          LIMIT 1
                          FOR UPDATE
@@ -111,6 +111,14 @@ public sealed partial class ServerDbManager
                 ticketId = reader.GetInt64(0);
                 status = reader.GetString(1);
             }
+        }
+
+        // Court referral freezes the source transcript. The ticket remains visible until explicitly
+        // resolved, but neither side may mutate the evidence package after escalation.
+        if (status == "escalated_to_court")
+        {
+            await transaction.RollbackAsync(cancel);
+            return null;
         }
 
         var created = false;
@@ -214,7 +222,7 @@ public sealed partial class ServerDbManager
             LEFT JOIN player AS responder_player ON responder_player.user_id = responder.ss14_user_id
             WHERE ticket.round_id = @round_id
               AND ticket.reporter_ss14_user_id = @reporter
-              AND ticket.status IN ('open', 'claimed', 'waiting_player', 'escalated_to_incident')
+              AND ticket.status IN ('open', 'claimed', 'waiting_player', 'escalated_to_incident', 'escalated_to_court')
             ORDER BY ticket.created_at DESC
             LIMIT 1
             """,
@@ -254,7 +262,7 @@ public sealed partial class ServerDbManager
             LEFT JOIN player AS sender ON sender.user_id = message.sender_ss14_user_id
             WHERE ticket.round_id = @round_id
               AND ticket.reporter_ss14_user_id = @reporter
-              AND ticket.status IN ('open', 'claimed', 'waiting_player', 'escalated_to_incident')
+              AND ticket.status IN ('open', 'claimed', 'waiting_player', 'escalated_to_incident', 'escalated_to_court')
             ORDER BY message.created_at, message.id
             """,
             connection);
@@ -316,7 +324,7 @@ public sealed partial class ServerDbManager
             LEFT JOIN player AS sender ON sender.user_id = message.sender_ss14_user_id
             WHERE ticket.id = @ticket_id
               AND ticket.round_id = @round_id
-              AND ticket.status IN ('claimed', 'waiting_player')
+              AND ticket.status IN ('claimed', 'waiting_player', 'escalated_to_court')
             ORDER BY message.created_at, message.id
             """,
             connection);
@@ -435,7 +443,7 @@ public sealed partial class ServerDbManager
                 SET status = 'resolved', updated_at = now()
                 WHERE round_id = @round_id
                   AND reporter_ss14_user_id = @reporter
-                  AND status IN ('open', 'claimed', 'waiting_player')
+                  AND status IN ('open', 'claimed', 'waiting_player', 'escalated_to_court')
                 RETURNING id
             ), audited AS (
                 INSERT INTO governance.audit_events(
