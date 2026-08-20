@@ -178,15 +178,19 @@ public sealed partial class ServerDbManager
         command.Parameters.AddWithValue("required_approvals", requiredApprovals);
         command.Parameters.AddWithValue("duration_seconds", (object?) durationSeconds ?? DBNull.Value);
 
-        await using var reader = await command.ExecuteReaderAsync(cancel);
-        if (!await reader.ReadAsync(cancel))
+        GovernanceIncidentActionInfo? result = null;
+        await using (var reader = await command.ExecuteReaderAsync(cancel))
+        {
+            if (await reader.ReadAsync(cancel))
+                result = ReadIncidentAction(reader);
+        }
+
+        if (result == null)
         {
             await transaction.RollbackAsync(cancel);
             return null;
         }
 
-        var result = ReadIncidentAction(reader);
-        await reader.CloseAsync();
         await transaction.CommitAsync(cancel);
         return result;
     }
@@ -301,15 +305,19 @@ public sealed partial class ServerDbManager
         command.Parameters.AddWithValue("round_id", roundId);
         command.Parameters.AddWithValue("decision", decision);
 
-        await using var reader = await command.ExecuteReaderAsync(cancel);
-        if (!await reader.ReadAsync(cancel))
+        GovernanceIncidentActionInfo? result = null;
+        await using (var reader = await command.ExecuteReaderAsync(cancel))
+        {
+            if (await reader.ReadAsync(cancel))
+                result = ReadIncidentAction(reader);
+        }
+
+        if (result == null)
         {
             await transaction.RollbackAsync(cancel);
             return null;
         }
 
-        var result = ReadIncidentAction(reader);
-        await reader.CloseAsync();
         await transaction.CommitAsync(cancel);
         return result;
     }
