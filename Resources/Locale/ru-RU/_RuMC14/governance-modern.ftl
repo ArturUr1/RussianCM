@@ -24,7 +24,7 @@ governance-ahelp-conversation-header = [bold]Обращение #{$id}[/bold] �
 governance-ahelp-conversation-meta = Статус: {$status} • Создано: {$time} • SS14: {$uuid}
 governance-ahelp-unclaimed-preview = [color=#8c96a8]Предпросмотр обращения[/color] • {$summary} • [italic]Возьмите обращение, чтобы открыть переписку и ответить игроку.[/italic]
 governance-ahelp-transcript-empty = [color=#8c96a8]В этом обращении пока нет сообщений.[/color]
-governance-ahelp-message-role-responder = [color=#ff5a5a][bold]● Дежурный[/bold][/color]
+governance-ahelp-message-role-responder = Дежурный
 governance-ahelp-message-role-player = Игрок
 governance-ahelp-message-line = {$time} • {$role} • {$sender}: {$body}
 governance-ahelp-status-waiting-player = Ожидает игрока
@@ -49,6 +49,7 @@ governance-ahelp-player-status-open = В очереди
 governance-ahelp-player-status-claimed = В работе
 governance-ahelp-player-status-waiting = Ожидает вашего ответа
 governance-ahelp-player-status-escalated = Передано в инцидент
+governance-ahelp-player-status-court = Передано в Community Court
 
 governance-ahelp-records-heading = [bold]Инструменты дежурного[/bold]
 governance-ahelp-records-target-placeholder = Ник или SS14 UUID игрока для заметок…
@@ -93,7 +94,7 @@ governance-ahelp-action-reason-placeholder = Основание действия
 governance-ahelp-action-freeze-seconds-placeholder = Сек.
 governance-ahelp-action-request-explanation = Запросить объяснение
 governance-ahelp-action-view-logs = Просмотреть логи
-governance-ahelp-action-freeze = Заморозить
+governance-ahelp-action-freeze = Заморозить на 60 с
 governance-ahelp-action-round-remove = Удалить до конца раунда
 governance-ahelp-action-round-remove-short = Удалить из раунда
 governance-ahelp-action-history-heading = [bold]История вмешательств[/bold]
