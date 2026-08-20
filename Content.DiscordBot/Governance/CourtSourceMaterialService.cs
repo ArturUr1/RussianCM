@@ -91,16 +91,16 @@ public sealed class CourtSourceMaterialService(
                 characterName = reader.GetString(4);
             }
 
-            await using (var transcript = connection.CreateCommand())
+            await using (var transcriptCommand = connection.CreateCommand())
             {
-                transcript.CommandText = """
+                transcriptCommand.CommandText = """
                     SELECT created_at, sender_ss14_user_id, body
                     FROM governance.ahelp_messages
                     WHERE ticket_id = @ticket_id
                     ORDER BY created_at, id
                     """;
-                AddParameter(transcript, "ticket_id", ticketId);
-                await using var reader = await transcript.ExecuteReaderAsync();
+                AddParameter(transcriptCommand, "ticket_id", ticketId);
+                await using var reader = await transcriptCommand.ExecuteReaderAsync();
                 while (await reader.ReadAsync())
                     transcriptRows.Add((reader.GetDateTime(0), reader.GetGuid(1), reader.GetString(2)));
             }
