@@ -9,6 +9,7 @@ public sealed class CommunityCourtModule(
     CommunityCourtService court,
     CourtPunishmentService punishments,
     CourtDiscordCoordinator discord,
+    CourtTestAccountLinkingService testLinks,
     Config config) : InteractionModuleBase<SocketInteractionContext>
 {
     [SlashCommand("жалоба", "Подать жалобу после завершения раунда")]
@@ -162,6 +163,20 @@ public sealed class CommunityCourtModule(
                 text = text[..3900] + "…";
             await FollowupAsync(embed: new EmbedBuilder().WithTitle($"История для назначения меры • дело №{caseId}")
                 .WithDescription(text).WithColor(Color.DarkBlue).Build(), ephemeral: true);
+        });
+    }
+
+    [SlashCommand("тест-завершить-защиту", "Локально завершить срок защиты и сразу запустить подбор присяжных")]
+    [RequireOwner]
+    public async Task TestExpireDefenseAsync([Summary("дело", "Номер дела")] long caseId)
+    {
+        await DeferAsync(ephemeral: true);
+        await ExecuteAsync(async () =>
+        {
+            EnsureEnabled();
+            var result = await testLinks.ExpireDefenseAsync(caseId, Context.User.Id);
+            await discord.ProcessOnceAsync();
+            await FollowupAsync($"{result} Выполнен проход планировщика: подходящим присяжным должны быть отправлены приглашения.", ephemeral: true);
         });
     }
 
