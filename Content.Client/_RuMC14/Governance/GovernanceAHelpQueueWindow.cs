@@ -116,10 +116,14 @@ public sealed class GovernanceAHelpQueueWindow : DefaultWindow
         {
             Orientation = LayoutOrientation.Vertical,
             SeparationOverride = 6,
+            HorizontalExpand = true,
             VerticalExpand = true,
-            MinSize = new Vector2(250, 0),
         };
-        queueColumn.AddChild(new RichTextLabel { Text = Loc.GetString("governance-ahelp-list-heading") });
+        queueColumn.AddChild(new RichTextLabel
+        {
+            Text = Loc.GetString("governance-ahelp-list-heading"),
+            HorizontalExpand = true,
+        });
         _filter = new LineEdit
         {
             HorizontalExpand = true,
@@ -127,7 +131,13 @@ public sealed class GovernanceAHelpQueueWindow : DefaultWindow
         };
         _filter.OnTextChanged += _ => RebuildTicketList();
         queueColumn.AddChild(_filter);
-        var queueScroll = new ScrollContainer { HorizontalExpand = true, VerticalExpand = true };
+        var queueScroll = new ScrollContainer
+        {
+            HorizontalExpand = true,
+            VerticalExpand = true,
+            HScrollEnabled = false,
+            VScrollEnabled = true,
+        };
         _ticketList = new BoxContainer
         {
             Orientation = LayoutOrientation.Vertical,
@@ -157,7 +167,13 @@ public sealed class GovernanceAHelpQueueWindow : DefaultWindow
         conversation.AddChild(_ticketHeader);
         conversation.AddChild(_ticketMeta);
 
-        var transcriptScroll = new ScrollContainer { HorizontalExpand = true, VerticalExpand = true };
+        var transcriptScroll = new ScrollContainer
+        {
+            HorizontalExpand = true,
+            VerticalExpand = true,
+            HScrollEnabled = false,
+            VScrollEnabled = true,
+        };
         _transcript = new BoxContainer
         {
             Orientation = LayoutOrientation.Vertical,
@@ -201,7 +217,7 @@ public sealed class GovernanceAHelpQueueWindow : DefaultWindow
         ticketActions.AddChild(_resolve);
         conversation.AddChild(ticketActions);
 
-        _error = new Label { StyleClasses = { "LabelDanger" } };
+        _error = new Label { StyleClasses = { "LabelDanger" }, ClipText = true, HorizontalExpand = true };
         conversation.AddChild(_error);
         conversationPanel.AddChild(conversation);
         body.AddChild(conversationPanel);
@@ -217,7 +233,8 @@ public sealed class GovernanceAHelpQueueWindow : DefaultWindow
         {
             HorizontalExpand = true,
             VerticalExpand = true,
-            MinSize = new Vector2(320, 0),
+            HScrollEnabled = false,
+            VScrollEnabled = true,
         };
         var investigation = new BoxContainer
         {
@@ -225,19 +242,30 @@ public sealed class GovernanceAHelpQueueWindow : DefaultWindow
             SeparationOverride = 7,
             HorizontalExpand = true,
         };
-        investigation.AddChild(new RichTextLabel { Text = Loc.GetString("governance-ahelp-context-heading") });
+        investigation.AddChild(new RichTextLabel
+        {
+            Text = Loc.GetString("governance-ahelp-context-heading"),
+            HorizontalExpand = true,
+        });
 
-        var contextButtons = new BoxContainer { Orientation = LayoutOrientation.Horizontal, SeparationOverride = 5 };
+        var contextButtons = new BoxContainer
+        {
+            Orientation = LayoutOrientation.Vertical,
+            SeparationOverride = 5,
+            HorizontalExpand = true,
+        };
         _reporterNotes = new Button
         {
             Text = Loc.GetString("governance-ahelp-tool-reporter-notes"),
             HorizontalExpand = true,
+            ClipText = true,
         };
         _reporterNotes.OnPressed += _ => OpenReporterNotes();
         _targetNotes = new Button
         {
             Text = Loc.GetString("governance-ahelp-tool-target-notes"),
             HorizontalExpand = true,
+            ClipText = true,
         };
         _targetNotes.OnPressed += _ => OpenTargetNotes();
         contextButtons.AddChild(_reporterNotes);
@@ -255,8 +283,16 @@ public sealed class GovernanceAHelpQueueWindow : DefaultWindow
             SeparationOverride = 6,
             HorizontalExpand = true,
         };
-        incidentColumn.AddChild(new RichTextLabel { Text = Loc.GetString("governance-ahelp-incident-heading") });
-        _incidentStatus = new RichTextLabel { Text = Loc.GetString("governance-ahelp-incident-none") };
+        incidentColumn.AddChild(new RichTextLabel
+        {
+            Text = Loc.GetString("governance-ahelp-incident-heading"),
+            HorizontalExpand = true,
+        });
+        _incidentStatus = new RichTextLabel
+        {
+            Text = Loc.GetString("governance-ahelp-incident-none"),
+            HorizontalExpand = true,
+        };
         incidentColumn.AddChild(_incidentStatus);
 
         _incidentTarget = new LineEdit
@@ -273,6 +309,7 @@ public sealed class GovernanceAHelpQueueWindow : DefaultWindow
         _createIncident = new Button
         {
             HorizontalExpand = true,
+            ClipText = true,
             Text = Loc.GetString("governance-ahelp-incident-create"),
         };
         _createIncident.OnPressed += _ => CreateIncident();
@@ -280,7 +317,11 @@ public sealed class GovernanceAHelpQueueWindow : DefaultWindow
         incidentColumn.AddChild(_incidentType);
         incidentColumn.AddChild(_createIncident);
 
-        incidentColumn.AddChild(new RichTextLabel { Text = Loc.GetString("governance-ahelp-containment-heading") });
+        incidentColumn.AddChild(new RichTextLabel
+        {
+            Text = Loc.GetString("governance-ahelp-containment-heading"),
+            HorizontalExpand = true,
+        });
         _actionReason = new LineEdit
         {
             HorizontalExpand = true,
@@ -288,17 +329,24 @@ public sealed class GovernanceAHelpQueueWindow : DefaultWindow
         };
         incidentColumn.AddChild(_actionReason);
 
-        var containment = new BoxContainer { Orientation = LayoutOrientation.Horizontal, SeparationOverride = 5 };
+        var containment = new BoxContainer
+        {
+            Orientation = LayoutOrientation.Vertical,
+            SeparationOverride = 5,
+            HorizontalExpand = true,
+        };
         _freeze = new Button
         {
             Text = Loc.GetString("governance-ahelp-action-freeze"),
             HorizontalExpand = true,
+            ClipText = true,
         };
         _freeze.OnPressed += _ => RunIncidentAction(GovernanceAHelpQueueAction.Freeze);
         _roundRemove = new Button
         {
             Text = Loc.GetString("governance-ahelp-action-round-remove-short"),
             HorizontalExpand = true,
+            ClipText = true,
         };
         _roundRemove.OnPressed += _ => RunIncidentAction(GovernanceAHelpQueueAction.RoundRemove);
         containment.AddChild(_freeze);
@@ -309,11 +357,16 @@ public sealed class GovernanceAHelpQueueWindow : DefaultWindow
         {
             Text = Loc.GetString("governance-ahelp-court-escalate"),
             HorizontalExpand = true,
+            ClipText = true,
         };
         _court.OnPressed += _ => EscalateToCourt();
         incidentColumn.AddChild(_court);
 
-        incidentColumn.AddChild(new RichTextLabel { Text = Loc.GetString("governance-ahelp-action-history-heading") });
+        incidentColumn.AddChild(new RichTextLabel
+        {
+            Text = Loc.GetString("governance-ahelp-action-history-heading"),
+            HorizontalExpand = true,
+        });
         _incidentActionList = new BoxContainer
         {
             Orientation = LayoutOrientation.Vertical,
@@ -324,7 +377,11 @@ public sealed class GovernanceAHelpQueueWindow : DefaultWindow
         incidentPanel.AddChild(incidentColumn);
         investigation.AddChild(incidentPanel);
 
-        investigation.AddChild(new RichTextLabel { Text = Loc.GetString("governance-ahelp-approval-heading") });
+        investigation.AddChild(new RichTextLabel
+        {
+            Text = Loc.GetString("governance-ahelp-approval-heading"),
+            HorizontalExpand = true,
+        });
         _approvalList = new BoxContainer
         {
             Orientation = LayoutOrientation.Vertical,
@@ -380,6 +437,7 @@ public sealed class GovernanceAHelpQueueWindow : DefaultWindow
                 Text = _tickets.Count == 0
                     ? Loc.GetString("governance-ahelp-empty-modern")
                     : Loc.GetString("governance-ahelp-filter-empty"),
+                HorizontalExpand = true,
             });
             return;
         }
@@ -390,6 +448,7 @@ public sealed class GovernanceAHelpQueueWindow : DefaultWindow
             var button = new Button
             {
                 HorizontalExpand = true,
+                ClipText = true,
                 Text = Loc.GetString(
                     "governance-ahelp-ticket-card-compact",
                     ("selected", selected),
@@ -494,7 +553,7 @@ public sealed class GovernanceAHelpQueueWindow : DefaultWindow
             var text = line.FromResponder
                 ? $"[color=#8c96a8]{time}[/color] • [color=#ff5a5a][bold]● {role} • {sender}[/bold][/color]: {body}"
                 : $"[color=#8c96a8]{time}[/color] • [bold]{role} • {sender}[/bold]: {body}";
-            _transcript.AddChild(new RichTextLabel { Text = text });
+            _transcript.AddChild(new RichTextLabel { Text = text, HorizontalExpand = true });
         }
     }
 
@@ -523,6 +582,7 @@ public sealed class GovernanceAHelpQueueWindow : DefaultWindow
                     ("required", action.RequiredApprovals),
                     ("duration", duration),
                     ("reason", FormattedMessage.EscapeText(action.Reason))),
+                HorizontalExpand = true,
             });
         }
     }
@@ -532,7 +592,11 @@ public sealed class GovernanceAHelpQueueWindow : DefaultWindow
         _approvalList.RemoveAllChildren();
         if (approvals.Count == 0)
         {
-            _approvalList.AddChild(new RichTextLabel { Text = Loc.GetString("governance-ahelp-approval-empty") });
+            _approvalList.AddChild(new RichTextLabel
+            {
+                Text = Loc.GetString("governance-ahelp-approval-empty"),
+                HorizontalExpand = true,
+            });
             return;
         }
 
@@ -556,10 +620,21 @@ public sealed class GovernanceAHelpQueueWindow : DefaultWindow
                     ("reason", FormattedMessage.EscapeText(approval.Reason)),
                     ("approvals", approval.Approvals),
                     ("required", approval.RequiredApprovals)),
+                HorizontalExpand = true,
             });
             var buttons = new BoxContainer { Orientation = LayoutOrientation.Horizontal, SeparationOverride = 4 };
-            var approve = new Button { Text = Loc.GetString("governance-ahelp-approval-approve"), HorizontalExpand = true };
-            var reject = new Button { Text = Loc.GetString("governance-ahelp-approval-reject"), HorizontalExpand = true };
+            var approve = new Button
+            {
+                Text = Loc.GetString("governance-ahelp-approval-approve"),
+                HorizontalExpand = true,
+                ClipText = true,
+            };
+            var reject = new Button
+            {
+                Text = Loc.GetString("governance-ahelp-approval-reject"),
+                HorizontalExpand = true,
+                ClipText = true,
+            };
             var id = approval.ActionId;
             approve.OnPressed += _ => ActionRequested?.Invoke(GovernanceAHelpQueueAction.ApproveModerationAction, id, null, null);
             reject.OnPressed += _ => ActionRequested?.Invoke(GovernanceAHelpQueueAction.RejectModerationAction, id, null, null);
@@ -642,7 +717,7 @@ public sealed class GovernanceAHelpQueueWindow : DefaultWindow
 
     private Button TicketActionButton(string text, GovernanceAHelpQueueAction action)
     {
-        var button = new Button { Text = text, HorizontalExpand = true };
+        var button = new Button { Text = text, HorizontalExpand = true, ClipText = true };
         button.OnPressed += _ =>
         {
             if (_selectedTicketId != 0)
