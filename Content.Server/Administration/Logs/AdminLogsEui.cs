@@ -40,7 +40,11 @@ public sealed partial class AdminLogsEui : BaseEui
     private readonly DefaultObjectPool<List<SharedAdminLog>> _adminLogListPool =
         new(new ListPolicy<SharedAdminLog>());
 
-    public AdminLogsEui(bool governanceDutyAccess = false)
+    public AdminLogsEui() : this(false)
+    {
+    }
+
+    public AdminLogsEui(bool governanceDutyAccess)
     {
         _governanceDutyAccess = governanceDutyAccess;
         IoCManager.InjectDependencies(this);
