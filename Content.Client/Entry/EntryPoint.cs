@@ -126,6 +126,7 @@ namespace Content.Client.Entry
             _prototypeManager.RegisterIgnore("spaceBiome");
             _prototypeManager.RegisterIgnore("worldgenConfig");
             _prototypeManager.RegisterIgnore("gameRule");
+            _prototypeManager.RegisterIgnore("worldSpell");
             _prototypeManager.RegisterIgnore("entitySpell");
             _prototypeManager.RegisterIgnore("instantSpell");
             _prototypeManager.RegisterIgnore("roundAnnouncement");
@@ -175,7 +176,7 @@ namespace Content.Client.Entry
 
             _overlayManager.AddOverlay(new SingularityOverlay());
             _overlayManager.AddOverlay(new RMCExplosionShockWaveOverlay());
-            _overlayManager.AddOverlay(new RMCXenoScreechOverlay());
+            _overlayManager.AddOverlay(new RMCXenoScreechShockWaveOverlay());
             _overlayManager.AddOverlay(new RadiationPulseOverlay());
             _chatManager.Initialize();
             _clientPreferencesManager.Initialize();
@@ -205,18 +206,51 @@ namespace Content.Client.Entry
         {
             // Fire off into state dependent on launcher or not.
 
+            // Check if we're loading a replay via content bundle!
             if (_configManager.GetCVar(CVars.LaunchContentBundle)
                 && _resourceManager.ContentFileExists(
-                    ReplayConstants.ReplayZipFolder.ToRootedPath() / ReplayConstants.ReplayFileName))
+                    ReplayConstants.ReplayZipFolder.ToRootedPath() / ReplayConstants.FileMeta))
             {
                 _logManager.GetSawmill("entry").Info("Loading content bundle replay from VFS!");
 
+                var reader = new ReplayFileReaderResources(
+                    _resourceManager,
+                    ReplayConstants.ReplayZipFolder.ToRootedPath());
+
                 _playbackMan.LastLoad = (null, ReplayConstants.ReplayZipFolder.ToRootedPath());
-                _replayLoad.LoadAndStartReplay(_playbackMan.LastLoad.Value.Path);
-                return;
+                _replayLoad.LoadAndStartReplay(reader);
+            }
+            else if (_gameController.LaunchState.FromLauncher)
+            {
+                _stateManager.RequestStateChange<LauncherConnecting>();
+                var state = (LauncherConnecting) _stateManager.CurrentState;
+
+                if (disconnected)
+                {
+                    state.SetDisconnected();
+                }
+            }
+            else
+            {
+                _stateManager.RequestStateChange<MainScreen>();
+            }
+        }
+
+        public override void Update(ModUpdateLevel level, FrameEventArgs frameEventArgs)
+        {
+            if (level == ModUpdateLevel.FramePreEngine)
+            {
+                _debugMonitorManager.FrameUpdate();
             }
 
-            _stateManager.RequestState<MainScreen>();
+            if (level == ModUpdateLevel.PreEngine)
+            {
+                if (_baseClient.RunLevel is ClientRunLevel.InGame or ClientRunLevel.SinglePlayerGame)
+                {
+                    var updateSystem = _entitySystemManager.GetEntitySystem<BuiPreTickUpdateSystem>();
+                    updateSystem.RunUpdates();
+                }
+            }
         }
     }
 }
