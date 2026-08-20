@@ -30,7 +30,6 @@ public sealed class GovernanceAHelpQueueWindow : DefaultWindow
     private readonly LineEdit _incidentTarget;
     private readonly LineEdit _incidentType;
     private readonly LineEdit _actionReason;
-    private readonly LineEdit _freezeSeconds;
     private readonly Button _claim;
     private readonly Button _send;
     private readonly Button _waiting;
@@ -54,7 +53,8 @@ public sealed class GovernanceAHelpQueueWindow : DefaultWindow
     public GovernanceAHelpQueueWindow()
     {
         Title = Loc.GetString("governance-ahelp-title");
-        MinSize = new Vector2(1420, 780);
+        // 1420px made the investigation column physically unreachable on common 1366x768 layouts.
+        MinSize = new Vector2(1120, 700);
         Stylesheet = IoCManager.Resolve<IStylesheetManager>().SheetNano;
         CrtLobbyTheme.ApplyWindow(this, includeChat: true, useCrtTypography: false);
 
@@ -105,20 +105,19 @@ public sealed class GovernanceAHelpQueueWindow : DefaultWindow
             VerticalExpand = true,
         };
 
-        // LEFT: a deliberately narrow navigation rail. The queue is not the application itself.
         var queuePanel = new PanelContainer
         {
             StyleClasses = { StyleNano.StyleClassCrtInsetPanel },
             HorizontalExpand = false,
             VerticalExpand = true,
-            MinSize = new Vector2(300, 0),
+            MinSize = new Vector2(250, 0),
         };
         var queueColumn = new BoxContainer
         {
             Orientation = LayoutOrientation.Vertical,
             SeparationOverride = 6,
             VerticalExpand = true,
-            MinSize = new Vector2(300, 0),
+            MinSize = new Vector2(250, 0),
         };
         queueColumn.AddChild(new RichTextLabel { Text = Loc.GetString("governance-ahelp-list-heading") });
         _filter = new LineEdit
@@ -140,7 +139,6 @@ public sealed class GovernanceAHelpQueueWindow : DefaultWindow
         queuePanel.AddChild(queueColumn);
         body.AddChild(queuePanel);
 
-        // CENTER: conversation is the primary work surface.
         var conversationPanel = new PanelContainer
         {
             StyleClasses = { StyleNano.StyleClassCrtInsetPanel },
@@ -208,19 +206,18 @@ public sealed class GovernanceAHelpQueueWindow : DefaultWindow
         conversationPanel.AddChild(conversation);
         body.AddChild(conversationPanel);
 
-        // RIGHT: investigation context, live containment and court escalation.
         var investigationPanel = new PanelContainer
         {
             StyleClasses = { StyleNano.StyleClassCrtInsetPanel },
             HorizontalExpand = false,
             VerticalExpand = true,
-            MinSize = new Vector2(390, 0),
+            MinSize = new Vector2(320, 0),
         };
         var investigationScroll = new ScrollContainer
         {
             HorizontalExpand = true,
             VerticalExpand = true,
-            MinSize = new Vector2(390, 0),
+            MinSize = new Vector2(320, 0),
         };
         var investigation = new BoxContainer
         {
@@ -289,11 +286,6 @@ public sealed class GovernanceAHelpQueueWindow : DefaultWindow
             HorizontalExpand = true,
             PlaceHolder = Loc.GetString("governance-ahelp-action-reason-placeholder"),
         };
-        _freezeSeconds = new LineEdit
-        {
-            Text = "60",
-            PlaceHolder = Loc.GetString("governance-ahelp-action-freeze-seconds-placeholder"),
-        };
         incidentColumn.AddChild(_actionReason);
 
         var containment = new BoxContainer { Orientation = LayoutOrientation.Horizontal, SeparationOverride = 5 };
@@ -309,7 +301,6 @@ public sealed class GovernanceAHelpQueueWindow : DefaultWindow
             HorizontalExpand = true,
         };
         _roundRemove.OnPressed += _ => RunIncidentAction(GovernanceAHelpQueueAction.RoundRemove);
-        containment.AddChild(_freezeSeconds);
         containment.AddChild(_freeze);
         containment.AddChild(_roundRemove);
         incidentColumn.AddChild(containment);
@@ -438,7 +429,6 @@ public sealed class GovernanceAHelpQueueWindow : DefaultWindow
             _incidentTarget.Clear();
             _incidentType.Text = Loc.GetString("governance-ahelp-incident-type-default");
             _actionReason.Clear();
-            _freezeSeconds.Text = "60";
         }
 
         _ticketHeader.Text = Loc.GetString(
@@ -495,18 +485,16 @@ public sealed class GovernanceAHelpQueueWindow : DefaultWindow
 
         foreach (var line in transcript)
         {
+            var time = line.CreatedAt.ToLocalTime().ToString("HH:mm");
+            var sender = FormattedMessage.EscapeText(line.SenderName);
+            var body = FormattedMessage.EscapeText(line.Body);
             var role = line.FromResponder
                 ? Loc.GetString("governance-ahelp-message-role-responder")
                 : Loc.GetString("governance-ahelp-message-role-player");
-            _transcript.AddChild(new RichTextLabel
-            {
-                Text = Loc.GetString(
-                    "governance-ahelp-message-line",
-                    ("time", line.CreatedAt.ToLocalTime().ToString("HH:mm")),
-                    ("role", role),
-                    ("sender", FormattedMessage.EscapeText(line.SenderName)),
-                    ("body", FormattedMessage.EscapeText(line.Body))),
-            });
+            var text = line.FromResponder
+                ? $"[color=#8c96a8]{time}[/color] • [color=#ff5a5a][bold]● {role} • {sender}[/bold][/color]: {body}"
+                : $"[color=#8c96a8]{time}[/color] • [bold]{role} • {sender}[/bold]: {body}";
+            _transcript.AddChild(new RichTextLabel { Text = text });
         }
     }
 
@@ -610,17 +598,9 @@ public sealed class GovernanceAHelpQueueWindow : DefaultWindow
             return;
         }
 
-        string? auxiliary = null;
-        if (action == GovernanceAHelpQueueAction.Freeze)
-        {
-            if (!int.TryParse(_freezeSeconds.Text.Trim(), out var seconds) || seconds is < 1 or > 120)
-            {
-                _error.Text = Loc.GetString("governance-ahelp-action-freeze-duration-invalid");
-                return;
-            }
-            auxiliary = seconds.ToString();
-        }
-
+        // Freeze is deliberately fixed to one minute in the workspace. A separate, unlabeled numeric
+        // input made the containment UI look broken and encouraged arbitrary-duration moderation.
+        var auxiliary = action == GovernanceAHelpQueueAction.Freeze ? "60" : null;
         ActionRequested?.Invoke(action, _selectedTicketId, reason, auxiliary);
     }
 
@@ -690,7 +670,6 @@ public sealed class GovernanceAHelpQueueWindow : DefaultWindow
 
         var canContain = mine && _incidentId > 0 && _courtCaseId == 0;
         _actionReason.Editable = canContain;
-        _freezeSeconds.Editable = canContain;
         _freeze.Disabled = !canContain;
         _roundRemove.Disabled = !canContain;
         _court.Disabled = !canContain;
