@@ -125,8 +125,8 @@ if (governanceDoctor)
     if (missing.Length > 0)
         throw new InvalidOperationException($"Governance schema is incomplete: {string.Join(", ", missing)}");
     var applied = await governance.Database.GetAppliedMigrationsAsync();
-    if (!applied.Contains("20260820010000_CourtCaseMaterials"))
-        throw new InvalidOperationException("CourtCaseMaterials migration is not recorded as applied.");
+    if (!applied.Contains("20260821000000_EventActionServerExecution"))
+        throw new InvalidOperationException("EventActionServerExecution migration is not recorded as applied.");
     var ahelpColumns = (await governance.Database.SqlQueryRaw<string>("""
         SELECT column_name || ':' || is_nullable AS "Value"
         FROM information_schema.columns
@@ -135,6 +135,18 @@ if (governanceDoctor)
         """).ToListAsync()).ToHashSet(StringComparer.Ordinal);
     if (!ahelpColumns.SetEquals(["reporter_user_id:YES", "reporter_ss14_user_id:NO"]))
         throw new InvalidOperationException("The in-game AHelp ticket identity contract is invalid.");
+    var eventActionColumns = (await governance.Database.SqlQueryRaw<string>("""
+        SELECT column_name || ':' || is_nullable AS "Value"
+        FROM information_schema.columns
+        WHERE table_schema = 'governance' AND table_name = 'event_actions'
+          AND column_name IN ('server_status', 'server_executed_at', 'server_execution_error')
+        """).ToListAsync()).ToHashSet(StringComparer.Ordinal);
+    if (!eventActionColumns.SetEquals([
+            "server_status:NO",
+            "server_executed_at:YES",
+            "server_execution_error:YES",
+        ]))
+        throw new InvalidOperationException("The event server execution contract is invalid.");
     var immutableTrigger = await governance.Database.SqlQueryRaw<int>("""
         SELECT count(*)::integer AS "Value"
         FROM pg_trigger
@@ -156,7 +168,7 @@ if (governanceDoctor)
     _ = await game.RMCLinkedAccounts.AsNoTracking().CountAsync();
     var doctorSelection = new CandidateSelectionService(CreateGovernanceDatabase, CreateConfiguredDatabase);
     _ = await doctorSelection.SelectAsync("jury", 1, "doctor", "read-only", 1, [], null, TimeSpan.Zero);
-    Console.WriteLine($"Governance doctor OK: {requiredTables.Count} workflow tables, AHelp and moderation review contracts, game identity tables, candidate query, latest migration.");
+    Console.WriteLine($"Governance doctor OK: {requiredTables.Count} workflow tables, AHelp, moderation review and event execution contracts, game identity tables, candidate query, latest migration.");
     return;
 }
 
