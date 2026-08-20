@@ -24,7 +24,7 @@ governance-ahelp-conversation-header = [bold]Ticket #{$id}[/bold] • {$reporter
 governance-ahelp-conversation-meta = Status: {$status} • Created: {$time} • SS14: {$uuid}
 governance-ahelp-unclaimed-preview = [color=#8c96a8]Ticket preview[/color] • {$summary} • [italic]Claim the ticket to open the conversation and reply to the player.[/italic]
 governance-ahelp-transcript-empty = [color=#8c96a8]There are no messages in this ticket yet.[/color]
-governance-ahelp-message-role-responder = [color=#ff5a5a][bold]● Responder[/bold][/color]
+governance-ahelp-message-role-responder = Responder
 governance-ahelp-message-role-player = Player
 governance-ahelp-message-line = {$time} • {$role} • {$sender}: {$body}
 governance-ahelp-status-waiting-player = Waiting for player
@@ -49,6 +49,7 @@ governance-ahelp-player-status-open = In queue
 governance-ahelp-player-status-claimed = In progress
 governance-ahelp-player-status-waiting = Waiting for your reply
 governance-ahelp-player-status-escalated = Escalated to incident
+governance-ahelp-player-status-court = Referred to Community Court
 
 governance-ahelp-records-heading = [bold]Responder tools[/bold]
 governance-ahelp-records-target-placeholder = Player name or SS14 UUID for notes…
@@ -93,7 +94,7 @@ governance-ahelp-action-reason-placeholder = Action / court referral reason…
 governance-ahelp-action-freeze-seconds-placeholder = Sec.
 governance-ahelp-action-request-explanation = Request explanation
 governance-ahelp-action-view-logs = View logs
-governance-ahelp-action-freeze = Freeze
+governance-ahelp-action-freeze = Freeze for 60s
 governance-ahelp-action-round-remove = Remove for round
 governance-ahelp-action-round-remove-short = Remove from round
 governance-ahelp-action-history-heading = [bold]Intervention history[/bold]
