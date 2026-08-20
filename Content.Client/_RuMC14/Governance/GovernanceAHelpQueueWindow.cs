@@ -19,7 +19,6 @@ public sealed class GovernanceAHelpQueueWindow : DefaultWindow
     private readonly BoxContainer _approvalList;
     private readonly BoxContainer _transcript;
     private readonly BoxContainer _incidentActionList;
-    private readonly BoxContainer _logList;
     private readonly Label _counter;
     private readonly RichTextLabel _ticketHeader;
     private readonly RichTextLabel _ticketMeta;
@@ -30,20 +29,25 @@ public sealed class GovernanceAHelpQueueWindow : DefaultWindow
     private readonly Button _send;
     private readonly Button _waiting;
     private readonly Button _resolve;
+    private readonly LineEdit _recordsTarget;
+    private readonly Button _openFullLogs;
+    private readonly Button _openNotes;
     private readonly RichTextLabel _incidentStatus;
+    private readonly RichTextLabel _courtStatus;
     private readonly LineEdit _incidentTarget;
     private readonly LineEdit _incidentType;
     private readonly Button _createIncident;
     private readonly LineEdit _actionReason;
     private readonly LineEdit _freezeSeconds;
     private readonly Button _requestExplanation;
-    private readonly Button _viewLogs;
     private readonly Button _freeze;
     private readonly Button _roundRemove;
+    private readonly Button _escalateCourt;
 
     private IReadOnlyList<GovernanceAHelpQueueItem> _tickets = [];
     private long _selectedTicketId;
     private long _incidentId;
+    private long _courtCaseId;
     private long _lastRenderedTicketId;
 
     public GovernanceAHelpQueueWindow()
@@ -94,6 +98,46 @@ public sealed class GovernanceAHelpQueueWindow : DefaultWindow
         headerContent.AddChild(refresh);
         header.AddChild(headerContent);
         root.AddChild(header);
+
+        var recordsPanel = new PanelContainer
+        {
+            StyleClasses = { StyleNano.StyleClassCrtPanel },
+            HorizontalExpand = true,
+        };
+        var recordsRow = new BoxContainer
+        {
+            Orientation = LayoutOrientation.Horizontal,
+            SeparationOverride = 6,
+            HorizontalExpand = true,
+        };
+        recordsRow.AddChild(new RichTextLabel
+        {
+            Text = Loc.GetString("governance-ahelp-records-heading"),
+        });
+        _recordsTarget = new LineEdit
+        {
+            HorizontalExpand = true,
+            PlaceHolder = Loc.GetString("governance-ahelp-records-target-placeholder"),
+        };
+        _openNotes = new Button
+        {
+            Text = Loc.GetString("governance-ahelp-records-open-notes"),
+        };
+        _openNotes.OnPressed += _ => OpenNotes();
+        _openFullLogs = new Button
+        {
+            Text = Loc.GetString("governance-ahelp-records-open-logs"),
+        };
+        _openFullLogs.OnPressed += _ => ActionRequested?.Invoke(
+            GovernanceAHelpQueueAction.OpenFullLogs,
+            0,
+            null,
+            null);
+        recordsRow.AddChild(_recordsTarget);
+        recordsRow.AddChild(_openNotes);
+        recordsRow.AddChild(_openFullLogs);
+        recordsPanel.AddChild(recordsRow);
+        root.AddChild(recordsPanel);
 
         var body = new BoxContainer
         {
@@ -214,6 +258,11 @@ public sealed class GovernanceAHelpQueueWindow : DefaultWindow
             Text = Loc.GetString("governance-ahelp-incident-none"),
         };
         incidentColumn.AddChild(_incidentStatus);
+        _courtStatus = new RichTextLabel
+        {
+            Text = Loc.GetString("governance-ahelp-court-none"),
+        };
+        incidentColumn.AddChild(_courtStatus);
 
         var incidentInputs = new BoxContainer
         {
@@ -275,19 +324,22 @@ public sealed class GovernanceAHelpQueueWindow : DefaultWindow
         _requestExplanation = IncidentActionButton(
             Loc.GetString("governance-ahelp-action-request-explanation"),
             GovernanceAHelpQueueAction.RequestExplanation);
-        _viewLogs = IncidentActionButton(
-            Loc.GetString("governance-ahelp-action-view-logs"),
-            GovernanceAHelpQueueAction.ViewLogs);
         _freeze = IncidentActionButton(
             Loc.GetString("governance-ahelp-action-freeze"),
             GovernanceAHelpQueueAction.Freeze);
         _roundRemove = IncidentActionButton(
             Loc.GetString("governance-ahelp-action-round-remove"),
             GovernanceAHelpQueueAction.RoundRemove);
+        _escalateCourt = new Button
+        {
+            Text = Loc.GetString("governance-ahelp-court-escalate"),
+            HorizontalExpand = true,
+        };
+        _escalateCourt.OnPressed += _ => EscalateToCourt();
         moderationButtons.AddChild(_requestExplanation);
-        moderationButtons.AddChild(_viewLogs);
         moderationButtons.AddChild(_freeze);
         moderationButtons.AddChild(_roundRemove);
+        moderationButtons.AddChild(_escalateCourt);
         incidentColumn.AddChild(moderationButtons);
 
         incidentColumn.AddChild(new RichTextLabel
@@ -301,18 +353,6 @@ public sealed class GovernanceAHelpQueueWindow : DefaultWindow
             HorizontalExpand = true,
         };
         incidentColumn.AddChild(_incidentActionList);
-
-        incidentColumn.AddChild(new RichTextLabel
-        {
-            Text = Loc.GetString("governance-ahelp-logs-heading"),
-        });
-        _logList = new BoxContainer
-        {
-            Orientation = LayoutOrientation.Vertical,
-            SeparationOverride = 2,
-            HorizontalExpand = true,
-        };
-        incidentColumn.AddChild(_logList);
 
         incidentPanel.AddChild(incidentColumn);
         conversation.AddChild(incidentPanel);
@@ -399,6 +439,7 @@ public sealed class GovernanceAHelpQueueWindow : DefaultWindow
         _tickets = state.Tickets;
         _selectedTicketId = state.SelectedTicketId;
         _incidentId = state.IncidentId;
+        _courtCaseId = state.CourtCaseId;
         _error.Text = state.Error ?? string.Empty;
         var mine = state.Tickets.Count(ticket => ticket.ClaimedByMe);
         var open = state.Tickets.Count(ticket => !ticket.ClaimedByMe && ticket.Status == "open");
@@ -413,8 +454,8 @@ public sealed class GovernanceAHelpQueueWindow : DefaultWindow
             state.Transcript,
             state.IncidentTargetName,
             state.IncidentType,
-            state.IncidentActions,
-            state.Logs);
+            state.CourtCaseId,
+            state.IncidentActions);
         UpdateActionState();
     }
 
@@ -537,26 +578,22 @@ public sealed class GovernanceAHelpQueueWindow : DefaultWindow
         IReadOnlyList<GovernanceAHelpTranscriptEntry> transcript,
         string incidentTargetName,
         string incidentType,
-        IReadOnlyList<GovernanceAHelpModerationActionEntry> incidentActions,
-        IReadOnlyList<GovernanceAHelpLogEntry> logs)
+        long courtCaseId,
+        IReadOnlyList<GovernanceAHelpModerationActionEntry> incidentActions)
     {
         var selected = _tickets.FirstOrDefault(ticket => ticket.Id == _selectedTicketId);
         _transcript.RemoveAllChildren();
         _incidentActionList.RemoveAllChildren();
-        _logList.RemoveAllChildren();
 
         if (selected == null)
         {
             _ticketHeader.Text = Loc.GetString("governance-ahelp-select-ticket");
             _ticketMeta.Text = string.Empty;
             _incidentStatus.Text = Loc.GetString("governance-ahelp-incident-none");
+            _courtStatus.Text = Loc.GetString("governance-ahelp-court-none");
             _incidentActionList.AddChild(new RichTextLabel
             {
                 Text = Loc.GetString("governance-ahelp-action-history-empty"),
-            });
-            _logList.AddChild(new RichTextLabel
-            {
-                Text = Loc.GetString("governance-ahelp-logs-empty"),
             });
             _transcript.AddChild(new RichTextLabel
             {
@@ -572,6 +609,8 @@ public sealed class GovernanceAHelpQueueWindow : DefaultWindow
             _incidentType.Text = Loc.GetString("governance-ahelp-incident-type-default");
             _actionReason.Clear();
             _freezeSeconds.Text = "60";
+            if (!string.IsNullOrWhiteSpace(incidentTargetName))
+                _recordsTarget.Text = incidentTargetName;
         }
 
         _ticketHeader.Text = Loc.GetString(
@@ -591,9 +630,11 @@ public sealed class GovernanceAHelpQueueWindow : DefaultWindow
                 ("target", FormattedMessage.EscapeText(incidentTargetName)),
                 ("type", FormattedMessage.EscapeText(incidentType)))
             : Loc.GetString("governance-ahelp-incident-none");
+        _courtStatus.Text = courtCaseId > 0
+            ? Loc.GetString("governance-ahelp-court-active", ("id", courtCaseId))
+            : Loc.GetString("governance-ahelp-court-none");
 
         RebuildIncidentActions(incidentActions);
-        RebuildLogs(logs);
 
         if (!selected.ClaimedByMe)
         {
@@ -665,30 +706,6 @@ public sealed class GovernanceAHelpQueueWindow : DefaultWindow
         }
     }
 
-    private void RebuildLogs(IReadOnlyList<GovernanceAHelpLogEntry> logs)
-    {
-        if (logs.Count == 0)
-        {
-            _logList.AddChild(new RichTextLabel
-            {
-                Text = Loc.GetString("governance-ahelp-logs-empty"),
-            });
-            return;
-        }
-
-        foreach (var log in logs.Take(30))
-        {
-            _logList.AddChild(new RichTextLabel
-            {
-                Text = Loc.GetString(
-                    "governance-ahelp-log-line",
-                    ("time", log.CreatedAt.ToLocalTime().ToString("HH:mm:ss")),
-                    ("type", FormattedMessage.EscapeText(log.Type)),
-                    ("message", FormattedMessage.EscapeText(log.Message))),
-            });
-        }
-    }
-
     private void CreateIncident()
     {
         if (_selectedTicketId == 0)
@@ -710,6 +727,44 @@ public sealed class GovernanceAHelpQueueWindow : DefaultWindow
             _selectedTicketId,
             target,
             type);
+    }
+
+    private void OpenNotes()
+    {
+        var target = _recordsTarget.Text.Trim();
+        if (string.IsNullOrWhiteSpace(target))
+        {
+            _error.Text = Loc.GetString("governance-ahelp-notes-target-required");
+            return;
+        }
+
+        ActionRequested?.Invoke(
+            GovernanceAHelpQueueAction.OpenPlayerNotes,
+            0,
+            target,
+            null);
+    }
+
+    private void EscalateToCourt()
+    {
+        if (_selectedTicketId == 0 || _incidentId == 0)
+        {
+            _error.Text = Loc.GetString("governance-ahelp-action-no-incident");
+            return;
+        }
+
+        var reason = _actionReason.Text.Trim();
+        if (reason.Length is < 10 or > 512)
+        {
+            _error.Text = Loc.GetString("governance-ahelp-court-reason-invalid");
+            return;
+        }
+
+        ActionRequested?.Invoke(
+            GovernanceAHelpQueueAction.EscalateToCourt,
+            _selectedTicketId,
+            reason,
+            null);
     }
 
     private Button IncidentActionButton(string text, GovernanceAHelpQueueAction action)
@@ -800,13 +855,13 @@ public sealed class GovernanceAHelpQueueWindow : DefaultWindow
         _incidentType.Editable = canCreateIncident;
         _createIncident.Disabled = !canCreateIncident;
 
-        var canAct = mine && _incidentId > 0;
+        var canAct = mine && _incidentId > 0 && _courtCaseId == 0;
         _actionReason.Editable = canAct;
         _freezeSeconds.Editable = canAct;
         _requestExplanation.Disabled = !canAct;
-        _viewLogs.Disabled = !canAct;
         _freeze.Disabled = !canAct;
         _roundRemove.Disabled = !canAct;
+        _escalateCourt.Disabled = !canAct;
     }
 
     private static string StatusText(GovernanceAHelpQueueItem ticket)
