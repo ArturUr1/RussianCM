@@ -78,7 +78,7 @@ public sealed class CourtDiscordCoordinator(
 
     private async Task<IReadOnlySet<ulong>> GuildMembersAsync()
     {
-        if (_guildMembers != null && DateTime.UtcNow - _guildMembersRefreshedAt < TimeSpan.FromMinutes(10))
+        if (!config.CourtTestMode && _guildMembers != null && DateTime.UtcNow - _guildMembersRefreshedAt < TimeSpan.FromMinutes(10))
             return _guildMembers;
 
         var members = new HashSet<ulong>();
@@ -327,11 +327,18 @@ public sealed class CourtDiscordCoordinator(
                 if (discordUser == null)
                     continue;
 
+                var components = new ComponentBuilder()
+                    .WithButton("Принять", $"court-jury-accept:{invitation.EntityId}", ButtonStyle.Success)
+                    .WithButton("Отказаться", $"court-jury-decline:{invitation.EntityId}", ButtonStyle.Danger)
+                    .WithButton("Самоотвод", $"court-jury-recuse:{invitation.EntityId}", ButtonStyle.Secondary)
+                    .Build();
                 var dm = await discordUser.CreateDMChannelAsync();
                 await dm.SendMessageAsync(
                     $"Вас пригласили в присяжные RUCM по делу №{invitation.EntityId}. " +
-                    $"Ответьте командой `/суд присяжный` до <t:{new DateTimeOffset(invitation.ExpiresAt).ToUnixTimeSeconds()}:F>. " +
-                    "То же приглашение доступно во внутриигровом EUI.");
+                    $"Ответьте до <t:{new DateTimeOffset(invitation.ExpiresAt).ToUnixTimeSeconds()}:F>. " +
+                    "Используйте кнопки ниже; команда `/суд присяжный` остаётся запасным способом ответа. " +
+                    "То же приглашение доступно во внутриигровом EUI.",
+                    components: components);
                 await court.MarkInvitationNotifiedAsync(invitation.Id);
             }
             catch (Exception exception)
