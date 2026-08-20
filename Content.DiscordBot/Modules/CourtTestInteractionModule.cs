@@ -1,5 +1,4 @@
 using Content.DiscordBot.Governance;
-using Discord.Commands;
 using Discord.Interactions;
 
 namespace Content.DiscordBot.Modules;
