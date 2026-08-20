@@ -33,7 +33,7 @@ public sealed class GovernanceAHelpPlayerEui(GovernanceAHelpSystem system) : Bas
         _status,
         _responderName,
         _transcript,
-        true,
+        _status != "escalated_to_court",
         _error);
 
     public override void HandleMessage(EuiMessageBase msg)
