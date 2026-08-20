@@ -1,11 +1,15 @@
 using System;
 using System.Text.Json;
 using System.Threading.Tasks;
+using Content.Server._CMU14.ZLevels.Core;
 using Content.Server.Chat.Managers;
 using Content.Server.Database;
 using Content.Server.GameTicking;
+using Content.Shared._CMU14.ZLevels.Weather;
+using Content.Shared.Weather;
 using Robust.Server.Player;
 using Robust.Shared.Prototypes;
+using Robust.Shared.Timing;
 
 namespace Content.Server._RuMC14.Governance;
 
@@ -18,9 +22,11 @@ public sealed class GovernanceEventActionSystem : EntitySystem
     private const float PollIntervalSeconds = 1f;
     private const int MaxActionsPerPoll = 10;
     private const int MaxAnnouncementLength = 1000;
+    private const int MaxWeatherDurationSeconds = 3600;
 
     [Dependency] private readonly IChatManager _chat = default!;
     [Dependency] private readonly IServerDbManager _database = default!;
+    [Dependency] private readonly IGameTiming _timing = default!;
     [Dependency] private readonly GameTicker _ticker = default!;
     [Dependency] private readonly IPlayerManager _players = default!;
     [Dependency] private readonly IPrototypeManager _prototypes = default!;
@@ -84,6 +90,7 @@ public sealed class GovernanceEventActionSystem : EntitySystem
         {
             "event.spawn" => ExecuteSpawn(action),
             "event.announce" => ExecuteAnnouncement(action),
+            "event.weather" => ExecuteWeather(action),
             _ => $"Полномочие «{action.Capability}» не имеет игрового исполнителя.",
         };
     }
@@ -93,11 +100,8 @@ public sealed class GovernanceEventActionSystem : EntitySystem
         if (!_prototypes.TryIndex<EntityPrototype>(action.Resource, out _))
             return $"Прототип «{action.Resource}» не найден.";
 
-        if (!_players.TryGetSessionById(action.ActorUserId, out var director) ||
-            director.AttachedEntity is not { } directorEntity || Deleted(directorEntity))
-        {
-            return "Директор события должен находиться в игре для event.spawn.";
-        }
+        if (!TryGetDirectorEntity(action, out var directorEntity, out var directorError))
+            return directorError;
 
         if (!TryReadObject(action.Payload, out var payload, out var payloadError))
             return payloadError;
@@ -129,6 +133,60 @@ public sealed class GovernanceEventActionSystem : EntitySystem
 
         _chat.DispatchServerAnnouncement($"[Событие] {text}");
         return null;
+    }
+
+    private string? ExecuteWeather(GovernanceEventExecutionAction action)
+    {
+        if (!TryGetDirectorEntity(action, out var directorEntity, out var directorError))
+            return directorError;
+
+        var mapUid = Transform(directorEntity).MapUid;
+        if (mapUid == null)
+            return "Директор события сейчас не находится на игровой карте.";
+
+        var zLevels = EntityManager.System<CMUZLevelsSystem>();
+        if (!zLevels.TryGetZNetwork(mapUid.Value, out var network))
+            return "Карта директора события не входит в z-network; погода не изменена.";
+
+        WeatherPrototype? weather = null;
+        if (!action.Resource.Equals("null", StringComparison.OrdinalIgnoreCase) &&
+            !_prototypes.TryIndex<WeatherPrototype>(action.Resource, out weather))
+        {
+            return $"Погодный прототип «{action.Resource}» не найден.";
+        }
+
+        if (!TryReadObject(action.Payload, out var payload, out var payloadError))
+            return payloadError;
+
+        TimeSpan? endTime = null;
+        if (payload.TryGetProperty("duration_seconds", out var durationElement))
+        {
+            if (!durationElement.TryGetInt32(out var duration) || duration is < 1 or > MaxWeatherDurationSeconds)
+                return $"duration_seconds должен быть целым числом от 1 до {MaxWeatherDurationSeconds}.";
+
+            endTime = _timing.CurTime + TimeSpan.FromSeconds(duration);
+        }
+
+        EntityManager.System<CMUWeatherSystem>().SetWeather(network.Value, weather, endTime);
+        return null;
+    }
+
+    private bool TryGetDirectorEntity(
+        GovernanceEventExecutionAction action,
+        out EntityUid directorEntity,
+        out string? error)
+    {
+        directorEntity = default;
+        error = null;
+        if (!_players.TryGetSessionById(action.ActorUserId, out var director) ||
+            director.AttachedEntity is not { } attached || Deleted(attached))
+        {
+            error = $"Директор события должен находиться в игре для {action.Capability}.";
+            return false;
+        }
+
+        directorEntity = attached;
+        return true;
     }
 
     private static bool TryReadObject(string json, out JsonElement payload, out string? error)
