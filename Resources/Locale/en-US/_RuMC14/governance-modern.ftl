@@ -33,11 +33,9 @@ governance-ahelp-unclaimed-preview =
     {$summary}
     [italic]Claim the ticket to open the conversation and reply to the player.[/italic]
 governance-ahelp-transcript-empty = [color=#8c96a8]There are no messages in this ticket yet.[/color]
-governance-ahelp-message-role-responder = [color=#ff5a5a]● Responder[/color]
+governance-ahelp-message-role-responder = Responder
 governance-ahelp-message-role-player = Player
-governance-ahelp-message-line =
-    [color=#8c96a8]{$time}[/color] [bold]{$role} • {$sender}[/bold]
-    {$body}
+governance-ahelp-message-line = {$time} • {$role} • {$sender}: {$body}
 governance-ahelp-status-waiting-player = Waiting for player
 governance-ahelp-send-failed = Could not send the message. Make sure the ticket is still assigned to you.
 governance-ahelp-player-unavailable = The support center is currently unavailable.
