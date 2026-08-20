@@ -20,6 +20,9 @@ public enum GovernanceAHelpQueueAction
     RoundRemove,
     ApproveModerationAction,
     RejectModerationAction,
+    OpenFullLogs,
+    OpenPlayerNotes,
+    EscalateToCourt,
 }
 
 [Serializable, NetSerializable]
@@ -115,6 +118,7 @@ public sealed class GovernanceAHelpQueueEuiState(
     long incidentId = 0,
     string incidentTargetName = "",
     string incidentType = "",
+    long courtCaseId = 0,
     GovernanceAHelpModerationActionEntry[]? incidentActions = null,
     GovernanceAHelpPendingApprovalEntry[]? pendingApprovals = null,
     GovernanceAHelpLogEntry[]? logs = null,
@@ -126,6 +130,7 @@ public sealed class GovernanceAHelpQueueEuiState(
     public readonly long IncidentId = incidentId;
     public readonly string IncidentTargetName = incidentTargetName;
     public readonly string IncidentType = incidentType;
+    public readonly long CourtCaseId = courtCaseId;
     public readonly GovernanceAHelpModerationActionEntry[] IncidentActions = incidentActions ?? [];
     public readonly GovernanceAHelpPendingApprovalEntry[] PendingApprovals = pendingApprovals ?? [];
     public readonly GovernanceAHelpLogEntry[] Logs = logs ?? [];
