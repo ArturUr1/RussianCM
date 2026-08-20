@@ -167,7 +167,7 @@ public sealed class GovernanceEventActionSystem : EntitySystem
             endTime = _timing.CurTime + TimeSpan.FromSeconds(duration);
         }
 
-        EntityManager.System<CMUWeatherSystem>().SetWeather(network.Value, weather, endTime);
+        EntityManager.System<CMUWeatherSystem>().SetWeather((network.Value.Owner, network.Value.Comp), weather, endTime);
         return null;
     }
 
