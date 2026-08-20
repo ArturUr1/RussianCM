@@ -43,6 +43,7 @@ public static class ConfigurationLoader
                 config.CourtEnabled = true;
         }
         config.CourtEnabled = Bool("COURT_ENABLED") ?? config.CourtEnabled;
+        config.CourtTestMode = Bool("COURT_TEST_MODE") ?? config.CourtTestMode;
         config.CourtSchedulerSeconds = Int("COURT_SCHEDULER_SECONDS") ?? config.CourtSchedulerSeconds;
         config.CourtComplaintWindowHours = Int("COURT_COMPLAINT_WINDOW_HOURS") ?? config.CourtComplaintWindowHours;
         config.CourtDefenseHours = Int("COURT_DEFENSE_HOURS") ?? config.CourtDefenseHours;
