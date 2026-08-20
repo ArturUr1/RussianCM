@@ -20,9 +20,7 @@ public sealed class AccountLinkingInteractionModule(CourtTestAccountLinkingServi
 
     [SlashCommand("тест-привязать", "Локально связать Discord тестировщика с SS14 и допустить его в присяжные")]
     [RequireOwner]
-    public async Task TestLinkAsync(
-        IUser user,
-        [Summary(description: "Ник или SS14 UUID игрока на локальном сервере")] string player)
+    public async Task TestLinkAsync(IUser user, string player)
     {
         try
         {
