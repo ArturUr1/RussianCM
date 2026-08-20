@@ -103,6 +103,42 @@ public sealed class CourtTestAccountLinkingService(
         return $"Срок защиты по делу №{caseId} завершён в тестовом режиме.";
     }
 
+    public async Task<int> ResetPendingJuryNotificationsAsync(long caseId, ulong actorDiscordId)
+    {
+        EnsureTestMode();
+        if (caseId <= 0)
+            throw new CourtRuleException("Укажите корректный номер дела.");
+
+        await using var governance = governanceFactory();
+        if (!await governance.CourtCases.AnyAsync(value => value.Id == caseId))
+            throw new CourtRuleException("Дело не найдено.");
+
+        var invitations = await governance.Invitations
+            .Where(value => value.EntityType == "court_case" &&
+                            value.EntityId == caseId.ToString() &&
+                            value.Purpose == "jury" &&
+                            value.State == InvitationStates.Pending)
+            .ToListAsync();
+        foreach (var invitation in invitations)
+            invitation.DiscordNotifiedAt = null;
+
+        governance.AuditEvents.Add(new GovernanceAuditEvent
+        {
+            EventType = "court.test_jury_notifications_reset",
+            ActorType = "discord_user",
+            ActorId = actorDiscordId.ToString(),
+            EntityType = "court_case",
+            EntityId = caseId.ToString(),
+            CreatedAt = DateTime.UtcNow,
+            Payload = $"{{\"test_mode\":true,\"count\":{invitations.Count}}}",
+        });
+        await governance.SaveChangesAsync();
+
+        await Logger.Info(
+            $"Court test mode: reset {invitations.Count} pending jury notification(s) for case {caseId} by Discord {actorDiscordId}.");
+        return invitations.Count;
+    }
+
     private void EnsureTestMode()
     {
         if (!config.CourtTestMode)
