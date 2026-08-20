@@ -11,7 +11,8 @@ public sealed record GovernanceAHelpIncidentInfo(
     long Id,
     NetUserId TargetUserId,
     string TargetName,
-    string Type);
+    string Type,
+    long? CourtCaseId = null);
 
 public partial interface IServerDbManager
 {
@@ -249,7 +250,8 @@ public sealed partial class ServerDbManager
             SELECT incident.id,
                    target.ss14_user_id,
                    COALESCE(player.last_seen_user_name, target.ss14_user_id::text),
-                   incident.type
+                   incident.type,
+                   incident.court_case_id
             FROM governance.live_incidents AS incident
             JOIN governance.ahelp_tickets AS ticket ON ticket.id = incident.ahelp_ticket_id
             JOIN actor ON actor.id = ticket.claimed_by_user_id
@@ -272,6 +274,7 @@ public sealed partial class ServerDbManager
             reader.GetInt64(0),
             new NetUserId(reader.GetGuid(1)),
             reader.GetString(2),
-            reader.GetString(3));
+            reader.GetString(3),
+            reader.IsDBNull(4) ? null : reader.GetInt64(4));
     }
 }
