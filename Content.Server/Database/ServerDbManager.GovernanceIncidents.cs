@@ -11,6 +11,7 @@ public sealed record GovernanceAHelpIncidentInfo(
     long Id,
     NetUserId TargetUserId,
     string TargetName,
+    string TargetCharacterName,
     string Type,
     long? CourtCaseId = null);
 
@@ -21,6 +22,7 @@ public partial interface IServerDbManager
         NetUserId responder,
         NetUserId target,
         string targetName,
+        string targetCharacterName,
         int roundId,
         string type,
         CancellationToken cancel = default);
@@ -39,6 +41,7 @@ public sealed partial class ServerDbManager
         NetUserId responder,
         NetUserId target,
         string targetName,
+        string targetCharacterName,
         int roundId,
         string type,
         CancellationToken cancel = default)
@@ -57,6 +60,12 @@ public sealed partial class ServerDbManager
         if (targetName.Length > 128)
             targetName = targetName[..128];
 
+        targetCharacterName = targetCharacterName.Trim();
+        if (targetCharacterName.Length == 0)
+            targetCharacterName = targetName;
+        if (targetCharacterName.Length > 256)
+            targetCharacterName = targetCharacterName[..256];
+
         await using var connection = CreateGovernanceConnection();
         await connection.OpenAsync(cancel);
         await using var transaction = await connection.BeginTransactionAsync(cancel);
@@ -71,8 +80,8 @@ public sealed partial class ServerDbManager
         }
 
         // Live moderation must also work for players who have never linked Discord. Governance uses
-        // an internal negative Discord id for those SS14-only identities; the migration upgrades the
-        // same row when the player links a real Discord account later.
+        // an internal negative Discord id for those SS14-only identities; the identity trigger upgrades
+        // the same row when the player links a real Discord account later.
         await using (var ensureTarget = new NpgsqlCommand(
                          """
                          INSERT INTO governance.users(ss14_user_id, discord_user_id, created_at, updated_at)
@@ -127,7 +136,8 @@ public sealed partial class ServerDbManager
                   AND ticket.status IN ('claimed', 'waiting_player')
                 LIMIT 1
             ), existing AS (
-                SELECT incident.id, incident.target_user_id, incident.type
+                SELECT incident.id, incident.target_user_id, incident.type,
+                       COALESCE(incident.target_character_name, '') AS target_character_name
                 FROM governance.live_incidents AS incident
                 JOIN authorized_ticket ON authorized_ticket.id = incident.ahelp_ticket_id
                 LIMIT 1
@@ -146,18 +156,19 @@ public sealed partial class ServerDbManager
             ), created AS (
                 INSERT INTO governance.live_incidents(
                     round_id, target_user_id, reporter_user_id, created_by_user_id,
-                    type, summary, status, created_at, ahelp_ticket_id)
+                    type, summary, status, created_at, ahelp_ticket_id, target_character_name)
                 SELECT @round_id, updated_ticket.target_user_id, updated_ticket.reporter_user_id,
-                       updated_ticket.actor_id, @type, updated_ticket.summary, 'active', now(), updated_ticket.id
+                       updated_ticket.actor_id, @type, updated_ticket.summary, 'active', now(), updated_ticket.id,
+                       @target_character_name
                 FROM updated_ticket
                 ON CONFLICT (ahelp_ticket_id) WHERE ahelp_ticket_id IS NOT NULL
                 DO NOTHING
-                RETURNING id, target_user_id, type
+                RETURNING id, target_user_id, type, target_character_name
             ), selected AS (
-                SELECT existing.id, existing.target_user_id, existing.type
+                SELECT existing.id, existing.target_user_id, existing.type, existing.target_character_name
                 FROM existing
                 UNION ALL
-                SELECT created.id, created.target_user_id, created.type
+                SELECT created.id, created.target_user_id, created.type, created.target_character_name
                 FROM created
                 LIMIT 1
             ), audited AS (
@@ -171,7 +182,8 @@ public sealed partial class ServerDbManager
                            'round_id', @round_id,
                            'ticket_id', @ticket_id,
                            'type', selected.type,
-                           'target_name', COALESCE(player.last_seen_user_name, selected_target.ss14_user_id::text))
+                           'target_name', COALESCE(player.last_seen_user_name, selected_target.ss14_user_id::text),
+                           'target_character_name', selected.target_character_name)
                 FROM selected
                 JOIN governance.users AS selected_target ON selected_target.id = selected.target_user_id
                 LEFT JOIN player ON player.user_id = selected_target.ss14_user_id
@@ -184,6 +196,7 @@ public sealed partial class ServerDbManager
             SELECT selected.id,
                    selected_target.ss14_user_id,
                    COALESCE(player.last_seen_user_name, selected_target.ss14_user_id::text),
+                   selected.target_character_name,
                    selected.type
             FROM selected
             JOIN governance.users AS selected_target ON selected_target.id = selected.target_user_id
@@ -194,6 +207,7 @@ public sealed partial class ServerDbManager
         command.Parameters.AddWithValue("ticket_id", ticketId);
         command.Parameters.AddWithValue("responder", responder.UserId);
         command.Parameters.AddWithValue("target", target.UserId);
+        command.Parameters.AddWithValue("target_character_name", targetCharacterName);
         command.Parameters.AddWithValue("round_id", roundId);
         command.Parameters.AddWithValue("type", type);
 
@@ -208,7 +222,8 @@ public sealed partial class ServerDbManager
             reader.GetInt64(0),
             new NetUserId(reader.GetGuid(1)),
             reader.GetString(2),
-            reader.GetString(3));
+            reader.GetString(3),
+            reader.GetString(4));
         await reader.CloseAsync();
         await transaction.CommitAsync(cancel);
         return result;
@@ -250,6 +265,7 @@ public sealed partial class ServerDbManager
             SELECT incident.id,
                    target.ss14_user_id,
                    COALESCE(player.last_seen_user_name, target.ss14_user_id::text),
+                   COALESCE(incident.target_character_name, ''),
                    incident.type,
                    incident.court_case_id
             FROM governance.live_incidents AS incident
@@ -275,6 +291,7 @@ public sealed partial class ServerDbManager
             new NetUserId(reader.GetGuid(1)),
             reader.GetString(2),
             reader.GetString(3),
-            reader.IsDBNull(4) ? null : reader.GetInt64(4));
+            reader.GetString(4),
+            reader.IsDBNull(5) ? null : reader.GetInt64(5));
     }
 }
