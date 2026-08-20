@@ -52,6 +52,14 @@ governance-ahelp-player-status-claimed = В работе
 governance-ahelp-player-status-waiting = Ожидает вашего ответа
 governance-ahelp-player-status-escalated = Передано в инцидент
 
+governance-ahelp-records-heading = [bold]Инструменты дежурного[/bold]
+governance-ahelp-records-target-placeholder = Ник или SS14 UUID игрока для заметок…
+governance-ahelp-records-open-notes = Заметки игрока
+governance-ahelp-records-open-logs = Полные логи
+governance-ahelp-records-access-denied = Полный просмотр служебных данных доступен только активному дежурному.
+governance-ahelp-notes-target-required = Укажите ник или SS14 UUID игрока, чьи заметки нужно открыть.
+governance-ahelp-notes-target-not-found = Игрок с таким ником или SS14 UUID не найден в базе.
+
 governance-ahelp-incident-heading = [bold]Инцидент[/bold]
 governance-ahelp-incident-none = [color=#8c96a8]Активный инцидент для этого обращения не создан.[/color]
 governance-ahelp-incident-active = [bold]LiveIncident #{$id}[/bold] • цель: {$target} • тип: {$type}
@@ -66,8 +74,15 @@ governance-ahelp-incident-type-invalid = Тип инцидента должен 
 governance-ahelp-incident-access-denied = У вас нет временного полномочия на создание live-инцидента.
 governance-ahelp-incident-create-failed = Не удалось создать инцидент. Убедитесь, что обращение всё ещё закреплено за вами.
 
+governance-ahelp-court-none = [color=#8c96a8]Дело Community Court по этому инциденту не создано.[/color]
+governance-ahelp-court-active = [color=#d8a34a][bold]Передано в Community Court • дело #{$id}[/bold][/color]
+governance-ahelp-court-escalate = Передать в суд
+governance-ahelp-court-reason-invalid = Для передачи в суд укажите основание длиной от 10 до 512 символов.
+governance-ahelp-court-access-denied = Передать инцидент в суд может только активный дежурный, ведущий это обращение.
+governance-ahelp-court-create-failed = Не удалось создать дело Community Court. Проверьте состояние инцидента и базы данных.
+
 governance-ahelp-actions-heading = [bold]Действия по инциденту[/bold]
-governance-ahelp-action-reason-placeholder = Основание действия (10–512 символов)…
+governance-ahelp-action-reason-placeholder = Основание действия / передачи в суд (10–512 символов)…
 governance-ahelp-action-freeze-seconds-placeholder = Секунды
 governance-ahelp-action-request-explanation = Запросить объяснение
 governance-ahelp-action-view-logs = Просмотреть логи
@@ -109,3 +124,4 @@ governance-ahelp-action-create-failed = Не удалось создать де�
 governance-ahelp-action-target-unavailable = Цель или автор действия сейчас недоступны на сервере.
 governance-ahelp-action-execution-failed = Действие одобрено, но сервер не смог его выполнить. Проверьте состояние цели и полномочия.
 governance-ahelp-action-review-failed = Не удалось записать решение. Возможно, вы не можете голосовать за это действие или оно уже рассмотрено.
+governance-ahelp-action-court-escalated = Инцидент уже передан в Community Court; новые live-действия по нему недоступны.
