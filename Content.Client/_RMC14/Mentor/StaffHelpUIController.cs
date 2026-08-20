@@ -4,6 +4,7 @@ using Content.Client._RuMC14.Governance;
 using Content.Shared._RMC14.Mentor;
 using Content.Shared.Input;
 using Robust.Client.GameObjects;
+using Robust.Client.UserInterface;
 using Robust.Client.UserInterface.Controllers;
 using Robust.Shared.Input.Binding;
 using Robust.Shared.Network;
