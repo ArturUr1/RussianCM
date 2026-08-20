@@ -216,7 +216,7 @@ public sealed class CourtDiscordCoordinator(
         var channel = client.GetChannel(config.GovernanceChannel)
             ?? throw new InvalidOperationException($"Governance channel {config.GovernanceChannel} is unavailable.");
         var reporter = await moderation.GetReporterAsync(ticket);
-        var reporterText = reporter.DiscordId is { } discordId
+        var reporterText = reporter.DiscordId is { } discordId && discordId > 0
             ? $"<@{discordId}> ({reporter.Name})"
             : reporter.Name;
         var embed = new EmbedBuilder().WithTitle($"AHelp №{ticket.Id} • раунд {ticket.RoundId}")
@@ -320,6 +320,12 @@ public sealed class CourtDiscordCoordinator(
     {
         var claimant = await court.GetAccountAsync(courtCase.ClaimantUserId);
         var defendant = await court.GetAccountAsync(courtCase.DefendantUserId);
+        var claimantText = claimant.DiscordId > 0
+            ? $"<@{claimant.DiscordId}> ({claimant.Name})"
+            : $"{claimant.Name} • Discord не привязан";
+        var defendantText = defendant.DiscordId > 0
+            ? $"<@{defendant.DiscordId}> ({defendant.Name})"
+            : $"{defendant.Name} • Discord не привязан";
         var statements = await court.GetStatementsAsync(courtCase.Id);
         var complaint = statements.FirstOrDefault(value => value.Kind == "complaint");
         var embed = new EmbedBuilder()
@@ -327,8 +333,8 @@ public sealed class CourtDiscordCoordinator(
             .WithDescription(courtCase.Summary)
             .WithColor(Color.DarkOrange)
             .AddField("Раунд", courtCase.RoundId, true)
-            .AddField("Истец", $"<@{claimant.DiscordId}> ({claimant.Name})", true)
-            .AddField("Ответчик", $"<@{defendant.DiscordId}> ({defendant.Name})", true)
+            .AddField("Истец", claimantText, true)
+            .AddField("Ответчик", defendantText, true)
             .AddField("Стадия", StatusText(courtCase.Status), true)
             .AddField("Срок защиты", $"<t:{new DateTimeOffset(courtCase.DefenseDeadline).ToUnixTimeSeconds()}:F>", true)
             .WithCurrentTimestamp();
