@@ -20,6 +20,7 @@ public sealed class GovernanceAHelpQueueEui : BaseEui
     private GovernanceAHelpLogEntry[] _logs = [];
     private long _selectedTicketId;
     private long _incidentId;
+    private long _courtCaseId;
     private string _incidentTargetName = string.Empty;
     private string _incidentType = string.Empty;
     private string? _error;
@@ -45,6 +46,7 @@ public sealed class GovernanceAHelpQueueEui : BaseEui
         _incidentId,
         _incidentTargetName,
         _incidentType,
+        _courtCaseId,
         _incidentActions,
         _pendingApprovals,
         _logs,
@@ -133,6 +135,30 @@ public sealed class GovernanceAHelpQueueEui : BaseEui
                 case GovernanceAHelpQueueAction.RejectModerationAction:
                     await ReviewActionAsync(message.TicketId, "reject");
                     break;
+                case GovernanceAHelpQueueAction.OpenFullLogs:
+                {
+                    var recordsError = await _system.OpenFullLogsAsync(Player);
+                    if (recordsError != null)
+                        _error = Loc.GetString(recordsError);
+                    break;
+                }
+                case GovernanceAHelpQueueAction.OpenPlayerNotes:
+                {
+                    var notesError = await _system.OpenPlayerNotesAsync(Player, message.Text ?? string.Empty);
+                    if (notesError != null)
+                        _error = Loc.GetString(notesError);
+                    break;
+                }
+                case GovernanceAHelpQueueAction.EscalateToCourt:
+                {
+                    var courtError = await _system.EscalateIncidentToCourtAsync(
+                        Player,
+                        message.TicketId,
+                        message.Text ?? string.Empty);
+                    if (courtError != null)
+                        _error = Loc.GetString(courtError);
+                    break;
+                }
             }
 
             await RefreshAsync();
@@ -215,6 +241,7 @@ public sealed class GovernanceAHelpQueueEui : BaseEui
 
         var selected = _tickets.FirstOrDefault(ticket => ticket.Id == _selectedTicketId);
         _incidentId = 0;
+        _courtCaseId = 0;
         _incidentTargetName = string.Empty;
         _incidentType = string.Empty;
         _incidentActions = [];
@@ -232,6 +259,7 @@ public sealed class GovernanceAHelpQueueEui : BaseEui
             if (incident != null)
             {
                 _incidentId = incident.Id;
+                _courtCaseId = incident.CourtCaseId ?? 0;
                 _incidentTargetName = incident.TargetName;
                 _incidentType = incident.Type;
                 _incidentActions = (await _system.GetIncidentActionsAsync(Player, incident.Id))
