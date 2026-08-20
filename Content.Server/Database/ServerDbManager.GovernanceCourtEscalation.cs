@@ -49,6 +49,40 @@ public sealed partial class ServerDbManager
             await incidentLock.ExecuteNonQueryAsync(cancel);
         }
 
+        // A court claimant is always the player who opened the source AHelp. AHelp is available to
+        // SS14-only accounts, so create the same upgradeable synthetic Governance identity that live
+        // moderation uses for unlinked targets and bind it back to the ticket before filing the case.
+        await using (var ensureReporter = new NpgsqlCommand(
+                         """
+                         WITH source AS (
+                             SELECT reporter_ss14_user_id
+                             FROM governance.ahelp_tickets
+                             WHERE id = @ticket_id AND round_id = @round_id
+                         ), inserted AS (
+                             INSERT INTO governance.users(ss14_user_id, discord_user_id, created_at, updated_at)
+                             SELECT reporter_ss14_user_id,
+                                    -((('x' || substr(md5(reporter_ss14_user_id::text), 1, 15))::bit(60)::bigint) + 1),
+                                    now(), now()
+                             FROM source
+                             ON CONFLICT (ss14_user_id) DO NOTHING
+                         )
+                         UPDATE governance.ahelp_tickets AS ticket
+                         SET reporter_user_id = users.id,
+                             updated_at = now()
+                         FROM governance.users AS users
+                         WHERE ticket.id = @ticket_id
+                           AND ticket.round_id = @round_id
+                           AND users.ss14_user_id = ticket.reporter_ss14_user_id
+                           AND ticket.reporter_user_id IS DISTINCT FROM users.id
+                         """,
+                         connection,
+                         transaction))
+        {
+            ensureReporter.Parameters.AddWithValue("ticket_id", ticketId);
+            ensureReporter.Parameters.AddWithValue("round_id", roundId);
+            await ensureReporter.ExecuteNonQueryAsync(cancel);
+        }
+
         await using var command = new NpgsqlCommand(
             """
             WITH actor AS (
@@ -72,12 +106,14 @@ public sealed partial class ServerDbManager
             ), incident AS (
                 SELECT live.id,
                        live.target_user_id,
-                       live.reporter_user_id,
+                       COALESCE(live.reporter_user_id, ticket.reporter_user_id) AS reporter_user_id,
                        live.summary,
                        live.type,
                        live.status,
                        live.court_case_id,
+                       COALESCE(live.target_character_name, '') AS target_character_name,
                        ticket.id AS ticket_id,
+                       ticket.reporter_ss14_user_id,
                        actor.id AS actor_id
                 FROM governance.live_incidents AS live
                 JOIN governance.ahelp_tickets AS ticket ON ticket.id = live.ahelp_ticket_id
@@ -96,16 +132,17 @@ public sealed partial class ServerDbManager
                 SELECT incident.*,
                        target.ss14_user_id AS target_ss14_user_id,
                        COALESCE(target_player.last_seen_user_name, target.ss14_user_id::text) AS target_name,
-                       CASE
-                           WHEN incident.reporter_user_id IS NOT NULL
-                            AND incident.reporter_user_id <> incident.target_user_id
-                               THEN incident.reporter_user_id
-                           ELSE incident.actor_id
-                       END AS claimant_user_id
+                       reporter.ss14_user_id AS claimant_ss14_user_id,
+                       COALESCE(reporter_player.last_seen_user_name, reporter.ss14_user_id::text) AS claimant_name,
+                       incident.reporter_user_id AS claimant_user_id
                 FROM incident
                 JOIN governance.users AS target ON target.id = incident.target_user_id
+                JOIN governance.users AS reporter ON reporter.id = incident.reporter_user_id
                 LEFT JOIN player AS target_player ON target_player.user_id = target.ss14_user_id
+                LEFT JOIN player AS reporter_player ON reporter_player.user_id = reporter.ss14_user_id
                 WHERE incident.court_case_id IS NULL
+                  AND incident.reporter_user_id IS NOT NULL
+                  AND incident.reporter_user_id <> incident.target_user_id
             ), created_case AS (
                 INSERT INTO governance.court_cases(
                     claimant_user_id, defendant_user_id, round_id, summary,
@@ -115,7 +152,11 @@ public sealed partial class ServerDbManager
                        @round_id,
                        left(
                            'LiveIncident #' || case_source.id::text || ' (' || case_source.type || ')' || chr(10) ||
-                           'Ответчик: ' || case_source.target_name || ' • SS14 ' || case_source.target_ss14_user_id::text || chr(10) ||
+                           'Заявитель: ' || case_source.claimant_name || ' • SS14 ' || case_source.claimant_ss14_user_id::text || chr(10) ||
+                           'Ответчик: ' || case_source.target_name ||
+                           CASE WHEN case_source.target_character_name <> ''
+                               THEN ' • персонаж: ' || case_source.target_character_name ELSE '' END ||
+                           ' • SS14 ' || case_source.target_ss14_user_id::text || chr(10) ||
                            case_source.summary || chr(10) || chr(10) ||
                            'Передано дежурным в Community Court: ' || @reason,
                            1500),
@@ -135,8 +176,9 @@ public sealed partial class ServerDbManager
                        'RUCM Governance: LiveIncident #' || case_source.id::text ||
                            ', AHelp #' || case_source.ticket_id::text ||
                            ', ответчик ' || case_source.target_name ||
-                           ' (SS14 ' || case_source.target_ss14_user_id::text || '). ' ||
-                           'Исходная переписка и аудит сохранены в PostgreSQL.',
+                           CASE WHEN case_source.target_character_name <> ''
+                               THEN ' / ' || case_source.target_character_name ELSE '' END ||
+                           ' (SS14 ' || case_source.target_ss14_user_id::text || ').',
                        now()
                 FROM created_case
                 CROSS JOIN case_source
@@ -151,6 +193,7 @@ public sealed partial class ServerDbManager
             ), linked AS (
                 UPDATE governance.live_incidents AS live
                 SET status = 'escalated_to_court',
+                    reporter_user_id = case_source.claimant_user_id,
                     court_case_id = created_case.id
                 FROM created_case, case_source
                 WHERE live.id = case_source.id
@@ -167,7 +210,9 @@ public sealed partial class ServerDbManager
                            'ticket_id', @ticket_id,
                            'incident_id', linked.id,
                            'reason', @reason,
-                           'target_name', case_source.target_name)
+                           'claimant_ss14_user_id', case_source.claimant_ss14_user_id,
+                           'target_name', case_source.target_name,
+                           'target_character_name', case_source.target_character_name)
                 FROM linked
                 JOIN case_source ON case_source.id = linked.id
             ), selected AS (
