@@ -172,10 +172,9 @@ public sealed class GovernanceAHelpSystem : EntitySystem
         string targetQuery,
         string incidentType)
     {
+        // Creating the formal case container is an AHelp workflow operation. The actual containment
+        // actions below still require their own stronger capabilities and quorum.
         if (!await CanUseResponderAsync(player))
-            return "governance-ahelp-incident-access-denied";
-
-        if (await _governance.AuthorizeAsync(player.UserId, _ticker.RoundId, "moderation.freeze") == null)
             return "governance-ahelp-incident-access-denied";
 
         targetQuery = targetQuery.Trim();
@@ -387,7 +386,7 @@ public sealed class GovernanceAHelpSystem : EntitySystem
 
         GovernanceAHelpActionExecutionResult execution = GovernanceAHelpActionExecutionResult.Success;
         if (action.Status == "approved")
-            execution = await ExecuteApprovedActionAsync(action);
+            execution = await ExecuteApprovedActionAsync(player, action);
 
         await RefreshResponderEuisAsync();
         return execution;
@@ -411,34 +410,32 @@ public sealed class GovernanceAHelpSystem : EntitySystem
 
         GovernanceAHelpActionExecutionResult execution = GovernanceAHelpActionExecutionResult.Success;
         if (action.Status == "approved")
-            execution = await ExecuteApprovedActionAsync(action);
+            execution = await ExecuteApprovedActionAsync(player, action);
 
         await RefreshResponderEuisAsync();
         return execution;
     }
 
     private async Task<GovernanceAHelpActionExecutionResult> ExecuteApprovedActionAsync(
+        ICommonSession executor,
         GovernanceIncidentActionInfo action)
     {
-        if (!_players.TryGetSessionById(action.ActorUserId, out var actor) ||
-            !_players.TryGetSessionById(action.TargetUserId, out var target))
-        {
+        if (!_players.TryGetSessionById(action.TargetUserId, out var target))
             return new GovernanceAHelpActionExecutionResult("governance-ahelp-action-target-unavailable", []);
-        }
 
         var system = EntityManager.System<GovernanceSystem>();
         switch (action.ActionType)
         {
             case "request_explanation":
             {
-                var result = await system.TryRequestExplanationAsync(actor, target, action.Id, action.Reason);
+                var result = await system.TryRequestExplanationAsync(executor, target, action.Id, action.Reason);
                 return result.Allowed
                     ? GovernanceAHelpActionExecutionResult.Success
                     : new GovernanceAHelpActionExecutionResult("governance-ahelp-action-execution-failed", []);
             }
             case "view_logs":
             {
-                var result = await system.TryViewLogsAsync(actor, target, action.Id);
+                var result = await system.TryViewLogsAsync(executor, target, action.Id);
                 return result.Allowed
                     ? new GovernanceAHelpActionExecutionResult(null, result.Logs)
                     : new GovernanceAHelpActionExecutionResult("governance-ahelp-action-execution-failed", []);
@@ -446,7 +443,7 @@ public sealed class GovernanceAHelpSystem : EntitySystem
             case "freeze":
             {
                 var result = await system.TryFreezeAsync(
-                    actor,
+                    executor,
                     target,
                     action.DurationSeconds ?? 0,
                     action.Id,
@@ -457,7 +454,7 @@ public sealed class GovernanceAHelpSystem : EntitySystem
             }
             case "round_remove":
             {
-                var result = await system.TryRoundRemoveAsync(actor, target, action.Id, action.Reason);
+                var result = await system.TryRoundRemoveAsync(executor, target, action.Id, action.Reason);
                 return result.Allowed
                     ? GovernanceAHelpActionExecutionResult.Success
                     : new GovernanceAHelpActionExecutionResult("governance-ahelp-action-execution-failed", []);
