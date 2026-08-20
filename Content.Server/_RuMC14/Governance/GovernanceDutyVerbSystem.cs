@@ -3,6 +3,7 @@ using Content.Shared.Ghost;
 using Content.Shared.Verbs;
 using Robust.Server.GameObjects;
 using Robust.Shared.Map;
+using Robust.Shared.Network;
 using Robust.Shared.Player;
 
 namespace Content.Server._RuMC14.Governance;
