@@ -203,7 +203,7 @@ var court = new CommunityCourtService(
     selection);
 var courtMaterials = new CourtSourceMaterialService(CreateGovernanceDatabase, CreateConfiguredDatabase);
 var community = new GovernanceCommunityService(CreateGovernanceDatabase, CreateConfiguredDatabase, config);
-var courtTestLinks = new CourtTestAccountLinkingService(CreateConfiguredDatabase, community, config);
+var courtTestLinks = new CourtTestAccountLinkingService(CreateConfiguredDatabase, CreateGovernanceDatabase, community, config);
 var punishments = new CourtPunishmentService(CreateGovernanceDatabase, CreateConfiguredDatabase);
 var moderation = new ModerationGovernanceService(CreateGovernanceDatabase, CreateConfiguredDatabase, community);
 var moderationTrust = new ModerationTrustService(CreateGovernanceDatabase, community, selection, config);
