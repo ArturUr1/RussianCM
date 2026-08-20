@@ -208,9 +208,9 @@ public sealed class GovernanceAHelpResponderReplyReceived(
 }
 
 [Serializable, NetSerializable]
-public sealed class GovernanceAHelpAccessUpdated(bool _) : EntityEventArgs
+public sealed class GovernanceAHelpAccessUpdated(bool active) : EntityEventArgs
 {
-    public readonly bool Active = false;
+    public readonly bool Active = active;
 }
 
 [Serializable, NetSerializable]
