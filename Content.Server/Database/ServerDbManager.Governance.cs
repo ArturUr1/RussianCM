@@ -212,15 +212,20 @@ public sealed partial class ServerDbManager
             SELECT action.id, incident.id, action.action_type
             FROM governance.moderation_actions AS action
             JOIN governance.live_incidents AS incident ON incident.id = action.incident_id
-            JOIN governance.users AS actor_user ON actor_user.id = action.actor_user_id
+            JOIN governance.users AS executor_user ON executor_user.ss14_user_id = @actor_id
             JOIN governance.users AS target_user ON target_user.id = action.target_user_id
             WHERE action.id = @action_id
               AND action.action_type = @action_type
               AND action.status = 'approved'
-              AND incident.status = 'active'
+              AND incident.status IN ('active', 'contained')
               AND incident.round_id = @round_id
-              AND actor_user.ss14_user_id = @actor_id
               AND target_user.ss14_user_id = @target_id
+              AND EXISTS (
+                  SELECT 1
+                  FROM governance.moderation_approvals AS mine
+                  WHERE mine.action_id = action.id
+                    AND mine.approver_user_id = executor_user.id
+                    AND mine.decision = 'approve')
               AND (SELECT count(*) FROM governance.moderation_approvals AS approval
                    WHERE approval.action_id = action.id AND approval.decision = 'approve') >= action.required_approvals
             """,
