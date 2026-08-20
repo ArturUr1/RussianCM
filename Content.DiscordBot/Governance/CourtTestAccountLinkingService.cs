@@ -5,18 +5,18 @@ namespace Content.DiscordBot.Governance;
 
 /// <summary>
 /// Local-only helper for full Community Court smoke tests. It creates the same game-database
-/// Discord↔SS14 relation used by the normal linking flow, then synchronizes the Governance identity.
+/// Discord↔SS14 relation used by the normal linking flow and can advance time-gated court stages.
 /// The helper is disabled unless COURT_TEST_MODE=true.
 /// </summary>
 public sealed class CourtTestAccountLinkingService(
     Func<ServerDbContext> gameFactory,
+    Func<GovernanceDbContext> governanceFactory,
     GovernanceCommunityService community,
     Config config)
 {
     public async Task<string> LinkJurorAsync(ulong actorDiscordId, ulong targetDiscordId, string playerQuery)
     {
-        if (!config.CourtTestMode)
-            throw new CourtRuleException("Тестовая привязка отключена. Для локального стенда задайте COURT_TEST_MODE=true.");
+        EnsureTestMode();
         if (targetDiscordId > long.MaxValue)
             throw new CourtRuleException("Discord ID не поддерживается Governance.");
 
@@ -71,6 +71,42 @@ public sealed class CourtTestAccountLinkingService(
             $"Court test link: Discord {targetDiscordId} -> SS14 {player.UserId} ({player.LastSeenUserName}), actor {actorDiscordId}.");
 
         return $"Тестовая привязка создана: <@{targetDiscordId}> → {player.LastSeenUserName} (`{player.UserId}`). Допуск присяжного: jury ≥ 1.";
+    }
+
+    public async Task<string> ExpireDefenseAsync(long caseId, ulong actorDiscordId)
+    {
+        EnsureTestMode();
+        if (caseId <= 0)
+            throw new CourtRuleException("Укажите корректный номер дела.");
+
+        await using var governance = governanceFactory();
+        var courtCase = await governance.CourtCases.SingleOrDefaultAsync(value => value.Id == caseId)
+            ?? throw new CourtRuleException("Дело не найдено.");
+        if (courtCase.Status != CourtStatuses.Defense)
+            throw new CourtRuleException($"Дело №{caseId} уже не находится на стадии защиты (текущий статус: {courtCase.Status}).");
+
+        courtCase.DefenseDeadline = DateTime.UtcNow.AddSeconds(-1);
+        courtCase.Version++;
+        governance.AuditEvents.Add(new GovernanceAuditEvent
+        {
+            EventType = "court.test_defense_expired",
+            ActorType = "discord_user",
+            ActorId = actorDiscordId.ToString(),
+            EntityType = "court_case",
+            EntityId = caseId.ToString(),
+            CreatedAt = DateTime.UtcNow,
+            Payload = "{\"test_mode\":true}",
+        });
+        await governance.SaveChangesAsync();
+
+        await Logger.Info($"Court test mode: defense deadline expired for case {caseId} by Discord {actorDiscordId}.");
+        return $"Срок защиты по делу №{caseId} завершён в тестовом режиме.";
+    }
+
+    private void EnsureTestMode()
+    {
+        if (!config.CourtTestMode)
+            throw new CourtRuleException("Тестовые команды суда отключены. Для локального стенда задайте COURT_TEST_MODE=true.");
     }
 
     private static async Task<PlayerIdentity> ResolvePlayerAsync(ServerDbContext game, string query)
