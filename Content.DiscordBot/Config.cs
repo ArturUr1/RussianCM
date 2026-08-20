@@ -1,4 +1,4 @@
-﻿namespace Content.DiscordBot;
+namespace Content.DiscordBot;
 
 public sealed class Config
 {
@@ -9,6 +9,8 @@ public sealed class Config
     public ulong Guild { get; set; } = 1168210010233376858UL;
 
     public bool CourtEnabled { get; set; }
+
+    public bool CourtTestMode { get; set; }
 
     public ulong CourtChannel { get; set; }
 
