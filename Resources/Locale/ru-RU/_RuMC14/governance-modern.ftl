@@ -33,11 +33,9 @@ governance-ahelp-unclaimed-preview =
     {$summary}
     [italic]Возьмите обращение, чтобы открыть переписку и ответить игроку.[/italic]
 governance-ahelp-transcript-empty = [color=#8c96a8]В этом обращении пока нет сообщений.[/color]
-governance-ahelp-message-role-responder = [color=#ff5a5a]● Дежурный[/color]
+governance-ahelp-message-role-responder = Дежурный
 governance-ahelp-message-role-player = Игрок
-governance-ahelp-message-line =
-    [color=#8c96a8]{$time}[/color] [bold]{$role} • {$sender}[/bold]
-    {$body}
+governance-ahelp-message-line = {$time} • {$role} • {$sender}: {$body}
 governance-ahelp-status-waiting-player = Ожидает игрока
 governance-ahelp-send-failed = Не удалось отправить сообщение. Проверьте, что обращение всё ещё закреплено за вами.
 governance-ahelp-player-unavailable = Центр поддержки сейчас недоступен.
@@ -145,11 +143,11 @@ governance-ahelp-log-line = [color=#8c96a8]{$time}[/color] [bold]{$type}[/bold] 
 
 governance-ahelp-action-access-denied = У вас нет временного полномочия для этого действия.
 governance-ahelp-action-no-incident = Сначала создайте инцидент для этого обращения.
-governance-ahelp-action-invalid = Неизвестное действие по инциденту.
+governance-ahelp-action-invalid = Неизвестное live-действие.
 governance-ahelp-action-reason-invalid = Укажите основание длиной от 10 до 512 символов.
-governance-ahelp-action-freeze-duration-invalid = Длительность заморозки должна быть от 1 до 120 секунд.
-governance-ahelp-action-create-failed = Не удалось создать действие по инциденту.
-governance-ahelp-action-target-unavailable = Цель или автор действия сейчас недоступны на сервере.
+governance-ahelp-action-freeze-duration-invalid = Время заморозки должно быть от 1 до 120 секунд.
+governance-ahelp-action-create-failed = Не удалось создать действие модерации.
+governance-ahelp-action-target-unavailable = Цель действия или его автор сейчас недоступны на сервере.
 governance-ahelp-action-execution-failed = Действие одобрено, но сервер не смог его выполнить. Проверьте состояние цели и полномочия.
-governance-ahelp-action-review-failed = Не удалось записать решение. Возможно, вы не можете голосовать за это действие или оно уже рассмотрено.
-governance-ahelp-action-court-escalated = Инцидент уже передан в Community Court; новые live-действия по нему недоступны.
+governance-ahelp-action-review-failed = Не удалось записать решение. Возможно, вы не можете голосовать по этому действию или оно уже рассмотрено.
+governance-ahelp-action-court-escalated = Инцидент уже передан в Community Court; новые live-действия отключены.
