@@ -122,6 +122,7 @@ public sealed partial class ServerDbManager
         string state;
         DateTime expiresAt;
         int rating;
+        var found = false;
         await using (var select = new NpgsqlCommand(
                          """
                          SELECT invitation.user_id, invitation.state, invitation.expires_at,
@@ -141,17 +142,25 @@ public sealed partial class ServerDbManager
             select.Parameters.AddWithValue("invitation_id", invitationId);
             select.Parameters.AddWithValue("ss14_user_id", userId.UserId);
             await using var reader = await select.ExecuteReaderAsync(cancel);
-            if (!await reader.ReadAsync(cancel))
+            if (await reader.ReadAsync(cancel))
             {
-                await transaction.RollbackAsync(cancel);
-                return new GovernanceDutyResponse(GovernanceDutyResponseStatus.Invalid, 0);
+                governanceUserId = reader.GetGuid(0);
+                state = reader.GetString(1);
+                expiresAt = reader.GetDateTime(2);
+                rating = reader.GetInt32(3);
+                found = true;
             }
-
-            governanceUserId = reader.GetGuid(0);
-            state = reader.GetString(1);
-            expiresAt = reader.GetDateTime(2);
-            rating = reader.GetInt32(3);
+            else
+            {
+                governanceUserId = Guid.Empty;
+                state = string.Empty;
+                expiresAt = default;
+                rating = 0;
+            }
         }
+
+        if (!found)
+            return new GovernanceDutyResponse(GovernanceDutyResponseStatus.Invalid, 0);
 
         if (state != "pending")
         {
@@ -527,20 +536,6 @@ public sealed partial class ServerDbManager
                 invitationId.ToString(),
                 new { purpose = "moderation_duty", round_id = roundId },
                 cancel);
-            await using (var assignment = new NpgsqlCommand(
-                             """
-                             INSERT INTO governance.service_assignments(
-                                 user_id, track, entity_type, entity_id, assigned_at)
-                             VALUES (@user_id, 'moderation', 'round', @round_id, now())
-                             ON CONFLICT (user_id, track, entity_type, entity_id) DO NOTHING
-                             """,
-                             connection,
-                             transaction))
-            {
-                assignment.Parameters.AddWithValue("user_id", candidate.GovernanceId);
-                assignment.Parameters.AddWithValue("round_id", roundId.ToString());
-                await assignment.ExecuteNonQueryAsync(cancel);
-            }
             result.Add(new GovernanceDutyInvitation(
                 invitationId,
                 new NetUserId(candidate.Ss14Id),
@@ -584,6 +579,7 @@ public sealed partial class ServerDbManager
         DateTime expiresAt;
         short qualification;
         int rating;
+        var found = false;
         await using (var select = new NpgsqlCommand(
                          """
                          SELECT invitation.user_id, invitation.state, invitation.expires_at,
@@ -607,18 +603,27 @@ public sealed partial class ServerDbManager
             select.Parameters.AddWithValue("round_id", roundId.ToString());
             select.Parameters.AddWithValue("ss14_user_id", userId.UserId);
             await using var reader = await select.ExecuteReaderAsync(cancel);
-            if (!await reader.ReadAsync(cancel))
+            if (await reader.ReadAsync(cancel))
             {
-                await transaction.RollbackAsync(cancel);
-                return new GovernanceDutyResponse(GovernanceDutyResponseStatus.Invalid, 0);
+                governanceUserId = reader.GetGuid(0);
+                state = reader.GetString(1);
+                expiresAt = reader.GetDateTime(2);
+                qualification = reader.GetInt16(3);
+                rating = reader.GetInt32(4);
+                found = true;
             }
-
-            governanceUserId = reader.GetGuid(0);
-            state = reader.GetString(1);
-            expiresAt = reader.GetDateTime(2);
-            qualification = reader.GetInt16(3);
-            rating = reader.GetInt32(4);
+            else
+            {
+                governanceUserId = Guid.Empty;
+                state = string.Empty;
+                expiresAt = default;
+                qualification = 0;
+                rating = 0;
+            }
         }
+
+        if (!found)
+            return new GovernanceDutyResponse(GovernanceDutyResponseStatus.Invalid, 0);
 
         if (state != "pending")
         {
@@ -717,6 +722,23 @@ public sealed partial class ServerDbManager
             await reader.ReadAsync(cancel);
             dutyId = reader.GetInt64(0);
             dutyExpiresAt = reader.GetDateTime(1);
+        }
+
+        // Rotation cooldown starts only after the candidate actually accepts and begins service.
+        // Declines, recuses, delivery failures and expired invitations must not consume the 24h slot.
+        await using (var assignment = new NpgsqlCommand(
+                         """
+                         INSERT INTO governance.service_assignments(
+                             user_id, track, entity_type, entity_id, assigned_at)
+                         VALUES (@user_id, 'moderation', 'round', @round_id, now())
+                         ON CONFLICT (user_id, track, entity_type, entity_id) DO NOTHING
+                         """,
+                         connection,
+                         transaction))
+        {
+            assignment.Parameters.AddWithValue("user_id", governanceUserId);
+            assignment.Parameters.AddWithValue("round_id", roundId.ToString());
+            await assignment.ExecuteNonQueryAsync(cancel);
         }
 
         await using (var capability = new NpgsqlCommand(
