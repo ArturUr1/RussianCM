@@ -94,6 +94,8 @@ public sealed partial class ServerDbManager
                 WHERE court_case_id IS NOT NULL
             ), case_source AS (
                 SELECT incident.*,
+                       target.ss14_user_id AS target_ss14_user_id,
+                       COALESCE(target_player.last_seen_user_name, target.ss14_user_id::text) AS target_name,
                        CASE
                            WHEN incident.reporter_user_id IS NOT NULL
                             AND incident.reporter_user_id <> incident.target_user_id
@@ -101,6 +103,8 @@ public sealed partial class ServerDbManager
                            ELSE incident.actor_id
                        END AS claimant_user_id
                 FROM incident
+                JOIN governance.users AS target ON target.id = incident.target_user_id
+                LEFT JOIN player AS target_player ON target_player.user_id = target.ss14_user_id
                 WHERE incident.court_case_id IS NULL
             ), created_case AS (
                 INSERT INTO governance.court_cases(
@@ -111,6 +115,7 @@ public sealed partial class ServerDbManager
                        @round_id,
                        left(
                            'LiveIncident #' || case_source.id::text || ' (' || case_source.type || ')' || chr(10) ||
+                           'Ответчик: ' || case_source.target_name || ' • SS14 ' || case_source.target_ss14_user_id::text || chr(10) ||
                            case_source.summary || chr(10) || chr(10) ||
                            'Передано дежурным в Community Court: ' || @reason,
                            1500),
@@ -129,7 +134,9 @@ public sealed partial class ServerDbManager
                            3000),
                        'RUCM Governance: LiveIncident #' || case_source.id::text ||
                            ', AHelp #' || case_source.ticket_id::text ||
-                           '. Исходная переписка и аудит сохранены в PostgreSQL.',
+                           ', ответчик ' || case_source.target_name ||
+                           ' (SS14 ' || case_source.target_ss14_user_id::text || '). ' ||
+                           'Исходная переписка и аудит сохранены в PostgreSQL.',
                        now()
                 FROM created_case
                 CROSS JOIN case_source
@@ -153,16 +160,16 @@ public sealed partial class ServerDbManager
                     event_type, actor_type, actor_id, target_type, target_id,
                     entity_type, entity_id, payload)
                 SELECT 'incident.escalated_to_court', 'ss14_user', @responder::text,
-                       'ss14_user', target.ss14_user_id::text,
+                       'ss14_user', case_source.target_ss14_user_id::text,
                        'court_case', linked.court_case_id::text,
                        jsonb_build_object(
                            'round_id', @round_id,
                            'ticket_id', @ticket_id,
                            'incident_id', linked.id,
-                           'reason', @reason)
+                           'reason', @reason,
+                           'target_name', case_source.target_name)
                 FROM linked
                 JOIN case_source ON case_source.id = linked.id
-                JOIN governance.users AS target ON target.id = case_source.target_user_id
             ), selected AS (
                 SELECT existing.id, false AS created
                 FROM existing
