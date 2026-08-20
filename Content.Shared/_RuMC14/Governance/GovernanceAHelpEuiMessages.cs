@@ -117,6 +117,7 @@ public sealed class GovernanceAHelpQueueEuiState(
     GovernanceAHelpTranscriptEntry[] transcript,
     long incidentId = 0,
     string incidentTargetName = "",
+    string incidentTargetCharacterName = "",
     string incidentType = "",
     long courtCaseId = 0,
     GovernanceAHelpModerationActionEntry[]? incidentActions = null,
@@ -129,6 +130,7 @@ public sealed class GovernanceAHelpQueueEuiState(
     public readonly GovernanceAHelpTranscriptEntry[] Transcript = transcript;
     public readonly long IncidentId = incidentId;
     public readonly string IncidentTargetName = incidentTargetName;
+    public readonly string IncidentTargetCharacterName = incidentTargetCharacterName;
     public readonly string IncidentType = incidentType;
     public readonly long CourtCaseId = courtCaseId;
     public readonly GovernanceAHelpModerationActionEntry[] IncidentActions = incidentActions ?? [];
@@ -205,21 +207,12 @@ public sealed class GovernanceAHelpResponderReplyReceived(
     public readonly string Preview = preview;
 }
 
-/// <summary>
-/// Compatibility event for the old AHelpUIController. Governance responders must never be promoted
-/// into the legacy AdminAHelpUIHandler, so Active intentionally remains false. The actual responder
-/// workspace is opened and authorized by GovernanceAHelpSystem.
-/// </summary>
 [Serializable, NetSerializable]
 public sealed class GovernanceAHelpAccessUpdated(bool _) : EntityEventArgs
 {
     public readonly bool Active = false;
 }
 
-/// <summary>
-/// Legacy bridge event kept only so old Bwoink integration can compile. New Governance AHelp code
-/// never emits it and never opens a Bwoink channel.
-/// </summary>
 [Serializable, NetSerializable]
 public sealed class GovernanceAHelpOpenChannel(NetUserId reporterUserId) : EntityEventArgs
 {
