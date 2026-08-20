@@ -232,15 +232,19 @@ public sealed partial class ServerDbManager
         command.Parameters.AddWithValue("round_id", roundId);
         command.Parameters.AddWithValue("reason", reason);
 
-        await using var reader = await command.ExecuteReaderAsync(cancel);
-        if (!await reader.ReadAsync(cancel))
+        GovernanceCourtEscalationInfo? result = null;
+        await using (var reader = await command.ExecuteReaderAsync(cancel))
+        {
+            if (await reader.ReadAsync(cancel))
+                result = new GovernanceCourtEscalationInfo(reader.GetInt64(0), reader.GetBoolean(1));
+        }
+
+        if (result == null)
         {
             await transaction.RollbackAsync(cancel);
             return null;
         }
 
-        var result = new GovernanceCourtEscalationInfo(reader.GetInt64(0), reader.GetBoolean(1));
-        await reader.CloseAsync();
         await transaction.CommitAsync(cancel);
         return result;
     }
