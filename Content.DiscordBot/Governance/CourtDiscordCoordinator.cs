@@ -395,8 +395,8 @@ public sealed class CourtDiscordCoordinator(
     private async Task<Embed> BuildCaseEmbedAsync(GovernanceCourtCase courtCase)
     {
         var source = await materials.GetAsync(courtCase.Id);
-        var claimantText = await CourtAccountTextAsync(courtCase.ClaimantUserId);
-        var defendantText = await CourtAccountTextAsync(courtCase.DefendantUserId);
+        var claimantText = await CourtAccountTextAsync(courtCase.ClaimantUserId, source?.ClaimantName);
+        var defendantText = await CourtAccountTextAsync(courtCase.DefendantUserId, source?.DefendantName);
         if (source != null)
         {
             claimantText += $"\nSS14 `{source.ClaimantSs14UserId}`";
@@ -420,7 +420,7 @@ public sealed class CourtDiscordCoordinator(
         return embed.Build();
     }
 
-    private async Task<string> CourtAccountTextAsync(Guid governanceUserId)
+    private async Task<string> CourtAccountTextAsync(Guid governanceUserId, string? fallbackName = null)
     {
         try
         {
@@ -431,7 +431,9 @@ public sealed class CourtDiscordCoordinator(
         }
         catch (CourtRuleException)
         {
-            return $"Governance `{governanceUserId}` • Discord не привязан";
+            return string.IsNullOrWhiteSpace(fallbackName)
+                ? $"Governance `{governanceUserId}` • Discord не привязан"
+                : $"{EscapeDiscord(fallbackName)} • Discord не привязан";
         }
     }
 
