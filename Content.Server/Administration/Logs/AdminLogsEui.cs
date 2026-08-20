@@ -74,7 +74,8 @@ public sealed partial class AdminLogsEui : BaseEui
 
         _adminManager.OnPermsChanged += OnPermsChanged;
 
-        var roundId = _filter.Round ?? CurrentRoundId;
+        var roundId = _governanceDutyAccess ? CurrentRoundId : _filter.Round ?? CurrentRoundId;
+        _filter.Round = roundId;
         await LoadFromDb(roundId);
     }
 
@@ -101,9 +102,7 @@ public sealed partial class AdminLogsEui : BaseEui
             };
         }
 
-        var state = new AdminLogsEuiState(CurrentRoundId, _players, _roundLogs);
-
-        return state;
+        return new AdminLogsEuiState(CurrentRoundId, _players, _roundLogs);
     }
 
     public override async void HandleMessage(EuiMessageBase msg)
@@ -127,7 +126,9 @@ public sealed partial class AdminLogsEui : BaseEui
                 _filter = new LogFilter
                 {
                     CancellationToken = _logSendCancellation.Token,
-                    Round = request.RoundId,
+                    // Temporary Governance capabilities are scoped to the current round. Never trust
+                    // a client-supplied historical round id for a Duty responder.
+                    Round = _governanceDutyAccess ? CurrentRoundId : request.RoundId,
                     Search = request.Search,
                     Types = request.Types,
                     Impacts = request.Impacts,
