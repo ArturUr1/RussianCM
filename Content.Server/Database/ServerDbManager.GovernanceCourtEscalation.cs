@@ -110,8 +110,9 @@ public sealed partial class ServerDbManager
                        case_source.target_user_id,
                        @round_id,
                        left(
-                           'LiveIncident #' || case_source.id::text || ' (' || case_source.type || ')\n' ||
-                           case_source.summary || '\n\nПередано дежурным в Community Court: ' || @reason,
+                           'LiveIncident #' || case_source.id::text || ' (' || case_source.type || ')' || chr(10) ||
+                           case_source.summary || chr(10) || chr(10) ||
+                           'Передано дежурным в Community Court: ' || @reason,
                            1500),
                        'defense', now(), now() + interval '48 hours', 0
                 FROM case_source
@@ -122,7 +123,10 @@ public sealed partial class ServerDbManager
                 SELECT created_case.id,
                        created_case.claimant_user_id,
                        'complaint',
-                       left(case_source.summary || '\n\nОснование передачи в суд: ' || @reason, 3000),
+                       left(
+                           case_source.summary || chr(10) || chr(10) ||
+                           'Основание передачи в суд: ' || @reason,
+                           3000),
                        'RUCM Governance: LiveIncident #' || case_source.id::text ||
                            ', AHelp #' || case_source.ticket_id::text ||
                            '. Исходная переписка и аудит сохранены в PostgreSQL.',
