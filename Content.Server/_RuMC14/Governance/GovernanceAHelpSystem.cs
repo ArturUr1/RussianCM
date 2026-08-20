@@ -1,5 +1,7 @@
 using System.Linq;
 using System.Threading.Tasks;
+using Content.Server.Administration.Logs;
+using Content.Server.Administration.Notes;
 using Content.Server.Chat.Managers;
 using Content.Server.Database;
 using Content.Server.EUI;
@@ -35,6 +37,7 @@ public sealed class GovernanceAHelpSystem : EntitySystem
     [Dependency] private readonly EuiManager _euis = default!;
     [Dependency] private readonly GameTicker _ticker = default!;
     [Dependency] private readonly GovernanceManager _governance = default!;
+    [Dependency] private readonly IPlayerLocator _locator = default!;
     [Dependency] private readonly IPlayerManager _players = default!;
 
     private readonly HashSet<GovernanceAHelpQueueEui> _responderEuis = new();
@@ -222,6 +225,94 @@ public sealed class GovernanceAHelpSystem : EntitySystem
         return await _database.GetGovernanceAHelpIncidentAsync(ticketId, player.UserId, _ticker.RoundId);
     }
 
+    public async Task<string?> OpenFullLogsAsync(ICommonSession player)
+    {
+        if (!await CanUseResponderAsync(player))
+            return "governance-ahelp-records-access-denied";
+
+        var authorization = await _governance.AuthorizeAsync(player.UserId, _ticker.RoundId, "moderation.view_logs");
+        if (authorization == null)
+            return "governance-ahelp-records-access-denied";
+
+        _euis.OpenEui(new AdminLogsEui(governanceDutyAccess: true), player);
+        await _governance.AuditAsync(
+            "moderation.logs.opened",
+            player.UserId,
+            null,
+            "duty_session",
+            authorization.Duty.Id.ToString(),
+            new { round_id = _ticker.RoundId, access = "full_read" });
+        return null;
+    }
+
+    public async Task<string?> OpenPlayerNotesAsync(ICommonSession player, string targetQuery)
+    {
+        if (!await CanUseResponderAsync(player))
+            return "governance-ahelp-records-access-denied";
+
+        var authorization = await _governance.AuthorizeAsync(player.UserId, _ticker.RoundId, "moderation.view_logs");
+        if (authorization == null)
+            return "governance-ahelp-records-access-denied";
+
+        targetQuery = targetQuery.Trim();
+        if (string.IsNullOrWhiteSpace(targetQuery))
+            return "governance-ahelp-notes-target-required";
+
+        Guid targetId;
+        if (Guid.TryParse(targetQuery, out var parsed))
+        {
+            targetId = parsed;
+        }
+        else
+        {
+            var located = await _locator.LookupIdByNameAsync(targetQuery);
+            if (located == null)
+                return "governance-ahelp-notes-target-not-found";
+            targetId = located.UserId;
+        }
+
+        var notes = new AdminNotesEui(governanceDutyReadOnly: true);
+        _euis.OpenEui(notes, player);
+        await notes.ChangeNotedPlayer(targetId);
+
+        await _governance.AuditAsync(
+            "moderation.notes.opened",
+            player.UserId,
+            new NetUserId(targetId),
+            "duty_session",
+            authorization.Duty.Id.ToString(),
+            new { round_id = _ticker.RoundId, access = "full_read" });
+        return null;
+    }
+
+    public async Task<string?> EscalateIncidentToCourtAsync(
+        ICommonSession player,
+        long ticketId,
+        string reason)
+    {
+        if (!await CanUseResponderAsync(player))
+            return "governance-ahelp-court-access-denied";
+
+        reason = reason.Trim();
+        if (reason.Length is < 10 or > 1500)
+            return "governance-ahelp-court-reason-invalid";
+
+        var incident = await GetIncidentAsync(player, ticketId);
+        if (incident == null)
+            return "governance-ahelp-action-no-incident";
+
+        var court = await _database.EscalateGovernanceIncidentToCourtAsync(
+            ticketId,
+            player.UserId,
+            _ticker.RoundId,
+            reason);
+        if (court == null)
+            return "governance-ahelp-court-create-failed";
+
+        await RefreshResponderEuisAsync();
+        return null;
+    }
+
     public async Task<IReadOnlyList<GovernanceIncidentActionInfo>> GetIncidentActionsAsync(
         ICommonSession player,
         long incidentId)
@@ -253,6 +344,8 @@ public sealed class GovernanceAHelpSystem : EntitySystem
         var incident = await GetIncidentAsync(player, ticketId);
         if (incident == null)
             return new GovernanceAHelpActionExecutionResult("governance-ahelp-action-no-incident", []);
+        if (incident.CourtCaseId != null)
+            return new GovernanceAHelpActionExecutionResult("governance-ahelp-action-court-escalated", []);
 
         if (actionType is not ("freeze" or "round_remove" or "request_explanation" or "view_logs"))
             return new GovernanceAHelpActionExecutionResult("governance-ahelp-action-invalid", []);
