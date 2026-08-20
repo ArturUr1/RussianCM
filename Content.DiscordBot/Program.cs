@@ -1,4 +1,4 @@
-﻿using System.Text.Json;
+using System.Text.Json;
 using Content.DiscordBot;
 using Content.DiscordBot.Governance;
 using Content.Server.Database;
@@ -195,7 +195,7 @@ await using CourtInstanceLock? courtInstanceLock = config.CourtEnabled
     ? await CourtInstanceLock.AcquireAsync(connectionString)
     : null;
 
-var selection = new CandidateSelectionService(CreateGovernanceDatabase, CreateConfiguredDatabase);
+var selection = new CandidateSelectionService(CreateGovernanceDatabase, CreateConfiguredDatabase, config);
 var court = new CommunityCourtService(
     CreateGovernanceDatabase,
     CreateConfiguredDatabase,
@@ -203,6 +203,7 @@ var court = new CommunityCourtService(
     selection);
 var courtMaterials = new CourtSourceMaterialService(CreateGovernanceDatabase, CreateConfiguredDatabase);
 var community = new GovernanceCommunityService(CreateGovernanceDatabase, CreateConfiguredDatabase, config);
+var courtTestLinks = new CourtTestAccountLinkingService(CreateConfiguredDatabase, community, config);
 var punishments = new CourtPunishmentService(CreateGovernanceDatabase, CreateConfiguredDatabase);
 var moderation = new ModerationGovernanceService(CreateGovernanceDatabase, CreateConfiguredDatabase, community);
 var moderationTrust = new ModerationTrustService(CreateGovernanceDatabase, community, selection, config);
@@ -217,6 +218,7 @@ var services = new ServiceCollection()
     .AddSingleton(court)
     .AddSingleton(courtMaterials)
     .AddSingleton(community)
+    .AddSingleton(courtTestLinks)
     .AddSingleton(punishments)
     .AddSingleton(moderation)
     .AddSingleton(moderationTrust)
