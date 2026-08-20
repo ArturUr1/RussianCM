@@ -58,6 +58,15 @@ public sealed partial class ServerDbManager
                            WHEN session.status <> 'active' THEN 'Сессия события уже завершена или отозвана.'
                            WHEN session.expires_at <= now() THEN 'Срок действия сессии события истёк.'
                            WHEN manifest.id IS NULL THEN 'Ресурс отсутствует в утверждённом манифесте.'
+                           WHEN action.status = 'executed' AND (
+                               SELECT count(*)
+                               FROM governance.event_actions AS prior
+                               WHERE prior.session_id = action.session_id
+                                 AND prior.capability = action.capability
+                                 AND prior.resource = action.resource
+                                 AND prior.status = 'executed'
+                                 AND prior.id <= action.id) > manifest.max_uses
+                               THEN 'Лимит использований ресурса из утверждённого манифеста исчерпан.'
                            WHEN grant.id IS NULL THEN 'Полномочие события отсутствует, истекло или отозвано.'
                            ELSE NULL
                        END AS error
@@ -83,6 +92,14 @@ public sealed partial class ServerDbManager
                       OR session.status <> 'active'
                       OR session.expires_at <= now()
                       OR manifest.id IS NULL
+                      OR (manifest.id IS NOT NULL AND action.status = 'executed' AND (
+                          SELECT count(*)
+                          FROM governance.event_actions AS prior
+                          WHERE prior.session_id = action.session_id
+                            AND prior.capability = action.capability
+                            AND prior.resource = action.resource
+                            AND prior.status = 'executed'
+                            AND prior.id <= action.id) > manifest.max_uses)
                       OR grant.id IS NULL)
                 FOR UPDATE OF action SKIP LOCKED
             ), changed AS (
@@ -161,6 +178,14 @@ public sealed partial class ServerDbManager
                   AND grant.expires_at > now()
                   AND grant.revoked_at IS NULL
                   AND grant.scope @> jsonb_build_object('round_id', @round_id, 'event_session_id', session.id)
+                  AND (
+                      SELECT count(*)
+                      FROM governance.event_actions AS prior
+                      WHERE prior.session_id = action.session_id
+                        AND prior.capability = action.capability
+                        AND prior.resource = action.resource
+                        AND prior.status = 'executed'
+                        AND prior.id <= action.id) <= manifest.max_uses
                 ORDER BY action.id
                 FOR UPDATE OF action SKIP LOCKED
                 LIMIT 1
