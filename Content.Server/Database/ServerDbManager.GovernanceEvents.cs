@@ -18,6 +18,10 @@ public sealed record GovernanceEventExecutionAction(
 
 public partial interface IServerDbManager
 {
+    Task<int> FailUnexecutableGovernanceEventActionsAsync(
+        int roundId,
+        CancellationToken cancel = default);
+
     Task<GovernanceEventExecutionAction?> ClaimGovernanceEventActionAsync(
         int roundId,
         CancellationToken cancel = default);
@@ -31,6 +35,98 @@ public partial interface IServerDbManager
 
 public sealed partial class ServerDbManager
 {
+    public async Task<int> FailUnexecutableGovernanceEventActionsAsync(
+        int roundId,
+        CancellationToken cancel = default)
+    {
+        if (!_cfg.GetCVar(CCVars.DatabaseEngine).Equals("postgres", StringComparison.OrdinalIgnoreCase) || roundId <= 0)
+            return 0;
+
+        await using var connection = CreateGovernanceConnection();
+        await connection.OpenAsync(cancel);
+        await using var transaction = await connection.BeginTransactionAsync(cancel);
+        await using var command = new NpgsqlCommand(
+            """
+            WITH invalid AS (
+                SELECT action.id,
+                       action.session_id,
+                       action.actor_user_id,
+                       action.capability,
+                       action.resource,
+                       CASE
+                           WHEN action.status = 'denied' THEN 'Действие отклонено Governance до передачи игровому серверу.'
+                           WHEN session.status <> 'active' THEN 'Сессия события уже завершена или отозвана.'
+                           WHEN session.expires_at <= now() THEN 'Срок действия сессии события истёк.'
+                           WHEN manifest.id IS NULL THEN 'Ресурс отсутствует в утверждённом манифесте.'
+                           WHEN grant.id IS NULL THEN 'Полномочие события отсутствует, истекло или отозвано.'
+                           ELSE NULL
+                       END AS error
+                FROM governance.event_actions AS action
+                JOIN governance.event_sessions AS session ON session.id = action.session_id
+                LEFT JOIN governance.event_manifest_items AS manifest
+                  ON manifest.session_id = session.id
+                 AND manifest.capability = action.capability
+                 AND manifest.resource = action.resource
+                LEFT JOIN governance.capability_grants AS grant
+                  ON grant.user_id = action.actor_user_id
+                 AND grant.source_type = 'event_session'
+                 AND grant.source_id = session.id::text
+                 AND grant.capability = action.capability
+                 AND grant.issued_at <= now()
+                 AND grant.expires_at > now()
+                 AND grant.revoked_at IS NULL
+                 AND grant.scope @> jsonb_build_object('round_id', @round_id, 'event_session_id', session.id)
+                WHERE action.server_status = 'pending'
+                  AND session.round_id = @round_id
+                  AND (
+                      action.status = 'denied'
+                      OR session.status <> 'active'
+                      OR session.expires_at <= now()
+                      OR manifest.id IS NULL
+                      OR grant.id IS NULL)
+                FOR UPDATE OF action SKIP LOCKED
+            ), changed AS (
+                UPDATE governance.event_actions AS action
+                SET server_status = 'failed',
+                    server_executed_at = now(),
+                    server_execution_error = invalid.error
+                FROM invalid
+                WHERE action.id = invalid.id
+                  AND action.server_status = 'pending'
+                RETURNING action.id,
+                          action.session_id,
+                          action.actor_user_id,
+                          action.capability,
+                          action.resource,
+                          action.server_execution_error
+            ), audited AS (
+                INSERT INTO governance.audit_events(
+                    event_type, actor_type, actor_id, entity_type, entity_id, payload)
+                SELECT 'event.action_server_failed',
+                       'ss14_server',
+                       actor.ss14_user_id::text,
+                       'event_action',
+                       changed.id::text,
+                       jsonb_build_object(
+                           'event_session_id', changed.session_id,
+                           'capability', changed.capability,
+                           'resource', changed.resource,
+                           'server_status', 'failed',
+                           'error', changed.server_execution_error)
+                FROM changed
+                JOIN governance.users AS actor ON actor.id = changed.actor_user_id
+            )
+            SELECT count(*) FROM changed
+            """,
+            connection,
+            transaction);
+        command.Parameters.AddWithValue("round_id", roundId);
+
+        var changed = Convert.ToInt32(await command.ExecuteScalarAsync(cancel));
+        await transaction.CommitAsync(cancel);
+        return changed;
+    }
+
     public async Task<GovernanceEventExecutionAction?> ClaimGovernanceEventActionAsync(
         int roundId,
         CancellationToken cancel = default)
