@@ -125,8 +125,8 @@ if (governanceDoctor)
     if (missing.Length > 0)
         throw new InvalidOperationException($"Governance schema is incomplete: {string.Join(", ", missing)}");
     var applied = await governance.Database.GetAppliedMigrationsAsync();
-    if (!applied.Contains("20260821000000_EventActionServerExecution"))
-        throw new InvalidOperationException("EventActionServerExecution migration is not recorded as applied.");
+    if (!applied.Contains("20260821010000_AHelpCourtActiveTicket"))
+        throw new InvalidOperationException("The latest AHelpCourtActiveTicket migration is not recorded as applied.");
     var ahelpColumns = (await governance.Database.SqlQueryRaw<string>("""
         SELECT column_name || ':' || is_nullable AS "Value"
         FROM information_schema.columns
@@ -147,6 +147,15 @@ if (governanceDoctor)
             "server_execution_error:YES",
         ]))
         throw new InvalidOperationException("The event server execution contract is invalid.");
+    var activeAHelpIndex = await governance.Database.SqlQueryRaw<int>("""
+        SELECT count(*)::integer AS "Value"
+        FROM pg_indexes
+        WHERE schemaname = 'governance'
+          AND indexname = 'ahelp_one_active_reporter_idx'
+          AND indexdef LIKE '%escalated_to_court%'
+        """).SingleAsync();
+    if (activeAHelpIndex != 1)
+        throw new InvalidOperationException("The active AHelp uniqueness index does not include court-escalated tickets.");
     var immutableTrigger = await governance.Database.SqlQueryRaw<int>("""
         SELECT count(*)::integer AS "Value"
         FROM pg_trigger
