@@ -1,8 +1,10 @@
 governance-ahelp-workspace-header = [bold]Центр обращений[/bold]
 governance-ahelp-workspace-subtitle = Очередь, переписка и действия дежурного в одном окне.
+governance-ahelp-workspace-subtitle-modern = Переписка в центре, расследование и live-действия справа.
 governance-ahelp-list-heading = [bold]Очередь[/bold]
 governance-ahelp-list-hint = Сначала возьмите свободное обращение. После этого здесь откроется полная переписка.
 governance-ahelp-filter-placeholder = Поиск по игроку, ID или тексту обращения…
+governance-ahelp-filter-placeholder-short = Поиск по очереди…
 governance-ahelp-filter-empty = [color=#8c96a8]По этому запросу ничего не найдено.[/color]
 governance-ahelp-reply-placeholder = Напишите ответ игроку…
 governance-ahelp-counter-modern = Открыто: {$open} • Моих: {$mine}
@@ -17,6 +19,8 @@ governance-ahelp-empty-modern = [color=#8c96a8]Открытых обращени
 governance-ahelp-selected-marker = ▶
 governance-ahelp-ticket-card-modern = {$selected} #{$id} • {$reporter} • {$status} • {$time}
     {$summary}
+governance-ahelp-ticket-card-compact = {$selected}#{$id} • {$reporter}
+    {$status} • {$time}
 governance-ahelp-no-selection-hint = [color=#8c96a8]Выберите обращение слева, чтобы посмотреть подробности.[/color]
 governance-ahelp-conversation-header = [bold]Обращение #{$id}[/bold] • {$reporter}
 governance-ahelp-conversation-meta = Статус: {$status}  •  Создано: {$time}
@@ -59,10 +63,23 @@ governance-ahelp-records-open-logs = Полные логи
 governance-ahelp-records-access-denied = Полный просмотр служебных данных доступен только активному дежурному.
 governance-ahelp-notes-target-required = Укажите ник или SS14 UUID игрока, чьи заметки нужно открыть.
 governance-ahelp-notes-target-not-found = Игрок с таким ником или SS14 UUID не найден в базе.
+governance-ahelp-context-heading = [bold]Расследование[/bold]
+governance-ahelp-tool-full-logs = Полные логи
+governance-ahelp-tool-reporter-notes = Заметки заявителя
+governance-ahelp-tool-target-notes = Заметки цели
+governance-duty-verb-notes = Заметки игрока
+governance-duty-verb-teleport-to = Телепортироваться к игроку
 
 governance-ahelp-incident-heading = [bold]Инцидент[/bold]
 governance-ahelp-incident-none = [color=#8c96a8]Активный инцидент для этого обращения не создан.[/color]
 governance-ahelp-incident-active = [bold]LiveIncident #{$id}[/bold] • цель: {$target} • тип: {$type}
+governance-ahelp-incident-active-character = [bold]LiveIncident #{$id}[/bold]
+    Аккаунт: {$target}
+    Персонаж: [bold]{$character}[/bold]
+    Тип: {$type}
+governance-ahelp-incident-court = [color=#d8a34a][bold]LiveIncident #{$incident} → Community Court #{$case}[/bold][/color]
+    Аккаунт: {$target}
+    Персонаж: [bold]{$character}[/bold]
 governance-ahelp-incident-target-placeholder = Ник игрока или SS14 UUID
 governance-ahelp-incident-type-placeholder = Тип инцидента
 governance-ahelp-incident-type-default = нарушение правил
@@ -76,20 +93,22 @@ governance-ahelp-incident-create-failed = Не удалось создать и�
 
 governance-ahelp-court-none = [color=#8c96a8]Дело Community Court по этому инциденту не создано.[/color]
 governance-ahelp-court-active = [color=#d8a34a][bold]Передано в Community Court • дело #{$id}[/bold][/color]
-governance-ahelp-court-escalate = Передать в суд
-governance-ahelp-court-reason-invalid = Для передачи в суд укажите основание длиной от 10 до 512 символов.
+governance-ahelp-court-escalate = Передать в Community Court
+governance-ahelp-court-reason-invalid = Для передачи в суд укажите основание длиной от 10 до 1500 символов.
 governance-ahelp-court-access-denied = Передать инцидент в суд может только активный дежурный, ведущий это обращение.
 governance-ahelp-court-create-failed = Не удалось создать дело Community Court. Проверьте состояние инцидента и базы данных.
 
 governance-ahelp-actions-heading = [bold]Действия по инциденту[/bold]
-governance-ahelp-action-reason-placeholder = Основание действия / передачи в суд (10–512 символов)…
-governance-ahelp-action-freeze-seconds-placeholder = Секунды
+governance-ahelp-containment-heading = [bold]Live containment[/bold]
+governance-ahelp-action-reason-placeholder = Основание действия / передачи в суд…
+governance-ahelp-action-freeze-seconds-placeholder = Сек.
 governance-ahelp-action-request-explanation = Запросить объяснение
 governance-ahelp-action-view-logs = Просмотреть логи
 governance-ahelp-action-freeze = Заморозить
 governance-ahelp-action-round-remove = Удалить до конца раунда
-governance-ahelp-action-history-heading = [bold]История действий[/bold]
-governance-ahelp-action-history-empty = [color=#8c96a8]По этому инциденту действий пока нет.[/color]
+governance-ahelp-action-round-remove-short = Удалить из раунда
+governance-ahelp-action-history-heading = [bold]История вмешательств[/bold]
+governance-ahelp-action-history-empty = [color=#8c96a8]Live-вмешательств по этому инциденту пока нет.[/color]
 governance-ahelp-action-card = #{$id} • [bold]{$type}[/bold] • {$status} • {$approvals}/{$required}{$duration}
     {$reason}
 governance-ahelp-action-duration =  • {$seconds} сек.
@@ -103,7 +122,7 @@ governance-ahelp-action-status-executed = [color=#72d572]выполнено[/col
 governance-ahelp-action-status-rejected = [color=#ff5a5a]отклонено[/color]
 governance-ahelp-action-status-expired = истекло
 
-governance-ahelp-approval-heading = [bold]Ожидают вашего решения[/bold]
+governance-ahelp-approval-heading = [bold]Требуют второго решения[/bold]
 governance-ahelp-approval-empty = [color=#8c96a8]Нет действий, требующих второго голоса.[/color]
 governance-ahelp-approval-card = Действие #{$id} • инцидент #{$incident}
     {$actor} → {$target} • [bold]{$type}[/bold] • {$approvals}/{$required}
@@ -112,7 +131,7 @@ governance-ahelp-approval-approve = Одобрить
 governance-ahelp-approval-reject = Отклонить
 
 governance-ahelp-logs-heading = [bold]Логи цели[/bold]
-governance-ahelp-logs-empty = [color=#8c96a8]Логи не загружены. Нажмите «Просмотреть логи».[/color]
+governance-ahelp-logs-empty = [color=#8c96a8]Логи не загружены.[/color]
 governance-ahelp-log-line = [color=#8c96a8]{$time}[/color] [bold]{$type}[/bold] {$message}
 
 governance-ahelp-action-access-denied = У вас нет временного полномочия для этого действия.
