@@ -17,16 +17,27 @@ governance-ahelp-template-wait-text = Thank you. I need a little time to review 
 governance-ahelp-send = Send
 governance-ahelp-empty-modern = [color=#8c96a8]There are no open support tickets right now.[/color]
 governance-ahelp-selected-marker = ▶
-governance-ahelp-ticket-card-modern = {$selected} #{$id} • {$reporter} • {$status} • {$time}{ "\n" }{$summary}
-governance-ahelp-ticket-card-compact = {$selected}#{$id} • {$reporter}{ "\n" }{$status} • {$time}
+governance-ahelp-ticket-card-modern =
+    {$selected} #{$id} • {$reporter} • {$status} • {$time}
+    {$summary}
+governance-ahelp-ticket-card-compact =
+    {$selected}#{$id} • {$reporter}
+    {$status} • {$time}
 governance-ahelp-no-selection-hint = [color=#8c96a8]Select a ticket on the left to view its details.[/color]
 governance-ahelp-conversation-header = [bold]Ticket #{$id}[/bold] • {$reporter}
-governance-ahelp-conversation-meta = Status: {$status}  •  Created: {$time}{ "\n" }SS14: {$uuid}
-governance-ahelp-unclaimed-preview = [color=#8c96a8]Ticket preview[/color]{ "\n" }{$summary}{ "\n" }[italic]Claim the ticket to open the conversation and reply to the player.[/italic]
+governance-ahelp-conversation-meta =
+    Status: {$status}  •  Created: {$time}
+    SS14: {$uuid}
+governance-ahelp-unclaimed-preview =
+    [color=#8c96a8]Ticket preview[/color]
+    {$summary}
+    [italic]Claim the ticket to open the conversation and reply to the player.[/italic]
 governance-ahelp-transcript-empty = [color=#8c96a8]There are no messages in this ticket yet.[/color]
 governance-ahelp-message-role-responder = [color=#ff5a5a]● Responder[/color]
 governance-ahelp-message-role-player = Player
-governance-ahelp-message-line = [color=#8c96a8]{$time}[/color] [bold]{$role} • {$sender}[/bold]{ "\n" }{$body}
+governance-ahelp-message-line =
+    [color=#8c96a8]{$time}[/color] [bold]{$role} • {$sender}[/bold]
+    {$body}
 governance-ahelp-status-waiting-player = Waiting for player
 governance-ahelp-send-failed = Could not send the message. Make sure the ticket is still assigned to you.
 governance-ahelp-player-unavailable = The support center is currently unavailable.
@@ -67,8 +78,15 @@ governance-duty-verb-teleport-to = Teleport to player
 governance-ahelp-incident-heading = [bold]Incident[/bold]
 governance-ahelp-incident-none = [color=#8c96a8]No active incident has been created for this ticket.[/color]
 governance-ahelp-incident-active = [bold]LiveIncident #{$id}[/bold] • target: {$target} • type: {$type}
-governance-ahelp-incident-active-character = [bold]LiveIncident #{$id}[/bold]{ "\n" }Account: {$target}{ "\n" }Character: [bold]{$character}[/bold]{ "\n" }Type: {$type}
-governance-ahelp-incident-court = [color=#d8a34a][bold]LiveIncident #{$incident} → Community Court #{$case}[/bold][/color]{ "\n" }Account: {$target}{ "\n" }Character: [bold]{$character}[/bold]
+governance-ahelp-incident-active-character =
+    [bold]LiveIncident #{$id}[/bold]
+    Account: {$target}
+    Character: [bold]{$character}[/bold]
+    Type: {$type}
+governance-ahelp-incident-court =
+    [color=#d8a34a][bold]LiveIncident #{$incident} → Community Court #{$case}[/bold][/color]
+    Account: {$target}
+    Character: [bold]{$character}[/bold]
 governance-ahelp-incident-target-placeholder = Player name or SS14 UUID
 governance-ahelp-incident-type-placeholder = Incident type
 governance-ahelp-incident-type-default = rules violation
@@ -98,7 +116,9 @@ governance-ahelp-action-round-remove = Remove for round
 governance-ahelp-action-round-remove-short = Remove from round
 governance-ahelp-action-history-heading = [bold]Intervention history[/bold]
 governance-ahelp-action-history-empty = [color=#8c96a8]No live interventions have been created for this incident.[/color]
-governance-ahelp-action-card = #{$id} • [bold]{$type}[/bold] • {$status} • {$approvals}/{$required}{$duration}{ "\n" }{$reason}
+governance-ahelp-action-card =
+    #{$id} • [bold]{$type}[/bold] • {$status} • {$approvals}/{$required}{$duration}
+    {$reason}
 governance-ahelp-action-duration =  • {$seconds}s
 governance-ahelp-action-type-explanation = Explanation request
 governance-ahelp-action-type-logs = Log access
@@ -112,7 +132,10 @@ governance-ahelp-action-status-expired = expired
 
 governance-ahelp-approval-heading = [bold]Requires second decision[/bold]
 governance-ahelp-approval-empty = [color=#8c96a8]No actions currently require a second vote.[/color]
-governance-ahelp-approval-card = Action #{$id} • incident #{$incident}{ "\n" }{$actor} → {$target} • [bold]{$type}[/bold] • {$approvals}/{$required}{ "\n" }{$reason}
+governance-ahelp-approval-card =
+    Action #{$id} • incident #{$incident}
+    {$actor} → {$target} • [bold]{$type}[/bold] • {$approvals}/{$required}
+    {$reason}
 governance-ahelp-approval-approve = Approve
 governance-ahelp-approval-reject = Reject
 
