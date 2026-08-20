@@ -3,6 +3,7 @@
   "DatabaseString": "Host=localhost;Port=5432;Database=russiancm_local;Username=postgres;Password=postgres",
   "Guild": 123456789012345678,
   "CourtEnabled": false,
+  "CourtTestMode": false,
   "CourtChannel": 123456789012345678,
   "CourtSchedulerSeconds": 30,
   "CourtComplaintWindowHours": 72,
