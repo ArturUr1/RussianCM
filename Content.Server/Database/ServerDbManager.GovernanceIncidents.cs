@@ -114,7 +114,7 @@ public sealed partial class ServerDbManager
                   AND duty.status = 'active'
                   AND duty.observer_confirmed
                   AND duty.expires_at > now()
-                  AND capability_grant.capability = 'moderation.freeze'
+                  AND capability_grant.capability = 'moderation.ahelp'
                   AND capability_grant.expires_at > now()
                   AND capability_grant.revoked_at IS NULL
                 LIMIT 1
@@ -211,20 +211,26 @@ public sealed partial class ServerDbManager
         command.Parameters.AddWithValue("round_id", roundId);
         command.Parameters.AddWithValue("type", type);
 
-        await using var reader = await command.ExecuteReaderAsync(cancel);
-        if (!await reader.ReadAsync(cancel))
+        GovernanceAHelpIncidentInfo? result = null;
+        await using (var reader = await command.ExecuteReaderAsync(cancel))
+        {
+            if (await reader.ReadAsync(cancel))
+            {
+                result = new GovernanceAHelpIncidentInfo(
+                    reader.GetInt64(0),
+                    new NetUserId(reader.GetGuid(1)),
+                    reader.GetString(2),
+                    reader.GetString(3),
+                    reader.GetString(4));
+            }
+        }
+
+        if (result == null)
         {
             await transaction.RollbackAsync(cancel);
             return null;
         }
 
-        var result = new GovernanceAHelpIncidentInfo(
-            reader.GetInt64(0),
-            new NetUserId(reader.GetGuid(1)),
-            reader.GetString(2),
-            reader.GetString(3),
-            reader.GetString(4));
-        await reader.CloseAsync();
         await transaction.CommitAsync(cancel);
         return result;
     }
