@@ -730,20 +730,23 @@ public sealed class GovernanceAHelpQueueWindow : DefaultWindow
     {
         var selected = _tickets.FirstOrDefault(ticket => ticket.Id == _selectedTicketId);
         var mine = selected?.ClaimedByMe == true;
+        var escalatedToCourt = selected?.Status == "escalated_to_court" || _courtCaseId > 0;
+        var canReply = mine && !escalatedToCourt;
+
         _claim.Disabled = selected == null || mine;
-        _waiting.Disabled = !mine;
+        _waiting.Disabled = !canReply;
         _resolve.Disabled = !mine;
-        _reply.Editable = mine;
-        _send.Disabled = !mine;
+        _reply.Editable = canReply;
+        _send.Disabled = !canReply;
         _reporterNotes.Disabled = selected == null;
         _targetNotes.Disabled = !mine || _incidentId == 0;
 
-        var canCreateIncident = mine && _incidentId == 0;
+        var canCreateIncident = mine && !escalatedToCourt && _incidentId == 0;
         _incidentTarget.Editable = canCreateIncident;
         _incidentType.Editable = canCreateIncident;
         _createIncident.Disabled = !canCreateIncident;
 
-        var canContain = mine && _incidentId > 0 && _courtCaseId == 0;
+        var canContain = mine && _incidentId > 0 && !escalatedToCourt;
         _actionReason.Editable = canContain;
         _freeze.Disabled = !canContain;
         _roundRemove.Disabled = !canContain;
@@ -757,6 +760,7 @@ public sealed class GovernanceAHelpQueueWindow : DefaultWindow
             return ticket.Status switch
             {
                 "waiting_player" => Loc.GetString("governance-ahelp-status-waiting-player"),
+                "escalated_to_court" => Loc.GetString("governance-ahelp-player-status-court"),
                 _ => Loc.GetString("governance-ahelp-status-mine"),
             };
         }
