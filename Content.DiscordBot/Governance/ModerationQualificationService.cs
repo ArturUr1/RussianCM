@@ -12,6 +12,16 @@ public sealed class ModerationQualificationService(
         List<(Guid UserId, ulong DiscordId, short Level)> users;
         await using (var governance = governanceFactory())
         {
+            // Moderation level I is the baseline qualification. Do not rely on a player first becoming
+            // an observer on a running game server just to create the row that this scheduler needs.
+            await governance.Database.ExecuteSqlRawAsync("""
+                INSERT INTO governance.qualifications(user_id, track, level, updated_at)
+                SELECT users.id, 'moderation', 0, now()
+                FROM governance.users AS users
+                WHERE users.discord_user_id > 0
+                ON CONFLICT (user_id, track) DO NOTHING
+                """);
+
             var rows = await governance.Users.AsNoTracking()
                 .Join(governance.Qualifications.AsNoTracking().Where(value => value.Track == "moderation"),
                     user => user.Id,
