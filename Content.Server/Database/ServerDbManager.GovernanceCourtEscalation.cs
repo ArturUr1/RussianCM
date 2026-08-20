@@ -50,39 +50,6 @@ public sealed partial class ServerDbManager
             await incidentLock.ExecuteNonQueryAsync(cancel);
         }
 
-        // AHelp is intentionally usable without a Discord link. Ensure that its reporter has the
-        // upgradeable SS14-only Governance identity before the reporter becomes the court claimant.
-        await using (var ensureReporter = new NpgsqlCommand(
-                         """
-                         WITH source AS (
-                             SELECT reporter_ss14_user_id
-                             FROM governance.ahelp_tickets
-                             WHERE id = @ticket_id AND round_id = @round_id
-                         ), inserted AS (
-                             INSERT INTO governance.users(ss14_user_id, discord_user_id, created_at, updated_at)
-                             SELECT reporter_ss14_user_id,
-                                    -((('x' || substr(md5(reporter_ss14_user_id::text), 1, 15))::bit(60)::bigint) + 1),
-                                    now(), now()
-                             FROM source
-                             ON CONFLICT (ss14_user_id) DO NOTHING
-                         )
-                         UPDATE governance.ahelp_tickets AS ticket
-                         SET reporter_user_id = users.id,
-                             updated_at = now()
-                         FROM governance.users AS users
-                         WHERE ticket.id = @ticket_id
-                           AND ticket.round_id = @round_id
-                           AND users.ss14_user_id = ticket.reporter_ss14_user_id
-                           AND ticket.reporter_user_id IS DISTINCT FROM users.id
-                         """,
-                         connection,
-                         transaction))
-        {
-            ensureReporter.Parameters.AddWithValue("ticket_id", ticketId);
-            ensureReporter.Parameters.AddWithValue("round_id", roundId);
-            await ensureReporter.ExecuteNonQueryAsync(cancel);
-        }
-
         Guid actorId;
         await using (var actor = new NpgsqlCommand(
                          """
@@ -121,6 +88,89 @@ public sealed partial class ServerDbManager
             }
 
             actorId = value;
+        }
+
+        // Validate and lock the claimed ticket before creating any synthetic Governance identity.
+        Guid reporterSs14UserId;
+        await using (var ticket = new NpgsqlCommand(
+                         """
+                         SELECT reporter_ss14_user_id
+                         FROM governance.ahelp_tickets
+                         WHERE id = @ticket_id
+                           AND round_id = @round_id
+                           AND claimed_by_user_id = @actor_id
+                         FOR UPDATE
+                         """,
+                         connection,
+                         transaction))
+        {
+            ticket.Parameters.AddWithValue("ticket_id", ticketId);
+            ticket.Parameters.AddWithValue("round_id", roundId);
+            ticket.Parameters.AddWithValue("actor_id", actorId);
+            var result = await ticket.ExecuteScalarAsync(cancel);
+            if (result is not Guid value)
+            {
+                await transaction.RollbackAsync(cancel);
+                return null;
+            }
+
+            reporterSs14UserId = value;
+        }
+
+        // AHelp is intentionally usable without a Discord link. Create or resolve an upgradeable
+        // SS14-only identity first, then bind the ticket in a separate command. Keeping these operations
+        // sequential is important: PostgreSQL data-modifying CTEs share one snapshot and an UPDATE cannot
+        // reliably discover a row inserted by a sibling CTE through the base table.
+        Guid ensuredClaimantUserId;
+        await using (var ensureReporter = new NpgsqlCommand(
+                         """
+                         INSERT INTO governance.users(ss14_user_id, discord_user_id, created_at, updated_at)
+                         VALUES (
+                             @reporter_ss14_user_id,
+                             -((('x' || substr(md5(@reporter_ss14_user_id::text), 1, 15))::bit(60)::bigint) + 1),
+                             now(),
+                             now())
+                         ON CONFLICT (ss14_user_id) DO UPDATE
+                         SET updated_at = now()
+                         RETURNING id
+                         """,
+                         connection,
+                         transaction))
+        {
+            ensureReporter.Parameters.AddWithValue("reporter_ss14_user_id", reporterSs14UserId);
+            var result = await ensureReporter.ExecuteScalarAsync(cancel);
+            if (result is not Guid value)
+            {
+                await transaction.RollbackAsync(cancel);
+                return null;
+            }
+
+            ensuredClaimantUserId = value;
+        }
+
+        await using (var bindReporter = new NpgsqlCommand(
+                         """
+                         UPDATE governance.ahelp_tickets
+                         SET reporter_user_id = @claimant_user_id,
+                             updated_at = now()
+                         WHERE id = @ticket_id
+                           AND round_id = @round_id
+                           AND reporter_ss14_user_id = @reporter_ss14_user_id
+                           AND claimed_by_user_id = @actor_id
+                         """,
+                         connection,
+                         transaction))
+        {
+            bindReporter.Parameters.AddWithValue("claimant_user_id", ensuredClaimantUserId);
+            bindReporter.Parameters.AddWithValue("ticket_id", ticketId);
+            bindReporter.Parameters.AddWithValue("round_id", roundId);
+            bindReporter.Parameters.AddWithValue("reporter_ss14_user_id", reporterSs14UserId);
+            bindReporter.Parameters.AddWithValue("actor_id", actorId);
+            if (await bindReporter.ExecuteNonQueryAsync(cancel) != 1)
+            {
+                await transaction.RollbackAsync(cancel);
+                return null;
+            }
         }
 
         long incidentId = 0;
