@@ -31,7 +31,8 @@ public sealed class CandidateSelectionService(
                 qualification => qualification.UserId,
                 (user, _) => user)
             .Where(user => !user.IsGovernanceSuspended && !excludedUsers.Contains(user.Id));
-        if (aboveAverage && config?.CourtTestMode != true)
+        var bypassRatingForCourtTestJurors = config?.CourtTestMode == true && track == "jury";
+        if (aboveAverage && !bypassRatingForCourtTestJurors)
             qualified = qualified.Where(user => user.CivicRatingCache > average);
 
         var candidates = await qualified.ToListAsync();
