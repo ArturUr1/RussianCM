@@ -43,11 +43,11 @@ public sealed class EventGovernanceModule(EventGovernanceService events, CourtDi
         await FollowupAsync($"EventSession №{session.Id} активна до <t:{new DateTimeOffset(session.ExpiresAt).ToUnixTimeSeconds()}:F>.", ephemeral: true);
     });
 
-    [SlashCommand("действие", "Выполнить действие из утверждённого манифеста")]
+    [SlashCommand("действие", "Передать игровому серверу действие из утверждённого манифеста")]
     public Task ActionAsync(long session, string capability, string resource, string? payload = null) => ExecuteAsync(async () =>
     {
         var action = await events.RecordActionAsync(session, Context.User.Id, capability, resource, payload);
-        await FollowupAsync($"Действие №{action.Id} выполнено и записано в аудит.", ephemeral: true);
+        await FollowupAsync($"Действие №{action.Id} разрешено манифестом и передано игровому серверу на исполнение. Фактический результат будет записан в аудит.", ephemeral: true);
     });
 
     [SlashCommand("завершить", "Завершить или аварийно остановить свою сессию")]
