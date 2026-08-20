@@ -35,7 +35,13 @@ public sealed class CandidateSelectionService(
 
         var candidates = await qualified.ToListAsync();
         if (availableDiscordIds != null)
-            candidates = candidates.Where(user => availableDiscordIds.Contains(checked((ulong) user.DiscordUserId))).ToList();
+        {
+            // Synthetic SS14-only Governance identities deliberately use negative internal Discord ids.
+            // They are valid court participants, but they can never receive a Discord jury invitation.
+            candidates = candidates
+                .Where(user => user.DiscordUserId > 0 && availableDiscordIds.Contains((ulong) user.DiscordUserId))
+                .ToList();
+        }
 
         var candidateIds = candidates.Select(value => value.Id).ToArray();
         var conflicts = await governance.Conflicts.AsNoTracking()
