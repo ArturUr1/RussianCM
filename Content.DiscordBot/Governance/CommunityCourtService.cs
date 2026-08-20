@@ -817,9 +817,11 @@ public sealed class CommunityCourtService(
         long caseId,
         string idempotencyKey)
     {
-        await governance.Database.ExecuteSqlRawAsync(
-            "SELECT governance.append_rating_entry({0}, {1}, {2}, 'court_case', {3}, 'system', NULL, {4}, '{}'::jsonb)",
-            userId, amount, reason, caseId.ToString(), idempotencyKey);
+        await governance.Database.ExecuteSqlInterpolatedAsync($"""
+            SELECT governance.append_rating_entry(
+                {userId}, {amount}, {reason}, 'court_case', {caseId.ToString()},
+                'system', NULL, {idempotencyKey}, jsonb_build_object())
+            """);
     }
 
     private static void AddAudit(
