@@ -1,6 +1,6 @@
 governance-ahelp-workspace-header = [bold]Центр обращений[/bold]
 governance-ahelp-workspace-subtitle = Очередь, переписка и действия дежурного в одном окне.
-governance-ahelp-workspace-subtitle-modern = Переписка в центре, расследование и live-действия справа.
+governance-ahelp-workspace-subtitle-modern = Переписка в центре, расследование и оперативные действия справа.
 governance-ahelp-list-heading = [bold]Очередь[/bold]
 governance-ahelp-list-hint = Сначала возьмите свободное обращение. После этого здесь откроется полная переписка.
 governance-ahelp-filter-placeholder = Поиск по игроку, ID или тексту обращения…
@@ -78,7 +78,7 @@ governance-ahelp-incident-target-required = Укажите игрока, кот�
 governance-ahelp-incident-target-not-found = Игрок с таким ником или SS14 UUID сейчас не найден на сервере.
 governance-ahelp-incident-self-target = Дежурный не может создать инцидент против самого себя.
 governance-ahelp-incident-type-invalid = Тип инцидента должен содержать от 2 до 64 символов.
-governance-ahelp-incident-access-denied = У вас нет временного полномочия на создание live-инцидента.
+governance-ahelp-incident-access-denied = У вас нет временного полномочия на создание инцидента.
 governance-ahelp-incident-create-failed = Не удалось создать инцидент. Убедитесь, что обращение всё ещё закреплено за вами.
 
 governance-ahelp-court-none = [color=#8c96a8]Дело Community Court по этому инциденту не создано.[/color]
@@ -89,7 +89,7 @@ governance-ahelp-court-access-denied = Передать инцидент в су
 governance-ahelp-court-create-failed = Не удалось создать дело Community Court. Проверьте состояние инцидента и базы данных.
 
 governance-ahelp-actions-heading = [bold]Действия по инциденту[/bold]
-governance-ahelp-containment-heading = [bold]Live containment[/bold]
+governance-ahelp-containment-heading = [bold]Оперативное вмешательство[/bold]
 governance-ahelp-action-reason-placeholder = Основание действия / передачи в суд…
 governance-ahelp-action-freeze-seconds-placeholder = Сек.
 governance-ahelp-action-request-explanation = Запросить объяснение
@@ -98,7 +98,7 @@ governance-ahelp-action-freeze = Заморозить на 60 с
 governance-ahelp-action-round-remove = Удалить до конца раунда
 governance-ahelp-action-round-remove-short = Удалить из раунда
 governance-ahelp-action-history-heading = [bold]История вмешательств[/bold]
-governance-ahelp-action-history-empty = [color=#8c96a8]Live-вмешательств по этому инциденту пока нет.[/color]
+governance-ahelp-action-history-empty = [color=#8c96a8]Оперативных вмешательств по этому инциденту пока нет.[/color]
 governance-ahelp-action-card = #{$id} • [bold]{$type}[/bold] • {$status} • {$approvals}/{$required}{$duration} • {$reason}
 governance-ahelp-action-duration =  • {$seconds} сек.
 governance-ahelp-action-type-explanation = Запрос объяснения
@@ -123,11 +123,11 @@ governance-ahelp-log-line = [color=#8c96a8]{$time}[/color] [bold]{$type}[/bold] 
 
 governance-ahelp-action-access-denied = У вас нет временного полномочия для этого действия.
 governance-ahelp-action-no-incident = Сначала создайте инцидент для этого обращения.
-governance-ahelp-action-invalid = Неизвестное live-действие.
+governance-ahelp-action-invalid = Неизвестное оперативное действие.
 governance-ahelp-action-reason-invalid = Укажите основание длиной от 10 до 512 символов.
 governance-ahelp-action-freeze-duration-invalid = Время заморозки должно быть от 1 до 120 секунд.
 governance-ahelp-action-create-failed = Не удалось создать действие модерации.
 governance-ahelp-action-target-unavailable = Цель действия или его автор сейчас недоступны на сервере.
 governance-ahelp-action-execution-failed = Действие одобрено, но сервер не смог его выполнить. Проверьте состояние цели и полномочия.
 governance-ahelp-action-review-failed = Не удалось записать решение. Возможно, вы не можете голосовать по этому действию или оно уже рассмотрено.
-governance-ahelp-action-court-escalated = Инцидент уже передан в Community Court; новые live-действия отключены.
+governance-ahelp-action-court-escalated = Инцидент уже передан в Community Court; новые оперативные действия отключены.
