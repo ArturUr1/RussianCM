@@ -48,14 +48,8 @@ public sealed class GovernanceAHelpPlayerWindow : DefaultWindow
             SeparationOverride = 4,
             HorizontalExpand = true,
         };
-        heroContent.AddChild(new RichTextLabel
-        {
-            Text = Loc.GetString("governance-ahelp-player-header"),
-        });
-        heroContent.AddChild(new RichTextLabel
-        {
-            Text = Loc.GetString("governance-ahelp-player-description"),
-        });
+        heroContent.AddChild(new RichTextLabel { Text = Loc.GetString("governance-ahelp-player-header") });
+        heroContent.AddChild(new RichTextLabel { Text = Loc.GetString("governance-ahelp-player-description") });
         hero.AddChild(heroContent);
         root.AddChild(hero);
 
@@ -70,14 +64,8 @@ public sealed class GovernanceAHelpPlayerWindow : DefaultWindow
             SeparationOverride = 16,
             HorizontalExpand = true,
         };
-        _status = new RichTextLabel
-        {
-            HorizontalExpand = true,
-        };
-        _assignee = new RichTextLabel
-        {
-            HorizontalExpand = true,
-        };
+        _status = new RichTextLabel { HorizontalExpand = true };
+        _assignee = new RichTextLabel { HorizontalExpand = true };
         meta.AddChild(_status);
         meta.AddChild(_assignee);
         metaPanel.AddChild(meta);
@@ -96,10 +84,7 @@ public sealed class GovernanceAHelpPlayerWindow : DefaultWindow
             HorizontalExpand = true,
             VerticalExpand = true,
         };
-        transcriptColumn.AddChild(new RichTextLabel
-        {
-            Text = Loc.GetString("governance-ahelp-player-conversation-title"),
-        });
+        transcriptColumn.AddChild(new RichTextLabel { Text = Loc.GetString("governance-ahelp-player-conversation-title") });
         var transcriptScroll = new ScrollContainer
         {
             HorizontalExpand = true,
@@ -116,10 +101,7 @@ public sealed class GovernanceAHelpPlayerWindow : DefaultWindow
         transcriptPanel.AddChild(transcriptColumn);
         root.AddChild(transcriptPanel);
 
-        root.AddChild(new RichTextLabel
-        {
-            Text = Loc.GetString("governance-ahelp-player-tips"),
-        });
+        root.AddChild(new RichTextLabel { Text = Loc.GetString("governance-ahelp-player-tips") });
 
         var composer = new BoxContainer
         {
@@ -132,10 +114,7 @@ public sealed class GovernanceAHelpPlayerWindow : DefaultWindow
             PlaceHolder = Loc.GetString("governance-ahelp-player-message-placeholder"),
         };
         _message.OnTextEntered += args => Send(args.Text);
-        _send = new Button
-        {
-            Text = Loc.GetString("governance-ahelp-player-send"),
-        };
+        _send = new Button { Text = Loc.GetString("governance-ahelp-player-send") };
         _send.OnPressed += _ => Send(_message.Text);
         composer.AddChild(_message);
         composer.AddChild(_send);
@@ -162,10 +141,7 @@ public sealed class GovernanceAHelpPlayerWindow : DefaultWindow
         footer.AddChild(_resolve);
         root.AddChild(footer);
 
-        _error = new Label
-        {
-            StyleClasses = { "LabelDanger" },
-        };
+        _error = new Label { StyleClasses = { "LabelDanger" } };
         root.AddChild(_error);
 
         Contents.AddChild(root);
@@ -186,27 +162,22 @@ public sealed class GovernanceAHelpPlayerWindow : DefaultWindow
         _transcript.RemoveAllChildren();
         if (state.Transcript.Length == 0)
         {
-            _transcript.AddChild(new RichTextLabel
-            {
-                Text = Loc.GetString("governance-ahelp-player-empty"),
-            });
+            _transcript.AddChild(new RichTextLabel { Text = Loc.GetString("governance-ahelp-player-empty") });
         }
         else
         {
             foreach (var line in state.Transcript)
             {
+                var time = line.CreatedAt.ToLocalTime().ToString("HH:mm");
+                var sender = FormattedMessage.EscapeText(line.SenderName);
+                var body = FormattedMessage.EscapeText(line.Body);
                 var role = line.FromResponder
                     ? Loc.GetString("governance-ahelp-message-role-responder")
                     : Loc.GetString("governance-ahelp-message-role-player");
-                _transcript.AddChild(new RichTextLabel
-                {
-                    Text = Loc.GetString(
-                        "governance-ahelp-message-line",
-                        ("time", line.CreatedAt.ToLocalTime().ToString("HH:mm")),
-                        ("role", role),
-                        ("sender", FormattedMessage.EscapeText(line.SenderName)),
-                        ("body", FormattedMessage.EscapeText(line.Body))),
-                });
+                var text = line.FromResponder
+                    ? $"[color=#8c96a8]{time}[/color] • [color=#ff5a5a][bold]● {role} • {sender}[/bold][/color]: {body}"
+                    : $"[color=#8c96a8]{time}[/color] • [bold]{role} • {sender}[/bold]: {body}";
+                _transcript.AddChild(new RichTextLabel { Text = text });
             }
         }
 
@@ -233,6 +204,7 @@ public sealed class GovernanceAHelpPlayerWindow : DefaultWindow
             "claimed" => Loc.GetString("governance-ahelp-player-status-claimed"),
             "waiting_player" => Loc.GetString("governance-ahelp-player-status-waiting"),
             "escalated_to_incident" => Loc.GetString("governance-ahelp-player-status-escalated"),
+            "escalated_to_court" => Loc.GetString("governance-ahelp-player-status-court"),
             _ => status,
         };
     }
