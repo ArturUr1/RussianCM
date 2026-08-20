@@ -1,5 +1,4 @@
 using Content.Client._RMC14.Explosion;
-using Content.Client._RMC14.Mentor;
 using Content.Client._RMC14.Xenonids.Screech;
 using Content.Client.Administration.Managers;
 using Content.Client.Changelog;
@@ -80,7 +79,6 @@ namespace Content.Client.Entry
         [Dependency] private TitleWindowManager _titleWindowManager = default!;
         [Dependency] private IEntitySystemManager _entitySystemManager = default!;
         [Dependency] private ClientsidePlaytimeTrackingManager _clientsidePlaytimeManager = default!;
-        [Dependency] private MentorWireCompatibilityManager _mentorWireCompatibility = default!;
 
         public override void Init()
         {
