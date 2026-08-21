@@ -8,6 +8,7 @@ namespace Content.DiscordBot.Modules;
 [Group("руководство", "Контролируемые действия руководства с обязательной причиной")]
 public sealed class GovernanceLeadershipModule(
     GovernanceCommunityService community,
+    GovernanceIdentityService identities,
     ReputationService reputation,
     CourtPunishmentService punishments,
     CourtDiscordCoordinator discord,
@@ -74,6 +75,18 @@ public sealed class GovernanceLeadershipModule(
             .WithColor(profile.Suspended ? Color.Red : Color.DarkBlue)
             .WithFooter("Read-only диагностика Identity / Reputation v2")
             .Build(), ephemeral: true);
+    });
+
+    [SlashCommand("диагностика-привязки", "Сравнить постоянную Governance-связь с текущей игровой связью")]
+    public Task DiagnoseIdentityAsync(IUser user) => ExecuteAsync(async () =>
+    {
+        await FollowupAsync(await identities.DiagnoseLinkAsync(user.Id), ephemeral: true);
+    });
+
+    [SlashCommand("восстановить-привязку", "Восстановить игровую таблицу строго по уже существующей постоянной Governance-связи")]
+    public Task RepairIdentityAsync(IUser user) => ExecuteAsync(async () =>
+    {
+        await FollowupAsync(await identities.RepairGameLinkToPermanentAsync(user.Id, Context.User.Id), ephemeral: true);
     });
 
     [SlashCommand("вклад", "Зафиксировать подтверждённый вклад игрока в проект")]
