@@ -377,9 +377,7 @@ public sealed class GovernanceIdentityService(
         {
             var qualification = await governance.Qualifications
                 .SingleOrDefaultAsync(value => value.UserId == userId && value.Track == track);
-            var baselineLevel = track == ReputationTracks.Moderation && !selectedPaths.Contains(ReputationTracks.Moderation)
-                ? (short) 0
-                : (short) 1;
+            var baselineLevel = selectedPaths.Contains(track) ? (short) 1 : (short) 0;
 
             if (qualification == null)
             {
@@ -393,11 +391,14 @@ public sealed class GovernanceIdentityService(
                 continue;
             }
 
-            // Defensive repair for data imported from builds that predate the moderation-path invariant.
-            // Selected-path changes promote moderation back to I through ReputationService.SetPathsAsync.
-            if (track == ReputationTracks.Moderation && baselineLevel == 0 && qualification.Level > 0)
+            if (baselineLevel == 0 && qualification.Level > 0)
             {
                 qualification.Level = 0;
+                qualification.UpdatedAt = DateTime.UtcNow;
+            }
+            else if (baselineLevel == 1 && qualification.Level < 1)
+            {
+                qualification.Level = 1;
                 qualification.UpdatedAt = DateTime.UtcNow;
             }
         }

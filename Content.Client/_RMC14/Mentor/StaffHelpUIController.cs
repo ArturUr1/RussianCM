@@ -13,7 +13,15 @@ public sealed partial class StaffHelpUIController : UIController
     [UISystemDependency] private GovernanceAHelpClientSystem _governanceAHelp = default!;
 
     public bool IsMentor => false;
-    public event Action? MentorStatusUpdated;
+
+    // Legacy compatibility only. Mentor status can no longer change, but ChatUIController still
+    // subscribes to this API. Explicit no-op accessors avoid a dead backing event (CS0067) while
+    // keeping existing callers source-compatible until the remaining Mentor chat surface is removed.
+    public event Action? MentorStatusUpdated
+    {
+        add { }
+        remove { }
+    }
 
     public void ToggleWindow()
     {
