@@ -214,8 +214,6 @@ public sealed class CandidateSelectionService(
         if (cooldown < TimeSpan.Zero || cooldown > TimeSpan.FromDays(30))
             throw new CourtRuleException("Cooldown симуляции должен быть от 0 до 30 дней.");
 
-        // SelectAsync performs the real hard/context filters and refreshes the authoritative snapshots.
-        // Asking for every candidate gives us the current pool without creating invitations or assignments.
         var pool = await SelectAsync(
             track,
             minimumQualification,
@@ -461,12 +459,13 @@ public sealed class CandidateSelectionService(
     {
         var completed = await governance.ServiceAssignments.AsNoTracking().CountAsync(value =>
             value.UserId == userId && value.Track == track && value.CompletedAt != null);
-        if (track == ReputationTracks.Support)
+        if (track == ReputationTracks.Moderation)
+        {
             completed += await governance.AHelpTickets.AsNoTracking().CountAsync(value =>
                 value.ClaimedByUserId == userId && value.Status == "resolved");
-        if (track == ReputationTracks.Moderation)
             completed += await governance.DutySessions.AsNoTracking().CountAsync(value =>
                 value.UserId == userId && (value.Status == "completed" || value.Status == "round_ended"));
+        }
         if (track == ReputationTracks.Contributor)
             completed += await governance.ContributionEvents.AsNoTracking().CountAsync(value => value.UserId == userId);
         return completed;
