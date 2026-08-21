@@ -11,6 +11,7 @@ public sealed class GovernanceLeadershipModule(
     GovernanceIdentityService identities,
     ReputationService reputation,
     CandidateSelectionService selection,
+    CommunityCourtService court,
     CourtPunishmentService punishments,
     CourtDiscordCoordinator discord,
     ModerationTrustService moderationTrust,
@@ -136,7 +137,7 @@ public sealed class GovernanceLeadershipModule(
 
         IReadOnlySet<ulong>? available = null;
         if (track is ReputationTracks.Moderation or ReputationTracks.Jury or ReputationTracks.Event)
-            available = Context.Guild.Users.Select(value => value.Id).ToHashSet();
+            available = await GuildMembersAsync();
 
         var result = await selection.SimulateAsync(
             track,
@@ -178,7 +179,7 @@ public sealed class GovernanceLeadershipModule(
             .AddField("Seed", result.Seed, true)
             .WithColor(result.PoolSize >= 2 ? Color.Green : Color.Orange)
             .WithFooter(result.PoolSize >= 2
-                ? "Используется тот же Thompson Sampling и текущий пул. Приглашения и назначения не создаются."
+                ? "Тот же Thompson Sampling, фильтр членства в Discord и текущий пул. Приглашения и назначения не создаются."
                 : "В пуле только один кандидат — распределение Thompson Sampling пока неинформативно.")
             .Build(), ephemeral: true);
     });
@@ -237,6 +238,27 @@ public sealed class GovernanceLeadershipModule(
             $"Приглашение №{assignment.InvitationId} действительно до {assignment.ExpiresAt:u}.",
             ephemeral: true);
     });
+
+    private async Task<IReadOnlySet<ulong>> GuildMembersAsync()
+    {
+        var members = new HashSet<ulong>();
+        foreach (var discordId in await court.LinkedDiscordIdsAsync())
+        {
+            if (discordId == 0 || discordId > long.MaxValue)
+                continue;
+
+            try
+            {
+                if (await Context.Client.Rest.GetGuildUserAsync(config.Guild, discordId) != null)
+                    members.Add(discordId);
+            }
+            catch (Discord.Net.HttpException exception) when (exception.HttpCode == System.Net.HttpStatusCode.NotFound)
+            {
+                // Linked account is no longer present in the configured guild.
+            }
+        }
+        return members;
+    }
 
     private async Task ExecuteAsync(Func<Task> action)
     {
