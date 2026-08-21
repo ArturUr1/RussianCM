@@ -127,8 +127,8 @@ if (governanceDoctor)
         throw new InvalidOperationException($"Governance schema is incomplete: {string.Join(", ", missing)}");
 
     var applied = await governance.Database.GetAppliedMigrationsAsync();
-    if (!applied.Contains("20260821032000_DisableLegacyLinearRating"))
-        throw new InvalidOperationException("The latest Reputation v2 migration is not recorded as applied.");
+    if (!applied.Contains("20260821033000_NormalizeLegacySyntheticDiscord"))
+        throw new InvalidOperationException("The latest Reputation v2 identity migration is not recorded as applied.");
 
     var identityColumns = (await governance.Database.SqlQueryRaw<string>("""
         SELECT column_name || ':' || is_nullable AS "Value"
@@ -144,7 +144,7 @@ if (governanceDoctor)
         FROM pg_indexes
         WHERE schemaname = 'governance'
           AND indexname = 'users_discord_user_id_unique_idx'
-          AND indexdef ILIKE '%WHERE (discord_user_id IS NOT NULL)%'
+          AND indexdef ILIKE '%discord_user_id IS NOT NULL%'
         """).SingleAsync();
     if (discordIndex != 1)
         throw new InvalidOperationException("The optional Discord identity partial unique index is unavailable.");
@@ -238,12 +238,15 @@ await using CourtInstanceLock? courtInstanceLock = config.CourtEnabled
 
 var identities = new GovernanceIdentityService(CreateGovernanceDatabase, CreateConfiguredDatabase);
 var reputation = new ReputationService(CreateGovernanceDatabase, CreateConfiguredDatabase);
+var reputationHistory = new ReputationHistoryService(CreateGovernanceDatabase);
 var selection = new CandidateSelectionService(CreateGovernanceDatabase, CreateConfiguredDatabase, reputation, config);
+var courtPolicy = CourtPolicy.FromConfig(config);
 var court = new CommunityCourtService(
     CreateGovernanceDatabase,
     CreateConfiguredDatabase,
-    CourtPolicy.FromConfig(config),
+    courtPolicy,
     selection);
+var courtFiling = new CourtFilingService(identities, CreateGovernanceDatabase, CreateConfiguredDatabase, courtPolicy);
 var courtMaterials = new CourtSourceMaterialService(CreateGovernanceDatabase, CreateConfiguredDatabase);
 var community = new GovernanceCommunityService(identities, CreateGovernanceDatabase, CreateConfiguredDatabase);
 var courtTestLinks = new CourtTestAccountLinkingService(CreateConfiguredDatabase, CreateGovernanceDatabase, community, config);
@@ -260,8 +263,10 @@ var services = new ServiceCollection()
     .AddSingleton(config)
     .AddSingleton(identities)
     .AddSingleton(reputation)
+    .AddSingleton(reputationHistory)
     .AddSingleton(selection)
     .AddSingleton(court)
+    .AddSingleton(courtFiling)
     .AddSingleton(courtMaterials)
     .AddSingleton(community)
     .AddSingleton(courtTestLinks)
