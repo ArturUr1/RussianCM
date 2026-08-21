@@ -173,12 +173,12 @@ public sealed class CandidateSelectionService(
             var completed = await CountCompletedAssignmentsAsync(governance, userId, path.Track);
             var eligible = ReputationPolicy.EligibleQualificationLevel(path.Track, posterior, completed);
             var nextLevel = current >= 4 ? null : (short?) (current + 1);
-            var requirements = nextLevel switch
+            (double? Lower, double? Evidence, int? Completed) requirements = nextLevel switch
             {
-                2 => (Lower: 0.65, Evidence: 4.0, Completed: 4),
-                3 => (Lower: 0.75, Evidence: 10.0, Completed: 10),
-                4 => (Lower: 0.85, Evidence: 20.0, Completed: 20),
-                _ => ((double?) null, (double?) null, (int?) null),
+                2 => (0.65, 4.0, 4),
+                3 => (0.75, 10.0, 10),
+                4 => (0.85, 20.0, 20),
+                _ => (null, null, null),
             };
 
             result.Add(new QualificationProgressDiagnostic(
