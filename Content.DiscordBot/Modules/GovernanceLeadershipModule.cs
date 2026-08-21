@@ -116,6 +116,73 @@ public sealed class GovernanceLeadershipModule(
             .Build(), ephemeral: true);
     });
 
+    [SlashCommand("симуляция-отбора", "Смоделировать реальный Thompson-отбор без создания приглашений")]
+    public Task CandidateSimulationAsync(
+        [Choice("Поддержка игроков", ReputationTracks.Support)]
+        [Choice("Модерация", ReputationTracks.Moderation)]
+        [Choice("Community Court", ReputationTracks.Jury)]
+        [Choice("События", ReputationTracks.Event)]
+        [Choice("Контрибьюторство", ReputationTracks.Contributor)] string track,
+        [Summary("минимум", "Минимальная квалификация I–IV")] int minimum = 1,
+        [Summary("итерации", "От 50 до 5000; обычно достаточно 500–1000")] int iterations = 500,
+        [Summary("cooldown-часы", "Исключить недавно назначавшихся; 0–720 часов")] int cooldownHours = 0) => ExecuteAsync(async () =>
+    {
+        if (minimum is < 1 or > 4)
+            throw new CourtRuleException("Минимальная квалификация должна быть от I до IV.");
+        if (iterations is < 50 or > 5000)
+            throw new CourtRuleException("Для симуляции укажите от 50 до 5000 итераций.");
+        if (cooldownHours is < 0 or > 720)
+            throw new CourtRuleException("Cooldown должен быть от 0 до 720 часов.");
+
+        IReadOnlySet<ulong>? available = null;
+        if (track is ReputationTracks.Moderation or ReputationTracks.Jury or ReputationTracks.Event)
+            available = Context.Guild.Users.Select(value => value.Id).ToHashSet();
+
+        var result = await selection.SimulateAsync(
+            track,
+            checked((short) minimum),
+            iterations,
+            available,
+            TimeSpan.FromHours(cooldownHours));
+
+        if (result.PoolSize == 0)
+        {
+            await FollowupAsync(
+                $"Пул `{track}` пуст после жёстких фильтров, текущих pending/active назначений, банов" +
+                (cooldownHours > 0 ? $" и cooldown {cooldownHours} ч." : "."),
+                ephemeral: true);
+            return;
+        }
+
+        var lines = new List<string>();
+        foreach (var entry in result.Entries.Take(12))
+        {
+            var identity = await identities.GetIdentityAsync(entry.UserId);
+            var transport = entry.DiscordUserId is > 0 ? $"<@{entry.DiscordUserId}>" : "без Discord";
+            var rate = entry.Wins / (double) result.Iterations;
+            lines.Add(
+                $"• **{identity.Name}** ({transport}) — **{rate:P1}** ({entry.Wins}/{result.Iterations}); " +
+                $"квал. {entry.QualificationLevel}; направление {entry.TrackScore}/1000, LB90 {entry.TrackLowerBound:P0}, evidence {entry.TrackEvidenceWeight:F1}; " +
+                $"общая {entry.GeneralScore}/1000");
+        }
+
+        var description = string.Join("\n", lines);
+        if (description.Length > 3800)
+            description = description[..3800] + "…";
+
+        await FollowupAsync(embed: new EmbedBuilder()
+            .WithTitle($"Симуляция отбора • {track}")
+            .WithDescription(description)
+            .AddField("Пул", result.PoolSize, true)
+            .AddField("Итерации", result.Iterations, true)
+            .AddField("Seed", result.Seed, true)
+            .WithColor(result.PoolSize >= 2 ? Color.Green : Color.Orange)
+            .WithFooter(result.PoolSize >= 2
+                ? "Используется тот же Thompson Sampling и текущий пул. Приглашения и назначения не создаются."
+                : "В пуле только один кандидат — распределение Thompson Sampling пока неинформативно.")
+            .Build(), ephemeral: true);
+    });
+
     [SlashCommand("диагностика-привязки", "Сравнить постоянную Governance-связь с текущей игровой связью")]
     public Task DiagnoseIdentityAsync(IUser user) => ExecuteAsync(async () =>
     {
