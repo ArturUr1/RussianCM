@@ -35,6 +35,19 @@ public sealed record CandidateSimulationResult(
     int PoolSize,
     IReadOnlyList<CandidateSimulationEntry> Entries);
 
+public sealed record QualificationProgressDiagnostic(
+    string Track,
+    short CurrentLevel,
+    short EligibleLevel,
+    int Score,
+    double LowerBound,
+    double EvidenceWeight,
+    int CompletedAssignments,
+    short? NextLevel,
+    double? RequiredLowerBound,
+    double? RequiredEvidenceWeight,
+    int? RequiredCompletedAssignments);
+
 public static class CandidateSelectionPolicy
 {
     public static double SamplePriority(
@@ -116,6 +129,73 @@ public sealed class CandidateSelectionService(
             discordLinked,
             hasActiveBan,
             eligible);
+    }
+
+    public async Task<IReadOnlyList<QualificationProgressDiagnostic>> QualificationProgressAsync(Guid userId)
+    {
+        if (reputation != null)
+            await reputation.RefreshUserAsync(userId);
+
+        await using var governance = governanceFactory();
+        if (!await governance.Users.AsNoTracking().AnyAsync(value => value.Id == userId))
+            throw new CourtRuleException("Профиль Governance не найден.");
+
+        var paths = await governance.ServicePaths.AsNoTracking()
+            .Where(value => value.UserId == userId)
+            .OrderBy(value => value.Slot)
+            .ToListAsync();
+        if (paths.Count == 0)
+            return [];
+
+        var tracks = paths.Select(value => value.Track).ToArray();
+        var qualifications = await governance.Qualifications.AsNoTracking()
+            .Where(value => value.UserId == userId && tracks.Contains(value.Track))
+            .ToDictionaryAsync(value => value.Track, value => value.Level);
+        var snapshots = await governance.ReputationSnapshots.AsNoTracking()
+            .Where(value => value.UserId == userId && tracks.Contains(value.Track))
+            .ToDictionaryAsync(value => value.Track);
+
+        var result = new List<QualificationProgressDiagnostic>(paths.Count);
+        foreach (var path in paths)
+        {
+            snapshots.TryGetValue(path.Track, out var snapshot);
+            var posterior = snapshot == null
+                ? ReputationMath.Posterior(path.Track, [], DateTime.UtcNow)
+                : new ReputationPosterior(
+                    snapshot.Track,
+                    snapshot.Alpha,
+                    snapshot.Beta,
+                    snapshot.Mean,
+                    snapshot.LowerBound,
+                    snapshot.EvidenceWeight,
+                    snapshot.Score);
+            var current = qualifications.GetValueOrDefault(path.Track, (short) 1);
+            var completed = await CountCompletedAssignmentsAsync(governance, userId, path.Track);
+            var eligible = ReputationPolicy.EligibleQualificationLevel(path.Track, posterior, completed);
+            var nextLevel = current >= 4 ? null : (short?) (current + 1);
+            var requirements = nextLevel switch
+            {
+                2 => (Lower: 0.65, Evidence: 4.0, Completed: 4),
+                3 => (Lower: 0.75, Evidence: 10.0, Completed: 10),
+                4 => (Lower: 0.85, Evidence: 20.0, Completed: 20),
+                _ => ((double?) null, (double?) null, (int?) null),
+            };
+
+            result.Add(new QualificationProgressDiagnostic(
+                path.Track,
+                current,
+                eligible,
+                posterior.Score,
+                posterior.LowerBound,
+                posterior.EvidenceWeight,
+                completed,
+                nextLevel,
+                requirements.Lower,
+                requirements.Evidence,
+                requirements.Completed));
+        }
+
+        return result;
     }
 
     public async Task<CandidateSimulationResult> SimulateAsync(
@@ -372,5 +452,23 @@ public sealed class CandidateSelectionService(
             .Take(count)
             .Select(value => value.User)
             .ToArray();
+    }
+
+    private static async Task<int> CountCompletedAssignmentsAsync(
+        GovernanceDbContext governance,
+        Guid userId,
+        string track)
+    {
+        var completed = await governance.ServiceAssignments.AsNoTracking().CountAsync(value =>
+            value.UserId == userId && value.Track == track && value.CompletedAt != null);
+        if (track == ReputationTracks.Support)
+            completed += await governance.AHelpTickets.AsNoTracking().CountAsync(value =>
+                value.ClaimedByUserId == userId && value.Status == "resolved");
+        if (track == ReputationTracks.Moderation)
+            completed += await governance.DutySessions.AsNoTracking().CountAsync(value =>
+                value.UserId == userId && (value.Status == "completed" || value.Status == "round_ended"));
+        if (track == ReputationTracks.Contributor)
+            completed += await governance.ContributionEvents.AsNoTracking().CountAsync(value => value.UserId == userId);
+        return completed;
     }
 }
