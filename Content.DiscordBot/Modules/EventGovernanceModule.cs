@@ -1,10 +1,14 @@
 using Content.DiscordBot.Governance;
+using Discord;
 using Discord.Interactions;
 
 namespace Content.DiscordBot.Modules;
 
 [Group("событие", "Управление событиями сообщества")]
-public sealed class EventGovernanceModule(EventGovernanceService events, CourtDiscordCoordinator discord) : InteractionModuleBase<SocketInteractionContext>
+public sealed class EventGovernanceModule(
+    EventGovernanceService events,
+    EventGovernanceStatusService status,
+    CourtDiscordCoordinator discord) : InteractionModuleBase<SocketInteractionContext>
 {
     [SlashCommand("предложить", "Подать событие на независимую рецензию")]
     public Task ProposeAsync(string title, string description, int minutes, string manifest) => ExecuteAsync(async () =>
@@ -47,7 +51,49 @@ public sealed class EventGovernanceModule(EventGovernanceService events, CourtDi
     public Task ActionAsync(long session, string capability, string resource, string? payload = null) => ExecuteAsync(async () =>
     {
         var action = await events.RecordActionAsync(session, Context.User.Id, capability, resource, payload);
-        await FollowupAsync($"Действие №{action.Id} разрешено манифестом и передано игровому серверу на исполнение. Фактический результат будет записан в аудит.", ephemeral: true);
+        await FollowupAsync($"Действие №{action.Id} разрешено манифестом и передано игровому серверу на исполнение. Проверьте `/событие статус` для фактического результата.", ephemeral: true);
+    });
+
+    [SlashCommand("статус", "Показать лимиты и фактические результаты исполнения EventSession")]
+    public Task StatusAsync(long session) => ExecuteAsync(async () =>
+    {
+        var snapshot = await status.GetAsync(session, Context.User.Id);
+        var manifest = snapshot.Manifest.Count == 0
+            ? "Манифест пуст."
+            : string.Join("\n", snapshot.Manifest.Select(value =>
+                $"• `{value.Capability}` / `{value.Resource}` — {value.UsedCount}/{value.MaxUses}"));
+        var actions = snapshot.Actions.Count == 0
+            ? "Действий ещё нет."
+            : string.Join("\n", snapshot.Actions.Select(value =>
+            {
+                var physical = value.ServerStatus switch
+                {
+                    "pending" => "ожидает сервер",
+                    "executing" => "исполняется",
+                    "executed" => "исполнено",
+                    "failed" => "ошибка",
+                    _ => value.ServerStatus,
+                };
+                var error = string.IsNullOrWhiteSpace(value.ServerExecutionError)
+                    ? string.Empty
+                    : $" — {value.ServerExecutionError}";
+                return $"• #{value.Id} `{value.Capability}` / `{value.Resource}` — **{physical}**{error}";
+            }));
+
+        if (manifest.Length > 1000)
+            manifest = manifest[..1000] + "…";
+        if (actions.Length > 1000)
+            actions = actions[..1000] + "…";
+
+        await FollowupAsync(embed: new EmbedBuilder()
+            .WithTitle($"EventSession №{snapshot.Session.Id}")
+            .AddField("Состояние", snapshot.Session.Status, true)
+            .AddField("Раунд", snapshot.Session.RoundId?.ToString() ?? "не задан", true)
+            .AddField("Активна до", $"<t:{new DateTimeOffset(snapshot.Session.ExpiresAt).ToUnixTimeSeconds()}:F>", false)
+            .AddField("Манифест", manifest)
+            .AddField("Последние действия", actions)
+            .WithColor(snapshot.Session.Status == "active" ? Color.Green : Color.DarkGrey)
+            .Build(), ephemeral: true);
     });
 
     [SlashCommand("завершить", "Завершить или аварийно остановить свою сессию")]
