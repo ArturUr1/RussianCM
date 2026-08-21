@@ -28,6 +28,8 @@ public sealed class Config
 
     public int CourtDecisionThreshold { get; set; } = 2;
 
+    // Legacy linear Civic Rating knobs are retained for configuration compatibility only.
+    // Reputation v2 evaluates completed/failed obligations as Bayesian evidence instead.
     public int CourtAcceptReward { get; set; } = 10;
 
     public int CourtDeclinePenalty { get; set; } = 15;
@@ -91,4 +93,6 @@ public sealed class Config
     public int ModerationAppealReviewers { get; set; } = 3;
 
     public int ModerationAppealWindowHours { get; set; } = 72;
+
+    public int ReputationSchedulerSeconds { get; set; } = 300;
 }
