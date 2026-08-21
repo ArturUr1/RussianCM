@@ -65,13 +65,14 @@ public sealed class CourtTestAccountLinkingService(
         }
 
         var profile = await community.GetProfileAsync(targetDiscordId);
+        await EnsureTestJuryPathAsync(profile.UserId);
         if (!profile.Qualifications.TryGetValue("jury", out var juryLevel) || juryLevel < 1)
             await community.SetQualificationAsync(actorDiscordId, targetDiscordId, "jury", 1);
 
         await Logger.Info(
             $"Court test link: Discord {targetDiscordId} -> SS14 {player.UserId} ({player.LastSeenUserName}), actor {actorDiscordId}.");
 
-        return $"Тестовая привязка создана: <@{targetDiscordId}> → {player.LastSeenUserName} (`{player.UserId}`). Допуск присяжного: jury ≥ 1.";
+        return $"Тестовая привязка создана: <@{targetDiscordId}> → {player.LastSeenUserName} (`{player.UserId}`). Путь jury активен, допуск jury ≥ 1.";
     }
 
     public async Task<string> ExpireDefenseAsync(long caseId, ulong actorDiscordId)
@@ -192,6 +193,37 @@ public sealed class CourtTestAccountLinkingService(
 
         var text = builder.ToString();
         return text.Length <= 1900 ? text : text[..1900] + "…";
+    }
+
+    private async Task EnsureTestJuryPathAsync(Guid userId)
+    {
+        await using var governance = governanceFactory();
+        if (await governance.ServicePaths.AnyAsync(value => value.UserId == userId && value.Track == ReputationTracks.Jury))
+            return;
+
+        var paths = await governance.ServicePaths.Where(value => value.UserId == userId).OrderBy(value => value.Slot).ToListAsync();
+        var now = DateTime.UtcNow;
+        var freeSlot = paths.All(value => value.Slot != 1) ? (short) 1
+            : paths.All(value => value.Slot != 2) ? (short) 2
+            : (short) 2;
+        var row = paths.SingleOrDefault(value => value.Slot == freeSlot);
+        if (row == null)
+        {
+            governance.ServicePaths.Add(new GovernanceServicePath
+            {
+                UserId = userId,
+                Slot = freeSlot,
+                Track = ReputationTracks.Jury,
+                SelectedAt = now,
+                ChangedAt = now,
+            });
+        }
+        else
+        {
+            row.Track = ReputationTracks.Jury;
+            row.ChangedAt = now;
+        }
+        await governance.SaveChangesAsync();
     }
 
     private void EnsureTestMode()
