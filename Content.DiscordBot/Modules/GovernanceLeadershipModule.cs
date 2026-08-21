@@ -37,7 +37,6 @@ public sealed class GovernanceLeadershipModule(
 
     [SlashCommand("квалификация", "Изменить квалификацию пользователя вручную")]
     public Task QualificationAsync(IUser user,
-        [Choice("Поддержка игроков", ReputationTracks.Support)]
         [Choice("Модерация", ReputationTracks.Moderation)]
         [Choice("Присяжные", ReputationTracks.Jury)]
         [Choice("События", ReputationTracks.Event)]
@@ -82,7 +81,6 @@ public sealed class GovernanceLeadershipModule(
     [SlashCommand("диагностика-отбора", "Проверить жёсткие условия допуска пользователя в пул кандидатов")]
     public Task CandidateEligibilityAsync(
         IUser user,
-        [Choice("Поддержка игроков", ReputationTracks.Support)]
         [Choice("Модерация", ReputationTracks.Moderation)]
         [Choice("Community Court", ReputationTracks.Jury)]
         [Choice("События", ReputationTracks.Event)]
@@ -119,7 +117,6 @@ public sealed class GovernanceLeadershipModule(
 
     [SlashCommand("симуляция-отбора", "Смоделировать реальный Thompson-отбор без создания приглашений")]
     public Task CandidateSimulationAsync(
-        [Choice("Поддержка игроков", ReputationTracks.Support)]
         [Choice("Модерация", ReputationTracks.Moderation)]
         [Choice("Community Court", ReputationTracks.Jury)]
         [Choice("События", ReputationTracks.Event)]
