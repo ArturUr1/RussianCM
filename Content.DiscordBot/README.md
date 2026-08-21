@@ -49,8 +49,8 @@ runtime dependency and must not be started after this bot is deployed.
   as Court material. Each accepted party message is also persisted in PostgreSQL.
 - When discussion is finished, both claimant and defendant independently press
   `Закончить защиту`; after the second confirmation the thread is locked and the case
-  moves to jury formation. The configured defense deadline remains the hard fallback
-  if a party disappears and never confirms.
+  moves to jury formation. Defense does not advance to the jury merely because time
+  passed: both party confirmations are required for the normal transition.
 - `/суд свидетель-добавить` and `/суд свидетельство` retain the controlled witness
   flow; witnesses do not receive ordinary write access to the case thread.
 - `/суд присяжный` mirrors the in-game invitation response transactionally.
@@ -72,10 +72,11 @@ runtime dependency and must not be started after this bot is deployed.
   has a reason and immutable audit row; court cancellation also reverses an executed
   game ban, job ban, or warning.
 
-The scheduler advances defense deadlines, expires invitations, synchronizes in-game
-responses, selects conflict-free above-average jurors, replaces timed-out nonvoters,
-sends DMs, executes warnings/bans/job bans directly in the game tables, and publishes
-and archives final decisions. Guilty measures are capped at seven days. No Discord
+The scheduler expires invitations, synchronizes in-game responses, selects
+conflict-free jurors, replaces timed-out nonvoters, sends DMs, executes
+warnings/bans/job bans directly in the game tables, and publishes and archives final
+decisions. The defense stage itself advances only after the claimant and defendant
+both confirm completion. Guilty measures are capped at seven days. No Discord
 administrator chooses the verdict and there is no ordinary appeal path.
 
 ## In-game enforcement
