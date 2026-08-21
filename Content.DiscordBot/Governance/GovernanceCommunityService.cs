@@ -24,6 +24,12 @@ public sealed class GovernanceCommunityService(
 
     public Task<GovernanceUser> RequireSs14UserByNicknameAsync(string nickname) => identities.RequireSs14UserByNicknameAsync(nickname);
 
+    public Task ValidatePermanentLinkAsync(Guid ss14UserId, ulong discordId) =>
+        identities.ValidatePermanentLinkAsync(ss14UserId, discordId);
+
+    public Task SyncPermanentLinkAsync(Guid ss14UserId, ulong discordId) =>
+        identities.SyncLinkedAccountAsync(ss14UserId, discordId);
+
     public async Task<GovernanceProfile> GetProfileAsync(ulong discordId)
     {
         var user = await RequireUserAsync(discordId);
