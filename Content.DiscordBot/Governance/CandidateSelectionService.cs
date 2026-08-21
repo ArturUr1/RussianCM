@@ -41,8 +41,6 @@ public sealed class CandidateSelectionService(
                 (row, _) => row)
             .Where(row => !row.User.IsGovernanceSuspended && !excludedUsers.Contains(row.User.Id));
 
-        // Jury/event/moderation review work is currently delivered through Discord. SS14-only users
-        // keep their reputation and can use in-game Governance, but cannot be selected for a DM-only role.
         if (track is ReputationTracks.Jury or ReputationTracks.Event or ReputationTracks.Moderation)
             qualified = qualified.Where(row => row.User.DiscordUserId != null && row.User.DiscordUserId > 0);
 
@@ -129,15 +127,18 @@ public sealed class CandidateSelectionService(
         var byUser = snapshots.GroupBy(value => value.UserId)
             .ToDictionary(group => group.Key, group => group.ToDictionary(value => value.Track, StringComparer.Ordinal));
 
-        // `aboveAverage` is intentionally ignored in Reputation v2. It is kept in the signature for
-        // source compatibility. Thompson Sampling balances proven reliability with exploration of
-        // newer candidates instead of forming a permanent above-average caste.
         return candidates
             .Select(user =>
             {
                 byUser.TryGetValue(user.Id, out var userSnapshots);
-                userSnapshots?.TryGetValue(track, out var trackSnapshot);
-                userSnapshots?.TryGetValue(ReputationTracks.General, out var generalSnapshot);
+                GovernanceReputationSnapshot? trackSnapshot = null;
+                GovernanceReputationSnapshot? generalSnapshot = null;
+                if (userSnapshots != null)
+                {
+                    userSnapshots.TryGetValue(track, out trackSnapshot);
+                    userSnapshots.TryGetValue(ReputationTracks.General, out generalSnapshot);
+                }
+
                 var alpha = trackSnapshot?.Alpha ?? ReputationPolicy.TrackPriorStrength * 0.5;
                 var beta = trackSnapshot?.Beta ?? ReputationPolicy.TrackPriorStrength * 0.5;
                 var thompson = ReputationMath.SampleBeta(alpha, beta);
