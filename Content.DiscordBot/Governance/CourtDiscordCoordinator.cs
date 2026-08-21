@@ -323,12 +323,12 @@ public sealed class CourtDiscordCoordinator(
     {
         foreach (var (invitation, user) in await court.PendingNotificationsAsync())
         {
-            if (user.DiscordUserId <= 0)
+            if (user.DiscordUserId is not > 0)
                 continue;
 
             try
             {
-                var discordId = checked((ulong) user.DiscordUserId);
+                var discordId = checked((ulong) user.DiscordUserId.Value);
                 IUser? discordUser = client.GetUser(discordId);
                 discordUser ??= await client.Rest.GetUserAsync(discordId);
                 if (discordUser == null)
@@ -345,7 +345,7 @@ public sealed class CourtDiscordCoordinator(
                         .WithTitle($"Приглашение в коллегию • дело №{invitation.EntityId}")
                         .WithDescription("Вас выбрали кандидатом в коллегию Community Court. Обсуждать дело с другими присяжными нельзя; голосование проводится тайно через панель.")
                         .AddField("Ответить до", $"<t:{new DateTimeOffset(invitation.ExpiresAt).ToUnixTimeSeconds()}:F>")
-                        .AddField("Что дальше", "После принятия приглашения появится кнопка открытия панели дела. Команда `/суд присяжный` остаётся запасным способом.")
+                        .AddField("Что дальше", "Принятие, отказ и самоотвод сами по себе не меняют репутацию. После принятия оценивается только выполнение взятой обязанности.")
                         .WithColor(Color.DarkOrange)
                         .WithCurrentTimestamp()
                         .Build(),
@@ -363,12 +363,12 @@ public sealed class CourtDiscordCoordinator(
     {
         foreach (var (invitation, user, proposal) in await events.PendingReviewNotificationsAsync())
         {
-            if (user.DiscordUserId <= 0)
+            if (user.DiscordUserId is not > 0)
                 continue;
 
             try
             {
-                var discordId = checked((ulong) user.DiscordUserId);
+                var discordId = checked((ulong) user.DiscordUserId.Value);
                 IUser? discordUser = client.GetUser(discordId);
                 discordUser ??= await client.Rest.GetUserAsync(discordId);
                 if (discordUser == null)
@@ -380,7 +380,7 @@ public sealed class CourtDiscordCoordinator(
                         .WithTitle($"Рецензирование события №{proposal.Id}")
                         .WithDescription(proposal.Title)
                         .AddField("Ответить до", $"<t:{new DateTimeOffset(invitation.ExpiresAt).ToUnixTimeSeconds()}:F>", true)
-                        .AddField("Рейтинг", $"Согласие +{config.EventReviewAcceptReward}; отказ −{config.EventReviewDeclinePenalty}; самоотвод без штрафа.", true)
+                        .AddField("Репутация", "Принятие, отказ и самоотвод нейтральны. После принятия учитывается только завершение или срыв рецензии.", true)
                         .AddField("Порядок", "Сначала примите приглашение. После этого появятся кнопки «Одобрить» и «Отклонить» с модалкой для обоснования.")
                         .WithColor(Color.Teal)
                         .WithCurrentTimestamp()
@@ -449,7 +449,7 @@ public sealed class CourtDiscordCoordinator(
         try
         {
             var account = await court.GetAccountAsync(governanceUserId);
-            return account.DiscordId > 0
+            return account.DiscordId is > 0
                 ? $"<@{account.DiscordId}> ({EscapeDiscord(account.Name)})"
                 : $"{EscapeDiscord(account.Name)} • Discord не привязан";
         }
