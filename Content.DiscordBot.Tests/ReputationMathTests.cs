@@ -31,6 +31,28 @@ public sealed class ReputationMathTests
     }
 
     [Test]
+    public void LegacyLinearRatingsAreAuditOnly()
+    {
+        var moderationNeutral = ReputationMath.Posterior(ReputationTracks.Moderation, [], Now);
+        var moderationWithLegacy = ReputationMath.Posterior(ReputationTracks.Moderation,
+        [
+            new ReputationObservationValue(Now.AddDays(-1), "legacy:moderation_duty_completed", 10, 0, false),
+        ], Now);
+        Assert.That(moderationWithLegacy.Alpha, Is.EqualTo(moderationNeutral.Alpha).Within(1e-9));
+        Assert.That(moderationWithLegacy.Beta, Is.EqualTo(moderationNeutral.Beta).Within(1e-9));
+        Assert.That(moderationWithLegacy.EvidenceWeight, Is.Zero.Within(1e-9));
+
+        var generalNeutral = ReputationMath.Posterior(ReputationTracks.General, [], Now);
+        var generalWithLegacySpillover = ReputationMath.Posterior(ReputationTracks.General,
+        [
+            new ReputationObservationValue(Now.AddDays(-1), "spillover:legacy:moderation_duty_completed", 2.5, 0, false),
+        ], Now);
+        Assert.That(generalWithLegacySpillover.Alpha, Is.EqualTo(generalNeutral.Alpha).Within(1e-9));
+        Assert.That(generalWithLegacySpillover.Beta, Is.EqualTo(generalNeutral.Beta).Within(1e-9));
+        Assert.That(generalWithLegacySpillover.EvidenceWeight, Is.Zero.Within(1e-9));
+    }
+
+    [Test]
     public void SustainedPositiveBehaviorRehabilitatesSeriousError()
     {
         var withoutRehabilitation = ReputationMath.Posterior(ReputationTracks.Moderation,
