@@ -57,12 +57,44 @@ public sealed class DiscordConversationFlow : Migration
 
             CREATE INDEX IF NOT EXISTS court_defense_confirmations_case_idx
                 ON governance.court_defense_confirmations(case_id, confirmed_at);
+
+            -- Defense no longer expires automatically. The only normal transition from defense to
+            -- awaiting_jury is the mutual claimant/defendant confirmation flow. Keep the existing
+            -- column for schema compatibility, but pin it to PostgreSQL infinity while the case is
+            -- in defense so the legacy deadline scheduler cannot advance it behind the parties.
+            UPDATE governance.court_cases
+            SET defense_deadline = 'infinity'::timestamptz
+            WHERE status = 'defense';
+
+            CREATE OR REPLACE FUNCTION governance.keep_defense_open_until_confirmed()
+            RETURNS trigger
+            LANGUAGE plpgsql
+            AS $governance$
+            BEGIN
+                IF NEW.status = 'defense' THEN
+                    NEW.defense_deadline := 'infinity'::timestamptz;
+                END IF;
+                RETURN NEW;
+            END;
+            $governance$;
+
+            DROP TRIGGER IF EXISTS governance_court_defense_no_timeout ON governance.court_cases;
+            CREATE TRIGGER governance_court_defense_no_timeout
+            BEFORE INSERT OR UPDATE OF status ON governance.court_cases
+            FOR EACH ROW
+            EXECUTE FUNCTION governance.keep_defense_open_until_confirmed();
             """);
     }
 
     protected override void Down(MigrationBuilder migrationBuilder)
     {
         migrationBuilder.Sql("""
+            DROP TRIGGER IF EXISTS governance_court_defense_no_timeout ON governance.court_cases;
+            DROP FUNCTION IF EXISTS governance.keep_defense_open_until_confirmed();
+            UPDATE governance.court_cases
+            SET defense_deadline = now() + interval '48 hours'
+            WHERE status = 'defense' AND defense_deadline = 'infinity'::timestamptz;
+
             DROP TRIGGER IF EXISTS governance_ahelp_seed_discord_sync ON governance.ahelp_tickets;
             DROP FUNCTION IF EXISTS governance.seed_ahelp_discord_sync();
             DROP TABLE IF EXISTS governance.court_defense_confirmations;
