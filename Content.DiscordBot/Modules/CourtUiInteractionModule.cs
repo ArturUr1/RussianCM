@@ -241,9 +241,7 @@ public sealed class CourtUiInteractionModule(
 
     private static short ParseDays(string value)
     {
-        if (!short.TryParse(value.Trim(), out var days) || days is < 1 or > 7)
-            throw new CourtRuleException("Срок блокировки должен быть от 1 до 7 дней.");
-        return days;
+        return short.TryParse(value.Trim(), out var days) ? days : (short) 0;
     }
 
     private static string? EmptyToNull(string? value) => string.IsNullOrWhiteSpace(value) ? null : value.Trim();
