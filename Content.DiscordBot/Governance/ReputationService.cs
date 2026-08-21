@@ -388,9 +388,9 @@ public sealed class ReputationService(
             .ToListAsync();
         foreach (var row in moderationReviews)
         {
-            var evidence = row.Review.Outcome switch
+            (double Success, double Failure, bool Serious, string Reason) evidence = row.Review.Outcome switch
             {
-                ModerationReviewOutcomes.Correct => (Success: 1.25, Failure: 0.0, Serious: false, Reason: ReputationReasons.ModerationActionCorrect),
+                ModerationReviewOutcomes.Correct => (1.25, 0.0, false, ReputationReasons.ModerationActionCorrect),
                 ModerationReviewOutcomes.ReasonableButWrong => (0.20, 0.55, false, ReputationReasons.ModerationActionMinorIssue),
                 ModerationReviewOutcomes.ProceduralError => (0.10, 0.90, false, "moderation.action_procedural_error"),
                 ModerationReviewOutcomes.Negligent => (0.0, 1.80, true, ReputationReasons.ModerationActionWrong),
