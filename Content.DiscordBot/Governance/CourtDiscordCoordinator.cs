@@ -132,6 +132,13 @@ public sealed class CourtDiscordCoordinator(
             throw new InvalidOperationException($"Court channel {config.CourtChannel} is not a forum or text channel.");
         }
         await court.AttachThreadAsync(courtCase.Id, thread.Id);
+        await thread.SendMessageAsync(
+            embed: new EmbedBuilder()
+                .WithTitle("Панель Community Court")
+                .WithDescription("Тред является журналом дела и доступен только для чтения. Все действия выполняются через интерактивную панель.")
+                .WithColor(Color.DarkBlue)
+                .Build(),
+            components: GovernanceDiscordUi.CourtThreadLauncher(courtCase.Id));
         return thread;
     }
 
@@ -257,7 +264,7 @@ public sealed class CourtDiscordCoordinator(
             ?? throw new InvalidOperationException($"Governance channel {channelId} is unavailable.");
         var manifest = System.Text.Json.JsonSerializer.Deserialize<EventManifestRequest[]>(proposal.Manifest) ?? [];
         var manifestText = string.Join("\n", manifest.Select(value => $"• `{value.Capability}` / `{value.Resource}` × {value.MaxUses}"));
-        var embed = new EmbedBuilder().WithTitle($"EventProposal №{proposal.Id} • {proposal.Title}")
+        var embed = new EmbedBuilder().WithTitle($"Событие №{proposal.Id} • {proposal.Title}")
             .WithDescription(proposal.Description).AddField("Продолжительность", $"{proposal.DurationMinutes} мин.", true)
             .AddField("Рецензирование до", $"<t:{new DateTimeOffset(proposal.ReviewDeadline).ToUnixTimeSeconds()}:F>", true)
             .AddField("Манифест", manifestText).WithColor(Color.Teal).WithCurrentTimestamp().Build();
@@ -279,7 +286,7 @@ public sealed class CourtDiscordCoordinator(
     {
         var proposal = await events.GetProposalAsync(proposalId);
         var thread = await EnsureEventThreadAsync(proposal);
-        await thread.SendMessageAsync(embed: new EmbedBuilder().WithTitle($"Состояние EventProposal №{proposalId}")
+        await thread.SendMessageAsync(embed: new EmbedBuilder().WithTitle($"Состояние события №{proposalId}")
             .WithDescription(message).AddField("Статус", proposal.Status).WithColor(Color.Teal).WithCurrentTimestamp().Build());
     }
 
@@ -328,16 +335,20 @@ public sealed class CourtDiscordCoordinator(
                     continue;
 
                 var components = new ComponentBuilder()
-                    .WithButton("Принять", $"court-jury-accept:{invitation.EntityId}", ButtonStyle.Success)
-                    .WithButton("Отказаться", $"court-jury-decline:{invitation.EntityId}", ButtonStyle.Danger)
-                    .WithButton("Самоотвод", $"court-jury-recuse:{invitation.EntityId}", ButtonStyle.Secondary)
+                    .WithButton("Принять", $"court-jury-accept:{invitation.EntityId}", ButtonStyle.Success, new Emoji("✅"))
+                    .WithButton("Отказаться", $"court-jury-decline:{invitation.EntityId}", ButtonStyle.Danger, new Emoji("✖️"))
+                    .WithButton("Самоотвод", $"court-jury-recuse:{invitation.EntityId}", ButtonStyle.Secondary, new Emoji("↩️"))
                     .Build();
                 var dm = await discordUser.CreateDMChannelAsync();
                 await dm.SendMessageAsync(
-                    $"Вас пригласили в присяжные RUCM по делу №{invitation.EntityId}. " +
-                    $"Ответьте до <t:{new DateTimeOffset(invitation.ExpiresAt).ToUnixTimeSeconds()}:F>. " +
-                    "Используйте кнопки ниже; команда `/суд присяжный` остаётся запасным способом ответа. " +
-                    "То же приглашение доступно во внутриигровом EUI.",
+                    embed: new EmbedBuilder()
+                        .WithTitle($"Приглашение в коллегию • дело №{invitation.EntityId}")
+                        .WithDescription("Вас выбрали кандидатом в коллегию Community Court. Обсуждать дело с другими присяжными нельзя; голосование проводится тайно через панель.")
+                        .AddField("Ответить до", $"<t:{new DateTimeOffset(invitation.ExpiresAt).ToUnixTimeSeconds()}:F>")
+                        .AddField("Что дальше", "После принятия приглашения появится кнопка открытия панели дела. Команда `/суд присяжный` остаётся запасным способом.")
+                        .WithColor(Color.DarkOrange)
+                        .WithCurrentTimestamp()
+                        .Build(),
                     components: components);
                 await court.MarkInvitationNotifiedAsync(invitation.Id);
             }
@@ -365,10 +376,16 @@ public sealed class CourtDiscordCoordinator(
 
                 var dm = await discordUser.CreateDMChannelAsync();
                 await dm.SendMessageAsync(
-                    $"Вас пригласили стать независимым рецензентом EventProposal №{proposal.Id} «{proposal.Title}». " +
-                    $"До <t:{new DateTimeOffset(invitation.ExpiresAt).ToUnixTimeSeconds()}:F> ответьте через `/событие приглашение`. " +
-                    $"Согласие +{config.EventReviewAcceptReward} Civic Rating, отказ -{config.EventReviewDeclinePenalty}, самоотвод без штрафа. " +
-                    "Только после согласия станет доступна `/событие рецензия`.");
+                    embed: new EmbedBuilder()
+                        .WithTitle($"Рецензирование события №{proposal.Id}")
+                        .WithDescription(proposal.Title)
+                        .AddField("Ответить до", $"<t:{new DateTimeOffset(invitation.ExpiresAt).ToUnixTimeSeconds()}:F>", true)
+                        .AddField("Рейтинг", $"Согласие +{config.EventReviewAcceptReward}; отказ −{config.EventReviewDeclinePenalty}; самоотвод без штрафа.", true)
+                        .AddField("Порядок", "Сначала примите приглашение. После этого появятся кнопки «Одобрить» и «Отклонить» с модалкой для обоснования.")
+                        .WithColor(Color.Teal)
+                        .WithCurrentTimestamp()
+                        .Build(),
+                    components: GovernanceDiscordUi.EventReviewInvite(proposal.Id));
                 await events.MarkInvitationNotifiedAsync(invitation.Id);
             }
             catch (Exception exception)
