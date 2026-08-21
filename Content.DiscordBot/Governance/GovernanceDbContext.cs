@@ -6,8 +6,14 @@ namespace Content.DiscordBot.Governance;
 public sealed class GovernanceDbContext(DbContextOptions<GovernanceDbContext> options) : DbContext(options)
 {
     public DbSet<GovernanceUser> Users => Set<GovernanceUser>();
+    public DbSet<GovernanceIdentityLink> IdentityLinks => Set<GovernanceIdentityLink>();
+    public DbSet<GovernanceServicePath> ServicePaths => Set<GovernanceServicePath>();
     public DbSet<GovernanceQualification> Qualifications => Set<GovernanceQualification>();
     public DbSet<GovernanceRatingEntry> RatingEntries => Set<GovernanceRatingEntry>();
+    public DbSet<GovernanceReputationObservation> ReputationObservations => Set<GovernanceReputationObservation>();
+    public DbSet<GovernanceReputationSnapshot> ReputationSnapshots => Set<GovernanceReputationSnapshot>();
+    public DbSet<GovernanceGameActivitySnapshot> GameActivitySnapshots => Set<GovernanceGameActivitySnapshot>();
+    public DbSet<GovernanceContributionEvent> ContributionEvents => Set<GovernanceContributionEvent>();
     public DbSet<GovernanceConflict> Conflicts => Set<GovernanceConflict>();
     public DbSet<GovernanceInvitation> Invitations => Set<GovernanceInvitation>();
     public DbSet<GovernanceCourtCase> CourtCases => Set<GovernanceCourtCase>();
@@ -38,7 +44,10 @@ public sealed class GovernanceDbContext(DbContextOptions<GovernanceDbContext> op
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         Configure<GovernanceUser>(modelBuilder, "users");
+        Configure<GovernanceIdentityLink>(modelBuilder, "identity_links");
         Configure<GovernanceRatingEntry>(modelBuilder, "rating_entries");
+        Configure<GovernanceReputationObservation>(modelBuilder, "reputation_observations");
+        Configure<GovernanceContributionEvent>(modelBuilder, "contribution_events");
         Configure<GovernanceConflict>(modelBuilder, "conflicts");
         Configure<GovernanceInvitation>(modelBuilder, "invitations");
         Configure<GovernanceCourtCase>(modelBuilder, "court_cases");
@@ -83,10 +92,29 @@ public sealed class GovernanceDbContext(DbContextOptions<GovernanceDbContext> op
         juror.HasKey(value => new { value.CaseId, value.UserId });
         SnakeCaseProperties(juror);
 
+        var servicePath = modelBuilder.Entity<GovernanceServicePath>();
+        servicePath.ToTable("service_paths", "governance");
+        servicePath.HasKey(value => new { value.UserId, value.Slot });
+        servicePath.HasIndex(value => new { value.UserId, value.Track }).IsUnique();
+        SnakeCaseProperties(servicePath);
+
+        var reputationSnapshot = modelBuilder.Entity<GovernanceReputationSnapshot>();
+        reputationSnapshot.ToTable("reputation_snapshots", "governance");
+        reputationSnapshot.HasKey(value => new { value.UserId, value.Track });
+        SnakeCaseProperties(reputationSnapshot);
+
+        var activitySnapshot = modelBuilder.Entity<GovernanceGameActivitySnapshot>();
+        activitySnapshot.ToTable("game_activity_snapshots", "governance");
+        activitySnapshot.HasKey(value => value.UserId);
+        SnakeCaseProperties(activitySnapshot);
+
         modelBuilder.Entity<GovernanceUser>().HasIndex(value => value.Ss14UserId).IsUnique();
-        modelBuilder.Entity<GovernanceUser>().HasIndex(value => value.DiscordUserId).IsUnique();
+        modelBuilder.Entity<GovernanceUser>().HasIndex(value => value.DiscordUserId).IsUnique().HasFilter("discord_user_id IS NOT NULL");
+        modelBuilder.Entity<GovernanceIdentityLink>().HasIndex(value => value.DiscordUserId);
         modelBuilder.Entity<GovernanceInvitation>().HasIndex(value => value.IdempotencyKey).IsUnique();
         modelBuilder.Entity<GovernanceRatingEntry>().HasIndex(value => value.IdempotencyKey).IsUnique();
+        modelBuilder.Entity<GovernanceReputationObservation>().HasIndex(value => value.IdempotencyKey).IsUnique();
+        modelBuilder.Entity<GovernanceContributionEvent>().HasIndex(value => value.IdempotencyKey).IsUnique();
         modelBuilder.Entity<GovernanceGuiltVote>().HasIndex(value => new { value.CaseId, value.JurorUserId }).IsUnique();
         modelBuilder.Entity<GovernanceSentencingVote>().HasIndex(value => new { value.CaseId, value.JurorUserId }).IsUnique();
         modelBuilder.Entity<GovernanceFriendship>().HasIndex(value => new { value.UserId, value.FriendUserId }).IsUnique();
@@ -101,6 +129,9 @@ public sealed class GovernanceDbContext(DbContextOptions<GovernanceDbContext> op
         modelBuilder.Entity<GovernanceCourtCase>().Property(value => value.Version).IsConcurrencyToken();
         modelBuilder.Entity<GovernanceInvitation>().Property(value => value.Version).IsConcurrencyToken();
         modelBuilder.Entity<GovernanceRatingEntry>().Property(value => value.Metadata).HasColumnType("jsonb");
+        modelBuilder.Entity<GovernanceIdentityLink>().Property(value => value.Metadata).HasColumnType("jsonb");
+        modelBuilder.Entity<GovernanceReputationObservation>().Property(value => value.Metadata).HasColumnType("jsonb");
+        modelBuilder.Entity<GovernanceContributionEvent>().Property(value => value.Metadata).HasColumnType("jsonb");
         modelBuilder.Entity<GovernanceAuditEvent>().Property(value => value.Payload).HasColumnType("jsonb");
         modelBuilder.Entity<GovernanceEventAction>().Property(value => value.Payload).HasColumnType("jsonb");
         modelBuilder.Entity<GovernanceEventProposal>().Property(value => value.Manifest).HasColumnType("jsonb");
