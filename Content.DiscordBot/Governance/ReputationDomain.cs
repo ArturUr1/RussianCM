@@ -183,7 +183,13 @@ public static class ReputationMath
         var strength = priorStrength ?? (track == ReputationTracks.General
             ? ReputationPolicy.GeneralPriorAlpha + ReputationPolicy.GeneralPriorBeta
             : ReputationPolicy.TrackPriorStrength);
+
+        // Until RUCM has enough calibrated outcome data, service-track priors must stay neutral.
+        // A newcomer must not inherit the community's accumulated trust merely by joining a path.
+        if (track != ReputationTracks.General)
+            priorMean = 0.5;
         priorMean = Math.Clamp(priorMean, 0.05, 0.95);
+
         var alpha = track == ReputationTracks.General && priorStrength == null
             ? ReputationPolicy.GeneralPriorAlpha
             : priorMean * strength;
