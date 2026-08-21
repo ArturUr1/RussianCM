@@ -8,7 +8,8 @@ namespace Content.DiscordBot.Modules;
 public sealed class ReputationModule(
     GovernanceCommunityService community,
     ReputationService reputation,
-    ReputationHistoryService history) : InteractionModuleBase<SocketInteractionContext>
+    ReputationHistoryService history,
+    CandidateSelectionService selection) : InteractionModuleBase<SocketInteractionContext>
 {
     private const double MinimumTrustDisplayEvidence = 1.0;
 
@@ -80,6 +81,62 @@ public sealed class ReputationModule(
             ephemeral: true);
     });
 
+    [SlashCommand("прогресс", "Показать прогресс автоматической квалификации по выбранным путям")]
+    public Task ProgressAsync() => ExecuteAsync(async () =>
+    {
+        var user = await community.RequireUserAsync(Context.User.Id);
+        var rows = await selection.QualificationProgressAsync(user.Id);
+        if (rows.Count == 0)
+        {
+            await RespondAsync("Пути участия пока не выбраны. Используйте `/репутация пути`.", ephemeral: true);
+            return;
+        }
+
+        var fields = new List<EmbedFieldBuilder>();
+        foreach (var row in rows)
+        {
+            var current = RomanLevel(row.CurrentLevel);
+            var eligible = RomanLevel(row.EligibleLevel);
+            string body;
+            if (row.NextLevel == null)
+            {
+                body =
+                    $"Текущий уровень: **{current}**\n" +
+                    $"LB90: **{row.LowerBound:P1}** • effective evidence: **{row.EvidenceWeight:F2}** • завершено: **{row.CompletedAssignments}**\n" +
+                    "Достигнут максимальный уровень IV.";
+            }
+            else
+            {
+                var lowerOk = row.LowerBound >= row.RequiredLowerBound;
+                var evidenceOk = row.EvidenceWeight >= row.RequiredEvidenceWeight;
+                var completedOk = row.CompletedAssignments >= row.RequiredCompletedAssignments;
+                body =
+                    $"Текущий уровень: **{current}** • расчётный допустимый: **{eligible}**\n" +
+                    $"До **{RomanLevel(row.NextLevel.Value)}**:\n" +
+                    $"{Mark(lowerOk)} LB90 **{row.LowerBound:P1} / {row.RequiredLowerBound:P0}**\n" +
+                    $"{Mark(evidenceOk)} effective evidence **{row.EvidenceWeight:F2} / {row.RequiredEvidenceWeight:F0}**\n" +
+                    $"{Mark(completedOk)} завершённые обязанности **{row.CompletedAssignments} / {row.RequiredCompletedAssignments}**";
+                if (row.EligibleLevel > row.CurrentLevel)
+                    body += "\n✅ Условия повышения уже выполнены; Reputation Coordinator применит новый уровень.";
+            }
+
+            fields.Add(new EmbedFieldBuilder()
+                .WithName(TrackName(row.Track))
+                .WithValue(body));
+        }
+
+        var embed = new EmbedBuilder()
+            .WithTitle("Прогресс квалификации")
+            .WithDescription(
+                "Квалификация повышается только когда одновременно выполнены консервативная 90% граница, " +
+                "effective evidence и минимальное число завершённых обязанностей. Однотипные действия имеют убывающий вес `1/√n` в пределах месяца.")
+            .WithColor(Color.Blue);
+        foreach (var field in fields)
+            embed.AddField(field);
+        embed.WithFooter("I → II: 65% / 4 / 4 • II → III: 75% / 10 / 10 • III → IV: 85% / 20 / 20");
+        await RespondAsync(embed: embed.Build(), ephemeral: true);
+    });
+
     [SlashCommand("история", "Показать последние статистические события репутации")]
     public Task HistoryAsync() => ExecuteAsync(async () =>
     {
@@ -134,6 +191,17 @@ public sealed class ReputationModule(
                 await RespondAsync(message, ephemeral: true);
         }
     }
+
+    private static string Mark(bool value) => value ? "✅" : "❌";
+
+    private static string RomanLevel(short level) => level switch
+    {
+        <= 0 => "—",
+        1 => "I",
+        2 => "II",
+        3 => "III",
+        >= 4 => "IV",
+    };
 
     private static string TrackName(string track) => track switch
     {
