@@ -136,14 +136,19 @@ public sealed class CommunityCourtModule(
         });
     }
 
-    [SlashCommand("статус", "Показать состояние дела")]
+    [SlashCommand("статус", "Открыть интерактивную панель дела")]
     public async Task StatusAsync([Summary("дело", "Номер дела")] long caseId)
     {
         await DeferAsync(ephemeral: true);
         await ExecuteAsync(async () =>
         {
             EnsureEnabled();
-            await FollowupAsync(embed: await discord.BuildStatusEmbedAsync(caseId), ephemeral: true);
+            var courtCase = await court.GetCaseAsync(caseId);
+            var status = await discord.BuildStatusEmbedAsync(caseId);
+            await FollowupAsync(
+                embed: GovernanceDiscordUi.CourtPanelEmbed(courtCase, status),
+                components: GovernanceDiscordUi.CourtPanel(courtCase),
+                ephemeral: true);
         });
     }
 
