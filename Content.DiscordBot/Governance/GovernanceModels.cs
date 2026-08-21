@@ -354,4 +354,7 @@ public sealed class GovernanceEventAction
     public string Status { get; set; } = string.Empty;
     public DateTime CreatedAt { get; set; }
     public string Payload { get; set; } = "{}";
+    public string ServerStatus { get; set; } = "pending";
+    public DateTime? ServerExecutedAt { get; set; }
+    public string? ServerExecutionError { get; set; }
 }
