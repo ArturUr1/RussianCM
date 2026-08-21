@@ -75,7 +75,7 @@ public sealed record CourtPolicy(
 
 public sealed class CourtRuleException(string message) : InvalidOperationException(message);
 
-public sealed record LinkedGameAccount(Guid PlayerId, ulong DiscordId, string Name);
+public sealed record LinkedGameAccount(Guid PlayerId, ulong? DiscordId, string Name);
 
 public sealed record CourtVoteOutcome(string? Verdict, string? SanctionType = null, short? SanctionDays = null, string? SanctionRole = null)
 {
