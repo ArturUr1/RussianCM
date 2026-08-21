@@ -10,6 +10,7 @@ public sealed class GovernanceLeadershipModule(
     GovernanceCommunityService community,
     GovernanceIdentityService identities,
     ReputationService reputation,
+    CandidateSelectionService selection,
     CourtPunishmentService punishments,
     CourtDiscordCoordinator discord,
     ModerationTrustService moderationTrust,
@@ -74,6 +75,44 @@ public sealed class GovernanceLeadershipModule(
             .AddField("Допуск", profile.Suspended ? "приостановлен" : "активен", true)
             .WithColor(profile.Suspended ? Color.Red : Color.DarkBlue)
             .WithFooter("Read-only диагностика Identity / Reputation v2")
+            .Build(), ephemeral: true);
+    });
+
+    [SlashCommand("диагностика-отбора", "Проверить жёсткие условия допуска пользователя в пул кандидатов")]
+    public Task CandidateEligibilityAsync(
+        IUser user,
+        [Choice("Поддержка игроков", ReputationTracks.Support)]
+        [Choice("Модерация", ReputationTracks.Moderation)]
+        [Choice("Community Court", ReputationTracks.Jury)]
+        [Choice("События", ReputationTracks.Event)]
+        [Choice("Контрибьюторство", ReputationTracks.Contributor)] string track,
+        [Summary("минимум", "Минимальная квалификация I–IV")] int minimum = 1) => ExecuteAsync(async () =>
+    {
+        if (minimum is < 1 or > 4)
+            throw new CourtRuleException("Минимальная квалификация должна быть от I до IV.");
+
+        var target = await community.RequireUserAsync(user.Id);
+        var diagnostic = await selection.DiagnoseBaseEligibilityAsync(target.Id, track, checked((short) minimum));
+        var pathText = diagnostic.PathRequirementBypassed
+            ? "обойдён только тестовым режимом"
+            : diagnostic.PathSelected ? "выбран" : "НЕ выбран";
+        var discordText = diagnostic.DiscordRequired
+            ? diagnostic.DiscordLinked ? "привязан" : "НЕ привязан"
+            : "для этого направления не обязателен";
+
+        await FollowupAsync(embed: new EmbedBuilder()
+            .WithTitle($"Диагностика отбора • {user.Username}")
+            .WithDescription(diagnostic.Eligible
+                ? "**Базовые условия пройдены.** Пользователь может войти в пул до контекстных исключений и Thompson Sampling."
+                : "**Базовые условия НЕ пройдены.** Thompson Sampling до этого пользователя не дойдёт.")
+            .AddField("Направление", $"`{diagnostic.Track}`", true)
+            .AddField("Квалификация", $"{diagnostic.QualificationLevel} / требуется {diagnostic.RequiredQualification}", true)
+            .AddField("Путь участия", pathText, true)
+            .AddField("Общий допуск", diagnostic.Suspended ? "ПРИОСТАНОВЛЕН" : "активен", true)
+            .AddField("Discord", discordText, true)
+            .AddField("Активный game/job ban", diagnostic.HasActiveBan ? "ДА" : "нет", true)
+            .WithColor(diagnostic.Eligible ? Color.Green : Color.Orange)
+            .WithFooter("Проверяются жёсткие фильтры; конфликты, cooldown, активные назначения и доступность проверяются при конкретном отборе.")
             .Build(), ephemeral: true);
     });
 
