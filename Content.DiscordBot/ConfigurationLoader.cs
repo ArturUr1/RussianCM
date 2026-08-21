@@ -81,6 +81,7 @@ public static class ConfigurationLoader
         config.ModerationReviewSamplePercent = Int("MODERATION_REVIEW_SAMPLE_PERCENT") ?? config.ModerationReviewSamplePercent;
         config.ModerationReviewSchedulerSeconds = Int("MODERATION_REVIEW_SCHEDULER_SECONDS") ?? config.ModerationReviewSchedulerSeconds;
         config.ModerationReviewBatchSize = Int("MODERATION_REVIEW_BATCH_SIZE") ?? config.ModerationReviewBatchSize;
+        config.ReputationSchedulerSeconds = Int("REPUTATION_SCHEDULER_SECONDS") ?? config.ReputationSchedulerSeconds;
     }
 
     public static string? NormalizePostgresConnectionString(string? value)
