@@ -8,6 +8,7 @@ public sealed class CourtUiInteractionModule(
     CommunityCourtService court,
     CourtPunishmentService punishments,
     CourtDiscordCoordinator discord,
+    GovernanceDiscordConversationCoordinator conversations,
     Config config) : InteractionModuleBase<SocketInteractionContext>
 {
     [ComponentInteraction("court-panel:*")]
@@ -39,6 +40,34 @@ public sealed class CourtUiInteractionModule(
             var statement = await court.SubmitDefenseAsync(caseId, Context.User.Id, modal.Body, EmptyToNull(modal.Evidence));
             await discord.PublishStatementAsync(caseId, statement);
             await FollowupAsync("Защита принята и опубликована в материалах дела.", ephemeral: true);
+            await FollowupPanelAsync(caseId);
+        });
+    }
+
+    [ComponentInteraction("court-defense-finish:*")]
+    public async Task DefenseFinishAsync(string caseIdText)
+    {
+        await DeferAsync(ephemeral: true);
+        await ExecuteAsync(async () =>
+        {
+            var caseId = ParseCaseId(caseIdText);
+            var result = await conversations.ConfirmDefenseCompleteAsync(caseId, Context.User.Id);
+            if (result.Transitioned)
+            {
+                await conversations.LockDefenseThreadAsync(caseId);
+                await FollowupAsync(
+                    "Обе стороны подтвердили завершение защиты. Переписка закрыта, дело переходит к формированию коллегии присяжных.",
+                    ephemeral: true);
+            }
+            else
+            {
+                var waitingFor = result.ClaimantConfirmed && !result.DefendantConfirmed
+                    ? "ответчика"
+                    : "истца";
+                await FollowupAsync(
+                    $"Ваше подтверждение сохранено. Для завершения стадии требуется подтверждение {waitingFor}.",
+                    ephemeral: true);
+            }
             await FollowupPanelAsync(caseId);
         });
     }
