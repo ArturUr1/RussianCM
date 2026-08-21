@@ -48,6 +48,25 @@ public sealed class ReputationMathTests
     }
 
     [Test]
+    public void RepeatedWorkSaturatesWithinDayButNotAcrossDays()
+    {
+        var sameDay = ReputationMath.Posterior(ReputationTracks.Jury,
+        [
+            new ReputationObservationValue(new DateTime(2026, 8, 20, 10, 0, 0, DateTimeKind.Utc), ReputationReasons.JuryCompleted, 1, 0, false),
+            new ReputationObservationValue(new DateTime(2026, 8, 20, 11, 0, 0, DateTimeKind.Utc), ReputationReasons.JuryCompleted, 1, 0, false),
+        ], Now);
+        var distributed = ReputationMath.Posterior(ReputationTracks.Jury,
+        [
+            new ReputationObservationValue(new DateTime(2026, 8, 19, 11, 0, 0, DateTimeKind.Utc), ReputationReasons.JuryCompleted, 1, 0, false),
+            new ReputationObservationValue(new DateTime(2026, 8, 20, 11, 0, 0, DateTimeKind.Utc), ReputationReasons.JuryCompleted, 1, 0, false),
+        ], Now);
+
+        Assert.That(sameDay.EvidenceWeight, Is.LessThan(1.8));
+        Assert.That(distributed.EvidenceWeight, Is.GreaterThan(1.9));
+        Assert.That(distributed.EvidenceWeight, Is.GreaterThan(sameDay.EvidenceWeight));
+    }
+
+    [Test]
     public void LegacyLinearRatingsAreAuditOnly()
     {
         var moderationNeutral = ReputationMath.Posterior(ReputationTracks.Moderation, [], Now);
