@@ -150,14 +150,16 @@ public sealed class CCCVars : CVars
     public static readonly CVarDef<int> GovernanceDutySessionMinutes =
         CVarDef.Create("governance.duty_session_minutes", 240, CVar.SERVERONLY | CVar.ARCHIVE);
 
+    // Legacy compatibility only. Reputation v2 deliberately treats invitation accept/decline/expiry
+    // as neutral, and the server always passes zero to the old ledger API.
     public static readonly CVarDef<int> GovernanceDutyAcceptReward =
-        CVarDef.Create("governance.duty_accept_reward", 10, CVar.SERVERONLY | CVar.ARCHIVE);
+        CVarDef.Create("governance.duty_accept_reward", 0, CVar.SERVERONLY | CVar.ARCHIVE);
 
     public static readonly CVarDef<int> GovernanceDutyDeclinePenalty =
-        CVarDef.Create("governance.duty_decline_penalty", 15, CVar.SERVERONLY | CVar.ARCHIVE);
+        CVarDef.Create("governance.duty_decline_penalty", 0, CVar.SERVERONLY | CVar.ARCHIVE);
 
     public static readonly CVarDef<int> GovernanceDutyExpiryPenalty =
-        CVarDef.Create("governance.duty_expiry_penalty", 20, CVar.SERVERONLY | CVar.ARCHIVE);
+        CVarDef.Create("governance.duty_expiry_penalty", 0, CVar.SERVERONLY | CVar.ARCHIVE);
 
 #endregion
 }
