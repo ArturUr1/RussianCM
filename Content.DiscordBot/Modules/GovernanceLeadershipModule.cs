@@ -161,10 +161,12 @@ public sealed class GovernanceLeadershipModule(
             var identity = await identities.GetIdentityAsync(entry.UserId);
             var transport = entry.DiscordUserId is > 0 ? $"<@{entry.DiscordUserId}>" : "без Discord";
             var rate = entry.Wins / (double) result.Iterations;
+            var trackState = entry.TrackEvidenceWeight < 1.0
+                ? $"направление: недостаточно данных, evidence {entry.TrackEvidenceWeight:F1}"
+                : $"направление {entry.TrackScore}/1000, LB90 {entry.TrackLowerBound:P0}, evidence {entry.TrackEvidenceWeight:F1}";
             lines.Add(
                 $"• **{identity.Name}** ({transport}) — **{rate:P1}** ({entry.Wins}/{result.Iterations}); " +
-                $"квал. {entry.QualificationLevel}; направление {entry.TrackScore}/1000, LB90 {entry.TrackLowerBound:P0}, evidence {entry.TrackEvidenceWeight:F1}; " +
-                $"общая {entry.GeneralScore}/1000");
+                $"квал. {entry.QualificationLevel}; {trackState}; общая {entry.GeneralScore}/1000");
         }
 
         var description = string.Join("\n", lines);
