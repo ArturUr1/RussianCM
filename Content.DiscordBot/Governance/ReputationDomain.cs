@@ -203,7 +203,9 @@ public static class ReputationMath
             .Where(value => IsAuthoritativeReason(value.Reason))
             .OrderBy(value => value.OccurredAt)
             .ToArray();
-        var repeated = new Dictionary<(string Reason, int Year, int Month), int>();
+        // Anti-farm is intentionally local to a day. Repeated identical work in one burst has diminishing
+        // returns, while sustained service on different days regains full base weight.
+        var repeated = new Dictionary<(string Reason, DateOnly Day), int>();
         var previousSerious = 0;
         var successTotal = Math.Max(0, extraSuccessEvidence);
         var failureTotal = Math.Max(0, extraFailureEvidence);
@@ -212,7 +214,7 @@ public static class ReputationMath
         {
             var observation = ordered[index];
             var ageDays = Math.Max(0, (now - observation.OccurredAt).TotalDays);
-            var bucket = (observation.Reason, observation.OccurredAt.Year, observation.OccurredAt.Month);
+            var bucket = (observation.Reason, DateOnly.FromDateTime(observation.OccurredAt));
             repeated.TryGetValue(bucket, out var repeatCount);
             repeatCount++;
             repeated[bucket] = repeatCount;
