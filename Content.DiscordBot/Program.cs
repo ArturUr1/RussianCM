@@ -209,6 +209,7 @@ var moderation = new ModerationGovernanceService(CreateGovernanceDatabase, Creat
 var moderationTrust = new ModerationTrustService(CreateGovernanceDatabase, community, selection, config);
 var moderationQualifications = new ModerationQualificationService(CreateGovernanceDatabase, moderationTrust);
 var events = new EventGovernanceService(CreateGovernanceDatabase, community, selection, config);
+var eventStatus = new EventGovernanceStatusService(CreateGovernanceDatabase);
 var coordinator = new CourtDiscordCoordinator(client, court, courtMaterials, punishments, events, moderation, config);
 var moderationTrustCoordinator = new ModerationTrustCoordinator(client, moderationTrust, moderationQualifications, court, config);
 var services = new ServiceCollection()
@@ -224,6 +225,7 @@ var services = new ServiceCollection()
     .AddSingleton(moderationTrust)
     .AddSingleton(moderationQualifications)
     .AddSingleton(events)
+    .AddSingleton(eventStatus)
     .AddSingleton(coordinator)
     .AddSingleton(moderationTrustCoordinator)
     .BuildServiceProvider();
