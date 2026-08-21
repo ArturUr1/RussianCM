@@ -79,6 +79,10 @@ public sealed class ModerationTrustService(
         var candidates = await governance.ModerationActions.AsNoTracking()
             .Where(action => action.Status == "executed")
             .Where(action => !governance.ModerationReviews.Any(review => review.ActionId == action.Id))
+            .Where(action => !governance.Invitations.Any(invitation =>
+                invitation.Purpose == "moderation_review" && invitation.EntityType == "moderation_action" &&
+                invitation.EntityId == action.Id.ToString() &&
+                (invitation.State == InvitationStates.Pending || invitation.State == InvitationStates.Accepted)))
             .Where(action => !governance.ServiceAssignments.Any(assignment =>
                 assignment.Track == "moderation" && assignment.EntityType == "moderation_action_review" &&
                 assignment.EntityId == action.Id.ToString() && assignment.CompletedAt == null && assignment.FailedAt == null))
@@ -117,6 +121,11 @@ public sealed class ModerationTrustService(
             throw new CourtRuleException("На независимый аудит можно отправить только исполненное действие.");
         if (await governance.ModerationReviews.AsNoTracking().AnyAsync(value => value.ActionId == actionId))
             throw new CourtRuleException("Это действие уже прошло независимый аудит.");
+        if (await governance.Invitations.AsNoTracking().AnyAsync(value =>
+                value.Purpose == "moderation_review" && value.EntityType == "moderation_action" &&
+                value.EntityId == actionId.ToString() &&
+                (value.State == InvitationStates.Pending || value.State == InvitationStates.Accepted)))
+            throw new CourtRuleException("Для этого действия уже назначен независимый рецензент.");
         if (await governance.ServiceAssignments.AsNoTracking().AnyAsync(value =>
                 value.Track == "moderation" && value.EntityType == "moderation_action_review" &&
                 value.EntityId == actionId.ToString() && value.CompletedAt == null && value.FailedAt == null))
@@ -131,8 +140,14 @@ public sealed class ModerationTrustService(
                             value.EntityId == actionId.ToString())
             .Select(value => value.UserId)
             .ToListAsync();
+        var previouslyInvited = await governance.Invitations.AsNoTracking()
+            .Where(value => value.Purpose == "moderation_review" && value.EntityType == "moderation_action" &&
+                            value.EntityId == actionId.ToString())
+            .Select(value => value.UserId)
+            .ToListAsync();
         var excluded = approvers
             .Concat(previousReviewers)
+            .Concat(previouslyInvited)
             .Append(action.ActorUserId)
             .Append(action.TargetUserId)
             .ToHashSet();
@@ -147,6 +162,8 @@ public sealed class ModerationTrustService(
             TimeSpan.FromHours(config.ModerationReviewSelectionCooldownHours));
         var reviewer = candidates.SingleOrDefault()
             ?? throw new CourtRuleException("Сейчас нет независимого кандидата для проверки этого действия.");
+        var reviewerDiscordId = reviewer.DiscordUserId
+            ?? throw new CourtRuleException("Независимый аудит сейчас требует привязанный Discord-аккаунт.");
 
         var now = DateTime.UtcNow;
         var invitation = governance.Invitations.Add(new GovernanceInvitation
@@ -160,18 +177,10 @@ public sealed class ModerationTrustService(
             ExpiresAt = now.AddHours(config.ModerationReviewInvitationHours),
             IdempotencyKey = $"moderation-review:{actionId}:reviewer:{reviewer.Id}",
         }).Entity;
-        governance.ServiceAssignments.Add(new GovernanceServiceAssignment
-        {
-            UserId = reviewer.Id,
-            Track = "moderation",
-            EntityType = "moderation_action_review",
-            EntityId = actionId.ToString(),
-            AssignedAt = now,
-        });
         AddAudit(governance, "moderation.review_assigned", "system", null, "moderation_action", actionId.ToString(),
             new { reviewer_user_id = reviewer.Id, invitation_expires_at = invitation.ExpiresAt });
         await governance.SaveChangesAsync();
-        return new ModerationReviewAssignment(actionId, invitation.Id, reviewer.Id, reviewer.DiscordUserId, invitation.ExpiresAt);
+        return new ModerationReviewAssignment(actionId, invitation.Id, reviewer.Id, reviewerDiscordId, invitation.ExpiresAt);
     }
 
     public async Task<IReadOnlyList<(GovernanceInvitation Invitation, GovernanceUser User)>> PendingReviewNotificationsAsync()
@@ -258,9 +267,6 @@ public sealed class ModerationTrustService(
             invitation.State = InvitationStates.Expired;
             invitation.RespondedAt = now;
             invitation.Version++;
-            await AppendRatingAsync(governance, reviewer.Id, -config.ModerationReviewExpiryPenalty,
-                "moderation_review_invite_expired", actionId, $"moderation-review:{invitation.Id}:expire", "system");
-            await FailAssignmentAsync(governance, reviewer.Id, actionId, now);
             await governance.SaveChangesAsync();
             throw new CourtRuleException("Срок ответа на приглашение истёк.");
         }
@@ -272,15 +278,19 @@ public sealed class ModerationTrustService(
         if (response == InvitationStates.Accepted)
         {
             invitation.ExpiresAt = now.AddHours(config.ModerationReviewHours);
-            await AppendRatingAsync(governance, reviewer.Id, config.ModerationReviewAcceptReward,
-                "moderation_review_invite_accepted", actionId, $"moderation-review:{invitation.Id}:accept", reviewerDiscordId.ToString());
-        }
-        else
-        {
-            await FailAssignmentAsync(governance, reviewer.Id, actionId, now);
-            if (response == InvitationStates.Declined)
-                await AppendRatingAsync(governance, reviewer.Id, -config.ModerationReviewDeclinePenalty,
-                    "moderation_review_invite_declined", actionId, $"moderation-review:{invitation.Id}:decline", reviewerDiscordId.ToString());
+            if (!await governance.ServiceAssignments.AnyAsync(value =>
+                    value.UserId == reviewer.Id && value.Track == "moderation" &&
+                    value.EntityType == "moderation_action_review" && value.EntityId == actionId.ToString()))
+            {
+                governance.ServiceAssignments.Add(new GovernanceServiceAssignment
+                {
+                    UserId = reviewer.Id,
+                    Track = "moderation",
+                    EntityType = "moderation_action_review",
+                    EntityId = actionId.ToString(),
+                    AssignedAt = now,
+                });
+            }
         }
         AddAudit(governance, $"moderation.review_invitation.{response}", "discord_user", reviewerDiscordId.ToString(),
             "moderation_action", actionId.ToString(), new { recusal_reason = invitation.RecusalReason });
@@ -328,8 +338,6 @@ public sealed class ModerationTrustService(
             value.UserId == reviewer.Id && value.Track == "moderation" &&
             value.EntityType == "moderation_action_review" && value.EntityId == actionId.ToString());
         assignment.CompletedAt = DateTime.UtcNow;
-        await AppendRatingAsync(governance, reviewer.Id, config.ModerationReviewCompletionReward,
-            "moderation_review_completed", actionId, $"moderation-review:{actionId}:completed:{reviewer.Id}", reviewerDiscordId.ToString());
         AddAudit(governance, "moderation.review_submitted", "discord_user", reviewerDiscordId.ToString(),
             "moderation_action", actionId.ToString(), new { outcome, actor_user_id = action.ActorUserId });
         await governance.SaveChangesAsync();
@@ -353,9 +361,6 @@ public sealed class ModerationTrustService(
                 invitation.State = InvitationStates.Expired;
                 invitation.RespondedAt = now;
                 invitation.Version++;
-                await AppendRatingAsync(governance, invitation.UserId, -config.ModerationReviewExpiryPenalty,
-                    "moderation_review_invite_expired", actionId, $"moderation-review:{invitation.Id}:expire", "system");
-                await FailAssignmentAsync(governance, invitation.UserId, actionId, now);
                 AddAudit(governance, "moderation.review_invitation.expired", "system", null,
                     "moderation_action", actionId.ToString(), new { invitation_id = invitation.Id });
                 continue;
@@ -367,11 +372,6 @@ public sealed class ModerationTrustService(
                 continue;
             invitation.State = InvitationStates.Failed;
             invitation.Version++;
-            await AppendRatingAsync(governance, invitation.UserId, -config.ModerationReviewAcceptReward,
-                "moderation_review_accept_reward_rollback", actionId,
-                $"moderation-review:{invitation.Id}:accept-rollback", "system");
-            await AppendRatingAsync(governance, invitation.UserId, -config.ModerationReviewFailurePenalty,
-                "moderation_review_failed", actionId, $"moderation-review:{invitation.Id}:failure", "system");
             await FailAssignmentAsync(governance, invitation.UserId, actionId, now);
             AddAudit(governance, "moderation.review_failed", "system", null,
                 "moderation_action", actionId.ToString(), new { invitation_id = invitation.Id });
@@ -386,20 +386,6 @@ public sealed class ModerationTrustService(
             value.EntityType == "moderation_action_review" && value.EntityId == actionId.ToString());
         if (assignment != null && assignment.CompletedAt == null && assignment.FailedAt == null)
             assignment.FailedAt = now;
-    }
-
-    private static Task AppendRatingAsync(
-        GovernanceDbContext governance,
-        Guid userId,
-        int amount,
-        string reason,
-        long actionId,
-        string idempotencyKey,
-        string createdById)
-    {
-        return governance.Database.ExecuteSqlRawAsync(
-            "SELECT governance.append_rating_entry({0}, {1}, {2}, 'moderation_action', {3}, 'governance', {4}, {5}, '{}'::jsonb)",
-            userId, amount, reason, actionId.ToString(), createdById, idempotencyKey);
     }
 
     private static void AddAudit(
