@@ -417,7 +417,7 @@ public sealed class CourtDiscordCoordinator(
             .AddField("Истец", claimantText, true)
             .AddField("Ответчик", defendantText, true)
             .AddField("Стадия", StatusText(courtCase.Status), true)
-            .AddField("Срок защиты", $"<t:{new DateTimeOffset(courtCase.DefenseDeadline).ToUnixTimeSeconds()}:F>", true)
+            .AddField("Завершение защиты", "После подтверждения истца и ответчика", true)
             .WithCurrentTimestamp();
         if (!string.IsNullOrWhiteSpace(complaint?.EvidenceReference))
             embed.AddField("Источник дела", complaint.EvidenceReference);
