@@ -367,17 +367,38 @@ public sealed class GovernanceIdentityService(
 
     private static async Task EnsureBaselineQualificationsAsync(GovernanceDbContext governance, Guid userId)
     {
+        var selectedPaths = (await governance.ServicePaths.AsNoTracking()
+                .Where(value => value.UserId == userId)
+                .Select(value => value.Track)
+                .ToListAsync())
+            .ToHashSet(StringComparer.Ordinal);
+
         foreach (var track in ReputationTracks.ServicePaths)
         {
-            if (!await governance.Qualifications.AnyAsync(value => value.UserId == userId && value.Track == track))
+            var qualification = await governance.Qualifications
+                .SingleOrDefaultAsync(value => value.UserId == userId && value.Track == track);
+            var baselineLevel = track == ReputationTracks.Moderation && !selectedPaths.Contains(ReputationTracks.Moderation)
+                ? (short) 0
+                : (short) 1;
+
+            if (qualification == null)
             {
                 governance.Qualifications.Add(new GovernanceQualification
                 {
                     UserId = userId,
                     Track = track,
-                    Level = 1,
+                    Level = baselineLevel,
                     UpdatedAt = DateTime.UtcNow,
                 });
+                continue;
+            }
+
+            // Defensive repair for data imported from builds that predate the moderation-path invariant.
+            // Selected-path changes promote moderation back to I through ReputationService.SetPathsAsync.
+            if (track == ReputationTracks.Moderation && baselineLevel == 0 && qualification.Level > 0)
+            {
+                qualification.Level = 0;
+                qualification.UpdatedAt = DateTime.UtcNow;
             }
         }
     }
