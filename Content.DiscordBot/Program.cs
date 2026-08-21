@@ -112,7 +112,7 @@ if (governanceDoctor)
     await using var governance = CreateGovernanceDatabase();
     var requiredTables = new HashSet<string>(StringComparer.Ordinal)
     {
-        "users", "identity_links", "service_paths", "rating_entries", "reputation_observations",
+        "users", "identity_links", "identity_bindings", "service_paths", "rating_entries", "reputation_observations",
         "reputation_snapshots", "game_activity_snapshots", "contribution_events", "qualifications", "conflicts",
         "invitations", "court_cases", "court_participants", "court_statements", "jurors", "guilt_votes",
         "sentencing_votes", "friendships", "service_assignments", "punishment_executions", "duty_sessions",
@@ -127,8 +127,8 @@ if (governanceDoctor)
         throw new InvalidOperationException($"Governance schema is incomplete: {string.Join(", ", missing)}");
 
     var applied = await governance.Database.GetAppliedMigrationsAsync();
-    if (!applied.Contains("20260821033000_NormalizeLegacySyntheticDiscord"))
-        throw new InvalidOperationException("The latest Reputation v2 identity migration is not recorded as applied.");
+    if (!applied.Contains("20260821034000_ImmutableIdentityBinding"))
+        throw new InvalidOperationException("The immutable Governance identity binding migration is not recorded as applied.");
 
     var identityColumns = (await governance.Database.SqlQueryRaw<string>("""
         SELECT column_name || ':' || is_nullable AS "Value"
@@ -148,6 +148,36 @@ if (governanceDoctor)
         """).SingleAsync();
     if (discordIndex != 1)
         throw new InvalidOperationException("The optional Discord identity partial unique index is unavailable.");
+
+    var identityBindingConstraints = await governance.Database.SqlQueryRaw<int>("""
+        SELECT count(*)::integer AS "Value"
+        FROM pg_constraint
+        WHERE conrelid = 'governance.identity_bindings'::regclass
+          AND contype IN ('p', 'u')
+        """).SingleAsync();
+    if (identityBindingConstraints < 3)
+        throw new InvalidOperationException("Permanent Governance identity binding uniqueness is unavailable.");
+
+    var identityTriggers = (await governance.Database.SqlQueryRaw<string>("""
+        SELECT tgname AS "Value"
+        FROM pg_trigger
+        WHERE tgenabled <> 'D' AND tgname IN (
+            'governance_users_identity_immutable_insert',
+            'governance_users_identity_immutable_update',
+            'governance_users_identity_remember_insert',
+            'governance_users_identity_remember_update',
+            'governance_identity_bindings_immutable')
+        """).ToListAsync()).ToHashSet(StringComparer.Ordinal);
+    var requiredIdentityTriggers = new HashSet<string>(StringComparer.Ordinal)
+    {
+        "governance_users_identity_immutable_insert",
+        "governance_users_identity_immutable_update",
+        "governance_users_identity_remember_insert",
+        "governance_users_identity_remember_update",
+        "governance_identity_bindings_immutable",
+    };
+    if (!requiredIdentityTriggers.SetEquals(identityTriggers))
+        throw new InvalidOperationException("Immutable Governance identity triggers are unavailable.");
 
     var ahelpColumns = (await governance.Database.SqlQueryRaw<string>("""
         SELECT column_name || ':' || is_nullable AS "Value"
@@ -218,7 +248,7 @@ if (governanceDoctor)
     var doctorReputation = new ReputationService(CreateGovernanceDatabase, CreateConfiguredDatabase);
     var doctorSelection = new CandidateSelectionService(CreateGovernanceDatabase, CreateConfiguredDatabase, doctorReputation, config);
     _ = await doctorSelection.SelectAsync("jury", 1, "doctor", "read-only", 1, [], null, TimeSpan.Zero);
-    Console.WriteLine($"Governance doctor OK: {requiredTables.Count} workflow/reputation tables, Identity v2, Bayesian evidence, AHelp, Court, event execution and game activity contracts.");
+    Console.WriteLine($"Governance doctor OK: {requiredTables.Count} workflow/reputation tables, immutable Identity v2, Bayesian evidence, AHelp, Court, event execution and game activity contracts.");
     return;
 }
 
@@ -289,7 +319,7 @@ var handler = new CommandHandler(
     new CommandService(),
     interaction,
     CreateConfiguredDatabase,
-    court,
+    identities,
     services,
     guild);
 
