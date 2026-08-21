@@ -26,7 +26,7 @@ public sealed class ReputationBootstrap : Migration
             UPDATE governance.users u
             SET discord_user_id = linked.discord_id::bigint,
                 updated_at = now()
-            FROM rmc_linked_account linked
+            FROM rmc_linked_accounts linked
             WHERE linked.player_id = u.ss14_user_id
               AND linked.discord_id > 0
               AND (u.discord_user_id IS NULL OR u.discord_user_id = linked.discord_id::bigint);
@@ -34,7 +34,7 @@ public sealed class ReputationBootstrap : Migration
             INSERT INTO governance.identity_links(user_id, discord_user_id, linked_at, source)
             SELECT u.id, linked.discord_id::bigint, now(), 'game_account_link'
             FROM governance.users u
-            JOIN rmc_linked_account linked ON linked.player_id = u.ss14_user_id
+            JOIN rmc_linked_accounts linked ON linked.player_id = u.ss14_user_id
             WHERE linked.discord_id > 0
               AND NOT EXISTS (
                   SELECT 1 FROM governance.identity_links il
