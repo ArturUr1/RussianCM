@@ -1,4 +1,5 @@
 using Content.DiscordBot.Governance;
+using Discord;
 using Discord.Interactions;
 
 namespace Content.DiscordBot.Modules;
@@ -13,10 +14,20 @@ public sealed class CourtJuryInviteComponentModule(CommunityCourtService court)
     public Task DeclineAsync(string caseId) => HandleAsync(caseId, InvitationStates.Declined, null);
 
     [ComponentInteraction("court-jury-recuse:*")]
-    public Task RecuseAsync(string caseId) => HandleAsync(
-        caseId,
-        InvitationStates.Recused,
-        "Самоотвод выбран пользователем через кнопку приглашения.");
+    public async Task RecuseAsync(string caseIdText)
+    {
+        if (!long.TryParse(caseIdText, out var caseId) || caseId <= 0)
+        {
+            await RespondAsync("Некорректный номер дела в приглашении.");
+            return;
+        }
+
+        await RespondWithModalAsync<CourtRecusalModal>($"court-jury-recuse-submit:{caseId}");
+    }
+
+    [ModalInteraction("court-jury-recuse-submit:*")]
+    public Task RecuseSubmitAsync(string caseId, CourtRecusalModal modal) =>
+        HandleAsync(caseId, InvitationStates.Recused, modal.Reason);
 
     private async Task HandleAsync(string caseIdText, string response, string? reason)
     {
@@ -34,7 +45,16 @@ public sealed class CourtJuryInviteComponentModule(CommunityCourtService court)
                 InvitationStates.Recused => $"Самоотвод по делу №{caseId} зафиксирован.",
                 _ => $"Ответ по делу №{caseId} зафиксирован: {state}.",
             };
-            await FollowupAsync(message);
+
+            MessageComponent? components = null;
+            if (state == InvitationStates.Accepted)
+            {
+                components = new ComponentBuilder()
+                    .WithButton("Открыть панель дела", $"court-panel:{caseId}", ButtonStyle.Primary, new Emoji("⚖️"))
+                    .Build();
+            }
+
+            await FollowupAsync(message, components: components);
         }
         catch (CourtRuleException exception)
         {
