@@ -18,6 +18,23 @@ public sealed class ReputationMathTests
     }
 
     [Test]
+    public void ServiceTrackPriorDoesNotBorrowCommunityTrust()
+    {
+        var posterior = ReputationMath.Posterior(
+            ReputationTracks.Jury,
+            [],
+            Now,
+            priorMean: 0.90,
+            priorStrength: ReputationPolicy.TrackPriorStrength);
+
+        Assert.That(posterior.Score, Is.EqualTo(ReputationPolicy.NeutralScore));
+        Assert.That(posterior.Mean, Is.EqualTo(0.5).Within(1e-9));
+        Assert.That(posterior.Alpha, Is.EqualTo(ReputationPolicy.TrackPriorStrength * 0.5).Within(1e-9));
+        Assert.That(posterior.Beta, Is.EqualTo(ReputationPolicy.TrackPriorStrength * 0.5).Within(1e-9));
+        Assert.That(posterior.EvidenceWeight, Is.Zero.Within(1e-9));
+    }
+
+    [Test]
     public void PositiveEvidenceRaisesMeanAndCredibleBound()
     {
         var neutral = ReputationMath.Posterior(ReputationTracks.Jury, [], Now);
