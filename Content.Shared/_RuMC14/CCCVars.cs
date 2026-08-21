@@ -120,6 +120,13 @@ public sealed class CCCVars : CVars
         CVarDef.Create("governance.enabled", false, CVar.SERVERONLY | CVar.ARCHIVE);
 
     /// <summary>
+    /// Enables physical execution of Event Governance actions on the game server.
+    /// Intentionally disabled by default while the event workflow is deferred from production acceptance.
+    /// </summary>
+    public static readonly CVarDef<bool> GovernanceEventEnabled =
+        CVarDef.Create("governance.event_enabled", false, CVar.SERVERONLY | CVar.ARCHIVE);
+
+    /// <summary>
     /// Maximum duration of a temporary governance freeze.
     /// </summary>
     public static readonly CVarDef<int> GovernanceFreezeMaxSeconds =
