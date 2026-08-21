@@ -130,10 +130,48 @@ public sealed class ReputationMathTests
     }
 
     [Test]
+    public void QualificationThresholdsRequireBoundEvidenceAndCompletedWork()
+    {
+        var strong = new ReputationPosterior("moderation", 30, 4, 30d / 34d, 0.90, 25, 882);
+        var justLevelTwo = strong with { LowerBound = 0.65, EvidenceWeight = 4 };
+        var justLevelThree = strong with { LowerBound = 0.75, EvidenceWeight = 10 };
+        var justLevelFour = strong with { LowerBound = 0.85, EvidenceWeight = 20 };
+
+        Assert.That(ReputationPolicy.EligibleQualificationLevel("moderation", justLevelTwo, 3), Is.EqualTo(1));
+        Assert.That(ReputationPolicy.EligibleQualificationLevel("moderation", justLevelTwo, 4), Is.EqualTo(2));
+        Assert.That(ReputationPolicy.EligibleQualificationLevel("moderation", justLevelThree, 9), Is.EqualTo(2));
+        Assert.That(ReputationPolicy.EligibleQualificationLevel("moderation", justLevelThree, 10), Is.EqualTo(3));
+        Assert.That(ReputationPolicy.EligibleQualificationLevel("moderation", justLevelFour, 19), Is.EqualTo(3));
+        Assert.That(ReputationPolicy.EligibleQualificationLevel("moderation", justLevelFour, 20), Is.EqualTo(4));
+    }
+
+    [Test]
     public void ThompsonSampleStaysInProbabilityRange()
     {
         var random = new Random(12345);
         for (var i = 0; i < 1000; i++)
             Assert.That(ReputationMath.SampleBeta(8, 3, random), Is.InRange(0.0, 1.0));
+    }
+
+    [Test]
+    public void ThompsonPriorityFavoursEvidenceWithoutEliminatingExploration()
+    {
+        var random = new Random(1729);
+        var strongWins = 0;
+        var exploratoryWins = 0;
+        const int trials = 5000;
+
+        for (var i = 0; i < trials; i++)
+        {
+            var strong = CandidateSelectionPolicy.SamplePriority(18, 4, 600, 2, random);
+            var uncertain = CandidateSelectionPolicy.SamplePriority(7, 5, 600, 2, random);
+            if (strong > uncertain)
+                strongWins++;
+            else
+                exploratoryWins++;
+        }
+
+        Assert.That(strongWins, Is.GreaterThan(trials * 0.75));
+        Assert.That(exploratoryWins, Is.GreaterThan(0));
     }
 }
