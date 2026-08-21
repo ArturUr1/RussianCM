@@ -70,7 +70,7 @@ public sealed class HardenDutyAndJuryAssignments : Migration
             BEGIN
                 affected_user := OLD.user_id;
                 IF OLD.track <> 'moderation' THEN
-                    RETURN COALESCE(NEW, OLD);
+                    RETURN NULL;
                 END IF;
 
                 -- Evaluate the final transaction state. If moderation still exists in another slot,
@@ -80,7 +80,7 @@ public sealed class HardenDutyAndJuryAssignments : Migration
                     FROM governance.service_paths AS path
                     WHERE path.user_id = affected_user
                       AND path.track = 'moderation') THEN
-                    RETURN COALESCE(NEW, OLD);
+                    RETURN NULL;
                 END IF;
 
                 INSERT INTO governance.audit_events(
@@ -122,7 +122,7 @@ public sealed class HardenDutyAndJuryAssignments : Migration
                   AND track = 'moderation'
                   AND level > 0;
 
-                RETURN COALESCE(NEW, OLD);
+                RETURN NULL;
             END;
             $governance$;
 
@@ -182,11 +182,11 @@ public sealed class HardenDutyAndJuryAssignments : Migration
             BEGIN
                 affected_user := OLD.user_id;
                 IF OLD.track <> 'moderation' THEN
-                    RETURN COALESCE(NEW, OLD);
+                    RETURN NULL;
                 END IF;
 
                 IF TG_OP = 'UPDATE' AND NEW.track = 'moderation' THEN
-                    RETURN NEW;
+                    RETURN NULL;
                 END IF;
 
                 UPDATE governance.qualifications
@@ -195,7 +195,7 @@ public sealed class HardenDutyAndJuryAssignments : Migration
                 WHERE user_id = affected_user
                   AND track = 'moderation'
                   AND level > 0;
-                RETURN COALESCE(NEW, OLD);
+                RETURN NULL;
             END;
             $governance$;
 
