@@ -24,14 +24,25 @@ public sealed class GovernanceIdentityService(
             ON CONFLICT (ss14_user_id) DO NOTHING
             """);
 
-        // Reconcile only currently linked accounts. Historical links are preserved in identity_links.
         var links = await governance.Database.SqlQueryRaw<CurrentGameLink>("""
             SELECT player_id AS "Ss14UserId", discord_id::bigint AS "DiscordUserId"
             FROM rmc_linked_accounts
             WHERE discord_id > 0
             """).ToListAsync();
         foreach (var link in links)
-            await AttachDiscordAsync(governance, link.Ss14UserId, link.DiscordUserId, "game_account_link", null);
+        {
+            try
+            {
+                await AttachDiscordAsync(governance, link.Ss14UserId, link.DiscordUserId, "game_account_link", null);
+            }
+            catch (CourtRuleException exception)
+            {
+                // The game-link table may contain a stale row written by an old rebind-capable client.
+                // Never let that row overwrite the permanent Governance identity.
+                await Logger.Info(
+                    $"[WARNING] Governance rejected inconsistent game identity Discord {link.DiscordUserId} -> SS14 {link.Ss14UserId}: {exception.Message}");
+            }
+        }
         await governance.SaveChangesAsync();
     }
 
@@ -82,6 +93,51 @@ public sealed class GovernanceIdentityService(
         return await RequireSs14UserAsync(selected.UserId);
     }
 
+    public async Task ValidatePermanentLinkAsync(Guid ss14UserId, ulong discordId)
+    {
+        if (discordId == 0 || discordId > long.MaxValue)
+            throw new CourtRuleException("Некорректный Discord ID.");
+
+        await RequireSs14UserAsync(ss14UserId);
+        await using var governance = governanceFactory();
+        var user = await governance.Users.SingleAsync(value => value.Ss14UserId == ss14UserId);
+        await ValidatePermanentLinkAsync(governance, user, checked((long) discordId));
+    }
+
+    public async Task SyncLinkedAccountAsync(Guid ss14UserId, ulong discordId)
+    {
+        if (discordId == 0 || discordId > long.MaxValue)
+            throw new CourtRuleException("Некорректный Discord ID.");
+
+        await using (var game = gameFactory())
+        {
+            var exactPairExists = await game.RMCLinkedAccounts.AsNoTracking().AnyAsync(value =>
+                value.PlayerId == ss14UserId && value.DiscordId == discordId);
+            if (!exactPairExists)
+                throw new CourtRuleException("Текущая игровая привязка не соответствует запрошенной паре SS14/Discord.");
+        }
+
+        await RequireSs14UserAsync(ss14UserId);
+        await using var governance = governanceFactory();
+        await AttachDiscordAsync(governance, ss14UserId, checked((long) discordId), "game_account_link", discordId.ToString());
+        var user = await governance.Users.SingleAsync(value => value.Ss14UserId == ss14UserId);
+        await EnsureBaselineQualificationsAsync(governance, user.Id);
+        await governance.SaveChangesAsync();
+    }
+
+    public async Task<Guid?> GetPermanentSs14UserIdAsync(ulong discordId)
+    {
+        if (discordId == 0 || discordId > long.MaxValue)
+            return null;
+        await using var governance = governanceFactory();
+        var values = await governance.Database.SqlQuery<Guid>($"""
+            SELECT ss14_user_id AS "Value"
+            FROM governance.identity_bindings
+            WHERE discord_user_id = {checked((long) discordId)}
+            """).ToListAsync();
+        return values.Count == 0 ? null : values.Single();
+    }
+
     public async Task<GovernanceUser> RequireDiscordUserAsync(ulong discordId)
     {
         await using var game = gameFactory();
@@ -92,22 +148,9 @@ public sealed class GovernanceIdentityService(
         if (ss14UserId == null)
             throw new CourtRuleException("Discord-аккаунт не привязан к аккаунту SS14. Репутация SS14-профиля сохраняется, но Discord-функции требуют привязку.");
 
+        await ValidatePermanentLinkAsync(ss14UserId.Value, discordId);
         await using var governance = governanceFactory();
-        var user = await governance.Users.SingleOrDefaultAsync(value => value.Ss14UserId == ss14UserId.Value);
-        if (user == null)
-        {
-            var player = await game.Player.AsNoTracking().SingleAsync(value => value.UserId == ss14UserId.Value);
-            user = governance.Users.Add(new GovernanceUser
-            {
-                Id = Guid.NewGuid(),
-                Ss14UserId = player.UserId,
-                CivicRatingCache = ReputationPolicy.NeutralScore,
-                CreatedAt = player.FirstSeenTime.ToUniversalTime(),
-                UpdatedAt = DateTime.UtcNow,
-            }).Entity;
-            await governance.SaveChangesAsync();
-        }
-
+        var user = await governance.Users.SingleAsync(value => value.Ss14UserId == ss14UserId.Value);
         await AttachDiscordAsync(governance, user.Ss14UserId, checked((long) discordId), "discord_command", discordId.ToString());
         await EnsureBaselineQualificationsAsync(governance, user.Id);
         await governance.SaveChangesAsync();
@@ -128,7 +171,7 @@ public sealed class GovernanceIdentityService(
     public async Task DetachDiscordIfStaleAsync(Guid governanceUserId, string source = "reconcile")
     {
         await using var governance = governanceFactory();
-        var user = await governance.Users.SingleAsync(value => value.Id == governanceUserId);
+        var user = await governance.Users.AsNoTracking().SingleAsync(value => value.Id == governanceUserId);
         if (user.DiscordUserId == null)
             return;
         await using var game = gameFactory();
@@ -136,16 +179,11 @@ public sealed class GovernanceIdentityService(
             value.PlayerId == user.Ss14UserId && (long) value.DiscordId == user.DiscordUserId.Value);
         if (stillLinked)
             return;
-        var now = DateTime.UtcNow;
-        var current = await governance.IdentityLinks.SingleOrDefaultAsync(value => value.UserId == user.Id && value.UnlinkedAt == null);
-        if (current != null)
-            current.UnlinkedAt = now;
-        var previous = user.DiscordUserId;
-        user.DiscordUserId = null;
-        user.UpdatedAt = now;
-        AddAudit(governance, "identity.discord_unlinked", "system", null, user.Id,
-            new { discord_user_id = previous, source });
-        await governance.SaveChangesAsync();
+
+        // A missing/mismatched game row is an operational inconsistency, not permission to rebind.
+        // Permanent Governance identity is deliberately left untouched.
+        throw new CourtRuleException(
+            $"Постоянная связь SS14 {user.Ss14UserId} / Discord {user.DiscordUserId} расходится с игровой БД; автоматическая отвязка запрещена ({source}).");
     }
 
     private static async Task AttachDiscordAsync(
@@ -159,12 +197,12 @@ public sealed class GovernanceIdentityService(
             throw new CourtRuleException("Discord ID должен быть положительным snowflake.");
         var user = await governance.Users.SingleOrDefaultAsync(value => value.Ss14UserId == ss14UserId)
             ?? throw new CourtRuleException("Governance-профиль SS14 ещё не создан.");
-        var other = await governance.Users.SingleOrDefaultAsync(value => value.DiscordUserId == discordUserId && value.Id != user.Id);
-        if (other != null)
-            throw new CourtRuleException("Discord уже привязан к другому Governance-профилю. Автоматическое слияние репутации запрещено.");
+
+        await ValidatePermanentLinkAsync(governance, user, discordUserId);
         if (user.DiscordUserId == discordUserId)
         {
-            if (!await governance.IdentityLinks.AnyAsync(value => value.UserId == user.Id && value.DiscordUserId == discordUserId && value.UnlinkedAt == null))
+            if (!await governance.IdentityLinks.AnyAsync(value =>
+                    value.UserId == user.Id && value.DiscordUserId == discordUserId))
             {
                 governance.IdentityLinks.Add(new GovernanceIdentityLink
                 {
@@ -178,23 +216,55 @@ public sealed class GovernanceIdentityService(
             return;
         }
 
-        var now = DateTime.UtcNow;
-        var current = await governance.IdentityLinks.SingleOrDefaultAsync(value => value.UserId == user.Id && value.UnlinkedAt == null);
-        if (current != null)
-            current.UnlinkedAt = now;
-        var previousDiscordId = user.DiscordUserId;
+        if (user.DiscordUserId != null)
+            throw new CourtRuleException("Этот SS14-аккаунт уже навсегда связан с другим Discord. Перепривязка запрещена.");
+
         user.DiscordUserId = discordUserId;
-        user.UpdatedAt = now;
-        governance.IdentityLinks.Add(new GovernanceIdentityLink
+        user.UpdatedAt = DateTime.UtcNow;
+        if (!await governance.IdentityLinks.AnyAsync(value =>
+                value.UserId == user.Id && value.DiscordUserId == discordUserId))
         {
-            UserId = user.Id,
-            DiscordUserId = discordUserId,
-            LinkedAt = now,
-            Source = source,
-            Metadata = JsonSerializer.Serialize(new { previous_discord_user_id = previousDiscordId }),
-        });
+            governance.IdentityLinks.Add(new GovernanceIdentityLink
+            {
+                UserId = user.Id,
+                DiscordUserId = discordUserId,
+                LinkedAt = DateTime.UtcNow,
+                Source = source,
+                Metadata = "{}",
+            });
+        }
         AddAudit(governance, "identity.discord_linked", actorId == null ? "system" : "discord_user", actorId, user.Id,
-            new { previous_discord_user_id = previousDiscordId, discord_user_id = discordUserId, source });
+            new { discord_user_id = discordUserId, source, immutable = true });
+    }
+
+    private static async Task ValidatePermanentLinkAsync(
+        GovernanceDbContext governance,
+        GovernanceUser user,
+        long discordUserId)
+    {
+        if (user.DiscordUserId is { } currentDiscord && currentDiscord != discordUserId)
+            throw new CourtRuleException("Этот SS14-аккаунт уже связан с другим Discord. Перепривязка запрещена.");
+
+        var otherCurrent = await governance.Users.AsNoTracking().SingleOrDefaultAsync(value =>
+            value.DiscordUserId == discordUserId && value.Id != user.Id);
+        if (otherCurrent != null)
+            throw new CourtRuleException("Этот Discord уже связан с другим SS14-аккаунтом. Перепривязка запрещена.");
+
+        var boundDiscords = await governance.Database.SqlQuery<long>($"""
+            SELECT discord_user_id AS "Value"
+            FROM governance.identity_bindings
+            WHERE user_id = {user.Id}
+            """).ToListAsync();
+        if (boundDiscords.Count > 0 && boundDiscords.Single() != discordUserId)
+            throw new CourtRuleException("Этот SS14-аккаунт уже имеет постоянную Discord-привязку. Перепривязка запрещена.");
+
+        var boundUsers = await governance.Database.SqlQuery<Guid>($"""
+            SELECT user_id AS "Value"
+            FROM governance.identity_bindings
+            WHERE discord_user_id = {discordUserId}
+            """).ToListAsync();
+        if (boundUsers.Count > 0 && boundUsers.Single() != user.Id)
+            throw new CourtRuleException("Этот Discord уже имеет постоянную SS14-привязку. Перепривязка запрещена.");
     }
 
     private static async Task EnsureBaselineQualificationsAsync(GovernanceDbContext governance, Guid userId)
