@@ -115,7 +115,7 @@ public sealed class CourtDiscordCoordinator(
         await thread.SendMessageAsync(
             embed: new EmbedBuilder()
                 .WithTitle("Панель Community Court")
-                .WithDescription("Тред является журналом дела и доступен только для чтения. Все действия выполняются через интерактивную панель.")
+                .WithDescription("Во время стадии защиты истец и ответчик могут писать обычными сообщениями прямо в этом треде. Остальные участники только читают. Когда сторона закончила обсуждение, она нажимает «Закончить защиту» в панели дела; стадия завершится после подтверждения обеих сторон.")
                 .WithColor(Color.DarkBlue)
                 .Build(),
             components: GovernanceDiscordUi.CourtThreadLauncher(courtCase.Id));
