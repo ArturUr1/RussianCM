@@ -17,7 +17,7 @@ namespace Content.Server._RuMC14.Governance;
 
 /// <summary>
 /// Keeps the current round staffed with temporary community responders and owns the in-game
-/// invitation flow. PostgreSQL remains authoritative for eligibility, responses, rating and grants.
+/// invitation flow. PostgreSQL remains authoritative for eligibility, responses, reputation and grants.
 /// Governance AHelp is handled exclusively by <see cref="GovernanceAHelpSystem"/>.
 /// </summary>
 public sealed class GovernanceDutySystem : EntitySystem
@@ -91,15 +91,11 @@ public sealed class GovernanceDutySystem : EntitySystem
             var configuredTarget = _cfg.GetCVar(CCCVars.GovernanceDutyTargetResponders);
             var target = Math.Clamp(Math.Max(configuredTarget, onlineTarget + backlogTarget), 0, 16);
             var inviteSeconds = Math.Clamp(_cfg.GetCVar(CCCVars.GovernanceDutyInviteSeconds), 30, 600);
-            var acceptReward = Math.Clamp(_cfg.GetCVar(CCCVars.GovernanceDutyAcceptReward), 0, 1000);
-            var declinePenalty = Math.Clamp(_cfg.GetCVar(CCCVars.GovernanceDutyDeclinePenalty), 0, 1000);
-            var expiryPenalty = Math.Clamp(_cfg.GetCVar(CCCVars.GovernanceDutyExpiryPenalty), 0, 1000);
-            var invitations = await _database.CreateGovernanceDutyInvitationsAsync(
+            var invitations = await _database.CreateGovernanceDutyInvitationsV2Async(
                 _ticker.RoundId,
                 observers,
                 target,
-                TimeSpan.FromSeconds(inviteSeconds),
-                expiryPenalty);
+                TimeSpan.FromSeconds(inviteSeconds));
 
             foreach (var invitation in invitations)
             {
@@ -107,7 +103,7 @@ public sealed class GovernanceDutySystem : EntitySystem
                     session.AttachedEntity is not { } entity ||
                     !HasComp<GhostComponent>(entity))
                 {
-                    // Never punish a candidate for an invitation that could not be delivered.
+                    // Never penalize a candidate for an invitation that could not be delivered.
                     await _database.RespondGovernanceDutyInvitationAsync(
                         invitation.Id,
                         invitation.UserId,
@@ -126,9 +122,9 @@ public sealed class GovernanceDutySystem : EntitySystem
                         GovernanceInviteKind.ModerationDuty,
                         invitation.RoundId.ToString(),
                         invitation.ExpiresAt,
-                        acceptReward,
-                        declinePenalty,
-                        expiryPenalty,
+                        0,
+                        0,
+                        0,
                         this),
                     session);
             }
@@ -150,9 +146,9 @@ public sealed class GovernanceDutySystem : EntitySystem
                         GovernanceInviteKind.Jury,
                         invitation.CaseId,
                         invitation.ExpiresAt,
-                        acceptReward,
-                        declinePenalty,
-                        expiryPenalty,
+                        0,
+                        0,
+                        0,
                         this),
                     session);
             }
@@ -249,7 +245,7 @@ public sealed class GovernanceDutySystem : EntitySystem
             (player.AttachedEntity is not { } entity || !HasComp<GhostComponent>(entity)))
         {
             // The player returned to a body after receiving the observer-only invitation.
-            // Treat this as unavailable instead of leaving it to expire with a penalty.
+            // Treat this as unavailable instead of leaving it to expire.
             try
             {
                 await _database.RespondGovernanceDutyInvitationAsync(
@@ -280,17 +276,14 @@ public sealed class GovernanceDutySystem : EntitySystem
                 GovernanceDutyInviteChoice.Decline => GovernanceDutyInvitationChoice.Decline,
                 _ => GovernanceDutyInvitationChoice.Recuse,
             };
-            var acceptReward = Math.Clamp(_cfg.GetCVar(CCCVars.GovernanceDutyAcceptReward), 0, 1000);
-            var declinePenalty = Math.Clamp(_cfg.GetCVar(CCCVars.GovernanceDutyDeclinePenalty), 0, 1000);
-            var expiryPenalty = Math.Clamp(_cfg.GetCVar(CCCVars.GovernanceDutyExpiryPenalty), 0, 1000);
             var response = kind == GovernanceInviteKind.Jury
                 ? await _database.RespondGovernanceJuryInvitationAsync(
                     invitationId,
                     player.UserId,
                     databaseChoice,
-                    acceptReward,
-                    declinePenalty,
-                    expiryPenalty)
+                    0,
+                    0,
+                    0)
                 : await _database.RespondGovernanceDutyInvitationAsync(
                     invitationId,
                     player.UserId,
@@ -300,9 +293,9 @@ public sealed class GovernanceDutySystem : EntitySystem
                         _cfg.GetCVar(CCCVars.GovernanceDutySessionMinutes),
                         1,
                         1440)),
-                    acceptReward,
-                    declinePenalty,
-                    expiryPenalty);
+                    0,
+                    0,
+                    0);
 
             if (kind == GovernanceInviteKind.ModerationDuty &&
                 response.Status == GovernanceDutyResponseStatus.Accepted)
