@@ -33,4 +33,24 @@ public sealed class CourtTestInteractionModule(
             await FollowupAsync("Не удалось переотправить приглашения. Ошибка записана в журнал Discord-бота.", ephemeral: true);
         }
     }
+
+    [SlashCommand("суд-диагностика", "Показать фактическое состояние коллегии и голосов по делу")]
+    [RequireOwner]
+    public async Task DiagnoseCourtAsync(long caseId)
+    {
+        await DeferAsync(ephemeral: true);
+        try
+        {
+            await FollowupAsync(await testLinks.DiagnoseCaseAsync(caseId), ephemeral: true);
+        }
+        catch (CourtRuleException exception)
+        {
+            await FollowupAsync(exception.Message, ephemeral: true);
+        }
+        catch (Exception exception)
+        {
+            await Logger.Error($"Court test diagnostics failed for {Context.User.Id}", exception);
+            await FollowupAsync("Не удалось получить диагностику дела. Ошибка записана в журнал Discord-бота.", ephemeral: true);
+        }
+    }
 }
