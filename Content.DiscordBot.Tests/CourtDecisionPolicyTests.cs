@@ -30,6 +30,19 @@ public sealed class CourtDecisionPolicyTests
     }
 
     [Test]
+    public void SingleSentencingVoteDoesNotResolve()
+    {
+        var result = CourtDecisionPolicy.ResolveSentence(
+            [
+                (CourtSanctions.Warning, (short?) null, null),
+            ],
+            2,
+            3);
+
+        Assert.That(result, Is.Null);
+    }
+
+    [Test]
     public void SentencingMajorityWins()
     {
         var result = CourtDecisionPolicy.ResolveSentence(
