@@ -113,12 +113,27 @@ public sealed class ReputationModule(
                 var lowerOk = row.LowerBound >= requiredLower;
                 var evidenceOk = row.EvidenceWeight >= requiredEvidence;
                 var completedOk = row.CompletedAssignments >= requiredCompleted;
+                var additionalForLower = QualificationProjection.AdditionalPositiveEvidenceForLowerBound(
+                    row.Score,
+                    row.EvidenceWeight,
+                    requiredLower);
+                var additionalForEvidence = Math.Max(0, requiredEvidence - row.EvidenceWeight);
+                var estimatedAdditionalPositive = Math.Max(additionalForLower, additionalForEvidence);
+
                 body =
                     $"Текущий уровень: **{current}** • расчётный допустимый: **{eligible}**\n" +
                     $"До **{RomanLevel(row.NextLevel.Value)}**:\n" +
                     $"{Mark(lowerOk)} LB90 **{row.LowerBound:P1} / {requiredLower:P0}**\n" +
                     $"{Mark(evidenceOk)} effective evidence **{row.EvidenceWeight:F2} / {requiredEvidence:F0}**\n" +
                     $"{Mark(completedOk)} завершённые обязанности **{row.CompletedAssignments} / {requiredCompleted}**";
+
+                if ((!lowerOk || !evidenceOk) && double.IsFinite(estimatedAdditionalPositive))
+                {
+                    body +=
+                        $"\n📈 Оценочно до статистических условий: **+{estimatedAdditionalPositive:F1} effective positive evidence** " +
+                        "при отсутствии новых отрицательных событий.";
+                }
+
                 if (row.EligibleLevel > row.CurrentLevel)
                     body += "\n✅ Условия повышения уже выполнены; Reputation Coordinator применит новый уровень.";
             }
@@ -132,7 +147,8 @@ public sealed class ReputationModule(
             .WithTitle("Прогресс квалификации")
             .WithDescription(
                 "Квалификация повышается только когда одновременно выполнены консервативная 90% граница, " +
-                "effective evidence и минимальное число завершённых обязанностей. Однотипные действия имеют убывающий вес `1/√n` в пределах одного дня; устойчивые действия в разные дни снова получают полный базовый вес.")
+                "effective evidence и минимальное число завершённых обязанностей. Однотипные действия имеют убывающий вес `1/√n` в пределах одного дня; устойчивые действия в разные дни снова получают полный базовый вес. " +
+                "Прогноз дополнительного evidence справочный и не учитывает будущий decay или новые отрицательные события.")
             .WithColor(Color.Blue);
         foreach (var field in fields)
             embed.AddField(field);
