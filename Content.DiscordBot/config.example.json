@@ -21,6 +21,7 @@
   "CourtSelectionCooldownHours": 24,
   "CourtLeadershipRole": 123456789012345678,
   "GovernanceChannel": 123456789012345678,
+  "EventEnabled": false,
   "EventReviewHours": 48,
   "EventReviewers": 3,
   "EventApprovalThreshold": 2,
