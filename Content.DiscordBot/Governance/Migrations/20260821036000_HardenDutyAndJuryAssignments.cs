@@ -31,15 +31,15 @@ public sealed class HardenDutyAndJuryAssignments : Migration
                   WHERE path.user_id = duty.user_id
                     AND path.track = 'moderation');
 
-            UPDATE governance.capability_grants AS grant
-            SET revoked_at = COALESCE(grant.revoked_at, now())
-            WHERE grant.source_type = 'duty_session'
-              AND grant.revoked_at IS NULL
+            UPDATE governance.capability_grants AS capability_grant
+            SET revoked_at = COALESCE(capability_grant.revoked_at, now())
+            WHERE capability_grant.source_type = 'duty_session'
+              AND capability_grant.revoked_at IS NULL
               AND EXISTS (
                   SELECT 1
                   FROM governance.duty_sessions AS duty
-                  WHERE duty.id::text = grant.source_id
-                    AND duty.user_id = grant.user_id
+                  WHERE duty.id::text = capability_grant.source_id
+                    AND duty.user_id = capability_grant.user_id
                     AND duty.status = 'active'
                     AND NOT EXISTS (
                         SELECT 1
@@ -96,15 +96,15 @@ public sealed class HardenDutyAndJuryAssignments : Migration
                 WHERE duty.user_id = affected_user
                   AND duty.status = 'active';
 
-                UPDATE governance.capability_grants AS grant
-                SET revoked_at = COALESCE(grant.revoked_at, now())
-                WHERE grant.user_id = affected_user
-                  AND grant.source_type = 'duty_session'
-                  AND grant.revoked_at IS NULL
+                UPDATE governance.capability_grants AS capability_grant
+                SET revoked_at = COALESCE(capability_grant.revoked_at, now())
+                WHERE capability_grant.user_id = affected_user
+                  AND capability_grant.source_type = 'duty_session'
+                  AND capability_grant.revoked_at IS NULL
                   AND EXISTS (
                       SELECT 1
                       FROM governance.duty_sessions AS duty
-                      WHERE duty.id::text = grant.source_id
+                      WHERE duty.id::text = capability_grant.source_id
                         AND duty.user_id = affected_user
                         AND duty.status = 'active');
 
