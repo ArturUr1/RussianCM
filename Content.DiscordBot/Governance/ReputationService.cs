@@ -133,7 +133,7 @@ public sealed class ReputationService(
         primary = primary.Trim().ToLowerInvariant();
         secondary = string.IsNullOrWhiteSpace(secondary) ? null : secondary.Trim().ToLowerInvariant();
         if (!ReputationTracks.IsPath(primary) || secondary != null && !ReputationTracks.IsPath(secondary))
-            throw new CourtRuleException("Доступные пути: support, moderation, jury, event, contributor.");
+            throw new CourtRuleException("Доступные пути: moderation, jury, event, contributor.");
         if (secondary == primary)
             throw new CourtRuleException("Основной и дополнительный путь должны различаться.");
 
@@ -223,7 +223,7 @@ public sealed class ReputationService(
         var general = generalRow == null
             ? ReputationMath.Posterior(ReputationTracks.General, [], DateTime.UtcNow)
             : ToPosterior(generalRow);
-        var tracks = snapshots.Where(value => value.Track != ReputationTracks.General)
+        var tracks = snapshots.Where(value => ReputationTracks.ServicePaths.Contains(value.Track, StringComparer.Ordinal))
             .ToDictionary(value => value.Track, ToPosterior, StringComparer.Ordinal);
         var activity = activityRow == null
             ? ReputationMath.Activity(0, 0, 0)
@@ -275,7 +275,11 @@ public sealed class ReputationService(
         var posteriors = new Dictionary<string, ReputationPosterior>(StringComparer.Ordinal);
         foreach (var track in ReputationTracks.ServicePaths)
         {
-            var trackValues = values.Where((_, index) => observations[index].Track == track).ToArray();
+            // The retired support track remains immutable in history. Its AHelp evidence now belongs
+            // to moderation, so fold those historical rows into the moderation posterior exactly once.
+            var trackValues = values.Where((_, index) =>
+                observations[index].Track == track ||
+                track == ReputationTracks.Moderation && observations[index].Track == ReputationTracks.Support).ToArray();
             var priorMean = communityMeans.GetValueOrDefault(track, 0.5);
             posteriors[track] = ReputationMath.Posterior(track, trackValues, now, priorMean, ReputationPolicy.TrackPriorStrength);
         }
@@ -332,7 +336,7 @@ public sealed class ReputationService(
             .Select(value => new { value.Id, UserId = value.ClaimedByUserId!.Value, value.UpdatedAt })
             .ToListAsync();
         foreach (var item in resolvedAHelps)
-            await AppendPolicyObservationAsync(governance, item.UserId, ReputationTracks.Support, ReputationReasons.AHelpResolved,
+            await AppendPolicyObservationAsync(governance, item.UserId, ReputationTracks.Moderation, ReputationReasons.AHelpResolved,
                 "ahelp_ticket", item.Id.ToString(), item.UpdatedAt, $"reputation:ahelp:{item.Id}:resolved");
 
         var duties = await governance.DutySessions.AsNoTracking()
@@ -439,12 +443,13 @@ public sealed class ReputationService(
                 continue;
             var completed = await governance.ServiceAssignments.AsNoTracking().CountAsync(value =>
                 value.UserId == path.UserId && value.Track == path.Track && value.CompletedAt != null);
-            if (path.Track == ReputationTracks.Support)
+            if (path.Track == ReputationTracks.Moderation)
+            {
                 completed += await governance.AHelpTickets.AsNoTracking().CountAsync(value =>
                     value.ClaimedByUserId == path.UserId && value.Status == "resolved");
-            if (path.Track == ReputationTracks.Moderation)
                 completed += await governance.DutySessions.AsNoTracking().CountAsync(value =>
                     value.UserId == path.UserId && (value.Status == "completed" || value.Status == "round_ended"));
+            }
             if (path.Track == ReputationTracks.Contributor)
                 completed += await governance.ContributionEvents.AsNoTracking().CountAsync(value => value.UserId == path.UserId);
 
