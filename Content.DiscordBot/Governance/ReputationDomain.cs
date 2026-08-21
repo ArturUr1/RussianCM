@@ -3,13 +3,15 @@ namespace Content.DiscordBot.Governance;
 public static class ReputationTracks
 {
     public const string General = "general";
+    // Legacy-only track retained so immutable historical observations remain readable.
+    // It is no longer an active service path and must not be offered for selection.
     public const string Support = "support";
     public const string Moderation = "moderation";
     public const string Jury = "jury";
     public const string Event = "event";
     public const string Contributor = "contributor";
 
-    public static readonly string[] ServicePaths = [Support, Moderation, Jury, Event, Contributor];
+    public static readonly string[] ServicePaths = [Moderation, Jury, Event, Contributor];
     public static readonly string[] All = [General, Support, Moderation, Jury, Event, Contributor];
 
     public static bool IsPath(string value) => ServicePaths.Contains(value, StringComparer.Ordinal);
@@ -18,6 +20,8 @@ public static class ReputationTracks
 
 public static class ReputationReasons
 {
+    // Historical reason key is intentionally preserved for immutable observations.
+    // New AHelp observations are recorded on the moderation track.
     public const string AHelpResolved = "support.ahelp_resolved";
     public const string DutyCompleted = "moderation.duty_completed";
     public const string DutyFailed = "moderation.duty_failed";
