@@ -220,7 +220,7 @@ if (governanceDoctor)
             'moderation_reviews_immutable',
             'reputation_observations_immutable',
             'contribution_events_immutable')
-        """).ToListAsync();
+        """).ToListAsync());
     var requiredTriggers = new HashSet<string>(StringComparer.Ordinal)
     {
         "ahelp_messages_immutable", "moderation_reviews_immutable",
