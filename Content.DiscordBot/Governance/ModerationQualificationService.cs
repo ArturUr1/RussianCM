@@ -33,14 +33,14 @@ public sealed class ModerationQualificationService(
                         qualification.Level,
                         user.IsGovernanceSuspended,
                     })
-                .Where(value => !value.IsGovernanceSuspended && value.DiscordUserId > 0)
+                .Where(value => !value.IsGovernanceSuspended && value.DiscordUserId != null && value.DiscordUserId > 0)
                 .ToListAsync();
 
-            // governance.users may contain synthetic/test identities represented by non-positive
-            // signed bigint values. They are not Discord snowflakes and must never participate in
-            // Discord-backed qualification reconciliation.
+            // The database predicate guarantees a positive Discord ID, but nullable flow state does
+            // not survive materialization into the anonymous row. Unwrap explicitly in C#.
             users = rows
-                .Select(value => (value.Id, (ulong) value.DiscordUserId, value.Level))
+                .Where(value => value.DiscordUserId is > 0)
+                .Select(value => (value.Id, checked((ulong) value.DiscordUserId!.Value), value.Level))
                 .ToList();
         }
 
