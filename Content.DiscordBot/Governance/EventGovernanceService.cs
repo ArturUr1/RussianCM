@@ -117,8 +117,6 @@ public sealed class EventGovernanceService(
             invitation.State = InvitationStates.Expired;
             invitation.RespondedAt = now;
             invitation.Version++;
-            await AppendRatingAsync(governance, reviewer.Id, -config.EventReviewExpiryPenalty,
-                "event_review_invite_expired", proposalId, $"event:{proposalId}:invitation:{invitation.Id}:expire", "system");
             AddAudit(governance, "event.review_invitation.expired", 0, "event_proposal", proposalId.ToString(),
                 new { invitation_id = invitation.Id, reviewer_user_id = reviewer.Id });
             await governance.SaveChangesAsync();
@@ -146,15 +144,6 @@ public sealed class EventGovernanceService(
                     AssignedAt = now,
                 });
             }
-            await AppendRatingAsync(governance, reviewer.Id, config.EventReviewAcceptReward,
-                "event_review_invite_accepted", proposalId, $"event:{proposalId}:invitation:{invitation.Id}:accept",
-                reviewerDiscordId.ToString());
-        }
-        else if (response == InvitationStates.Declined)
-        {
-            await AppendRatingAsync(governance, reviewer.Id, -config.EventReviewDeclinePenalty,
-                "event_review_invite_declined", proposalId, $"event:{proposalId}:invitation:{invitation.Id}:decline",
-                reviewerDiscordId.ToString());
         }
 
         AddAudit(governance, $"event.review_invitation.{response}", reviewerDiscordId,
@@ -200,9 +189,6 @@ public sealed class EventGovernanceService(
         var assignment = await governance.ServiceAssignments.SingleAsync(value => value.UserId == reviewer.Id &&
             value.Track == "event" && value.EntityType == "event_proposal" && value.EntityId == proposalId.ToString());
         assignment.CompletedAt = DateTime.UtcNow;
-        await AppendRatingAsync(governance, reviewer.Id, config.EventReviewCompletionReward,
-            "event_review_completed", proposalId, $"event:{proposalId}:review:{reviewer.Id}:completed",
-            reviewerDiscordId.ToString());
         await governance.SaveChangesAsync();
 
         var approvals = await governance.EventReviews.CountAsync(value => value.ProposalId == proposalId && value.Decision == "approve");
@@ -344,8 +330,6 @@ public sealed class EventGovernanceService(
                     invitation.State = InvitationStates.Expired;
                     invitation.RespondedAt = now;
                     invitation.Version++;
-                    await AppendRatingAsync(governance, invitation.UserId, -config.EventReviewExpiryPenalty,
-                        "event_review_invite_expired", proposalId, $"event:{proposalId}:invitation:{invitation.Id}:expire", "system");
                     AddAudit(governance, "event.review_invitation.expired", 0, "event_proposal", proposalId.ToString(),
                         new { invitation_id = invitation.Id, reviewer_user_id = invitation.UserId });
                 }
@@ -357,12 +341,6 @@ public sealed class EventGovernanceService(
                         continue;
                     invitation.State = InvitationStates.Failed;
                     invitation.Version++;
-                    await AppendRatingAsync(governance, invitation.UserId, -config.EventReviewAcceptReward,
-                        "event_review_accept_reward_rollback", proposalId,
-                        $"event:{proposalId}:invitation:{invitation.Id}:accept-rollback", "system");
-                    await AppendRatingAsync(governance, invitation.UserId, -config.EventReviewFailurePenalty,
-                        "event_review_failed", proposalId,
-                        $"event:{proposalId}:invitation:{invitation.Id}:failure", "system");
                     var assignment = await governance.ServiceAssignments.SingleOrDefaultAsync(value =>
                         value.UserId == invitation.UserId && value.Track == "event" &&
                         value.EntityType == "event_proposal" && value.EntityId == proposalId.ToString());
@@ -485,22 +463,6 @@ public sealed class EventGovernanceService(
             return "{}";
         try { return JsonSerializer.Serialize(JsonSerializer.Deserialize<JsonElement>(payload)); }
         catch (JsonException) { throw new CourtRuleException("payload должен быть корректным JSON."); }
-    }
-
-    private static Task AppendRatingAsync(
-        GovernanceDbContext governance,
-        Guid userId,
-        int amount,
-        string reason,
-        long proposalId,
-        string idempotencyKey,
-        string createdById)
-    {
-        return governance.Database.ExecuteSqlInterpolatedAsync($"""
-            SELECT governance.append_rating_entry(
-                {userId}, {amount}, {reason}, 'event_proposal', {proposalId.ToString()},
-                'governance', {createdById}, {idempotencyKey}, jsonb_build_object())
-            """);
     }
 
     private static void AddAudit(GovernanceDbContext db, string eventType, ulong actorDiscordId, string entityType, string entityId, object payload)
