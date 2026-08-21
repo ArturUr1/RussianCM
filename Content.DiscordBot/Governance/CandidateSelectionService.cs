@@ -16,6 +16,25 @@ public sealed record CandidateEligibilityDiagnostic(
     bool HasActiveBan,
     bool Eligible);
 
+public sealed record CandidateSimulationEntry(
+    Guid UserId,
+    Guid Ss14UserId,
+    long? DiscordUserId,
+    short QualificationLevel,
+    int TrackScore,
+    double TrackLowerBound,
+    double TrackEvidenceWeight,
+    int GeneralScore,
+    int Wins);
+
+public sealed record CandidateSimulationResult(
+    string Track,
+    short MinimumQualification,
+    int Iterations,
+    int Seed,
+    int PoolSize,
+    IReadOnlyList<CandidateSimulationEntry> Entries);
+
 public static class CandidateSelectionPolicy
 {
     public static double SamplePriority(
@@ -97,6 +116,112 @@ public sealed class CandidateSelectionService(
             discordLinked,
             hasActiveBan,
             eligible);
+    }
+
+    public async Task<CandidateSimulationResult> SimulateAsync(
+        string track,
+        short minimumQualification,
+        int iterations,
+        IReadOnlySet<ulong>? availableDiscordIds,
+        TimeSpan cooldown)
+    {
+        if (!ReputationTracks.IsPath(track))
+            throw new CourtRuleException("Неизвестное направление отбора.");
+        if (minimumQualification is < 1 or > 4)
+            throw new CourtRuleException("Минимальная квалификация должна быть от I до IV.");
+        if (iterations is < 50 or > 5000)
+            throw new CourtRuleException("Для симуляции укажите от 50 до 5000 итераций.");
+        if (cooldown < TimeSpan.Zero || cooldown > TimeSpan.FromDays(30))
+            throw new CourtRuleException("Cooldown симуляции должен быть от 0 до 30 дней.");
+
+        // SelectAsync performs the real hard/context filters and refreshes the authoritative snapshots.
+        // Asking for every candidate gives us the current pool without creating invitations or assignments.
+        var pool = await SelectAsync(
+            track,
+            minimumQualification,
+            "selection_simulation",
+            Guid.NewGuid().ToString("N"),
+            int.MaxValue,
+            [],
+            availableDiscordIds,
+            cooldown);
+
+        var seed = Random.Shared.Next();
+        if (pool.Count == 0)
+            return new CandidateSimulationResult(track, minimumQualification, iterations, seed, 0, []);
+
+        await using var governance = governanceFactory();
+        var ids = pool.Select(value => value.Id).ToArray();
+        var qualificationLevels = await governance.Qualifications.AsNoTracking()
+            .Where(value => ids.Contains(value.UserId) && value.Track == track)
+            .ToDictionaryAsync(value => value.UserId, value => value.Level);
+        var snapshots = await governance.ReputationSnapshots.AsNoTracking()
+            .Where(value => ids.Contains(value.UserId) &&
+                            (value.Track == track || value.Track == ReputationTracks.General))
+            .ToListAsync();
+        var byUser = snapshots.GroupBy(value => value.UserId)
+            .ToDictionary(group => group.Key, group => group.ToDictionary(value => value.Track, StringComparer.Ordinal));
+
+        var wins = pool.ToDictionary(value => value.Id, _ => 0);
+        var random = new Random(seed);
+        for (var iteration = 0; iteration < iterations; iteration++)
+        {
+            GovernanceUser? winner = null;
+            var bestPriority = double.NegativeInfinity;
+            foreach (var user in pool)
+            {
+                byUser.TryGetValue(user.Id, out var userSnapshots);
+                GovernanceReputationSnapshot? trackSnapshot = null;
+                GovernanceReputationSnapshot? generalSnapshot = null;
+                if (userSnapshots != null)
+                {
+                    userSnapshots.TryGetValue(track, out trackSnapshot);
+                    userSnapshots.TryGetValue(ReputationTracks.General, out generalSnapshot);
+                }
+
+                var priority = CandidateSelectionPolicy.SamplePriority(
+                    trackSnapshot?.Alpha ?? ReputationPolicy.TrackPriorStrength * 0.5,
+                    trackSnapshot?.Beta ?? ReputationPolicy.TrackPriorStrength * 0.5,
+                    generalSnapshot?.Score ?? ReputationPolicy.NeutralScore,
+                    qualificationLevels.GetValueOrDefault(user.Id, (short) 1),
+                    random);
+                if (priority <= bestPriority)
+                    continue;
+                bestPriority = priority;
+                winner = user;
+            }
+
+            if (winner != null)
+                wins[winner.Id]++;
+        }
+
+        var entries = pool.Select(user =>
+        {
+            byUser.TryGetValue(user.Id, out var userSnapshots);
+            GovernanceReputationSnapshot? trackSnapshot = null;
+            GovernanceReputationSnapshot? generalSnapshot = null;
+            if (userSnapshots != null)
+            {
+                userSnapshots.TryGetValue(track, out trackSnapshot);
+                userSnapshots.TryGetValue(ReputationTracks.General, out generalSnapshot);
+            }
+
+            return new CandidateSimulationEntry(
+                user.Id,
+                user.Ss14UserId,
+                user.DiscordUserId,
+                qualificationLevels.GetValueOrDefault(user.Id, (short) 1),
+                trackSnapshot?.Score ?? ReputationPolicy.NeutralScore,
+                trackSnapshot?.LowerBound ?? 0,
+                trackSnapshot?.EvidenceWeight ?? 0,
+                generalSnapshot?.Score ?? ReputationPolicy.NeutralScore,
+                wins[user.Id]);
+        })
+        .OrderByDescending(value => value.Wins)
+        .ThenByDescending(value => value.TrackScore)
+        .ToArray();
+
+        return new CandidateSimulationResult(track, minimumQualification, iterations, seed, pool.Count, entries);
     }
 
     public async Task<IReadOnlyList<GovernanceUser>> SelectAsync(
