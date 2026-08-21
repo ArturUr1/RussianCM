@@ -25,8 +25,11 @@ public sealed class CandidateSelectionService(
         await using var governance = governanceFactory();
         var now = DateTime.UtcNow;
         var average = await governance.Users.AverageAsync(value => (double?) value.CivicRatingCache) ?? 0;
+        var effectiveMinimumQualification = config?.CourtTestMode == true && track == "event"
+            ? (short) Math.Max(minimumQualification, 4)
+            : minimumQualification;
         var qualified = governance.Users.AsNoTracking()
-            .Join(governance.Qualifications.Where(value => value.Track == track && value.Level >= minimumQualification),
+            .Join(governance.Qualifications.Where(value => value.Track == track && value.Level >= effectiveMinimumQualification),
                 user => user.Id,
                 qualification => qualification.UserId,
                 (user, _) => user)
