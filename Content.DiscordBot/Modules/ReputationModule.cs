@@ -23,7 +23,9 @@ public sealed class ReputationModule(
             ? "Пути пока не выбраны. Используйте `/репутация пути`."
             : string.Join("\n", profile.Paths.Select(value =>
                 $"{(value.Slot == 1 ? "Основной" : "Дополнительный")}: **{TrackName(value.Track)}**"));
-        var trustText = string.Join("\n", ReputationTracks.ServicePaths.Select(track =>
+        var trustText = string.Join("\n", ReputationTracks.ServicePaths
+            .Where(track => track != ReputationTracks.Support)
+            .Select(track =>
         {
             var posterior = profile.Tracks.GetValueOrDefault(track);
             var evidence = posterior?.EvidenceWeight ?? 0.0;
@@ -60,14 +62,12 @@ public sealed class ReputationModule(
     [SlashCommand("пути", "Выбрать один или два направления помощи сообществу")]
     public Task PathsAsync(
         [Summary("основной", "Основной путь участия")]
-        [Choice("Поддержка игроков", ReputationTracks.Support)]
         [Choice("Модерация", ReputationTracks.Moderation)]
         [Choice("Community Court", ReputationTracks.Jury)]
         [Choice("События", ReputationTracks.Event)]
         [Choice("Контрибьюторство", ReputationTracks.Contributor)] string primary,
         [Summary("дополнительный", "Необязательный второй путь")]
         [Choice("Нет", "none")]
-        [Choice("Поддержка игроков", ReputationTracks.Support)]
         [Choice("Модерация", ReputationTracks.Moderation)]
         [Choice("Community Court", ReputationTracks.Jury)]
         [Choice("События", ReputationTracks.Event)]
@@ -225,7 +225,7 @@ public sealed class ReputationModule(
     private static string TrackName(string track) => track switch
     {
         ReputationTracks.General => "Общая",
-        ReputationTracks.Support => "Поддержка игроков",
+        ReputationTracks.Support => "Модерация",
         ReputationTracks.Moderation => "Модерация",
         ReputationTracks.Jury => "Community Court",
         ReputationTracks.Event => "События",
