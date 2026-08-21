@@ -62,41 +62,19 @@ public sealed class CommandHandler(
 
     private async Task HandleCommandAsync(SocketMessage messageParam)
     {
-        // Don't process the command if it was a system message
+        // Governance channels are made read-only with Discord permission overwrites by
+        // CourtDiscordCoordinator. Do not delete user messages after the fact: prevention
+        // at the Discord permission layer is deterministic and leaves no moderation race.
         var message = messageParam as SocketUserMessage;
-        if (message == null)
+        if (message == null || message.Author.IsBot)
             return;
 
-        if (message.Author.IsBot)
-            return;
-        if (message.Channel is SocketThreadChannel thread && await court.IsCourtThreadAsync(thread.Id) &&
-            !await court.CanWriteThreadAsync(thread.Id, message.Author.Id))
-        {
-            try
-            {
-                await message.DeleteAsync();
-                var dm = await message.Author.CreateDMChannelAsync();
-                await dm.SendMessageAsync("В треде Community Court писать могут только истец, ответчик и зарегистрированные свидетели. Присяжные не обсуждают дело.");
-            }
-            catch (Exception exception)
-            {
-                await Logger.Error($"Could not enforce Community Court thread ACL for {message.Author.Id}", exception);
-            }
-            return;
-        }
-
-        // Create a number to track where the prefix ends and the command begins
         var argPos = 0;
-
-        // Determine if the message is a command based on the prefix and make sure no bots trigger commands
         if (!(message.HasCharPrefix('!', ref argPos) ||
             message.HasMentionPrefix(client.CurrentUser, ref argPos)))
             return;
 
-        // Create a WebSocket-based command context based on the message
         var context = new SocketCommandContext(client, message);
-
-        // Execute the command with the command context we just created.
         var result = await commands.ExecuteAsync(context, argPos, null);
         if (!result.IsSuccess)
         {
