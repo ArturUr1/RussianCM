@@ -4,11 +4,31 @@ public sealed class GovernanceUser
 {
     public Guid Id { get; set; }
     public Guid Ss14UserId { get; set; }
-    public long DiscordUserId { get; set; }
+    public long? DiscordUserId { get; set; }
     public int CivicRatingCache { get; set; }
     public bool IsGovernanceSuspended { get; set; }
     public DateTime CreatedAt { get; set; }
     public DateTime UpdatedAt { get; set; }
+}
+
+public sealed class GovernanceIdentityLink
+{
+    public long Id { get; set; }
+    public Guid UserId { get; set; }
+    public long DiscordUserId { get; set; }
+    public DateTime LinkedAt { get; set; }
+    public DateTime? UnlinkedAt { get; set; }
+    public string Source { get; set; } = string.Empty;
+    public string Metadata { get; set; } = "{}";
+}
+
+public sealed class GovernanceServicePath
+{
+    public Guid UserId { get; set; }
+    public short Slot { get; set; }
+    public string Track { get; set; } = string.Empty;
+    public DateTime SelectedAt { get; set; }
+    public DateTime ChangedAt { get; set; }
 }
 
 public sealed class GovernanceQualification
@@ -30,6 +50,65 @@ public sealed class GovernanceRatingEntry
     public DateTime CreatedAt { get; set; }
     public string CreatedByType { get; set; } = string.Empty;
     public string? CreatedById { get; set; }
+    public string IdempotencyKey { get; set; } = string.Empty;
+    public string Metadata { get; set; } = "{}";
+}
+
+public sealed class GovernanceReputationObservation
+{
+    public long Id { get; set; }
+    public Guid UserId { get; set; }
+    public string Track { get; set; } = string.Empty;
+    public double SuccessWeight { get; set; }
+    public double FailureWeight { get; set; }
+    public bool SeriousNegative { get; set; }
+    public string Reason { get; set; } = string.Empty;
+    public string EntityType { get; set; } = string.Empty;
+    public string EntityId { get; set; } = string.Empty;
+    public DateTime OccurredAt { get; set; }
+    public DateTime CreatedAt { get; set; }
+    public string CreatedByType { get; set; } = string.Empty;
+    public string? CreatedById { get; set; }
+    public string IdempotencyKey { get; set; } = string.Empty;
+    public string Metadata { get; set; } = "{}";
+}
+
+public sealed class GovernanceReputationSnapshot
+{
+    public Guid UserId { get; set; }
+    public string Track { get; set; } = string.Empty;
+    public double Alpha { get; set; }
+    public double Beta { get; set; }
+    public double Mean { get; set; }
+    public double LowerBound { get; set; }
+    public double EvidenceWeight { get; set; }
+    public int Score { get; set; }
+    public DateTime CalculatedAt { get; set; }
+}
+
+public sealed class GovernanceGameActivitySnapshot
+{
+    public Guid UserId { get; set; }
+    public double OverallHours { get; set; }
+    public int ActiveWeeks { get; set; }
+    public int AccountAgeDays { get; set; }
+    public double ActivityIndex { get; set; }
+    public double EvidenceWeight { get; set; }
+    public DateTime CalculatedAt { get; set; }
+}
+
+public sealed class GovernanceContributionEvent
+{
+    public long Id { get; set; }
+    public Guid UserId { get; set; }
+    public string Reference { get; set; } = string.Empty;
+    public string ContributionKind { get; set; } = string.Empty;
+    public double Impact { get; set; }
+    public double Quality { get; set; }
+    public double Stability { get; set; }
+    public DateTime OccurredAt { get; set; }
+    public DateTime CreatedAt { get; set; }
+    public long? CreatedByDiscordId { get; set; }
     public string IdempotencyKey { get; set; } = string.Empty;
     public string Metadata { get; set; } = "{}";
 }
