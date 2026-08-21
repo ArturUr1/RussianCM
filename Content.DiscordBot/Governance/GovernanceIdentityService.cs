@@ -138,6 +138,104 @@ public sealed class GovernanceIdentityService(
         return values.Count == 0 ? null : values.Single();
     }
 
+    public async Task<string> DiagnoseLinkAsync(ulong discordId)
+    {
+        var permanentSs14 = await GetPermanentSs14UserIdAsync(discordId);
+        await using var game = gameFactory();
+        var current = await game.RMCLinkedAccounts.AsNoTracking()
+            .Where(value => value.DiscordId == discordId)
+            .Select(value => new { value.PlayerId, value.Player.LastSeenUserName })
+            .SingleOrDefaultAsync();
+
+        string permanentText;
+        if (permanentSs14 == null)
+        {
+            permanentText = "не зафиксирована";
+        }
+        else
+        {
+            var permanentName = await game.Player.AsNoTracking()
+                .Where(value => value.UserId == permanentSs14.Value)
+                .Select(value => value.LastSeenUserName)
+                .SingleOrDefaultAsync() ?? "неизвестный игрок";
+            permanentText = $"{permanentName} (`{permanentSs14}`)";
+        }
+
+        var currentText = current == null
+            ? "отсутствует"
+            : $"{current.LastSeenUserName} (`{current.PlayerId}`)";
+        var consistent = permanentSs14 == null
+            ? current == null
+            : current?.PlayerId == permanentSs14.Value;
+        return $"Discord `{discordId}`\nПостоянная Governance-связь: {permanentText}\nТекущая игровая связь: {currentText}\nСостояние: {(consistent ? "совпадает" : "РАСХОЖДЕНИЕ")}.";
+    }
+
+    public async Task<string> RepairGameLinkToPermanentAsync(ulong discordId, ulong actorDiscordId)
+    {
+        var permanentSs14 = await GetPermanentSs14UserIdAsync(discordId)
+            ?? throw new CourtRuleException("Для этого Discord нет постоянной Governance-привязки; создавать новую пару этой командой запрещено.");
+
+        await using var game = gameFactory();
+        await using var transaction = await game.Database.BeginTransactionAsync();
+        var currentByDiscord = await game.RMCLinkedAccounts
+            .Include(value => value.Player)
+            .ThenInclude(value => value.Patron)
+            .SingleOrDefaultAsync(value => value.DiscordId == discordId);
+        if (currentByDiscord?.PlayerId == permanentSs14)
+        {
+            await transaction.CommitAsync();
+            return $"Игровая связь уже соответствует постоянной Governance-паре: `{discordId}` → `{permanentSs14}`.";
+        }
+
+        var permanentPlayerLink = await game.RMCLinkedAccounts.AsNoTracking()
+            .SingleOrDefaultAsync(value => value.PlayerId == permanentSs14);
+        if (permanentPlayerLink != null && permanentPlayerLink.DiscordId != discordId)
+        {
+            throw new CourtRuleException(
+                "В игровой БД постоянный SS14 сейчас связан с другим Discord. Автоматическое восстановление остановлено, чтобы не затронуть третью идентичность.");
+        }
+
+        var previousPlayerId = currentByDiscord?.PlayerId;
+        if (currentByDiscord != null)
+        {
+            if (currentByDiscord.Player.Patron is { } stalePatron)
+            {
+                currentByDiscord.Player.Patron = null;
+                game.RMCPatrons.Remove(stalePatron);
+            }
+            game.RMCLinkedAccounts.Remove(currentByDiscord);
+        }
+
+        if (permanentPlayerLink == null)
+        {
+            var discord = await game.RMCDiscordAccounts.SingleOrDefaultAsync(value => value.Id == discordId);
+            if (discord == null)
+                game.RMCDiscordAccounts.Add(new RMCDiscordAccount { Id = discordId });
+            game.RMCLinkedAccounts.Add(new RMCLinkedAccount
+            {
+                PlayerId = permanentSs14,
+                DiscordId = discordId,
+            });
+            game.RMCLinkedAccountLogs.Add(new RMCLinkedAccountLogs
+            {
+                PlayerId = permanentSs14,
+                DiscordId = discordId,
+                At = DateTime.UtcNow,
+            });
+        }
+
+        await game.SaveChangesAsync();
+        await transaction.CommitAsync();
+
+        await using var governance = governanceFactory();
+        var governanceUser = await governance.Users.AsNoTracking().SingleAsync(value => value.Ss14UserId == permanentSs14);
+        AddAudit(governance, "identity.game_link_repaired", "discord_user", actorDiscordId.ToString(), governanceUser.Id,
+            new { discord_user_id = discordId, permanent_ss14_user_id = permanentSs14, previous_game_ss14_user_id = previousPlayerId });
+        await governance.SaveChangesAsync();
+
+        return $"Игровая таблица восстановлена по постоянной Governance-паре: `{discordId}` → `{permanentSs14}`. Новая идентичность не создавалась.";
+    }
+
     public async Task<GovernanceUser> RequireDiscordUserAsync(ulong discordId)
     {
         await using var game = gameFactory();
