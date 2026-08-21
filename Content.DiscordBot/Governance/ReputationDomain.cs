@@ -167,6 +167,10 @@ public static class ReputationMath
             index * ReputationPolicy.GameActivityMaxEvidence);
     }
 
+    public static bool IsAuthoritativeReason(string reason) =>
+        !reason.StartsWith("legacy:", StringComparison.Ordinal) &&
+        !reason.StartsWith("spillover:legacy:", StringComparison.Ordinal);
+
     public static ReputationPosterior Posterior(
         string track,
         IReadOnlyList<ReputationObservationValue> observations,
@@ -187,7 +191,12 @@ public static class ReputationMath
             ? ReputationPolicy.GeneralPriorBeta
             : (1.0 - priorMean) * strength;
 
-        var ordered = observations.OrderBy(value => value.OccurredAt).ToArray();
+        // Legacy linear-rating imports remain immutable and visible for audit, but they are not calibrated
+        // Bayesian evidence. Operational v2 observations rebuilt from source tables are authoritative.
+        var ordered = observations
+            .Where(value => IsAuthoritativeReason(value.Reason))
+            .OrderBy(value => value.OccurredAt)
+            .ToArray();
         var repeated = new Dictionary<(string Reason, int Year, int Month), int>();
         var previousSerious = 0;
         var successTotal = Math.Max(0, extraSuccessEvidence);
