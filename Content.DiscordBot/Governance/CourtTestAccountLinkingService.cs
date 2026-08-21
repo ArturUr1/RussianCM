@@ -33,7 +33,7 @@ public sealed class CourtTestAccountLinkingService(
         if (linkedByPlayer != null && linkedByPlayer.DiscordId != targetDiscordId)
         {
             throw new CourtRuleException(
-                $"SS14-аккаунт «{player.LastSeenUserName}» уже привязан к другому Discord ID ({linkedByPlayer.DiscordId}).");
+                $"SS14-аккаунт «{player.LastSeenUserName}» уже привязан к другому Discord ID ({linkedByPlayer.DiscordId}). Перепривязка запрещена.");
         }
 
         var linkedByDiscord = await game.RMCLinkedAccounts.AsNoTracking()
@@ -41,8 +41,11 @@ public sealed class CourtTestAccountLinkingService(
         if (linkedByDiscord != null && linkedByDiscord.PlayerId != player.UserId)
         {
             throw new CourtRuleException(
-                $"Этот Discord-аккаунт уже привязан к другому SS14 UUID ({linkedByDiscord.PlayerId}).");
+                $"Этот Discord-аккаунт уже привязан к другому SS14 UUID ({linkedByDiscord.PlayerId}). Перепривязка запрещена.");
         }
+
+        // Test mode must obey the same permanent identity invariant as production linking.
+        await community.ValidatePermanentLinkAsync(player.UserId, targetDiscordId);
 
         if (linkedByPlayer == null && linkedByDiscord == null)
         {
@@ -64,6 +67,7 @@ public sealed class CourtTestAccountLinkingService(
             await game.SaveChangesAsync();
         }
 
+        await community.SyncPermanentLinkAsync(player.UserId, targetDiscordId);
         var profile = await community.GetProfileAsync(targetDiscordId);
         await EnsureTestJuryPathAsync(profile.UserId);
         if (!profile.Qualifications.TryGetValue("jury", out var juryLevel) || juryLevel < 1)
@@ -72,7 +76,7 @@ public sealed class CourtTestAccountLinkingService(
         await Logger.Info(
             $"Court test link: Discord {targetDiscordId} -> SS14 {player.UserId} ({player.LastSeenUserName}), actor {actorDiscordId}.");
 
-        return $"Тестовая привязка создана: <@{targetDiscordId}> → {player.LastSeenUserName} (`{player.UserId}`). Путь jury активен, допуск jury ≥ 1.";
+        return $"Тестовая привязка подтверждена: <@{targetDiscordId}> → {player.LastSeenUserName} (`{player.UserId}`). Перепривязка запрещена; путь jury активен, допуск jury ≥ 1.";
     }
 
     public async Task<string> ExpireDefenseAsync(long caseId, ulong actorDiscordId)
