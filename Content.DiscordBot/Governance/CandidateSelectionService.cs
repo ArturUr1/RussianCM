@@ -35,11 +35,16 @@ public sealed class CandidateSelectionService(
                 user => user.Id,
                 qualification => qualification.UserId,
                 (user, qualification) => new { User = user, qualification.Level })
-            .Join(governance.ServicePaths.AsNoTracking().Where(value => value.Track == track),
+            .Where(row => !row.User.IsGovernanceSuspended && !excludedUsers.Contains(row.User.Id));
+
+        var bypassPathForLocalTest = config?.CourtTestMode == true && track is ReputationTracks.Jury or ReputationTracks.Event;
+        if (!bypassPathForLocalTest)
+        {
+            qualified = qualified.Join(governance.ServicePaths.AsNoTracking().Where(value => value.Track == track),
                 row => row.User.Id,
                 path => path.UserId,
-                (row, _) => row)
-            .Where(row => !row.User.IsGovernanceSuspended && !excludedUsers.Contains(row.User.Id));
+                (row, _) => row);
+        }
 
         if (track is ReputationTracks.Jury or ReputationTracks.Event or ReputationTracks.Moderation)
             qualified = qualified.Where(row => row.User.DiscordUserId != null && row.User.DiscordUserId > 0);
