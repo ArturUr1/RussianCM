@@ -496,9 +496,11 @@ public sealed class EventGovernanceService(
         string idempotencyKey,
         string createdById)
     {
-        return governance.Database.ExecuteSqlRawAsync(
-            "SELECT governance.append_rating_entry({0}, {1}, {2}, 'event_proposal', {3}, 'governance', {4}, {5}, '{}'::jsonb)",
-            userId, amount, reason, proposalId.ToString(), createdById, idempotencyKey);
+        return governance.Database.ExecuteSqlInterpolatedAsync($"""
+            SELECT governance.append_rating_entry(
+                {userId}, {amount}, {reason}, 'event_proposal', {proposalId.ToString()},
+                'governance', {createdById}, {idempotencyKey}, jsonb_build_object())
+            """);
     }
 
     private static void AddAudit(GovernanceDbContext db, string eventType, ulong actorDiscordId, string entityType, string entityId, object payload)
