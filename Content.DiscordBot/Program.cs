@@ -13,7 +13,8 @@ var client = new DiscordSocketClient(new DiscordSocketConfig
 {
     GatewayIntents =
         GatewayIntents.Guilds |
-        GatewayIntents.GuildMessages,
+        GatewayIntents.GuildMessages |
+        GatewayIntents.MessageContent,
 });
 client.Log += Logger.Log;
 var seedBoostyTiers = args.Contains("--seed-boosty-tiers");
@@ -116,9 +117,9 @@ if (governanceDoctor)
         "reputation_snapshots", "game_activity_snapshots", "contribution_events", "qualifications", "conflicts",
         "invitations", "court_cases", "court_participants", "court_statements", "jurors", "guilt_votes",
         "sentencing_votes", "friendships", "service_assignments", "punishment_executions", "duty_sessions",
-        "capability_grants", "ahelp_tickets", "ahelp_messages", "live_incidents", "moderation_actions",
-        "moderation_approvals", "moderation_reviews", "event_proposals", "event_reviews", "event_sessions",
-        "event_manifest_items", "event_actions", "leadership_overrides", "audit_events",
+        "capability_grants", "ahelp_tickets", "ahelp_messages", "ahelp_discord_sync", "court_defense_confirmations",
+        "live_incidents", "moderation_actions", "moderation_approvals", "moderation_reviews", "event_proposals",
+        "event_reviews", "event_sessions", "event_manifest_items", "event_actions", "leadership_overrides", "audit_events",
     };
     var existingTables = (await governance.Database.SqlQueryRaw<string>(
         "SELECT table_name AS \"Value\" FROM information_schema.tables WHERE table_schema = 'governance'").ToListAsync()).ToHashSet();
@@ -287,6 +288,7 @@ var events = new EventGovernanceService(CreateGovernanceDatabase, community, sel
 var eventStatus = new EventGovernanceStatusService(CreateGovernanceDatabase);
 var guildMembers = new DiscordGuildMemberCache(client, config.Guild);
 var coordinator = new CourtDiscordCoordinator(client, court, courtMaterials, punishments, events, moderation, config, guildMembers);
+var conversations = new GovernanceDiscordConversationCoordinator(client, CreateGovernanceDatabase, config);
 var moderationTrustCoordinator = new ModerationTrustCoordinator(client, moderationTrust, court, config, guildMembers);
 var reputationCoordinator = new ReputationCoordinator(identities, reputation, config);
 var services = new ServiceCollection()
@@ -308,6 +310,7 @@ var services = new ServiceCollection()
     .AddSingleton(events)
     .AddSingleton(eventStatus)
     .AddSingleton(coordinator)
+    .AddSingleton(conversations)
     .AddSingleton(moderationTrustCoordinator)
     .AddSingleton(reputationCoordinator)
     .BuildServiceProvider();
@@ -336,6 +339,7 @@ AppDomain.CurrentDomain.ProcessExit += (_, _) =>
 
 await handler.InstallCommandsAsync();
 var scheduler = Task.Run(() => coordinator.RunSchedulerAsync(shutdown.Token));
+var conversationScheduler = Task.Run(() => conversations.RunSchedulerAsync(shutdown.Token));
 var moderationTrustScheduler = Task.Run(() => moderationTrustCoordinator.RunSchedulerAsync(shutdown.Token));
 var reputationScheduler = Task.Run(() => reputationCoordinator.RunSchedulerAsync(shutdown.Token));
 
@@ -352,7 +356,7 @@ await client.StopAsync();
 await services.DisposeAsync();
 try
 {
-    await Task.WhenAll(scheduler, moderationTrustScheduler, reputationScheduler);
+    await Task.WhenAll(scheduler, conversationScheduler, moderationTrustScheduler, reputationScheduler);
 }
 catch (OperationCanceledException)
 {
