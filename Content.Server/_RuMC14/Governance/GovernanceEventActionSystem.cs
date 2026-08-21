@@ -6,8 +6,10 @@ using Content.Server.Chat.Managers;
 using Content.Server.Database;
 using Content.Server.GameTicking;
 using Content.Shared._CMU14.ZLevels.Weather;
+using Content.Shared.Corvax.CCCVars;
 using Content.Shared.Weather;
 using Robust.Server.Player;
+using Robust.Shared.Configuration;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Timing;
 
@@ -25,6 +27,7 @@ public sealed class GovernanceEventActionSystem : EntitySystem
     private const int MaxWeatherDurationSeconds = 3600;
 
     [Dependency] private readonly IChatManager _chat = default!;
+    [Dependency] private readonly IConfigurationManager _cfg = default!;
     [Dependency] private readonly IServerDbManager _database = default!;
     [Dependency] private readonly IGameTiming _timing = default!;
     [Dependency] private readonly GameTicker _ticker = default!;
@@ -37,6 +40,9 @@ public sealed class GovernanceEventActionSystem : EntitySystem
     public override void Update(float frameTime)
     {
         base.Update(frameTime);
+
+        if (!_cfg.GetCVar(CCCVars.GovernanceEventEnabled))
+            return;
 
         _pollAccumulator += frameTime;
         if (_pollAccumulator < PollIntervalSeconds || _processing || _ticker.RoundId <= 0)
