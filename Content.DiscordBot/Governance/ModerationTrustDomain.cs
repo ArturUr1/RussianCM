@@ -48,7 +48,7 @@ public sealed record ModerationReviewAssignment(
     long ActionId,
     long InvitationId,
     Guid ReviewerUserId,
-    long ReviewerDiscordId,
+    long? ReviewerDiscordId,
     DateTime ExpiresAt);
 
 public sealed record ModerationReviewPacket(
