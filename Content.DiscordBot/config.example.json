@@ -41,5 +41,6 @@
   "ModerationReviewFailurePenalty": 30,
   "ModerationReviewSamplePercent": 25,
   "ModerationReviewSchedulerSeconds": 30,
-  "ModerationReviewBatchSize": 5
+  "ModerationReviewBatchSize": 5,
+  "ReputationSchedulerSeconds": 300
 }
