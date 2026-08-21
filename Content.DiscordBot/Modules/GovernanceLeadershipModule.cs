@@ -45,6 +45,37 @@ public sealed class GovernanceLeadershipModule(
         await FollowupAsync($"Квалификация `{track}` пользователя {user.Mention}: {level}.", ephemeral: true);
     });
 
+    [SlashCommand("профиль-ss14", "Проверить Governance-профиль игрока SS14 без изменения данных")]
+    public Task Ss14ProfileAsync(
+        [Summary("игрок", "Игровой никнейм SS14; Discord-привязка не требуется")] string player) => ExecuteAsync(async () =>
+    {
+        var target = await community.RequireSs14UserByNicknameAsync(player);
+        var profile = await reputation.GetProfileAsync(target.Id);
+        var discordText = profile.DiscordUserId is > 0
+            ? $"<@{profile.DiscordUserId}> (`{profile.DiscordUserId}`)"
+            : "не привязан";
+        var paths = profile.Paths.Count == 0
+            ? "не выбраны"
+            : string.Join("\n", profile.Paths.Select(value =>
+                $"{(value.Slot == 1 ? "основной" : "дополнительный")}: `{value.Track}`"));
+
+        await FollowupAsync(embed: new EmbedBuilder()
+            .WithTitle($"Governance-профиль • {profile.Name}")
+            .AddField("Governance user_id", $"`{profile.UserId}`")
+            .AddField("SS14 UUID", $"`{profile.Ss14UserId}`")
+            .AddField("Discord", discordText, true)
+            .AddField("Общая репутация", $"{profile.General.Score}/1000", true)
+            .AddField("Надёжность", $"средняя {profile.General.Mean:P1}\nнижняя 90% граница {profile.General.LowerBound:P1}", true)
+            .AddField("Игровая активность",
+                $"{profile.Activity.OverallHours:F0} ч • {profile.Activity.ActiveWeeks} активных нед. • аккаунту {profile.Activity.AccountAgeDays} дн.\n" +
+                $"индекс {profile.Activity.ActivityIndex:P0} • вес свидетельства {profile.Activity.EvidenceWeight:F2}")
+            .AddField("Пути участия", paths)
+            .AddField("Допуск", profile.Suspended ? "приостановлен" : "активен", true)
+            .WithColor(profile.Suspended ? Color.Red : Color.DarkBlue)
+            .WithFooter("Read-only диагностика Identity / Reputation v2")
+            .Build(), ephemeral: true);
+    });
+
     [SlashCommand("вклад", "Зафиксировать подтверждённый вклад игрока в проект")]
     public Task ContributionAsync(
         [Summary("игрок", "Игровой никнейм SS14; Discord-привязка не требуется")] string player,
