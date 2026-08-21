@@ -16,6 +16,26 @@ public sealed record CandidateEligibilityDiagnostic(
     bool HasActiveBan,
     bool Eligible);
 
+public static class CandidateSelectionPolicy
+{
+    public static double SamplePriority(
+        double alpha,
+        double beta,
+        int generalScore,
+        short qualificationLevel,
+        Random? random = null)
+    {
+        if (alpha <= 0 || beta <= 0)
+            throw new ArgumentOutOfRangeException(nameof(alpha), "Параметры Beta-распределения должны быть положительными.");
+
+        var thompson = ReputationMath.SampleBeta(alpha, beta, random);
+        var normalizedGeneral = Math.Clamp(generalScore, 0, 1000) / 1000.0;
+        var generalFactor = 0.85 + 0.30 * normalizedGeneral;
+        var qualificationFactor = 1.0 + 0.03 * Math.Max(0, qualificationLevel - 1);
+        return thompson * generalFactor * qualificationFactor;
+    }
+}
+
 public sealed class CandidateSelectionService(
     Func<GovernanceDbContext> governanceFactory,
     Func<ServerDbContext> gameFactory,
@@ -216,10 +236,12 @@ public sealed class CandidateSelectionService(
 
                 var alpha = trackSnapshot?.Alpha ?? ReputationPolicy.TrackPriorStrength * 0.5;
                 var beta = trackSnapshot?.Beta ?? ReputationPolicy.TrackPriorStrength * 0.5;
-                var thompson = ReputationMath.SampleBeta(alpha, beta);
-                var generalFactor = 0.85 + 0.30 * ((generalSnapshot?.Score ?? ReputationPolicy.NeutralScore) / 1000.0);
-                var qualificationFactor = 1.0 + 0.03 * Math.Max(0, qualificationLevels.GetValueOrDefault(user.Id, (short) 1) - 1);
-                return (User: user, Priority: thompson * generalFactor * qualificationFactor);
+                var priority = CandidateSelectionPolicy.SamplePriority(
+                    alpha,
+                    beta,
+                    generalSnapshot?.Score ?? ReputationPolicy.NeutralScore,
+                    qualificationLevels.GetValueOrDefault(user.Id, (short) 1));
+                return (User: user, Priority: priority);
             })
             .OrderByDescending(value => value.Priority)
             .Take(count)
