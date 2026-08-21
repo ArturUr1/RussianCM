@@ -175,8 +175,9 @@ public sealed class GovernanceDiscordConversationCoordinator
 
     private async Task HandleMessageAsync(SocketMessage rawMessage)
     {
-        if (rawMessage is not SocketUserMessage message || message.Author.IsBot ||
-            message.Channel is not SocketThreadChannel thread)
+        if (rawMessage is not SocketUserMessage message || message.Channel is not SocketThreadChannel thread)
+            return;
+        if (_client.CurrentUser != null && message.Author.Id == _client.CurrentUser.Id)
             return;
 
         try
@@ -189,7 +190,17 @@ public sealed class GovernanceDiscordConversationCoordinator
                        claimant.discord_user_id AS "ClaimantDiscordId",
                        defendant.discord_user_id AS "DefendantDiscordId",
                        court.status AS "Status",
-                       court.defense_deadline AS "DefenseDeadline"
+                       court.defense_deadline AS "DefenseDeadline",
+                       EXISTS (
+                           SELECT 1
+                           FROM governance.court_defense_confirmations AS confirmation
+                           WHERE confirmation.case_id = court.id
+                             AND confirmation.user_id = court.claimant_user_id) AS "ClaimantConfirmed",
+                       EXISTS (
+                           SELECT 1
+                           FROM governance.court_defense_confirmations AS confirmation
+                           WHERE confirmation.case_id = court.id
+                             AND confirmation.user_id = court.defendant_user_id) AS "DefendantConfirmed"
                 FROM governance.court_cases AS court
                 JOIN governance.users AS claimant ON claimant.id = court.claimant_user_id
                 JOIN governance.users AS defendant ON defendant.id = court.defendant_user_id
@@ -210,7 +221,11 @@ public sealed class GovernanceDiscordConversationCoordinator
             var authorId = checked((long) message.Author.Id);
             var isClaimant = courtCase.ClaimantDiscordId == authorId;
             var isDefendant = courtCase.DefendantDiscordId == authorId;
-            var discussionOpen = courtCase.Status == CourtStatuses.Defense && courtCase.DefenseDeadline > DateTime.UtcNow;
+            var authorAlreadyFinished = isClaimant && courtCase.ClaimantConfirmed ||
+                                        isDefendant && courtCase.DefendantConfirmed;
+            var discussionOpen = courtCase.Status == CourtStatuses.Defense &&
+                                 courtCase.DefenseDeadline > DateTime.UtcNow &&
+                                 !authorAlreadyFinished;
             if ((!isClaimant && !isDefendant) || !discussionOpen)
             {
                 await DeleteUnauthorizedMessageAsync(message);
@@ -482,5 +497,7 @@ public sealed class GovernanceDiscordConversationCoordinator
         long? ClaimantDiscordId,
         long? DefendantDiscordId,
         string Status,
-        DateTime DefenseDeadline);
+        DateTime DefenseDeadline,
+        bool ClaimantConfirmed,
+        bool DefendantConfirmed);
 }
