@@ -14,6 +14,9 @@ public sealed class EventGovernanceService(
 {
     public async Task<IReadOnlyList<(GovernanceInvitation Invitation, GovernanceUser User, GovernanceEventProposal Proposal)>> PendingReviewNotificationsAsync()
     {
+        if (!config.EventEnabled)
+            return [];
+
         await using var governance = governanceFactory();
         var rows = await governance.Invitations.AsNoTracking()
             .Where(value => value.Purpose == "event_review" && value.State == InvitationStates.Pending &&
@@ -27,6 +30,9 @@ public sealed class EventGovernanceService(
 
     public async Task MarkInvitationNotifiedAsync(long invitationId)
     {
+        if (!config.EventEnabled)
+            return;
+
         await using var governance = governanceFactory();
         var invitation = await governance.Invitations.SingleAsync(value => value.Id == invitationId);
         invitation.DiscordNotifiedAt = DateTime.UtcNow;
@@ -42,6 +48,7 @@ public sealed class EventGovernanceService(
 
     public async Task AttachThreadAsync(long proposalId, ulong threadId)
     {
+        RequireEnabled();
         await using var governance = governanceFactory();
         var proposal = await governance.EventProposals.SingleAsync(value => value.Id == proposalId);
         if (proposal.DiscordThreadId != null && proposal.DiscordThreadId != checked((long) threadId))
@@ -53,6 +60,7 @@ public sealed class EventGovernanceService(
     public async Task<GovernanceEventProposal> ProposeAsync(ulong ownerDiscordId, string title, string description,
         int durationMinutes, string manifestText)
     {
+        RequireEnabled();
         title = title.Trim();
         description = description.Trim();
         if (title.Length is < 5 or > 100 || description.Length is < 30 or > 3000)
@@ -88,6 +96,7 @@ public sealed class EventGovernanceService(
         string response,
         string? recusalReason)
     {
+        RequireEnabled();
         if (response is not (InvitationStates.Accepted or InvitationStates.Declined or InvitationStates.Recused))
             throw new CourtRuleException("Неизвестный ответ на приглашение.");
         if (response == InvitationStates.Recused && string.IsNullOrWhiteSpace(recusalReason))
@@ -157,6 +166,7 @@ public sealed class EventGovernanceService(
 
     public async Task<EventReviewOutcome> ReviewAsync(long proposalId, ulong reviewerDiscordId, string decision, string reasoning)
     {
+        RequireEnabled();
         if (decision is not ("approve" or "reject"))
             throw new CourtRuleException("Решение должно быть approve или reject.");
         if (reasoning.Trim().Length is < 20 or > 1500)
@@ -205,6 +215,7 @@ public sealed class EventGovernanceService(
 
     public async Task<GovernanceEventSession> StartAsync(long proposalId, ulong directorDiscordId, int roundId)
     {
+        RequireEnabled();
         var director = await community.RequireUserAsync(directorDiscordId);
         await using var governance = governanceFactory();
         var proposal = await governance.EventProposals.SingleOrDefaultAsync(value => value.Id == proposalId)
@@ -261,6 +272,7 @@ public sealed class EventGovernanceService(
     public async Task<GovernanceEventAction> RecordActionAsync(long sessionId, ulong actorDiscordId,
         string capability, string resource, string? payload)
     {
+        RequireEnabled();
         var actor = await community.RequireUserAsync(actorDiscordId);
         await using var governance = governanceFactory();
         var session = await governance.EventSessions.SingleOrDefaultAsync(value => value.Id == sessionId)
@@ -294,6 +306,7 @@ public sealed class EventGovernanceService(
 
     public async Task EndAsync(long sessionId, ulong directorDiscordId, bool aborted)
     {
+        RequireEnabled();
         var director = await community.RequireUserAsync(directorDiscordId);
         await using var governance = governanceFactory();
         var session = await governance.EventSessions.SingleOrDefaultAsync(value => value.Id == sessionId)
@@ -314,6 +327,9 @@ public sealed class EventGovernanceService(
 
     public async Task ProcessDeadlinesAsync()
     {
+        if (!config.EventEnabled)
+            return;
+
         var now = DateTime.UtcNow;
         List<long> proposalsToRefill;
         await using (var governance = governanceFactory())
@@ -385,6 +401,9 @@ public sealed class EventGovernanceService(
 
     private async Task EnsureReviewerInvitationsAsync(long proposalId)
     {
+        if (!config.EventEnabled)
+            return;
+
         await using var governance = governanceFactory();
         var proposal = await governance.EventProposals.AsNoTracking().SingleOrDefaultAsync(value => value.Id == proposalId)
             ?? throw new CourtRuleException("Заявка события не найдена.");
@@ -455,6 +474,12 @@ public sealed class EventGovernanceService(
         if (result.Count is < 1 or > 30 || result.DistinctBy(value => (value.Capability, value.Resource)).Count() != result.Count)
             throw new CourtRuleException("Манифест должен содержать от 1 до 30 уникальных ресурсов.");
         return result.ToArray();
+    }
+
+    private void RequireEnabled()
+    {
+        if (!config.EventEnabled)
+            throw new CourtRuleException("Event Governance временно отключена. Существующие данные сохранены, новые действия недоступны.");
     }
 
     private static string NormalizeJson(string? payload)
