@@ -43,18 +43,28 @@ public sealed class ImmutableIdentityBinding : Migration
                         USING ERRCODE = '23505';
                 END IF;
 
-                IF NEW.discord_user_id IS NULL THEN
-                    RETURN NEW;
-                END IF;
-
-                IF TG_OP = 'UPDATE' THEN
-                    target_user_id := OLD.id;
-                ELSE
-                    SELECT id INTO target_user_id
+                IF TG_OP = 'INSERT' THEN
+                    -- Compatibility with old INSERT ... ON CONFLICT synchronization used by Court.
+                    -- Existing SS14 profiles are authoritative: ignore any Discord proposed by that
+                    -- legacy upsert. First-time links are performed through GovernanceIdentityService.
+                    SELECT id, discord_user_id
+                    INTO target_user_id, current_discord
                     FROM governance.users
                     WHERE ss14_user_id = NEW.ss14_user_id
                     LIMIT 1;
-                    target_user_id := COALESCE(target_user_id, NEW.id);
+
+                    IF target_user_id IS NOT NULL THEN
+                        NEW.discord_user_id := current_discord;
+                        RETURN NEW;
+                    END IF;
+
+                    target_user_id := NEW.id;
+                ELSE
+                    target_user_id := OLD.id;
+                END IF;
+
+                IF NEW.discord_user_id IS NULL THEN
+                    RETURN NEW;
                 END IF;
 
                 SELECT discord_user_id INTO bound_discord
