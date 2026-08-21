@@ -16,7 +16,7 @@ public sealed class CommandHandler(
     CommandService commands,
     InteractionService interaction,
     Func<ServerDbContext> databaseFactory,
-    CommunityCourtService court,
+    GovernanceIdentityService identities,
     IServiceProvider services,
     ulong guild)
 {
@@ -131,11 +131,11 @@ public sealed class CommandHandler(
         var result = await commands.ExecuteAsync(context, argPos, null);
         if (!result.IsSuccess)
         {
-            var reason = result.ErrorReason ?? "Unknown command error";
+            var reason = result.ErrorReason ?? "неизвестная ошибка команды";
             await Logger.Info($"Command '{message.Content}' failed for {message.Author.Username}: {reason}");
 
             if (result.Error != CommandError.UnknownCommand)
-                await context.Channel.SendMessageAsync($"Command failed: {reason}");
+                await context.Channel.SendMessageAsync($"Команда не выполнена: {reason}");
         }
     }
 
@@ -165,12 +165,13 @@ public sealed class CommandHandler(
                 await modal.DeferAsync(true);
                 if (!Guid.TryParse(codeStr, out var code))
                 {
-                    await modal.FollowupAsync($"{codeStr} isn't a valid code! Get one in-game from the lobby at the top left of the screen.", ephemeral: true);
+                    await modal.FollowupAsync(
+                        $"`{codeStr}` — некорректный код привязки. Получите новый код в лобби игры и повторите попытку.",
+                        ephemeral: true);
                     break;
                 }
 
-                var author = modal.User;
-                var authorId = author.Id;
+                var authorId = modal.User.Id;
                 var discord = await db.RMCDiscordAccounts
                     .Include(d => d.LinkedAccount)
                     .ThenInclude(l => l.Player)
@@ -183,28 +184,58 @@ public sealed class CommandHandler(
 
                 if (codes == null)
                 {
-                    await modal.FollowupAsync($"No player found with code {codeStr}, join the game server and get another code before trying again, or ask for help in another channel.", ephemeral: true);
+                    await modal.FollowupAsync(
+                        "Код привязки не найден. Зайдите на игровой сервер, получите новый код в лобби и повторите попытку.",
+                        ephemeral: true);
                     break;
                 }
 
                 if (codes.CreationTime < DateTime.UtcNow.Subtract(TimeSpan.FromDays(1)))
                 {
-                    await modal.FollowupAsync($"Code {codeStr} were generated too long ago, join the game server and get another code before trying again.", ephemeral: true);
+                    await modal.FollowupAsync(
+                        "Срок действия кода привязки истёк. Получите новый код в лобби игры.",
+                        ephemeral: true);
                     break;
                 }
 
-                if (discord?.LinkedAccount is { } linked)
+                var targetPlayerId = codes.Player.UserId;
+                if (discord?.LinkedAccount is { } currentDiscordLink && currentDiscordLink.PlayerId != targetPlayerId)
                 {
-                    if (linked.Player.Patron is { } patron)
-                        db.RMCPatrons.Remove(patron);
-
-                    linked.Player.Patron = null;
-                    db.RMCLinkedAccounts.Remove(linked);
+                    await modal.FollowupAsync(
+                        $"Ваш Discord уже связан с SS14-аккаунтом **{currentDiscordLink.Player.LastSeenUserName}**. Перепривязка запрещена.",
+                        ephemeral: true);
+                    break;
                 }
 
-                discord ??= db.RMCDiscordAccounts.Add(new RMCDiscordAccount { Id = authorId }).Entity;
-                discord.LinkedAccount = db.RMCLinkedAccounts.Add(new RMCLinkedAccount { Discord = discord }).Entity;
-                discord.LinkedAccount.Player = codes.Player;
+                var currentPlayerLink = await db.RMCLinkedAccounts.AsNoTracking()
+                    .SingleOrDefaultAsync(value => value.PlayerId == targetPlayerId);
+                if (currentPlayerLink != null && currentPlayerLink.DiscordId != authorId)
+                {
+                    await modal.FollowupAsync(
+                        "Этот SS14-аккаунт уже связан с другим Discord. Перепривязка запрещена.",
+                        ephemeral: true);
+                    break;
+                }
+
+                try
+                {
+                    // Permanent Governance identity is checked before any game-database mutation.
+                    await identities.ValidatePermanentLinkAsync(targetPlayerId, authorId);
+                }
+                catch (CourtRuleException exception)
+                {
+                    await modal.FollowupAsync(exception.Message, ephemeral: true);
+                    break;
+                }
+
+                var createdLink = false;
+                if (discord?.LinkedAccount == null)
+                {
+                    discord ??= db.RMCDiscordAccounts.Add(new RMCDiscordAccount { Id = authorId }).Entity;
+                    discord.LinkedAccount = db.RMCLinkedAccounts.Add(new RMCLinkedAccount { Discord = discord }).Entity;
+                    discord.LinkedAccount.Player = codes.Player;
+                    createdLink = true;
+                }
 
                 var roles = (await client.Rest.GetGuildUserAsync(guildId, authorId))?.RoleIds.ToArray() ?? [];
                 var tiers = await db.RMCPatronTiers
@@ -212,29 +243,48 @@ public sealed class CommandHandler(
                     .ToListAsync();
                 if (tiers.Count == 0)
                 {
-                    discord.LinkedAccount.Player.Patron = null;
+                    discord!.LinkedAccount.Player.Patron = null;
                 }
                 else
                 {
                     tiers.Sort((a, b) => a.Priority.CompareTo(b.Priority));
                     var tier = tiers[0];
-                    discord.LinkedAccount.Player.Patron = db.RMCPatrons.Add(new RMCPatron { Tier = tier }).Entity;
+                    discord!.LinkedAccount.Player.Patron ??= db.RMCPatrons.Add(new RMCPatron
+                    {
+                        PlayerId = discord.LinkedAccount.PlayerId,
+                    }).Entity;
                     discord.LinkedAccount.Player.Patron.TierId = tier.Id;
                 }
 
-                db.RMCLinkedAccountLogs.Add(new RMCLinkedAccountLogs
+                if (createdLink)
                 {
-                    Discord = discord,
-                    Player = discord.LinkedAccount.Player,
-                });
+                    db.RMCLinkedAccountLogs.Add(new RMCLinkedAccountLogs
+                    {
+                        Discord = discord!,
+                        Player = discord!.LinkedAccount.Player,
+                    });
+                }
 
                 db.ChangeTracker.DetectChanges();
                 await db.SaveChangesAsync();
-                await court.SyncLinkedAccountAsync(discord.LinkedAccount.Player.UserId, authorId);
+                try
+                {
+                    await identities.SyncLinkedAccountAsync(targetPlayerId, authorId);
+                }
+                catch (CourtRuleException exception)
+                {
+                    await Logger.Error(
+                        $"Governance identity synchronization rejected game link Discord {authorId} -> SS14 {targetPlayerId}",
+                        exception);
+                    await modal.FollowupAsync(
+                        "Игровая связь сохранена, но проверка Governance обнаружила конфликт постоянной идентичности. Обратитесь к руководству; автоматическая перепривязка не выполнялась.",
+                        ephemeral: true);
+                    break;
+                }
 
-                var msg = $"Linked SS14 account with name {codes.Player.LastSeenUserName}";
+                var msg = $"SS14-аккаунт **{codes.Player.LastSeenUserName}** успешно связан с вашим Discord. Эта связь постоянная и не может быть перепривязана к другому аккаунту.";
                 if (codes.Player.Patron != null)
-                    msg += $" and tier {codes.Player.Patron.Tier.Name}";
+                    msg += $" Уровень поддержки: **{codes.Player.Patron.Tier.Name}**.";
 
                 await modal.FollowupAsync(msg, ephemeral: true);
                 break;
