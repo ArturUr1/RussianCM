@@ -6,7 +6,6 @@ namespace Content.DiscordBot.Governance;
 public sealed class ModerationTrustCoordinator(
     DiscordSocketClient client,
     ModerationTrustService trust,
-    ModerationQualificationService qualifications,
     CommunityCourtService court,
     Config config)
 {
@@ -37,7 +36,8 @@ public sealed class ModerationTrustCoordinator(
         await trust.ProcessDeadlinesAsync();
         var available = await GuildMembersAsync();
         await trust.EnsureAutomaticReviewsAsync(available);
-        await qualifications.ReconcileAsync();
+        // Qualification promotion/demotion is authoritative in ReputationCoordinator. The legacy
+        // TrustScore remains useful as an audit diagnostic but must not race the Bayesian policy.
         await NotifyReviewersAsync();
     }
 
@@ -72,16 +72,14 @@ public sealed class ModerationTrustCoordinator(
     {
         foreach (var (invitation, user) in await trust.PendingReviewNotificationsAsync())
         {
-            if (user.DiscordUserId <= 0)
+            if (user.DiscordUserId is not > 0)
                 continue;
 
             try
             {
-                var discordId = (ulong) user.DiscordUserId;
-
+                var discordId = checked((ulong) user.DiscordUserId.Value);
                 IUser? discordUser = client.GetUser(discordId);
                 discordUser ??= await client.Rest.GetUserAsync(discordId);
-
                 if (discordUser == null)
                     continue;
 
@@ -90,7 +88,8 @@ public sealed class ModerationTrustCoordinator(
                     $"RUCM выбрал вас для независимого аудита действия дежурного №{invitation.EntityId}. " +
                     $"До <t:{new DateTimeOffset(invitation.ExpiresAt).ToUnixTimeSeconds()}:F> ответьте через " +
                     "`/дежурство аудит-ответ`. После согласия используйте `/дежурство аудит-материалы`, " +
-                    "а затем `/дежурство аудит`. Согласие +10 Civic Rating, отказ -15, самоотвод без штрафа.");
+                    "а затем `/дежурство аудит`. Ответ на приглашение сам по себе не меняет репутацию: " +
+                    "статистически учитывается выполнение или срыв уже принятой обязанности.");
                 await trust.MarkInvitationNotifiedAsync(invitation.Id);
             }
             catch (Exception exception)
