@@ -41,7 +41,7 @@ public sealed class GovernanceDiscordConversationCoordinator
         {
             try
             {
-                if (_client.ConnectionState == ConnectionState.Connected)
+                if (_client.ConnectionState == Discord.ConnectionState.Connected)
                 {
                     // CommandHandler keeps Governance channels read-only by default. Court is the
                     // deliberate exception: members may send in an existing case thread, while this
