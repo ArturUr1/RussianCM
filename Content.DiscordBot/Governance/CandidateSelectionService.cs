@@ -3,12 +3,82 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Content.DiscordBot.Governance;
 
+public sealed record CandidateEligibilityDiagnostic(
+    Guid UserId,
+    string Track,
+    short QualificationLevel,
+    short RequiredQualification,
+    bool PathSelected,
+    bool PathRequirementBypassed,
+    bool Suspended,
+    bool DiscordRequired,
+    bool DiscordLinked,
+    bool HasActiveBan,
+    bool Eligible);
+
 public sealed class CandidateSelectionService(
     Func<GovernanceDbContext> governanceFactory,
     Func<ServerDbContext> gameFactory,
     ReputationService? reputation = null,
     Config? config = null)
 {
+    public async Task<CandidateEligibilityDiagnostic> DiagnoseBaseEligibilityAsync(
+        Guid userId,
+        string track,
+        short minimumQualification)
+    {
+        if (!ReputationTracks.IsPath(track))
+            throw new CourtRuleException("Неизвестное направление отбора.");
+        if (minimumQualification is < 1 or > 4)
+            throw new CourtRuleException("Минимальная квалификация должна быть от I до IV.");
+
+        await using var governance = governanceFactory();
+        var user = await governance.Users.AsNoTracking().SingleOrDefaultAsync(value => value.Id == userId)
+            ?? throw new CourtRuleException("Профиль Governance не найден.");
+
+        var effectiveMinimumQualification = config?.CourtTestMode == true && track == ReputationTracks.Event
+            ? Math.Max(minimumQualification, (short) 4)
+            : minimumQualification;
+        var qualification = await governance.Qualifications.AsNoTracking()
+            .Where(value => value.UserId == userId && value.Track == track)
+            .Select(value => (short?) value.Level)
+            .SingleOrDefaultAsync() ?? 0;
+        var pathSelected = await governance.ServicePaths.AsNoTracking()
+            .AnyAsync(value => value.UserId == userId && value.Track == track);
+        var pathRequirementBypassed = config?.CourtTestMode == true && track is ReputationTracks.Jury or ReputationTracks.Event;
+        var discordRequired = track is ReputationTracks.Jury or ReputationTracks.Event or ReputationTracks.Moderation;
+        var discordLinked = user.DiscordUserId is > 0;
+
+        await using var game = gameFactory();
+        var now = DateTime.UtcNow;
+        var hasGameBan = await game.Ban.AsNoTracking().AnyAsync(value =>
+            value.PlayerUserId == user.Ss14UserId && !value.Hidden && value.Unban == null &&
+            (value.ExpirationTime == null || value.ExpirationTime > now));
+        var hasRoleBan = await game.RoleBan.AsNoTracking().AnyAsync(value =>
+            value.PlayerUserId == user.Ss14UserId && !value.Hidden && value.Unban == null &&
+            (value.ExpirationTime == null || value.ExpirationTime > now));
+        var hasActiveBan = hasGameBan || hasRoleBan;
+
+        var eligible = !user.IsGovernanceSuspended &&
+                       qualification >= effectiveMinimumQualification &&
+                       (pathRequirementBypassed || pathSelected) &&
+                       (!discordRequired || discordLinked) &&
+                       !hasActiveBan;
+
+        return new CandidateEligibilityDiagnostic(
+            user.Id,
+            track,
+            qualification,
+            effectiveMinimumQualification,
+            pathSelected,
+            pathRequirementBypassed,
+            user.IsGovernanceSuspended,
+            discordRequired,
+            discordLinked,
+            hasActiveBan,
+            eligible);
+    }
+
     public async Task<IReadOnlyList<GovernanceUser>> SelectAsync(
         string track,
         short minimumQualification,
