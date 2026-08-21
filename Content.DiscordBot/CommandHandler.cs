@@ -49,7 +49,61 @@ public sealed class CommandHandler(
     private async Task RegisterInteractionsAsync()
     {
         await interaction.RegisterCommandsToGuildAsync(guild, true);
+        await ConfigureGovernanceChannelPermissionsAsync();
         await Logger.Info($"Registered Discord interactions in guild {guild}.");
+    }
+
+    private async Task ConfigureGovernanceChannelPermissionsAsync()
+    {
+        if (services.GetService(typeof(Config)) is not Config config)
+            return;
+
+        var socketGuild = client.GetGuild(guild);
+        if (socketGuild == null)
+            return;
+
+        var channelIds = new[] { config.CourtChannel, config.GovernanceChannel }
+            .Where(value => value != 0)
+            .Distinct()
+            .ToArray();
+
+        foreach (var channelId in channelIds)
+        {
+            if (client.GetChannel(channelId) is not SocketGuildChannel channel)
+                continue;
+
+            try
+            {
+                var everyone = socketGuild.EveryoneRole;
+                var everyoneCurrent = channel.GetPermissionOverwrite(everyone) ?? OverwritePermissions.InheritAll;
+                var everyoneReadOnly = everyoneCurrent.Modify(
+                    sendMessages: PermValue.Deny,
+                    createPublicThreads: PermValue.Deny,
+                    createPrivateThreads: PermValue.Deny,
+                    sendMessagesInThreads: PermValue.Deny);
+                if (!everyoneCurrent.Equals(everyoneReadOnly))
+                    await channel.AddPermissionOverwriteAsync(everyone, everyoneReadOnly);
+
+                var bot = socketGuild.CurrentUser;
+                var botCurrent = channel.GetPermissionOverwrite(bot) ?? OverwritePermissions.InheritAll;
+                var botWritable = botCurrent.Modify(
+                    sendMessages: PermValue.Allow,
+                    embedLinks: PermValue.Allow,
+                    attachFiles: PermValue.Allow,
+                    manageThreads: PermValue.Allow,
+                    createPublicThreads: PermValue.Allow,
+                    createPrivateThreads: PermValue.Allow,
+                    sendMessagesInThreads: PermValue.Allow);
+                if (!botCurrent.Equals(botWritable))
+                    await channel.AddPermissionOverwriteAsync(bot, botWritable);
+
+                await Logger.Info($"Governance Discord channel '{channel.Name}' ({channel.Id}) configured read-only for regular members.");
+            }
+            catch (Exception exception)
+            {
+                await Logger.Error($"Could not configure read-only Governance permissions for channel {channelId}", exception);
+            }
+        }
     }
 
     private async Task HandleInteractionAsync(SocketInteraction socketInteraction)
@@ -62,9 +116,8 @@ public sealed class CommandHandler(
 
     private async Task HandleCommandAsync(SocketMessage messageParam)
     {
-        // Governance channels are made read-only with Discord permission overwrites by
-        // CourtDiscordCoordinator. Do not delete user messages after the fact: prevention
-        // at the Discord permission layer is deterministic and leaves no moderation race.
+        // Governance channels are read-only at the Discord permission layer. Do not delete
+        // messages after the fact: preventing them is deterministic and leaves no ACL race.
         var message = messageParam as SocketUserMessage;
         if (message == null || message.Author.IsBot)
             return;
@@ -166,7 +219,7 @@ public sealed class CommandHandler(
                     tiers.Sort((a, b) => a.Priority.CompareTo(b.Priority));
                     var tier = tiers[0];
                     discord.LinkedAccount.Player.Patron = db.RMCPatrons.Add(new RMCPatron { Tier = tier }).Entity;
-                    discord.LinkedAccount.Player.Patron.Tier = tier;
+                    discord.LinkedAccount.Player.Patron.TierId = tier.Id;
                 }
 
                 db.RMCLinkedAccountLogs.Add(new RMCLinkedAccountLogs
