@@ -60,6 +60,7 @@ public static class ConfigurationLoader
         config.CourtSelectionCooldownHours = Int("COURT_SELECTION_COOLDOWN_HOURS") ?? config.CourtSelectionCooldownHours;
         config.CourtLeadershipRole = ULong("COURT_LEADERSHIP_ROLE_ID") ?? config.CourtLeadershipRole;
         config.GovernanceChannel = ULong("GOVERNANCE_CHANNEL_ID") ?? config.GovernanceChannel;
+        config.EventEnabled = Bool("EVENT_ENABLED") ?? config.EventEnabled;
         config.EventReviewHours = Int("EVENT_REVIEW_HOURS") ?? config.EventReviewHours;
         config.EventReviewers = Int("EVENT_REVIEWERS") ?? config.EventReviewers;
         config.EventApprovalThreshold = Int("EVENT_APPROVAL_THRESHOLD") ?? config.EventApprovalThreshold;
