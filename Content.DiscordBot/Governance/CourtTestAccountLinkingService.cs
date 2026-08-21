@@ -1,3 +1,4 @@
+using System.Text;
 using Content.Server.Database;
 using Microsoft.EntityFrameworkCore;
 
@@ -137,6 +138,60 @@ public sealed class CourtTestAccountLinkingService(
         await Logger.Info(
             $"Court test mode: reset {invitations.Count} pending jury notification(s) for case {caseId} by Discord {actorDiscordId}.");
         return invitations.Count;
+    }
+
+    public async Task<string> DiagnoseCaseAsync(long caseId)
+    {
+        EnsureTestMode();
+        if (caseId <= 0)
+            throw new CourtRuleException("Укажите корректный номер дела.");
+
+        await using var governance = governanceFactory();
+        var courtCase = await governance.CourtCases.AsNoTracking()
+            .SingleOrDefaultAsync(value => value.Id == caseId)
+            ?? throw new CourtRuleException("Дело не найдено.");
+
+        var jurors = await governance.Jurors.AsNoTracking()
+            .Where(value => value.CaseId == caseId)
+            .Join(governance.Users.AsNoTracking(),
+                juror => juror.UserId,
+                user => user.Id,
+                (juror, user) => new { juror.UserId, juror.Active, user.DiscordUserId })
+            .ToListAsync();
+        var guiltVotes = await governance.GuiltVotes.AsNoTracking()
+            .Where(value => value.CaseId == caseId)
+            .OrderBy(value => value.SubmittedAt)
+            .ToListAsync();
+        var sentencingVotes = await governance.SentencingVotes.AsNoTracking()
+            .Where(value => value.CaseId == caseId)
+            .OrderBy(value => value.SubmittedAt)
+            .ToListAsync();
+
+        var builder = new StringBuilder();
+        builder.AppendLine($"Дело №{caseId}: `{courtCase.Status}`");
+        builder.AppendLine($"Коллегия: {jurors.Count}, активно: {jurors.Count(value => value.Active)}; порог: {config.CourtDecisionThreshold}/{config.CourtJurySize}");
+        builder.AppendLine($"Голоса о виновности: {guiltVotes.Count}; о наказании: {sentencingVotes.Count}");
+        builder.AppendLine($"Начало наказания: {(courtCase.SentencingStartedAt?.ToString("O") ?? "—")}");
+        builder.AppendLine($"Итоговая мера в деле: {courtCase.SanctionType ?? "—"}");
+
+        if (sentencingVotes.Count > 0)
+        {
+            builder.AppendLine("Голоса о наказании:");
+            foreach (var vote in sentencingVotes)
+            {
+                var juror = jurors.SingleOrDefault(value => value.UserId == vote.JurorUserId);
+                var discord = juror is { DiscordUserId: > 0 } ? $"<@{juror.DiscordUserId}>" : vote.JurorUserId.ToString();
+                var currentStage = courtCase.SentencingStartedAt != null && vote.SubmittedAt >= courtCase.SentencingStartedAt.Value;
+                builder.Append("• ").Append(discord)
+                    .Append(" → `").Append(vote.SanctionType).Append('`')
+                    .Append("; active=").Append(juror?.Active == true ? "да" : "нет")
+                    .Append("; currentStage=").Append(currentStage ? "да" : "НЕТ")
+                    .Append("; ").AppendLine(vote.SubmittedAt.ToString("O"));
+            }
+        }
+
+        var text = builder.ToString();
+        return text.Length <= 1900 ? text : text[..1900] + "…";
     }
 
     private void EnsureTestMode()
