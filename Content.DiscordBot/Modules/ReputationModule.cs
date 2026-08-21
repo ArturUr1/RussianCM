@@ -10,11 +10,14 @@ public sealed class ReputationModule(
     ReputationService reputation,
     ReputationHistoryService history) : InteractionModuleBase<SocketInteractionContext>
 {
+    private const double MinimumTrustDisplayEvidence = 1.0;
+
     [SlashCommand("профиль", "Показать репутацию, игровую активность и доверие по направлениям")]
     public Task ProfileAsync() => ExecuteAsync(async () =>
     {
         var user = await community.RequireUserAsync(Context.User.Id);
         var profile = await reputation.GetProfileAsync(user.Id);
+        var selectedPaths = profile.Paths.Select(value => value.Track).ToHashSet(StringComparer.Ordinal);
         var pathText = profile.Paths.Count == 0
             ? "Пути пока не выбраны. Используйте `/репутация пути`."
             : string.Join("\n", profile.Paths.Select(value =>
@@ -22,9 +25,15 @@ public sealed class ReputationModule(
         var trustText = string.Join("\n", ReputationTracks.ServicePaths.Select(track =>
         {
             var posterior = profile.Tracks.GetValueOrDefault(track);
-            return posterior == null
-                ? $"• **{TrackName(track)}** — нет расчёта"
-                : $"• **{TrackName(track)}** — {posterior.Score}/1000; нижняя 90% граница {posterior.LowerBound:P0}; свидетельств {posterior.EvidenceWeight:F1}";
+            var evidence = posterior?.EvidenceWeight ?? 0.0;
+            var pathState = selectedPaths.Contains(track) ? string.Empty : " • путь не выбран";
+            if (posterior == null || evidence < MinimumTrustDisplayEvidence)
+            {
+                return $"• **{TrackName(track)}** — недостаточно данных; вес свидетельств {evidence:F1}{pathState}";
+            }
+
+            return $"• **{TrackName(track)}** — {posterior.Score}/1000; нижняя 90% граница {posterior.LowerBound:P0}; " +
+                   $"вес свидетельств {evidence:F1}{pathState}";
         }));
 
         var activity = profile.Activity;
@@ -42,7 +51,7 @@ public sealed class ReputationModule(
             .AddField("Пути участия", pathText, true)
             .AddField("Доверие по направлениям", trustText)
             .WithColor(profile.Suspended ? Color.Red : Color.Blue)
-            .WithFooter("RUCM Community Governance • Bayesian Reputation v2")
+            .WithFooter("RUCM Community Governance • байесовская репутация v2")
             .Build();
         await RespondAsync(embed: embed, ephemeral: true);
     });
