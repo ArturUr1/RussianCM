@@ -17,9 +17,9 @@ public static class GovernanceDiscordUi
         {
             case CourtStatuses.Defense:
                 builder
-                    .WithButton("Подать защиту", $"court-defense:{courtCase.Id}", ButtonStyle.Primary, new Emoji("🛡️"), row: 1)
                     .WithButton("Добавить свидетеля", $"court-witness-add:{courtCase.Id}", ButtonStyle.Secondary, new Emoji("👤"), row: 1)
-                    .WithButton("Дать показание", $"court-witness-statement:{courtCase.Id}", ButtonStyle.Secondary, new Emoji("📝"), row: 1);
+                    .WithButton("Дать показание", $"court-witness-statement:{courtCase.Id}", ButtonStyle.Secondary, new Emoji("📝"), row: 1)
+                    .WithButton("Закончить защиту", $"court-defense-finish:{courtCase.Id}", ButtonStyle.Success, new Emoji("✅"), row: 2);
                 break;
             case CourtStatuses.Jury:
                 builder
@@ -43,8 +43,8 @@ public static class GovernanceDiscordUi
     {
         var description = courtCase.Status switch
         {
-            CourtStatuses.Defense => "Стадия защиты. Используйте кнопки ниже — сообщения в треде отключены, материалы публикует бот.",
-            CourtStatuses.AwaitingJury => "Формируется коллегия присяжных. Дальнейшие действия будут доступны после набора коллегии.",
+            CourtStatuses.Defense => "Стадия защиты. Истец и ответчик пишут обычными сообщениями прямо в треде; сообщения остальных участников удаляются. Когда обе стороны закончили обсуждение, каждая нажимает «Закончить защиту».",
+            CourtStatuses.AwaitingJury => "Защита завершена. Формируется коллегия присяжных; переписка сторон закрыта.",
             CourtStatuses.Jury => "Идёт тайное голосование о виновности. Кнопки голосования доступны только действующим присяжным.",
             CourtStatuses.Sentencing => "Идёт тайное голосование о мере наказания. Перед выбором меры можно открыть историю ответчика.",
             CourtStatuses.Verdict => "Решение вынесено и ожидает исполнения.",
@@ -55,7 +55,7 @@ public static class GovernanceDiscordUi
 
         return statusEmbed.ToEmbedBuilder()
             .WithDescription($"{statusEmbed.Description}\n\n{description}")
-            .WithFooter("RUCM Community Governance • управление через кнопки")
+            .WithFooter("RUCM Community Governance")
             .Build();
     }
 

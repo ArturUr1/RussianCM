@@ -22,10 +22,13 @@ PostgreSQL URLs are converted to Npgsql connection strings. `CourtChannel` may b
 Discord Forum or a text channel where the bot can create, write, lock, and archive
 public threads.
 
-The bot needs only the Guilds and Guild Messages gateway intents; no privileged
-intents are required. Invite it to the configured guild with application-command,
-thread, message, and member-view permissions before enabling the scheduler. Use the
-owner-only `/аккаунт панель` command to create the existing linking button.
+The bot uses the Guilds, Guild Messages, and Message Content gateway intents.
+**MESSAGE CONTENT INTENT must be enabled for the bot in Discord Developer Portal**;
+it is required so the claimant and defendant can write ordinary messages directly in
+their Court thread without a modal/button. Invite the bot to the configured guild
+with application-command, thread, message, manage-message, and member-view
+permissions before enabling the scheduler. Use the owner-only `/аккаунт панель`
+command to create the existing linking button.
 
 ```powershell
 dotnet run --project Content.DiscordBot/Content.DiscordBot.csproj
@@ -41,9 +44,15 @@ runtime dependency and must not be started after this bot is deployed.
 
 - `/суд жалоба` accepts the defendant's SS14 game nickname, resolves the linked
   Discord identity from the game PostgreSQL, and creates the case and public thread.
-- `/суд защита`, `/суд свидетель-добавить`, and `/суд свидетельство` handle the
-  public defense. Thread ACL allows only the parties and registered witnesses to
-  write; jurors cannot discuss the case.
+- During the defense stage the claimant and defendant write ordinary messages
+  directly in the case thread. Other users' messages are removed and are not accepted
+  as Court material. Each accepted party message is also persisted in PostgreSQL.
+- When discussion is finished, both claimant and defendant independently press
+  `Закончить защиту`; after the second confirmation the thread is locked and the case
+  moves to jury formation. Defense does not advance to the jury merely because time
+  passed: both party confirmations are required for the normal transition.
+- `/суд свидетель-добавить` and `/суд свидетельство` retain the controlled witness
+  flow; witnesses do not receive ordinary write access to the case thread.
 - `/суд присяжный` mirrors the in-game invitation response transactionally.
 - `/суд голос` records a secret guilt-phase vote.
 - `/суд наказание` records a secret sentencing-phase vote.
@@ -52,19 +61,22 @@ runtime dependency and must not be started after this bot is deployed.
 - `/управление профиль|друг-добавить|друг-удалить` manages transparent selection
   conflicts and shows independent jury/moderation/event qualifications.
 - Native in-game AHelp creates the PostgreSQL queue; active responder observers claim and answer
-  tickets through `governance_ahelp`. Discord mirrors threads and retains LiveIncident,
-  scoped moderation proposals and quorum controls.
-  `freeze` needs one approval; `round_remove` needs two independent approvals.
+  tickets through `governance_ahelp`. Discord mirrors the AHelp status and the full
+  game-side conversation automatically; the Discord AHelp thread itself remains
+  read-only to users. LiveIncident, scoped moderation proposals and quorum controls
+  remain PostgreSQL-authoritative. `freeze` needs one approval; `round_remove` needs
+  two independent approvals.
 - `/событие ...` implements proposal, three-reviewer decision, a bounded resource
   manifest, temporary `event.*` capabilities, action audit, and automatic revocation.
 - `/руководство ...` is limited to the configured role or guild owner. Every override
   has a reason and immutable audit row; court cancellation also reverses an executed
   game ban, job ban, or warning.
 
-The scheduler advances defense deadlines, expires invitations, synchronizes in-game
-responses, selects conflict-free above-average jurors, replaces timed-out nonvoters,
-sends DMs, executes warnings/bans/job bans directly in the game tables, and publishes
-and archives final decisions. Guilty measures are capped at seven days. No Discord
+The scheduler expires invitations, synchronizes in-game responses, selects
+conflict-free jurors, replaces timed-out nonvoters, sends DMs, executes
+warnings/bans/job bans directly in the game tables, and publishes and archives final
+decisions. The defense stage itself advances only after the claimant and defendant
+both confirm completion. Guilty measures are capped at seven days. No Discord
 administrator chooses the verdict and there is no ordinary appeal path.
 
 ## In-game enforcement

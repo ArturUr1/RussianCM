@@ -11,10 +11,9 @@ public sealed class CourtDiscordCoordinator(
     CourtPunishmentService punishments,
     EventGovernanceService events,
     ModerationGovernanceService moderation,
-    Config config)
+    Config config,
+    DiscordGuildMemberCache guildMembers)
 {
-    private HashSet<ulong>? _guildMembers;
-    private DateTime _guildMembersRefreshedAt;
     private bool _courtChannelValidated;
 
     public async Task RunSchedulerAsync(CancellationToken cancellationToken)
@@ -78,28 +77,9 @@ public sealed class CourtDiscordCoordinator(
 
     private async Task<IReadOnlySet<ulong>> GuildMembersAsync()
     {
-        if (!config.CourtTestMode && _guildMembers != null && DateTime.UtcNow - _guildMembersRefreshedAt < TimeSpan.FromMinutes(10))
-            return _guildMembers;
-
-        var members = new HashSet<ulong>();
-        foreach (var discordId in await court.LinkedDiscordIdsAsync())
-        {
-            if (discordId == 0 || discordId > long.MaxValue)
-                continue;
-
-            try
-            {
-                if (await client.Rest.GetGuildUserAsync(config.Guild, discordId) != null)
-                    members.Add(discordId);
-            }
-            catch (Discord.Net.HttpException exception) when (exception.HttpCode == System.Net.HttpStatusCode.NotFound)
-            {
-                // Linked SS14 account is no longer a member of the configured guild.
-            }
-        }
-        _guildMembers = members;
-        _guildMembersRefreshedAt = DateTime.UtcNow;
-        return members;
+        return await guildMembers.ExistingMembersAsync(
+            await court.LinkedDiscordIdsAsync(),
+            forceRefresh: config.CourtTestMode);
     }
 
     public async Task<IThreadChannel> EnsureCaseThreadAsync(GovernanceCourtCase courtCase)
@@ -135,7 +115,7 @@ public sealed class CourtDiscordCoordinator(
         await thread.SendMessageAsync(
             embed: new EmbedBuilder()
                 .WithTitle("Панель Community Court")
-                .WithDescription("Тред является журналом дела и доступен только для чтения. Все действия выполняются через интерактивную панель.")
+                .WithDescription("Во время стадии защиты истец и ответчик могут писать обычными сообщениями прямо в этом треде. Остальные участники только читают. Когда сторона закончила обсуждение, она нажимает «Закончить защиту» в панели дела; стадия завершится после подтверждения обеих сторон.")
                 .WithColor(Color.DarkBlue)
                 .Build(),
             components: GovernanceDiscordUi.CourtThreadLauncher(courtCase.Id));
@@ -437,7 +417,7 @@ public sealed class CourtDiscordCoordinator(
             .AddField("Истец", claimantText, true)
             .AddField("Ответчик", defendantText, true)
             .AddField("Стадия", StatusText(courtCase.Status), true)
-            .AddField("Срок защиты", $"<t:{new DateTimeOffset(courtCase.DefenseDeadline).ToUnixTimeSeconds()}:F>", true)
+            .AddField("Завершение защиты", "После подтверждения истца и ответчика", true)
             .WithCurrentTimestamp();
         if (!string.IsNullOrWhiteSpace(complaint?.EvidenceReference))
             embed.AddField("Источник дела", complaint.EvidenceReference);
