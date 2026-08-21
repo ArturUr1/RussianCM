@@ -268,6 +268,20 @@ public sealed class CommunityCourtService(
         invitation.RecusalReason = response == InvitationStates.Recused ? recusalReason!.Trim() : null;
         invitation.Version++;
         juror.Active = response == InvitationStates.Accepted;
+        if (response == InvitationStates.Accepted &&
+            !await governance.ServiceAssignments.AnyAsync(value =>
+                value.UserId == user.Id && value.Track == "jury" &&
+                value.EntityType == "court_case" && value.EntityId == caseId.ToString()))
+        {
+            governance.ServiceAssignments.Add(new GovernanceServiceAssignment
+            {
+                UserId = user.Id,
+                Track = "jury",
+                EntityType = "court_case",
+                EntityId = caseId.ToString(),
+                AssignedAt = now,
+            });
+        }
         AddAudit(governance, $"invitation.{response}", "discord_user", discordId.ToString(), caseId,
             new { invitation_id = invitation.Id, recusal_reason = invitation.RecusalReason, reputation_neutral = true });
         await governance.SaveChangesAsync();
@@ -636,16 +650,8 @@ public sealed class CommunityCourtService(
                 InvitationId = invitation.Id,
                 AssignedAt = DateTime.UtcNow,
             });
-            governance.ServiceAssignments.Add(new GovernanceServiceAssignment
-            {
-                UserId = candidate.Id,
-                Track = "jury",
-                EntityType = "court_case",
-                EntityId = caseId.ToString(),
-                AssignedAt = DateTime.UtcNow,
-            });
             AddAudit(governance, "court.juror_invited", "system", null, caseId,
-                new { invitation_id = invitation.Id, juror_user_id = candidate.Id });
+                new { invitation_id = invitation.Id, juror_user_id = candidate.Id, obligation_created = false });
         }
         await governance.SaveChangesAsync();
         await transaction.CommitAsync();
