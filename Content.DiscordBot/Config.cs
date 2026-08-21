@@ -48,6 +48,12 @@ public sealed class Config
 
     public ulong GovernanceChannel { get; set; }
 
+    /// <summary>
+    /// Event Governance is intentionally disabled by default while its production workflow is deferred.
+    /// Historical data remains readable and is not deleted.
+    /// </summary>
+    public bool EventEnabled { get; set; } = false;
+
     public int EventReviewHours { get; set; } = 48;
 
     public int EventReviewers { get; set; } = 3;
