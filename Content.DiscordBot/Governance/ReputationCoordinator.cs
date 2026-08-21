@@ -1,6 +1,9 @@
 namespace Content.DiscordBot.Governance;
 
-public sealed class ReputationCoordinator(ReputationService reputation, Config config)
+public sealed class ReputationCoordinator(
+    GovernanceIdentityService identities,
+    ReputationService reputation,
+    Config config)
 {
     public async Task RunSchedulerAsync(CancellationToken cancellationToken)
     {
@@ -22,6 +25,7 @@ public sealed class ReputationCoordinator(ReputationService reputation, Config c
 
     public async Task ProcessOnceAsync()
     {
+        await identities.EnsureAllSs14UsersAsync();
         await reputation.ReconcileOperationalEvidenceAsync();
         await reputation.RefreshAllAsync();
         await reputation.ReconcileQualificationsAsync();
