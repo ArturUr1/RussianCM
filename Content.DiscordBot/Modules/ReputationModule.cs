@@ -94,9 +94,12 @@ public sealed class ReputationModule(
                     : value.SuccessWeight > 0
                         ? $"+{value.SuccessWeight:F2}"
                         : $"−{value.FailureWeight:F2}";
+                var auditOnly = ReputationMath.IsAuthoritativeReason(value.Reason)
+                    ? string.Empty
+                    : " • _архив, не участвует в расчёте v2_";
                 return $"• <t:{new DateTimeOffset(value.OccurredAt).ToUnixTimeSeconds()}:d> " +
                        $"**{TrackName(value.Track)}** • {ReasonName(value.Reason)} • `{signal}`" +
-                       (value.SeriousNegative ? " ⚠️" : string.Empty);
+                       (value.SeriousNegative ? " ⚠️" : string.Empty) + auditOnly;
             }));
         if (description.Length > 3900)
             description = description[..3900] + "…";
@@ -104,7 +107,7 @@ public sealed class ReputationModule(
             .WithTitle("История репутации")
             .WithDescription(description)
             .WithColor(Color.DarkBlue)
-            .WithFooter("Вес старых событий уменьшается со временем; серьёзные ошибки реабилитируются устойчивым хорошим поведением.")
+            .WithFooter("Архивные события старой системы сохраняются для аудита, но не входят в Reputation v2. Вес актуальных событий уменьшается со временем; серьёзные ошибки реабилитируются устойчивым хорошим поведением.")
             .Build(), ephemeral: true);
     });
 
@@ -161,7 +164,7 @@ public sealed class ReputationModule(
         ReputationReasons.ModerationActionWrong => "серьёзная ошибка модерации",
         ReputationReasons.FalseReport => "заведомо ложная жалоба",
         ReputationReasons.ContributionAccepted => "подтверждён вклад в проект",
-        _ when reason.StartsWith("legacy:", StringComparison.Ordinal) => "историческое событие",
+        _ when reason.StartsWith("legacy:", StringComparison.Ordinal) => "архивное событие старой системы",
         _ => reason,
     };
 }
