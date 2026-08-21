@@ -6,6 +6,7 @@ namespace Content.DiscordBot.Governance;
 public sealed class CandidateSelectionService(
     Func<GovernanceDbContext> governanceFactory,
     Func<ServerDbContext> gameFactory,
+    ReputationService? reputation = null,
     Config? config = null)
 {
     public async Task<IReadOnlyList<GovernanceUser>> SelectAsync(
@@ -24,29 +25,42 @@ public sealed class CandidateSelectionService(
 
         await using var governance = governanceFactory();
         var now = DateTime.UtcNow;
-        var average = await governance.Users.AverageAsync(value => (double?) value.CivicRatingCache) ?? 0;
-        var effectiveMinimumQualification = config?.CourtTestMode == true && track == "event"
+        var effectiveMinimumQualification = config?.CourtTestMode == true && track == ReputationTracks.Event
             ? Math.Max(minimumQualification, (short) 4)
             : minimumQualification;
+
         var qualified = governance.Users.AsNoTracking()
-            .Join(governance.Qualifications.Where(value => value.Track == track && value.Level >= effectiveMinimumQualification),
+            .Join(governance.Qualifications.AsNoTracking()
+                    .Where(value => value.Track == track && value.Level >= effectiveMinimumQualification),
                 user => user.Id,
                 qualification => qualification.UserId,
-                (user, _) => user)
-            .Where(user => !user.IsGovernanceSuspended && !excludedUsers.Contains(user.Id));
-        var bypassRatingForLocalTest = config?.CourtTestMode == true && track is "jury" or "event";
-        if (aboveAverage && !bypassRatingForLocalTest)
-            qualified = qualified.Where(user => user.CivicRatingCache > average);
+                (user, qualification) => new { User = user, qualification.Level })
+            .Join(governance.ServicePaths.AsNoTracking().Where(value => value.Track == track),
+                row => row.User.Id,
+                path => path.UserId,
+                (row, _) => row)
+            .Where(row => !row.User.IsGovernanceSuspended && !excludedUsers.Contains(row.User.Id));
 
-        var candidates = await qualified.ToListAsync();
+        // Jury/event/moderation review work is currently delivered through Discord. SS14-only users
+        // keep their reputation and can use in-game Governance, but cannot be selected for a DM-only role.
+        if (track is ReputationTracks.Jury or ReputationTracks.Event or ReputationTracks.Moderation)
+            qualified = qualified.Where(row => row.User.DiscordUserId != null && row.User.DiscordUserId > 0);
+
+        var qualifiedRows = await qualified.ToListAsync();
+        var candidates = qualifiedRows.Select(value => value.User).ToList();
+        var qualificationLevels = qualifiedRows
+            .GroupBy(value => value.User.Id)
+            .ToDictionary(group => group.Key, group => group.Max(value => value.Level));
+
         if (availableDiscordIds != null)
         {
-            // Synthetic SS14-only Governance identities deliberately use negative internal Discord ids.
-            // They are valid court participants, but they can never receive a Discord jury invitation.
             candidates = candidates
-                .Where(user => user.DiscordUserId > 0 && availableDiscordIds.Contains((ulong) user.DiscordUserId))
+                .Where(user => user.DiscordUserId is > 0 && availableDiscordIds.Contains(checked((ulong) user.DiscordUserId.Value)))
                 .ToList();
         }
+
+        if (candidates.Count == 0)
+            return [];
 
         var candidateIds = candidates.Select(value => value.Id).ToArray();
         var conflicts = await governance.Conflicts.AsNoTracking()
@@ -83,6 +97,8 @@ public sealed class CandidateSelectionService(
 
         var unavailable = conflicts.Concat(friendships).Concat(recent).Concat(pending).Concat(activeDuty).ToHashSet();
         candidates = candidates.Where(value => !unavailable.Contains(value.Id)).ToList();
+        if (candidates.Count == 0)
+            return [];
 
         var playerIds = candidates.Select(value => value.Ss14UserId).ToArray();
         await using var game = gameFactory();
@@ -96,11 +112,42 @@ public sealed class CandidateSelectionService(
                 .Select(value => value.PlayerUserId!.Value))
             .Distinct()
             .ToListAsync();
+        candidates = candidates.Where(value => !banned.Contains(value.Ss14UserId)).ToList();
+        if (candidates.Count == 0)
+            return [];
 
+        if (reputation == null)
+            return candidates.OrderBy(_ => Guid.NewGuid()).Take(count).ToArray();
+
+        await reputation.RefreshUsersAsync(candidates.Select(value => value.Id));
+        var remainingIds = candidates.Select(value => value.Id).ToArray();
+        var snapshots = await governance.ReputationSnapshots.AsNoTracking()
+            .Where(value => remainingIds.Contains(value.UserId) &&
+                            (value.Track == track || value.Track == ReputationTracks.General))
+            .ToListAsync();
+
+        var byUser = snapshots.GroupBy(value => value.UserId)
+            .ToDictionary(group => group.Key, group => group.ToDictionary(value => value.Track, StringComparer.Ordinal));
+
+        // `aboveAverage` is intentionally ignored in Reputation v2. It is kept in the signature for
+        // source compatibility. Thompson Sampling balances proven reliability with exploration of
+        // newer candidates instead of forming a permanent above-average caste.
         return candidates
-            .Where(value => !banned.Contains(value.Ss14UserId))
-            .OrderBy(_ => Guid.NewGuid())
+            .Select(user =>
+            {
+                byUser.TryGetValue(user.Id, out var userSnapshots);
+                userSnapshots?.TryGetValue(track, out var trackSnapshot);
+                userSnapshots?.TryGetValue(ReputationTracks.General, out var generalSnapshot);
+                var alpha = trackSnapshot?.Alpha ?? ReputationPolicy.TrackPriorStrength * 0.5;
+                var beta = trackSnapshot?.Beta ?? ReputationPolicy.TrackPriorStrength * 0.5;
+                var thompson = ReputationMath.SampleBeta(alpha, beta);
+                var generalFactor = 0.85 + 0.30 * ((generalSnapshot?.Score ?? ReputationPolicy.NeutralScore) / 1000.0);
+                var qualificationFactor = 1.0 + 0.03 * Math.Max(0, qualificationLevels.GetValueOrDefault(user.Id, (short) 1) - 1);
+                return (User: user, Priority: thompson * generalFactor * qualificationFactor);
+            })
+            .OrderByDescending(value => value.Priority)
             .Take(count)
+            .Select(value => value.User)
             .ToArray();
     }
 }
