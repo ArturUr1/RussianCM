@@ -107,15 +107,18 @@ public sealed class ReputationModule(
             }
             else
             {
-                var lowerOk = row.LowerBound >= row.RequiredLowerBound;
-                var evidenceOk = row.EvidenceWeight >= row.RequiredEvidenceWeight;
-                var completedOk = row.CompletedAssignments >= row.RequiredCompletedAssignments;
+                var requiredLower = row.RequiredLowerBound ?? throw new InvalidOperationException("Не задан порог LB90 квалификации.");
+                var requiredEvidence = row.RequiredEvidenceWeight ?? throw new InvalidOperationException("Не задан порог evidence квалификации.");
+                var requiredCompleted = row.RequiredCompletedAssignments ?? throw new InvalidOperationException("Не задан порог завершённых обязанностей квалификации.");
+                var lowerOk = row.LowerBound >= requiredLower;
+                var evidenceOk = row.EvidenceWeight >= requiredEvidence;
+                var completedOk = row.CompletedAssignments >= requiredCompleted;
                 body =
                     $"Текущий уровень: **{current}** • расчётный допустимый: **{eligible}**\n" +
                     $"До **{RomanLevel(row.NextLevel.Value)}**:\n" +
-                    $"{Mark(lowerOk)} LB90 **{row.LowerBound:P1} / {row.RequiredLowerBound:P0}**\n" +
-                    $"{Mark(evidenceOk)} effective evidence **{row.EvidenceWeight:F2} / {row.RequiredEvidenceWeight:F0}**\n" +
-                    $"{Mark(completedOk)} завершённые обязанности **{row.CompletedAssignments} / {row.RequiredCompletedAssignments}**";
+                    $"{Mark(lowerOk)} LB90 **{row.LowerBound:P1} / {requiredLower:P0}**\n" +
+                    $"{Mark(evidenceOk)} effective evidence **{row.EvidenceWeight:F2} / {requiredEvidence:F0}**\n" +
+                    $"{Mark(completedOk)} завершённые обязанности **{row.CompletedAssignments} / {requiredCompleted}**";
                 if (row.EligibleLevel > row.CurrentLevel)
                     body += "\n✅ Условия повышения уже выполнены; Reputation Coordinator применит новый уровень.";
             }
@@ -129,7 +132,7 @@ public sealed class ReputationModule(
             .WithTitle("Прогресс квалификации")
             .WithDescription(
                 "Квалификация повышается только когда одновременно выполнены консервативная 90% граница, " +
-                "effective evidence и минимальное число завершённых обязанностей. Однотипные действия имеют убывающий вес `1/√n` в пределах месяца.")
+                "effective evidence и минимальное число завершённых обязанностей. Однотипные действия имеют убывающий вес `1/√n` в пределах одного дня; устойчивые действия в разные дни снова получают полный базовый вес.")
             .WithColor(Color.Blue);
         foreach (var field in fields)
             embed.AddField(field);
