@@ -5,12 +5,9 @@ concurrency:
   cancel-in-progress: false
 
 on:
-  # workflow_run:
-  #   workflows: ["Publish"]
-  #   types: [completed]    # Publish
   schedule:
     - cron: "0 10 * * *"    # Daily
-  workflow_dispatch:        # Manual
+  workflow_dispatch:
     inputs:
       start_date:
         description: "Backfill date (ISO-8601), auto if empty"
@@ -20,43 +17,75 @@ on:
         required: false
         default: "CMU"
   workflow_call:
+    inputs:
+      start_date:
+        description: "Backfill date (ISO-8601), auto if empty"
+        required: false
+        type: string
+        default: ""
+      category:
+        description: "Changelog category"
+        required: false
+        type: string
+        default: "CMU"
     outputs:
       changes_detected:
         value: ${{ jobs.update.outputs.changes_detected }}
       commit_hash:
+        description: "Commit that callers must publish (new changelog commit or original SHA)"
         value: ${{ jobs.update.outputs.commit_hash }}
 
 jobs:
   update:
     runs-on: ubuntu-latest
-    if: >
-      vars.DONT_UPDATE_CHANGELOG != 'true'
-      && (github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success')
+    if: vars.DONT_UPDATE_CHANGELOG != 'true'
     outputs:
       changes_detected: ${{ steps.auto-commit.outputs.changes_detected }}
-      commit_hash: ${{ steps.auto-commit.outputs.commit_hash }}
+      commit_hash: ${{ steps.resolve-ref.outputs.commit_hash }}
     permissions:
       contents: write
     steps:
       - uses: actions/checkout@v7
 
+      - uses: actions/setup-python@v7.0.0
+        with:
+          python-version: "3.x"
+
+      - name: Install changelog dependencies
+        run: python3 -m pip install --disable-pip-version-check requests pyyaml
+
       - name: Parse PRs into Parts
-        run: Tools/update_changelog_parts.py Resources/Changelog/Parts --category ${{inputs.category || 'CMU' }}
+        run: >-
+          python3 Tools/update_changelog_parts.py Resources/Changelog/Parts
+          --changelog-file Resources/Changelog/CMU.yml
+          --category "${{ inputs.category || 'CMU' }}"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GITHUB_REPOSITORY: ${{ github.repository }}
-          GITHUB_RUN_ID: ${{ github.run_id }}
           START_DATE: ${{ inputs.start_date || '' }}
 
       - name: Update changelog
-        run: Tools/update_changelog.py Resources/Changelog/CMU.yml
-          Resources/Changelog/Parts --category ${{ inputs.category || 'CMU' }}
+        run: >-
+          python3 Tools/update_changelog.py Resources/Changelog/CMU.yml
+          Resources/Changelog/Parts --category "${{ inputs.category || 'CMU' }}"
 
       - uses: stefanzweifel/git-auto-commit-action@v7.2.0
         id: auto-commit
         with:
           commit_message: "Auto-update changelog [skip ci]"
           commit_author: "github-actions[bot] <github-actions[bot]@users.noreply.github.com>"
+
+      - name: Resolve changelog commit
+        id: resolve-ref
+        env:
+          CHANGES_DETECTED: ${{ steps.auto-commit.outputs.changes_detected }}
+          CHANGELOG_COMMIT: ${{ steps.auto-commit.outputs.commit_hash }}
+        run: |
+          if [[ "$CHANGES_DETECTED" == "true" && -n "$CHANGELOG_COMMIT" ]]; then
+            echo "commit_hash=$CHANGELOG_COMMIT" >> "$GITHUB_OUTPUT"
+          else
+            echo "commit_hash=$GITHUB_SHA" >> "$GITHUB_OUTPUT"
+          fi
 
   discord-webhook:
     name: Discord webhook
@@ -71,11 +100,15 @@ jobs:
           ref: ${{ needs.update.outputs.commit_hash }}
           fetch-depth: 2
 
+      - uses: actions/setup-python@v7.0.0
+        with:
+          python-version: "3.x"
+
       - name: Install dependencies
-        run: pip install requests pyyaml
+        run: python3 -m pip install --disable-pip-version-check requests pyyaml
 
       - name: Run Discord changelog script
-        run: Tools/actions_changelogs_since_last_run.py
+        run: python3 Tools/actions_changelogs_since_last_run.py
         env:
           CHANGELOG_FILE: Resources/Changelog/CMU.yml
           CHANGELOG_PREVIOUS_REF: HEAD^
