@@ -1,4 +1,6 @@
 author: TheHellFireo
+category: CMU
+time: '2026-06-01T23:37:12.0000000+00:00'
 changes:
   - type: Add
     message: Added a wound-driven medical foundation with mechanism wound types, limb health caps, bleeding control, and detailed injury examination.
