@@ -70,7 +70,7 @@ namespace Content.Client.Changelog
                 return;
             }
 
-            var changelog = changelogs[0];
+            var changelog = mainChangelogs[0];
             if (mainChangelogs.Length > 1)
             {
                 _sawmill.Error($"More than one file found in Resource/Changelog with name {MainChangelogName}");
@@ -88,10 +88,12 @@ namespace Content.Client.Changelog
 
         private void CheckLastSeenEntry()
         {
+            LastReadId = 0;
             var path = new ResPath($"/changelog_last_seen_{_configManager.GetCVar(CCVars.ServerId)}");
-            if (_resource.UserData.TryReadAllText(path, out var lastReadIdText))
+            if (_resource.UserData.TryReadAllText(path, out var lastReadIdText) &&
+                int.TryParse(lastReadIdText, out var parsedLastReadId))
             {
-                LastReadId = int.Parse(lastReadIdText);
+                LastReadId = parsedLastReadId;
             }
 
             NewChangelogEntries = LastReadId < MaxId;
