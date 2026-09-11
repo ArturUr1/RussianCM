@@ -18,8 +18,8 @@ DEFAULT_UPLOAD_WORKERS = 4
 # CONFIGURATION PARAMETERS
 # Forks should change these to publish to their own infrastructure.
 #
-ROBUST_CDN_URL = "https://cmu-cdn.cm-ss13.com/"
-FORK_ID = "cmu"
+ROBUST_CDN_URL = "https://cdn.rumc.dev/"
+FORK_ID = "rumc"
 
 
 def main():
