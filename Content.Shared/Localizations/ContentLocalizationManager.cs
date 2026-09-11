@@ -25,76 +25,102 @@ namespace Content.Shared.Localizations
             @"mm"
         };
 
+        // RuCM Localization change start
         public void Initialize()
         {
             var culture = new CultureInfo(Culture);
-            var fallbackCulture = new CultureInfo(FallbackCulture); // RuCM Localization
+            var fallbackCulture = new CultureInfo(FallbackCulture);
 
             _loc.LoadCulture(culture);
-            _loc.AddFunction(culture, "MANY", FormatMany); // RuCM Localization: To prevent problems in auto-generated locale files
-            _loc.AddFunction(culture, "PRESSURE", FormatPressure);
-            _loc.AddFunction(culture, "POWERWATTS", FormatPowerWatts);
-            _loc.AddFunction(culture, "POWERJOULES", FormatPowerJoules);
-            // NOTE: ENERGYWATTHOURS() still takes a value in joules, but formats as watt-hours.
-            _loc.AddFunction(culture, "ENERGYWATTHOURS", FormatEnergyWattHours);
-            _loc.AddFunction(culture, "UNITS", FormatUnits);
-            _loc.AddFunction(culture, "TOSTRING", args => FormatToString(culture, args));
-            _loc.AddFunction(culture, "LOC", FormatLoc);
-            _loc.AddFunction(culture, "NATURALFIXED", FormatNaturalFixed);
-            _loc.AddFunction(culture, "NATURALPERCENT", FormatNaturalPercent);
-            _loc.AddFunction(culture, "PLAYTIME", FormatPlaytime);
+            _loc.LoadCulture(fallbackCulture);
+
+            _loc.SetFallbackCluture(fallbackCulture);
+
+            AddContentFunctions(culture);
+            AddContentFunctions(fallbackCulture);
 
             // RMC14
             IoCManager.Resolve<RMCLocalizationManager>().Initialize(culture);
 
-            /*
-             * The following language functions are specific to the english localization. When working on your own
-             * localization you should NOT modify these, instead add new functions specific to your language/culture.
-             * This ensures the english translations continue to work as expected when fallbacks are needed.
-             */
-            var cultureEn = new CultureInfo("en-US");
-
-            _loc.AddFunction(cultureEn, "MAKEPLURAL", FormatMakePlural);
-            _loc.AddFunction(cultureEn, "MANY", FormatMany);
+            // English-only functions.
+            _loc.AddFunction(fallbackCulture, "MAKEPLURAL", FormatMakePlural);
         }
 
+        private void AddContentFunctions(CultureInfo culture)
+        {
+            _loc.AddFunction(culture, "MANY", FormatMany);
+            _loc.AddFunction(culture, "PRESSURE", FormatPressure);
+            _loc.AddFunction(culture, "POWERWATTS", FormatPowerWatts);
+            _loc.AddFunction(culture, "POWERJOULES", FormatPowerJoules);
+            _loc.AddFunction(culture, "ENERGYWATTHOURS", FormatEnergyWattHours);
+            _loc.AddFunction(culture, "UNITS", FormatUnits);
+            _loc.AddFunction(culture, "TOSTRING", args => FormatToString(culture, args));
+            _loc.AddFunction(culture, "LOC", FormatLoc);
+            _loc.AddFunction(culture, "PLAYTIME", FormatPlaytime);
+            _loc.AddFunction(
+                culture,
+                "NATURALFIXED",
+                args => FormatNaturalFixed(culture, args));
+
+            _loc.AddFunction(
+                culture,
+                "NATURALPERCENT",
+                args => FormatNaturalPercent(culture, args));
+        }
+        // RuCM Localization change end
         private ILocValue FormatMany(LocArgs args)
         {
-            var count = ((LocValueNumber) args.Args[1]).Value;
+            var count = ((LocValueNumber)args.Args[1]).Value;
 
             if (Math.Abs(count - 1) < 0.0001f)
             {
-                return (LocValueString) args.Args[0];
+                return (LocValueString)args.Args[0];
             }
             else
             {
-                return (LocValueString) FormatMakePlural(args);
+                return (LocValueString)FormatMakePlural(args);
             }
         }
 
-        private ILocValue FormatNaturalPercent(LocArgs args)
+        // RuCM Localization change start
+        private ILocValue FormatNaturalPercent(CultureInfo culture, LocArgs args)
         {
-            var number = ((LocValueNumber) args.Args[0]).Value * 100;
-            var maxDecimals = (int)Math.Floor(((LocValueNumber) args.Args[1]).Value);
-            var formatter = (NumberFormatInfo)NumberFormatInfo.GetInstance(CultureInfo.GetCultureInfo(Culture)).Clone();
+            var number = ((LocValueNumber)args.Args[0]).Value * 100;
+            var maxDecimals = (int)Math.Floor(((LocValueNumber)args.Args[1]).Value);
+
+            var formatter =
+                (NumberFormatInfo)NumberFormatInfo.GetInstance(culture).Clone();
+
             formatter.NumberDecimalDigits = maxDecimals;
-            return new LocValueString(string.Format(formatter, "{0:N}", number).TrimEnd('0').TrimEnd(char.Parse(formatter.NumberDecimalSeparator)) + "%");
+
+            return new LocValueString(
+                string.Format(formatter, "{0:N}", number)
+                    .TrimEnd('0')
+                    .TrimEnd(char.Parse(formatter.NumberDecimalSeparator)) + "%");
         }
 
-        private ILocValue FormatNaturalFixed(LocArgs args)
-        {
-            var number = ((LocValueNumber) args.Args[0]).Value;
-            var maxDecimals = (int)Math.Floor(((LocValueNumber) args.Args[1]).Value);
-            var formatter = (NumberFormatInfo)NumberFormatInfo.GetInstance(CultureInfo.GetCultureInfo(Culture)).Clone();
-            formatter.NumberDecimalDigits = maxDecimals;
-            return new LocValueString(string.Format(formatter, "{0:N}", number).TrimEnd('0').TrimEnd(char.Parse(formatter.NumberDecimalSeparator)));
-        }
 
+        private ILocValue FormatNaturalFixed(CultureInfo culture, LocArgs args)
+        {
+            var number = ((LocValueNumber)args.Args[0]).Value;
+            var maxDecimals = (int)Math.Floor(((LocValueNumber)args.Args[1]).Value);
+
+            var formatter =
+                (NumberFormatInfo)NumberFormatInfo.GetInstance(culture).Clone();
+
+            formatter.NumberDecimalDigits = maxDecimals;
+
+            return new LocValueString(
+                string.Format(formatter, "{0:N}", number)
+                    .TrimEnd('0')
+                    .TrimEnd(char.Parse(formatter.NumberDecimalSeparator)));
+        }
+        // RuCM Localization change end
         private static readonly Regex PluralEsRule = new("^.*(s|sh|ch|x|z)$");
 
         private ILocValue FormatMakePlural(LocArgs args)
         {
-            var text = ((LocValueString) args.Args[0]).Value;
+            var text = ((LocValueString)args.Args[0]).Value;
             var split = text.Split(" ", 1);
             var firstWord = split[0];
             if (PluralEsRule.IsMatch(firstWord))
@@ -163,7 +189,7 @@ namespace Content.Shared.Localizations
 
         private static ILocValue FormatLoc(LocArgs args)
         {
-            var id = ((LocValueString) args.Args[0]).Value;
+            var id = ((LocValueString)args.Args[0]).Value;
 
             return new LocValueString(Loc.GetString(id, args.Options.Select(x => (x.Key, x.Value.Value!)).ToArray()));
         }
@@ -171,7 +197,7 @@ namespace Content.Shared.Localizations
         private static ILocValue FormatToString(CultureInfo culture, LocArgs args)
         {
             var arg = args.Args[0];
-            var fmt = ((LocValueString) args.Args[1]).Value;
+            var fmt = ((LocValueString)args.Args[1]).Value;
 
             var obj = arg.Value;
             if (obj is IFormattable formattable)
@@ -186,7 +212,7 @@ namespace Content.Shared.Localizations
             Func<double, double>? transformValue = null)
         {
             const int maxPlaces = 5; // Matches amount in _lib.ftl
-            var pressure = ((LocValueNumber) args.Args[0]).Value;
+            var pressure = ((LocValueNumber)args.Args[0]).Value;
 
             if (transformValue != null)
                 pressure = transformValue(pressure);
@@ -225,16 +251,16 @@ namespace Content.Shared.Localizations
 
         private static ILocValue FormatUnits(LocArgs args)
         {
-            if (!Units.Types.TryGetValue(((LocValueString) args.Args[0]).Value, out var ut))
-                throw new ArgumentException($"Unknown unit type {((LocValueString) args.Args[0]).Value}");
+            if (!Units.Types.TryGetValue(((LocValueString)args.Args[0]).Value, out var ut))
+                throw new ArgumentException($"Unknown unit type {((LocValueString)args.Args[0]).Value}");
 
-            var fmtstr = ((LocValueString) args.Args[1]).Value;
+            var fmtstr = ((LocValueString)args.Args[1]).Value;
 
             double max = Double.NegativeInfinity;
             var iargs = new double[args.Args.Count - 1];
             for (var i = 2; i < args.Args.Count; i++)
             {
-                var n = ((LocValueNumber) args.Args[i]).Value;
+                var n = ((LocValueNumber)args.Args[i]).Value;
                 if (n > max)
                     max = n;
 
