@@ -7,6 +7,9 @@
   name: Urist C.M. McHands
   suffix: RMC14
   components:
+  - type: TTS
+    voice: PUCHKOW
+    faction: Human
   - type: FlareStomper
   - type: Vocal
   - type: EmoteOnDamage

@@ -105,6 +105,9 @@
   id: MobHuman
   name: Urist McHands
   components:
+  - type: TTS
+    voice: PUCHKOW
+    faction: Human
   - type: Butcherable
     butcheringType: Spike
     spawned:

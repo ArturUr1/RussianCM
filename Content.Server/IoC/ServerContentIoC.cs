@@ -41,6 +41,7 @@ using Content.Shared.FeedbackSystem;
 using Content.Shared.IoC;
 using Content.Shared.Players.PlayTimeTracking;
 using Content.Shared.Players.RateLimiting;
+using Content.Server.Corvax.TTS; // Add RuCM14 TTS component registration
 
 namespace Content.Server.IoC;
 
@@ -107,5 +108,8 @@ internal static class ServerContentIoC
         deps.Register<CommendationManager>();
         deps.Register<RMCActionsManager>();
         deps.Register<RMCChatBansManager>();
+
+        // RuCM14 TTS component registration
+        IoCManager.Register<TTSManager>();
     }
 }

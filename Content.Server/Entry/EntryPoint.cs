@@ -34,6 +34,7 @@ using Robust.Shared.Prototypes;
 using Robust.Shared.Serialization;
 using Robust.Shared.Timing;
 using Robust.Shared.Utility;
+using Content.Server.Corvax.TTS; // Add RuCM14 TTS component registration
 
 namespace Content.Server.Entry
 {
@@ -79,6 +80,7 @@ namespace Content.Server.Entry
         [Dependency] private ServerInfoManager _serverInfo = default!;
         [Dependency] private ServerUpdateManager _updateManager = default!;
         [Dependency] private ServerFeedbackManager _feedbackManager = null!;
+        [Dependency] private TTSManager _ttsManager = default!; // Add RuCM14 TTS component registration
 
         public override void PreInit()
         {
@@ -127,6 +129,7 @@ namespace Content.Server.Entry
             _nodeFactory.Initialize();
             _netResMan.Initialize();
             _ghostKick.Initialize();
+            _ttsManager.Initialize(); // Add RuCM14 TTS component registration
             _serverInfo.Initialize();
             _serverApi.Initialize();
             _voteManager.Initialize();

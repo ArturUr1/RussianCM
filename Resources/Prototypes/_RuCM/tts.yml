@@ -1,0 +1,7 @@
+- type: ttsVoice
+  id: PUCHKOW
+  name: Дмитрий Пучков
+  category: Test
+  sex: Male
+  speaker: puchkow
+  roundStart: true
