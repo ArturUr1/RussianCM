@@ -43,8 +43,8 @@ namespace Content.Shared.Preferences
     {
         public static readonly ProtoId<SpeciesPrototype> DefaultSpecies = "Human";
         public static readonly ProtoId<EmoteSoundsPrototype> DefaultVoice = "MaleHuman";
-        private static readonly Regex RestrictedNameRegex = new(@"[^A-Za-z0-9 '\-\.]", RegexOptions.Compiled);
-        private static readonly Regex ICNameCaseRegex = new(@"^(?<word>\w)|\b(?<word>\w)(?=\w*$)", RegexOptions.Compiled);
+        private static readonly Regex RestrictedNameRegex = new(@"[^\p{L}0-9 '\-\.]", RegexOptions.Compiled); // RuCM Localization change
+        private static readonly Regex ICNameCaseRegex = new(@"^(?<word>\w)|\b(?<word>\w)(?=\w*$)", RegexOptions.Compiled); // RuCM Localization change
 
         private static readonly Regex MultiDotRegex = new(@"\.+", RegexOptions.Compiled);
         private static readonly Regex LeadingTrailingDotRegex = new(@"(^\.|\.$)", RegexOptions.Compiled);
