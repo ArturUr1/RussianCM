@@ -138,6 +138,21 @@
                                     <Control HorizontalExpand="True" />
                                     <OptionButton Name="VoiceButton" HorizontalAlignment="Right" />
                                 </BoxContainer>
+                                <!-- RuCM TTS Voice -->
+                                <BoxContainer HorizontalExpand="True">
+                                    <Label Text="{Loc 'humanoid-profile-editor-tts-voice-label'}" />
+                                    <Control HorizontalExpand="True" />
+
+                                    <Button Name="TTSVoicePreviewButton"
+                                        Text="▶"
+                                        ToolTip="{Loc 'humanoid-profile-editor-tts-preview-tooltip'}"
+                                        MinWidth="35" />
+
+                                        <OptionButton Name="TTSVoiceButton"
+                                        HorizontalAlignment="Right"
+                                        MinWidth="220" />
+                                </BoxContainer>
+                                </BoxContainer>
                                 <!-- Pronouns -->
                                 <BoxContainer HorizontalExpand="True">
                                     <Label Text="{Loc 'humanoid-profile-editor-pronouns-label'}" />
