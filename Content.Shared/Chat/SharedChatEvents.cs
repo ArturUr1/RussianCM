@@ -63,6 +63,9 @@ public sealed class EntitySpokeEvent : EntityEventArgs
     public readonly string Message;
     public readonly string? ObfuscatedMessage; // not null if this was a whisper
     public readonly ProtoId<LanguagePrototype> Language;
+    public readonly ChatTransmitRange TransmitRange;
+    public readonly EntityUid? VoiceSource;
+    public readonly bool IgnoreXenos;
 
     /// <summary>
     /// If the entity was trying to speak into a radio, this was the channel they were trying to access. If a radio
@@ -75,12 +78,18 @@ public sealed class EntitySpokeEvent : EntityEventArgs
         string message,
         RadioChannelPrototype? channel,
         string? obfuscatedMessage,
-        ProtoId<LanguagePrototype>? language = null)
+        ProtoId<LanguagePrototype>? language = null,
+        ChatTransmitRange transmitRange = ChatTransmitRange.Normal,
+        EntityUid? voiceSource = null,
+        bool ignoreXenos = false)
     {
         Source = source;
         Message = message;
         Channel = channel;
         ObfuscatedMessage = obfuscatedMessage;
         Language = language ?? SharedLanguageSystem.CommonLanguage;
+        TransmitRange = transmitRange;
+        VoiceSource = voiceSource;
+        IgnoreXenos = ignoreXenos;
     }
 }

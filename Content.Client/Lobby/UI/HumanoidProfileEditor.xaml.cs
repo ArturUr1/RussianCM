@@ -166,6 +166,8 @@ namespace Content.Client.Lobby.UI
 
             #region Voice
 
+            InitializeTTSControls();
+
             VoiceButton.OnItemSelected += args =>
             {
                 VoiceButton.SelectId(args.Id);
@@ -384,6 +386,7 @@ namespace Content.Client.Lobby.UI
             UpdateFlavorTextEdit();
             UpdateSexControls();
             UpdateVoiceControls();
+            UpdateTTSControls();
             UpdateGenderControls();
             UpdateSkinColor();
             UpdateSpawnPriorityControls();

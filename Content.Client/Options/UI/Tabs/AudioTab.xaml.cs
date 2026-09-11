@@ -58,6 +58,11 @@ public sealed partial class AudioTab : Control
 
         // RMC14
         Control.AddOptionPercentSlider(
+            Content.Shared.Corvax.CCCVars.CCCVars.TTSVolume,
+            SliderVolumeTTS,
+            scale: 1f);
+
+        Control.AddOptionPercentSlider(
             RMCCVars.VolumeGainCassettes,
             SliderVolumeCassettes,
             scale: 1f);

@@ -22,6 +22,7 @@ public sealed partial class ChatSystem
 
         var wrappedMessage = Loc.GetString("chat-manager-sender-announcement-wrap-message", ("sender", sender), ("message", FormattedMessage.EscapeText(message)));
         _chatManager.ChatMessageToAll(ChatChannel.Radio, message, wrappedMessage, default, false, true, colorOverride);
+        RaiseLocalEvent(new Content.Shared.Corvax.TTS.RMCAnnouncementMadeEvent(null, message, Filter.Broadcast()));
         if (playSound)
         {
             _audio.PlayGlobal(announcementSound ?? DefaultAnnouncementSound, Filter.Broadcast(), true, AudioParams.Default.WithVolume(-2f));
@@ -43,6 +44,7 @@ public sealed partial class ChatSystem
 
         var wrappedMessage = Loc.GetString("chat-manager-sender-announcement-wrap-message", ("sender", sender), ("message", FormattedMessage.EscapeText(message)));
         _chatManager.ChatMessageToManyFiltered(filter, ChatChannel.Radio, message, wrappedMessage, source ?? default, false, true, colorOverride);
+        RaiseLocalEvent(new Content.Shared.Corvax.TTS.RMCAnnouncementMadeEvent(source, message, filter));
         if (playSound)
         {
             _audio.PlayGlobal(announcementSound ?? DefaultAnnouncementSound, filter, true, AudioParams.Default.WithVolume(-2f));
@@ -75,6 +77,7 @@ public sealed partial class ChatSystem
         var filter = _stationSystem.GetInStation(stationDataComp);
 
         _chatManager.ChatMessageToManyFiltered(filter, ChatChannel.Radio, message, wrappedMessage, source, false, true, colorOverride);
+        RaiseLocalEvent(new Content.Shared.Corvax.TTS.RMCAnnouncementMadeEvent(source, message, filter));
 
         if (playDefaultSound)
         {

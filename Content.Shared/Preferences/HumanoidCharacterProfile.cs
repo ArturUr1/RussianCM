@@ -133,6 +133,32 @@ namespace Content.Shared.Preferences
         [DataField]
         public ProtoId<EmoteSoundsPrototype> Voice { get; set; } = DefaultVoice;
 
+        public const string DefaultTTSVoice = "PUCHKOW";
+        [DataField]
+        public string TTSVoice { get; set; } = DefaultTTSVoice;
+
+        public HumanoidCharacterProfile WithTTSVoice(string voice)
+        {
+            return new(this) { TTSVoice = voice };
+        }
+
+        public static bool IsSelectableTTSVoice(Content.Shared.Corvax.TTS.TTSVoicePrototype voice)
+        {
+            return voice.RoundStart && !voice.SponsorOnly;
+        }
+
+        public static string ValidateTTSVoice(string? voice, IPrototypeManager prototypes)
+        {
+            if (Content.Shared.Corvax.TTS.CustomTTSVoice.TryGetSpeaker(voice, out _))
+                return voice!;
+
+            return !string.IsNullOrWhiteSpace(voice) &&
+                   prototypes.TryIndex<Content.Shared.Corvax.TTS.TTSVoicePrototype>(voice, out var prototype) &&
+                   IsSelectableTTSVoice(prototype)
+                ? voice
+                : DefaultTTSVoice;
+        }
+
         [DataField]
         public Gender Gender { get; private set; } = Gender.Male;
 
@@ -489,6 +515,7 @@ namespace Content.Shared.Preferences
                 other.Build,
                 other.HideMetaInformation)
         {
+            TTSVoice = other.TTSVoice;
         }
 
         /// <summary>
@@ -1199,6 +1226,7 @@ namespace Content.Shared.Preferences
             if (Age != other.Age) return false;
             if (Sex != other.Sex) return false;
             if (Voice != other.Voice) return false;
+            if (TTSVoice != other.TTSVoice) return false;
             if (Gender != other.Gender) return false;
             if (Species != other.Species) return false;
             if (PreferenceUnavailable != other.PreferenceUnavailable) return false;
@@ -1278,6 +1306,7 @@ namespace Content.Shared.Preferences
         {
             var configManager = collection.Resolve<IConfigurationManager>();
             var prototypeManager = collection.Resolve<IPrototypeManager>();
+            TTSVoice = ValidateTTSVoice(TTSVoice, prototypeManager);
             var compFactory = collection.Resolve<IComponentFactory>();
 
             if (!prototypeManager.TryIndex(Species, out var speciesPrototype) || speciesPrototype.RoundStart == false)
@@ -1688,6 +1717,7 @@ namespace Content.Shared.Preferences
             hashCode.Add(Age);
             hashCode.Add((int)Sex);
             hashCode.Add(Voice);
+            hashCode.Add(TTSVoice);
             hashCode.Add((int)Gender);
             hashCode.Add(Appearance);
             hashCode.Add((int)SpawnPriority);

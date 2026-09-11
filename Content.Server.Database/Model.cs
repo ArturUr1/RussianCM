@@ -600,6 +600,8 @@ namespace Content.Server.Database
         public int Age { get; set; }
         public string Sex { get; set; } = null!;
         public string? Voice { get; set; } = null!; // If null, the voice gets defaulted to the sex associated value
+        [Column("tts_voice")]
+        public string? TTSVoice { get; set; }
         public string Gender { get; set; } = null!;
         public string Species { get; set; } = null!;
         [Column(TypeName = "jsonb")] public JsonDocument? OrganMarkings { get; set; } = null!;

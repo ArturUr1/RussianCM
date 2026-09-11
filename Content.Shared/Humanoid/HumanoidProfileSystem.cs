@@ -33,6 +33,8 @@ public sealed partial class HumanoidProfileSystem : EntitySystem
         Dirty(ent);
 
         SetVoice(ent, profile.Voice);
+        if (TryComp<Content.Shared.Corvax.TTS.TTSComponent>(ent, out var tts))
+            tts.VoicePrototypeId = profile.TTSVoice;
 
         if (TryComp<GrammarComponent>(ent, out var grammar))
         {

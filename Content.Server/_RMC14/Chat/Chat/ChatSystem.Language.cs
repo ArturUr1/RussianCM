@@ -131,7 +131,7 @@ public sealed partial class ChatSystem
             visibleLanguage: !(languagePrototype?.NeedsSpeech ?? true),
             transformedName: transformedName,
             needsLos: needsLos);
-        var ev = new EntitySpokeEvent(source, speakerProcessedMessage, null, null, language);
+        var ev = new EntitySpokeEvent(source, speakerProcessedMessage, null, null, language, range);
         RaiseLocalEvent(source, ev, true);
 
         if (!HasComp<ActorComponent>(source) || hideLog)
@@ -301,7 +301,7 @@ public sealed partial class ChatSystem
                 languageIcon: languageIcon));
 
         var muffledMessage = ObfuscateMessageReadability(speakerMessage, 0.2f);
-        var ev = new EntitySpokeEvent(source, speakerMessage, channel, muffledMessage, language);
+        var ev = new EntitySpokeEvent(source, speakerMessage, channel, muffledMessage, language, range);
         RaiseLocalEvent(source, ev, true);
 
         if (hideLog)
@@ -443,7 +443,8 @@ public sealed partial class ChatSystem
                 languageIcon: languageIcon));
 
         var muffledMessage = ObfuscateMessageReadability(message, 0.2f);
-        var ev = new EntitySpokeEvent(source, message, null, muffledMessage, language);
+        var ev = new EntitySpokeEvent(source, message, null, muffledMessage, language,
+            ChatTransmitRange.GhostRangeLimit, originalSpeaker, ignoreXenos);
         RaiseLocalEvent(source, ev, true);
     }
 

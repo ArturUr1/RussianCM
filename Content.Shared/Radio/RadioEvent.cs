@@ -14,7 +14,8 @@ public readonly record struct RadioReceiveEvent(
     RadioChannelPrototype Channel,
     EntityUid RadioSource,
     MsgChatMessage ChatMsg,
-    ProtoId<LanguagePrototype> Language
+    ProtoId<LanguagePrototype> Language,
+    ulong TransmissionId = 0
 );
 
 /// <summary>
@@ -22,6 +23,13 @@ public readonly record struct RadioReceiveEvent(
 /// </summary>
 [ByRefEvent]
 public readonly record struct HeadsetRadioReceiveRelayEvent(RadioReceiveEvent RelayedEvent);
+
+/// <summary>
+/// RUCM Event raised on the parent entity of an intrinsic radio receiver when a radio message is received.
+/// </summary>
+[ByRefEvent]
+public readonly record struct IntrinsicRadioReceiveRelayEvent(
+    RadioReceiveEvent RelayedEvent);
 
 /// <summary>
 /// Use this event to cancel sending message per receiver.

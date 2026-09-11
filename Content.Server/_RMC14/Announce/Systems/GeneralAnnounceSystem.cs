@@ -99,6 +99,8 @@ public sealed partial class GeneralAnnounceSystem : EntitySystem
         }
 
         LogAnnouncement(preset.ID, plan.Lines, request.Target, request.Source, plan.DeliveredCount);
+        RaiseLocalEvent(new Content.Shared.Corvax.TTS.RMCAnnouncementMadeEvent(
+            request.Speaker, string.Join(". ", plan.Lines), plan.DeliveredFilter));
     }
 
     private AnnouncementNetData BuildClientData(
@@ -162,4 +164,3 @@ public sealed partial class GeneralAnnounceSystem : EntitySystem
     }
 
 }
-

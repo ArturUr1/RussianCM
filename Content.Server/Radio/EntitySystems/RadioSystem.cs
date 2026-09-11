@@ -79,15 +79,23 @@ public sealed partial class RadioSystem : SharedRadioSystem
     // RMC14
 
     // RMC14
-    private void OnIntrinsicReceive(Entity<IntrinsicRadioReceiverComponent> ent, ref RadioReceiveEvent args)
+    private void OnIntrinsicReceive(
+    Entity<IntrinsicRadioReceiverComponent> ent,
+    ref RadioReceiveEvent args)
     {
         if (!TryComp(ent.Owner, out ActorComponent? actor))
             return;
 
-        // CMU14
-        var msg = AddChatActionButtons(args.ChatMsg, args.MessageSource, actor.PlayerSession.Channel);
+        var msg = AddChatActionButtons(
+            args.ChatMsg,
+            args.MessageSource,
+            actor.PlayerSession.Channel);
+
         _netMan.ServerSendMessage(msg, actor.PlayerSession.Channel);
-        // CMU14
+
+        // RuCM TTS relay
+        var relay = new IntrinsicRadioReceiveRelayEvent(args);
+        RaiseLocalEvent(ent.Owner, ref relay);
     }
     // RMC14
 
@@ -200,6 +208,7 @@ public sealed partial class RadioSystem : SharedRadioSystem
         var hasActiveServer = HasActiveServer(sourceMapId, channel.ID);
         var sourceServerExempt = _exemptQuery.HasComp(radioSource);
 
+        var transmissionId = ++_ttsTransmissionId;
         var radioQuery = EntityQueryEnumerator<ActiveRadioComponent, TransformComponent>();
         while (canSend && radioQuery.MoveNext(out var receiver, out var radio, out var transform))
         {
@@ -269,7 +278,7 @@ public sealed partial class RadioSystem : SharedRadioSystem
                 channel,
                 radioSource,
                 chatMsg,
-                currentLanguage);
+                currentLanguage, transmissionId);
             // RMC14
             RaiseLocalEvent(receiver, ref ev);
         }

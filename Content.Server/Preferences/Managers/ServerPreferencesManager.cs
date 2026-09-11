@@ -260,7 +260,7 @@ namespace Content.Server.Preferences.Managers
                 profile.Weight,
                 Enum.TryParse<BuildType>(profile.Build, out var build) ? build : BuildType.Average,
                 profile.HideMetaInformation
-            );
+            ).WithTTSVoice(HumanoidCharacterProfile.ValidateTTSVoice(profile.TTSVoice, _prototypeManager));
         }
 
         private static HashSet<ProtoId<ThreatPrototype>> ConvertThreatPreferences(string? raw)
