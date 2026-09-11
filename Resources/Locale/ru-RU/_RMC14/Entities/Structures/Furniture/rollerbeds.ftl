@@ -1,0 +1,41 @@
+ent-RMCRollerBedHospital = больничная каталка
+    .desc = Мобильная кровать для раненных и больных. Не очень удобна.
+ent-RMCRollerBedHospitalFolded = {ent-RMCRollerBedHospital}
+    .desc = {ent-RMCRollerBedHospital.desc}
+    .suffix = Сложена
+ent-RMCRollerBedHospitalBlood = {ent-RMCRollerBedHospital}
+    .desc = {ent-RMCRollerBedHospital.desc}
+    .suffix = Кровь
+ent-RMCRollerBedHospitalBloodFolded = {ent-RMCRollerBedHospital}
+    .desc = {ent-RMCRollerBedHospital.desc}
+    .suffix = Сложена, Кровь
+ent-RMCRollerBedHospitalSheet = {ent-RMCRollerBedHospital}
+    .desc = {ent-RMCRollerBedHospital.desc}
+    .suffix = Покрывало
+ent-RMCRollerBedHospitalSheetFolded = {ent-RMCRollerBedHospital}
+    .desc = {ent-RMCRollerBedHospital.desc}
+    .suffix = Сложена, Покрывало
+ent-RMCRollerBedHospitalSheet2 = {ent-RMCRollerBedHospital}
+    .desc = {ent-RMCRollerBedHospital.desc}
+    .suffix = Покрывало с крестом
+ent-RMCRollerBedHospitalSheet2Folded = {ent-RMCRollerBedHospital}
+    .desc = {ent-RMCRollerBedHospital.desc}
+    .suffix = Сложена, Покрывало с крестом
+
+ent-RMCMedevacStretcher = носилки для эвакуации
+    .desc = Складные носилки, активация которых отправляет пациента на транспортник.
+ent-RMCMedevacStretcherFolded = {ent-RMCMedevacStretcher}
+    .desc = {ent-RMCMedevacStretcher.desc}
+    .suffix = Сложены
+
+ent-CMPortableSurgicalBed = хирургическая каталка
+    .desc = Лучший вариант для полевой хирургии.
+ent-CMPortableSurgicalBedSpawnFolded = {ent-CMPortableSurgicalBed}
+    .desc = {ent-CMPortableSurgicalBed.desc}
+    .suffix = Сложена
+
+ent-CMRollerBed = каталка
+    .desc = Мобильная кровать. Не очень удобна.
+ent-CMRollerBedSpawnFolded = {ent-CMRollerBed}
+    .desc = {ent-CMRollerBed.desc}
+    .suffix = Сложена

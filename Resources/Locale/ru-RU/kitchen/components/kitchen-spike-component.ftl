@@ -1,0 +1,96 @@
+comp-kitchen-spike-begin-hook-self = Вы начинаете насаживать себя на { $hook }!
+comp-kitchen-spike-begin-hook-self-other = { CAPITALIZE($victim) } начинает насаживать себя на { $hook }!
+
+comp-kitchen-spike-begin-hook-other-self = Вы начинаете насаживать { CAPITALIZE($victim) } на { $hook }!
+comp-kitchen-spike-begin-hook-other = { CAPITALIZE($user) } начинает насаживать { CAPITALIZE($victim) } на { $hook }!
+
+comp-kitchen-spike-hook-self = Вы бросаетесь на { $hook }!
+comp-kitchen-spike-hook-self-other = { CAPITALIZE($victim) } бросается на { $hook }!
+
+comp-kitchen-spike-hook-other-self = Вы повесили { CAPITALIZE($victim) } на { $hook }!
+comp-kitchen-spike-hook-other = { CAPITALIZE($user) } { GENDER($user) ->
+    [male] повесил
+    [female] повесила
+    [epicene] повесили
+    *[neuter] повесило
+} { CAPITALIZE($victim) } на { $hook }!
+
+comp-kitchen-spike-begin-unhook-self = Вы начинаете слезать с { $hook }!
+comp-kitchen-spike-begin-unhook-self-other = { CAPITALIZE($victim) } начинает слезать с { $hook }!
+
+comp-kitchen-spike-begin-unhook-other-self = Вы начинаете снимать { CAPITALIZE($victim) } с { $hook }!
+comp-kitchen-spike-begin-unhook-other = { CAPITALIZE($user) } начинает снимать { CAPITALIZE($victim) } с { $hook }!
+
+comp-kitchen-spike-unhook-self = Вы слезли с { $hook }!
+comp-kitchen-spike-unhook-self-other = { CAPITALIZE($victim) } { GENDER($victim) ->
+    [male] слез
+    [female] слезла
+    [epicene] слезли
+    *[neuter] слезло
+} с { $hook }!
+
+comp-kitchen-spike-unhook-other-self = Вы сняли { CAPITALIZE($victim) } с { $hook }!
+comp-kitchen-spike-unhook-other = { CAPITALIZE($user) } { GENDER($user) ->
+    [male] снял
+    [female] сняла
+    [epicene] сняли
+    *[neuter] сняло
+} { CAPITALIZE($victim) } с { $hook }!
+
+comp-kitchen-spike-begin-butcher-self = Вы начинаете разделывать { $victim }!
+comp-kitchen-spike-begin-butcher = { CAPITALIZE($user) } начинает разделывать { $victim }!
+
+comp-kitchen-spike-butcher-self = Вы разделали { $victim }!
+comp-kitchen-spike-butcher = { CAPITALIZE($user) } { GENDER($user) ->
+    [male] разделал
+    [female] разделала
+    [epicene] разделали
+    *[neuter] разделало
+} { $victim }!
+
+comp-kitchen-spike-unhook-verb = Снять с крюка
+
+comp-kitchen-spike-hooked = [color=red]На крюке { CAPITALIZE($victim) }![/color]
+
+comp-kitchen-spike-meat-name = мясо { $victim }
+
+comp-kitchen-spike-victim-examine = [color=orange]{ CAPITALIZE(SUBJECT($target)) } { CONJUGATE-BASIC($target, "выглядят", "выглядит") } довольно { GENDER($target) ->
+    [male] худым
+    [female] худой
+    [epicene] худыми
+    *[neuter] худым
+}.[/color]
+
+comp-kitchen-spike-deconstruct-occupied = Далее, [color=red]снимите тело с крюка[/color].
+
+comp-kitchen-spike-deny-collect = У {CAPITALIZE($this)} уже что-то есть, сначала собери его мясо!
+
+comp-kitchen-spike-deny-butcher = {CAPITALIZE($victim)} нельзя зарезать на {$this}.
+
+comp-kitchen-spike-deny-butcher-knife = {CAPITALIZE($victim)} нельзя разделать на {$this}, его нужно разделывать ножом.
+
+comp-kitchen-spike-deny-not-dead = {CAPITALIZE($victim)} нельзя зарезать. {CAPITALIZE(SUBJECT($victim))} не умер!
+
+comp-kitchen-spike-begin-hook-victim = { CAPITALIZE($user)} начинает перетаскивать вас на {$this}!
+
+comp-kitchen-spike-kill = { CAPITALIZE(THE($user)) } { GENDER($user) ->
+    [male] насадил
+    [female] насадила
+    [epicene] насадили
+    *[neuter] насадило
+} { THE($victim) } на { THE($this) }, мгновенно убив { OBJECT($victim) }!
+
+comp-kitchen-spike-suicide-other = { CAPITALIZE(THE($victim)) } { GENDER($victim) ->
+    [male] бросил
+    [female] бросила
+    [epicene] бросили
+    *[neuter] бросило
+} { REFLEXIVE($victim) } на { THE($this) }!
+
+comp-kitchen-spike-suicide-self = Ты бросаешься на {$this}!
+
+comp-kitchen-spike-knife-needed = Для этого вам понадобится нож.
+
+comp-kitchen-spike-remove-meat = Вы удаляете немного мяса из {$victim}.
+
+comp-kitchen-spike-remove-meat-last = Вы убираете последний кусок мяса с {$victim}!

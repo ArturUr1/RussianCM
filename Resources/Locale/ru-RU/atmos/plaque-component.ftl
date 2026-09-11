@@ -1,0 +1,10 @@
+atmos-plaque-component-desc-zum = Эта мемориальная доска посвящена расцвету подразделения Atmos ZUM. Пусть они несут факел, который оставили после себя подразделения Атмос ЗАС, ЛИНДА и ФЭА.
+atmos-plaque-component-desc-fea = Эта мемориальная доска посвящена падению подразделения Atmos FEA. За всех обугленных, головокружительных и хрупких людей, погибших от его рук.
+atmos-plaque-component-desc-linda = Эта мемориальная доска посвящена падению подразделения Atmos LINDA. За всех обугленных, головокружительных и хрупких людей, погибших от его рук.
+atmos-plaque-component-desc-zas = Эта мемориальная доска посвящена падению подразделения ЗАС «Атмос». За всех обугленных, головокружительных и хрупких людей, погибших от его рук.
+atmos-plaque-component-desc-unset = Хм
+atmos-plaque-component-name-zum = Табличка отдела атмосферы ZUM
+atmos-plaque-component-name-fea = Табличка отдела атмосферы FEA
+atmos-plaque-component-name-linda = Табличка Отдела атмосферы LINDA
+atmos-plaque-component-name-zas = Табличка Отдела атмосферы ЗАС
+atmos-plaque-component-name-unset = Хм

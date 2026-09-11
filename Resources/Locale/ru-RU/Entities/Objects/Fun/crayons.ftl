@@ -1,0 +1,36 @@
+ent-Crayon-name = карандаш
+ent-Crayon-desc = Красочный карандаш. Выглядит вкусно. Мммм...
+
+ent-CrayonWhite-name = белый карандаш
+ent-CrayonWhite-desc = Красочный карандаш. Выглядит вкусно. Мммм...
+
+ent-CrayonMime-name = мимический карандаш
+ent-CrayonMime-desc = Красочный карандаш. Выглядит вкусно. Мммм...
+
+ent-CrayonRainbow-name = радужный карандаш
+ent-CrayonRainbow-desc = Красочный карандаш. Выглядит вкусно. Мммм...
+
+ent-CrayonBlack-name = черный карандаш
+ent-CrayonBlack-desc = Красочный карандаш. Выглядит вкусно. Мммм...
+
+ent-CrayonRed-name = красный карандаш
+ent-CrayonRed-desc = Красочный карандаш. Выглядит вкусно. Мммм...
+
+ent-CrayonOrange-name = оранжевый карандаш
+ent-CrayonOrange-desc = Красочный карандаш. Выглядит вкусно. Мммм...
+
+ent-CrayonYellow-name = желтый карандаш
+ent-CrayonYellow-desc = Красочный карандаш. Выглядит вкусно. Мммм...
+
+ent-CrayonGreen-name = зеленый карандаш
+ent-CrayonGreen-desc = Красочный карандаш. Выглядит вкусно. Мммм...
+
+ent-CrayonBlue-name = синий карандаш
+ent-CrayonBlue-desc = Красочный карандаш. Выглядит вкусно. Мммм...
+
+ent-CrayonPurple-name = фиолетовый карандаш
+ent-CrayonPurple-desc = Красочный карандаш. Выглядит вкусно. Мммм...
+
+ent-CrayonBox-name = коробка для карандашей
+ent-CrayonBox-desc = Это коробка с карандашами.
+

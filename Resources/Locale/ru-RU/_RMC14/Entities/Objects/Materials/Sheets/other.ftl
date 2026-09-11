@@ -1,0 +1,35 @@
+ent-RMCPlankWood1 = деревянная доска
+    .desc = Доска из дерева.
+    .suffix = 1
+
+ent-RMCPlankWood = деревянные доски
+    .desc = Доски из дерева.
+    .suffix = Полный
+ent-RMCPlankWood2 = {ent-RMCPlankWood}
+    .desc = {ent-RMCPlankWood.desc}
+    .suffix = 2
+ent-RMCPlankWood10 = {ent-RMCPlankWood}
+    .desc = {ent-RMCPlankWood.desc}
+    .suffix = 10
+ent-RMCPlankWood25 = {ent-RMCPlankWood}
+    .desc = {ent-RMCPlankWood.desc}
+    .suffix = 25
+ent-RMCPlankWood50 = {ent-RMCPlankWood}
+    .desc = {ent-RMCPlankWood.desc}
+    .suffix = 50
+
+ent-CMSheetPhoron = твёрдая плазма
+    .desc = Редкий минерал, который является очень эффективным топливом. В твёрдом виде.
+    .suffix = Полный
+ent-CMSheetPhoron1 = {ent-CMSheetPhoron}
+    .desc = {ent-CMSheetPhoron.desc}
+    .suffix = 1
+ent-CMSheetPhoron15 = {ent-CMSheetPhoron}
+    .desc = {ent-CMSheetPhoron.desc}
+    .suffix = 15
+ent-CMSheetPhoron25 = {ent-CMSheetPhoron}
+    .desc = {ent-CMSheetPhoron.desc}
+    .suffix = 25
+ent-CMSheetPhoron30 = {ent-CMSheetPhoron}
+    .desc = {ent-CMSheetPhoron.desc}
+    .suffix = 30

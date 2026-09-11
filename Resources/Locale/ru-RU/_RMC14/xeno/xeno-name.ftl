@@ -1,0 +1,25 @@
+﻿rmc-xeno-name-number = {$baseName} ({$prefix}-{$number}{$postfix})
+rmc-xeno = {$baseName} ({$prefix}{$postfix})
+rmc-xeno-young = Молодой {$baseName}
+rmc-xeno-mature = Взрослый {$baseName}
+rmc-xeno-elder = Старший {$baseName}
+rmc-xeno-ancient = Древний {$baseName}
+rmc-xeno-prime = Первородный {$baseName}
+rmc-xeno-mature-parasite = Взрослый {$baseName}
+rmc-xeno-elder-parasite = Ветеран {$baseName}
+rmc-xeno-ancient-parasite = Древний {$baseName}
+rmc-xeno-prime-parasite = Омега {$baseName}
+rmc-xeno-mature-king = Беспощадный {$baseName}
+rmc-xeno-young-larva = Малая {$baseName}
+rmc-xeno-mature-larva = Взрослая {$baseName}
+rmc-xeno-elder-larva = Старшая {$baseName}
+
+# Missing entries synced from en-US
+
+rmc-xeno-name-leader = Лидер
+
+rmc-xeno-name = {$baseName} ({$prefix}{$postfix})
+
+rmc-xeno-apex = Апекс {$baseName}
+
+rmc-xeno-royal = Королевский {$baseName}
