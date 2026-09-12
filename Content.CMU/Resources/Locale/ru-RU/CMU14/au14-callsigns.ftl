@@ -1,0 +1,29 @@
+au14-callsign-console-title = Справочник радиосети
+au14-callsign-console-net = РАДИОСЕТЬ { $faction }
+au14-callsign-console-mode-edit = УПРАВЛЕНИЕ РАДИОСЕТЬЮ
+au14-callsign-console-mode-readonly = ТОЛЬКО ЧТЕНИЕ
+au14-callsign-console-stations = Станций: { $count }
+au14-callsign-console-command-element = КОМАНДОВАНИЕ
+au14-callsign-console-squad-element = ОТРЯД { $squad }
+au14-callsign-console-no-stations = - нет станций -
+au14-callsign-console-rename-placeholder = Новое слово
+au14-callsign-console-suffix-placeholder = Суффикс
+au14-callsign-console-set-button = УСТАНОВИТЬ
+au14-callsign-console-footer = Позывные станций заменяют имена в радиосети. 6 = командир · 5 = заместитель · 7 = старший унтер-офицер · ACTUAL = командир отряда · ROMEO = радист · PAPA = пилот · CHIEF = DCC · OPS = штаб · N-N = номер огневой группы. Обученный работе с радио персонал может переименовывать элементы, переназначать суффиксы и формировать тактические группы.
+au14-callsign-console-not-authorized = Вы не обучены управлению радиосетью.
+au14-callsign-console-wrong-faction = Этот справочник не признаёт ваши полномочия.
+au14-callsign-console-suffix-taken = Суффикс позывного { $suffix } уже используется в этом элементе.
+au14-callsign-console-group-element = ТАКТИЧЕСКАЯ ГРУППА
+au14-callsign-console-category-air = ЛЁТНЫЙ СОСТАВ
+au14-callsign-console-category-armor = ЭКИПАЖ ТЕХНИКИ
+au14-callsign-console-category-mp = ВОЕННАЯ ПОЛИЦИЯ
+au14-callsign-console-category-medical = МЕДИЦИНА
+au14-callsign-console-category-intel = РАЗВЕДКА
+au14-callsign-console-category-synth = СИНТЕТИКИ
+au14-callsign-console-group-taken = Это слово недоступно или уже используется в радиосети.
+au14-callsign-console-group-placeholder = Новое слово группы
+au14-callsign-console-create-group-button = СОЗДАТЬ ГРУППУ
+au14-callsign-console-delete-group-button = РАСФОРМИРОВАТЬ
+au14-callsign-console-group-none = - элемент -
+au14-callsign-headset-examine = В радиосети ваш позывной — [color=#6BC7FF]{ $callsign }[/color].
+au14-overwatch-console-comms-directory = Справочник радиосети
