@@ -10,7 +10,7 @@
   icon: "RMCJobIconPMCSynthetic"
   joinNotifyCrew: false
   whitelisted: true
-  whitelistParent: CMUJobSyntheticWhitelist
+  whitelistParent: RuCMWhitelistMedium
   isSynthetic: true
   accessGroups:
   - RMCWeYa

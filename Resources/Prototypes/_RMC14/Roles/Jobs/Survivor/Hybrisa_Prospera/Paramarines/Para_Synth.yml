@@ -8,7 +8,7 @@
   icon: RMCJobIconParaSupportSynthetic
   spawnMenuRoleName: Royal Paramarine Support Synthetic (Survivor)
   whitelisted: true
-  whitelistParent: CMUJobSyntheticWhitelist
+  whitelistParent: RuCMWhitelistMedium
   isSynthetic: true
   special:
     - !type:AddComponentSpecial
