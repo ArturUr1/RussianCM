@@ -15,9 +15,9 @@ lobby-character-preview-ignore-allegiance-tooltip = При включении, �
 # is the one setting here that changes who you can spawn as, so it should be obvious at a glance that
 # it is armed. Plain slashes rather than an icon glyph - the OSD font has no icon coverage and a
 # missing glyph renders as a blank box.
-lobby-character-preview-ignore-allegiance-off = Ignore Allegiance: Off
+lobby-character-preview-ignore-allegiance-off = Игнорирование принадлежности: Выкл
 
-lobby-character-preview-ignore-allegiance-on = /// Ignore Allegiance: On ///
+lobby-character-preview-ignore-allegiance-on = /// Игнорирование принадлежности: Вкл ///
 
 # Two-line character summary shown beside the preview sprite. The pronoun and its verb have to stay
 # inside one selector ("He is" vs "They are"), so the colour wraps the whole phrase.
