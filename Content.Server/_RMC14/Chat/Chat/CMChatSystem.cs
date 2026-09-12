@@ -253,19 +253,6 @@ public sealed partial class CMChatSystem : SharedCMChatSystem
         );
     }
 
-    private bool IsValidRadioPrefix(EntityUid headset, string prefixPart)
-    {
-        if (prefixPart.Length != 2)
-            return false;
-
-        return TryResolveHeadsetRadioChannel(headset, prefixPart[0], prefixPart[1], out _);
-    }
-
-    private bool IsValidRadioKey(EntityUid headset, char prefix, char keycode)
-    {
-        return IsValidRadioPrefix(headset, $"{prefix}{char.ToLowerInvariant(keycode)}");
-    }
-
     public List<string>? TryMultiBroadcast(EntityUid source, string message)
     {
         if (string.IsNullOrEmpty(message) || message.Length < 2)
