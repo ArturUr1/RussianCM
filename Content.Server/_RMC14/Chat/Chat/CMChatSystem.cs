@@ -77,6 +77,7 @@ public sealed partial class CMChatSystem : SharedCMChatSystem
 
     public override string SanitizeMessageReplaceWords(EntityUid source, string msg)
     {
+        msg = NormalizeLocalizedRadioKey(source, msg);
         msg = _wordreplacement.ApplyReplacements(msg, ChatSanitize);
 
         var factionSanitize = HasComp<XenoComponent>(source) && !UsesHumanChatSanitize(source)
@@ -85,6 +86,89 @@ public sealed partial class CMChatSystem : SharedCMChatSystem
         msg = _wordreplacement.ApplyReplacements(msg, factionSanitize);
 
         return msg;
+    }
+
+    public string NormalizeLocalizedRadioKey(EntityUid source, string msg)
+    {
+        if (msg.Length < 2)
+            return msg;
+
+        var prefix = msg[0];
+        if (prefix != SharedChatSystem.RadioChannelPrefix &&
+            prefix != SharedChatSystem.RadioChannelAltPrefix)
+            return msg;
+
+        var keycode = char.ToLowerInvariant(msg[1]);
+        RadioChannelPrototype? channel = null;
+
+        var resolved = TryComp(source, out WearingHeadsetComponent? wearing) &&
+                       TryResolveHeadsetRadioChannel(wearing.Headset, prefix, keycode, out channel);
+
+        if (!resolved && TryComp(source, out IntrinsicRadioTransmitterComponent? intrinsic))
+            resolved = TryResolveRadioChannels(intrinsic.Channels, prefix, keycode, out channel);
+
+        if (!resolved || channel == null)
+            return msg;
+
+        var canonicalKeycode = char.ToLowerInvariant(channel.KeyCode);
+        if (canonicalKeycode == keycode)
+            return msg;
+
+        return $"{prefix}{canonicalKeycode}{msg[2..]}";
+    }
+
+    private bool TryResolveHeadsetRadioChannel(
+        EntityUid headset,
+        char prefix,
+        char keycode,
+        out RadioChannelPrototype? channel)
+    {
+        channel = null;
+
+        if (!TryComp(headset, out EncryptionKeyHolderComponent? keys))
+            return false;
+
+        return TryResolveRadioChannels(keys.Channels, prefix, keycode, out channel);
+    }
+
+    private bool TryResolveRadioChannels(
+        IEnumerable<ProtoId<RadioChannelPrototype>> channels,
+        char prefix,
+        char keycode,
+        out RadioChannelPrototype? channel)
+    {
+        channel = null;
+
+        if (prefix == SharedChatSystem.RadioChannelAltPrefix)
+            prefix = SharedChatSystem.RadioChannelPrefix;
+
+        var normalizedKeycode = char.ToLowerInvariant(keycode);
+
+        // Prefer the RuCM alias over a canonical key from another channel when both are present.
+        foreach (var id in channels)
+        {
+            var candidate = _proto.Index<RadioChannelPrototype>(id);
+            if (candidate.RadioPrefix != prefix ||
+                candidate.LocalizedKeyCode == '\0' ||
+                char.ToLowerInvariant(candidate.LocalizedKeyCode) != normalizedKeycode)
+                continue;
+
+            channel = candidate;
+            return true;
+        }
+
+        foreach (var id in channels)
+        {
+            var candidate = _proto.Index<RadioChannelPrototype>(id);
+            if (candidate.RadioPrefix != prefix ||
+                char.ToLowerInvariant(candidate.KeyCode) != normalizedKeycode)
+                continue;
+
+            channel = candidate;
+            return true;
+        }
+
+        return false;
     }
 
     private bool UsesHumanChatSanitize(EntityUid source)
@@ -169,37 +253,6 @@ public sealed partial class CMChatSystem : SharedCMChatSystem
         );
     }
 
-    private bool IsValidRadioPrefix(EntityUid headset, string prefixPart)
-    {
-        if (prefixPart.Length != 2)
-            return false;
-
-        if (!TryComp(headset, out EncryptionKeyHolderComponent? keys))
-            return false;
-
-        var prefix = prefixPart[0];
-        if (prefix == SharedChatSystem.RadioChannelAltPrefix)
-            prefix = SharedChatSystem.RadioChannelPrefix;
-
-        var keycode = char.ToLowerInvariant(prefixPart[1]);
-
-        foreach (var ch in _proto.EnumeratePrototypes<RadioChannelPrototype>())
-        {
-            if (!keys.Channels.Contains(ch.ID))
-                continue;
-
-            if (ch.RadioPrefix == prefix && ch.KeyCode == keycode)
-                return true;
-        }
-
-        return false;
-    }
-
-    private bool IsValidRadioKey(EntityUid headset, char prefix, char keycode)
-    {
-        return IsValidRadioPrefix(headset, $"{prefix}{char.ToLowerInvariant(keycode)}");
-    }
-
     public List<string>? TryMultiBroadcast(EntityUid source, string message)
     {
         if (string.IsNullOrEmpty(message) || message.Length < 2)
@@ -243,13 +296,14 @@ public sealed partial class CMChatSystem : SharedCMChatSystem
                 break;
             }
 
-            if (!IsValidRadioKey(headset.Value, sharedPrefix, keycode))
+            if (!TryResolveHeadsetRadioChannel(headset.Value, sharedPrefix, keycode, out var channel) ||
+                channel == null)
             {
                 prefixLength = i;
                 break;
             }
 
-            validPrefixes.Add($"{sharedPrefix}{keycode}");
+            validPrefixes.Add($"{sharedPrefix}{char.ToLowerInvariant(channel.KeyCode)}");
             prefixLength = i + 1;
         }
 

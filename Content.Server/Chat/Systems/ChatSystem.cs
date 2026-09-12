@@ -228,6 +228,9 @@ public sealed partial class ChatSystem : SharedChatSystem
             !CultureInfo.CurrentCulture.IsNeutralCulture && CultureInfo.CurrentCulture.Parent.Name == "en" ||
             CultureInfo.CurrentCulture.IsNeutralCulture && CultureInfo.CurrentCulture.Name == "en";
 
+        if (checkRadioPrefix)
+            message = _cmChat.NormalizeLocalizedRadioKey(source, message);
+
         var isRadioMessage = checkRadioPrefix &&
                              TryProcessRadioMessage(source, message, out var radioText, out _) &&
                              !string.IsNullOrWhiteSpace(radioText);

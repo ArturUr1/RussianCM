@@ -3,6 +3,7 @@
   id: radioGovforAlpha
   name: chat-radio-govforalpha
   keycode: "a"
+  localizedKeycode: "а"
   frequency: 250.2
   color: "#F0433E"
   longRange: true
@@ -14,6 +15,7 @@
   id: radioGovforBravo
   name: chat-radio-govforbravo
   keycode: "b"
+  localizedKeycode: "б"
   frequency: 160.6
   color: "#c7b646"
   longRange: true
@@ -25,6 +27,7 @@
   id: radioGovforCharlie
   name: chat-radio-govforcharlie
   keycode: "c"
+  localizedKeycode: "ч"
   frequency: 160.7
   color: "#9D3EF0"
   longRange: true
@@ -36,6 +39,7 @@
   id: radioGovforCommand
   name: chat-radio-govforcommand
   keycode: "v"
+  localizedKeycode: "ш"
   frequency: 259.2
   color: "#5b96d4"
   longRange: true
@@ -47,6 +51,7 @@
   id: radioGovforIntel
   name: chat-radio-govforintel
   keycode: "y"
+  localizedKeycode: "й"
   frequency: 160.5
   color: "#e4860c"
   longRange: true
@@ -58,6 +63,7 @@
   id: radioGovforJTAC
   name: chat-radio-govforjtac
   keycode: "j"
+  localizedKeycode: "т"
   frequency: 259.8
   color: "#ad3b98"
   longRange: true
@@ -69,6 +75,7 @@
   id: radioGovforMILP
   name: chat-radio-govformp
   keycode: "p"
+  localizedKeycode: "п"
   frequency: 259.5
   color: "#E92211"
   longRange: true
@@ -81,6 +88,7 @@
   id: radioOpforAlpha
   name: chat-radio-opforalpha
   keycode: "s"
+  localizedKeycode: "1"
   frequency: 160.1
   color: "#bb91d8"
   longRange: true
@@ -92,6 +100,7 @@
   id: radioOpforBravo
   name: chat-radio-opforbravo
   keycode: "t"
+  localizedKeycode: "5"
   frequency: 160.3
   color: "#c6c1a8"
   longRange: true
@@ -103,6 +112,7 @@
   id: radioOpforCharlie
   name: chat-radio-opforcharlie
   keycode: "u"
+  localizedKeycode: "6"
   frequency: 160.4
   color: "#bb44bd"
   longRange: true
@@ -114,6 +124,7 @@
   id: radioOpforCommand
   name: chat-radio-opforcommand
   keycode: "k"
+  localizedKeycode: "2"
   frequency: 147.9
   color: "#5b96d4"
   longRange: true
@@ -125,6 +136,7 @@
   id: radioOpforIntel
   name: chat-radio-opforintel
   keycode: "i"
+  localizedKeycode: "4"
   frequency: 160.2
   color: "#e4860c"
   longRange: true
@@ -136,6 +148,7 @@
   id: radioOpforJTAC
   name: chat-radio-opforjtac
   keycode: "d"
+  localizedKeycode: "3"
   frequency: 147.4
   color: "#ad3b98"
   longRange: true
@@ -147,6 +160,7 @@
   id: radioOpforMILP
   name: chat-radio-opformp
   keycode: "l"
+  localizedKeycode: "7"
   frequency: 147.7
   color: "#DD0055"
   longRange: true
@@ -171,6 +185,7 @@
   id: Colony
   name: chat-radio-colony
   keycode: "o"
+  localizedKeycode: "о"
   frequency: 146.9
   color: "#cf40a6"
   longRange: true
@@ -180,6 +195,7 @@
   id: colonyAlert
   name: chat-radio-alert
   keycode: "2"
+  localizedKeycode: "ъ"
   frequency: 143.1
   color: "#318779"
   longRange: true
@@ -188,6 +204,7 @@
   id: radioWEYU
   name: chat-radio-WEYU
   keycode: "w"
+  localizedKeycode: "ю"
   frequency: 123.1
   color: "#fe9b24"
   longRange: true
@@ -197,6 +214,7 @@
   id: radioCMB
   name: chat-radio-CMB
   keycode: "3"
+  localizedKeycode: "к"
   frequency: 122.0
   color: "#1b748c"
   longRange: true
@@ -206,6 +224,7 @@
   id: radioCLF
   name: chat-radio-CLF
   keycode: "q"
+  localizedKeycode: "в"
   frequency: 188.6
   color: "#059705"
   longRange: true
@@ -230,6 +249,7 @@
   id: radioMobFamily
   name: chat-radio-mob
   keycode: "f"
+  localizedKeycode: "р"
   frequency: 146.7
   color: "#318779"
   longRange: true
@@ -239,6 +259,7 @@
   id: radioAI
   name: chat-radio-ai
   keycode: "$"
+  localizedKeycode: "и"
   frequency: 767.6
   color: "#d39d22"
   longRange: true
@@ -257,6 +278,7 @@
   id: Hivemind
   name: chat-radio-hivemind
   keycode: "h"
+  localizedKeycode: "у"
   frequency: 42.6
   color: "#8b36a6"
   longRange: true
@@ -273,6 +295,7 @@
   id: ICSCSOF
   name: chat-radio-icsc
   keycode: "4"
+  localizedKeycode: "0"
   frequency: 155.8
   color: "#0b93b9"
   longRange: true
@@ -282,6 +305,7 @@
   id: UASOF
   name: chat-radio-uasof
   keycode: "5"
+  localizedKeycode: "8"
   frequency: 155.3
   color: "#2e4f68"
   longRange: true
@@ -291,6 +315,7 @@
   id: TWESOF
   name: chat-radio-twe
   keycode: "6"
+  localizedKeycode: "9"
   frequency: 155.7
   color: "#701ba7"
   longRange: true
@@ -318,6 +343,7 @@
   id: radioVAI
   name: chat-radio-vai
   keycode: "z"
+  localizedKeycode: "с"
   frequency: 155.9
   color: "#e3580e"
   longRange: true
@@ -327,6 +353,7 @@
   id: PART
   name: chat-radio-part
   keycode: "1"
+  localizedKeycode: "ж"
   frequency: 557.1
   color: "#92969A"
   longRange: true
