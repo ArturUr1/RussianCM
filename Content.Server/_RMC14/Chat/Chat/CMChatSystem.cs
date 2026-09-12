@@ -90,7 +90,7 @@ public sealed partial class CMChatSystem : SharedCMChatSystem
 
     public string NormalizeLocalizedRadioKey(EntityUid source, string msg)
     {
-        if (msg.Length < 2 || !TryComp(source, out WearingHeadsetComponent? wearing))
+        if (msg.Length < 2)
             return msg;
 
         var prefix = msg[0];
@@ -99,7 +99,15 @@ public sealed partial class CMChatSystem : SharedCMChatSystem
             return msg;
 
         var keycode = char.ToLowerInvariant(msg[1]);
-        if (!TryResolveHeadsetRadioChannel(wearing.Headset, prefix, keycode, out var channel) || channel == null)
+        RadioChannelPrototype? channel = null;
+
+        var resolved = TryComp(source, out WearingHeadsetComponent? wearing) &&
+                       TryResolveHeadsetRadioChannel(wearing.Headset, prefix, keycode, out channel);
+
+        if (!resolved && TryComp(source, out IntrinsicRadioTransmitterComponent? intrinsic))
+            resolved = TryResolveRadioChannels(intrinsic.Channels, prefix, keycode, out channel);
+
+        if (!resolved || channel == null)
             return msg;
 
         var canonicalKeycode = char.ToLowerInvariant(channel.KeyCode);
@@ -120,13 +128,24 @@ public sealed partial class CMChatSystem : SharedCMChatSystem
         if (!TryComp(headset, out EncryptionKeyHolderComponent? keys))
             return false;
 
+        return TryResolveRadioChannels(keys.Channels, prefix, keycode, out channel);
+    }
+
+    private bool TryResolveRadioChannels(
+        IEnumerable<ProtoId<RadioChannelPrototype>> channels,
+        char prefix,
+        char keycode,
+        out RadioChannelPrototype? channel)
+    {
+        channel = null;
+
         if (prefix == SharedChatSystem.RadioChannelAltPrefix)
             prefix = SharedChatSystem.RadioChannelPrefix;
 
         var normalizedKeycode = char.ToLowerInvariant(keycode);
 
         // Prefer the RuCM alias over a canonical key from another channel when both are present.
-        foreach (var id in keys.Channels)
+        foreach (var id in channels)
         {
             var candidate = _proto.Index<RadioChannelPrototype>(id);
             if (candidate.RadioPrefix != prefix ||
@@ -138,7 +157,7 @@ public sealed partial class CMChatSystem : SharedCMChatSystem
             return true;
         }
 
-        foreach (var id in keys.Channels)
+        foreach (var id in channels)
         {
             var candidate = _proto.Index<RadioChannelPrototype>(id);
             if (candidate.RadioPrefix != prefix ||
