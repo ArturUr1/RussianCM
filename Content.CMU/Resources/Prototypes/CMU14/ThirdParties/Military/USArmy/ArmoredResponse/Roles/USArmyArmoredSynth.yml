@@ -6,7 +6,7 @@
   playTimeTracker: AU14JobUSArmySynth
   basePlaytimeTracker: true
   whitelisted: true
-  whitelistParent: CMUJobSyntheticWhitelist
+  whitelistParent: RuCMWhitelistMedium
   isSynthetic: true
   hidden: true
 

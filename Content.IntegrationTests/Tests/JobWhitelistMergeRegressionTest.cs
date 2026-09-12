@@ -1,10 +1,12 @@
 using System.Linq;
+using Content.Client.Players.PlayTimeTracking;
 using Content.IntegrationTests.Fixtures;
 using Content.IntegrationTests.Fixtures.Attributes;
 using Content.Server.Administration.Managers;
 using Content.Server.Database;
 using Content.Server.Players.JobWhitelist;
 using Content.Shared.CCVar;
+using Content.Shared.CMU14.Roles;
 using Content.Shared.Roles;
 using Robust.Server.Player;
 using Robust.Shared.Configuration;
@@ -89,6 +91,12 @@ public sealed class JobWhitelistMergeRegressionTest : GameTest
 
     [SidedDependency(Side.Server)]
     private readonly IConfigurationManager _configuration = default!;
+
+    [SidedDependency(Side.Client)]
+    private readonly JobRequirementsManager _clientRequirements = default!;
+
+    [SidedDependency(Side.Client)]
+    private readonly IPrototypeManager _clientPrototypes = default!;
 
     public override PoolSettings PoolSettings => new()
     {
@@ -193,6 +201,64 @@ public sealed class JobWhitelistMergeRegressionTest : GameTest
             await Server.WaitPost(() => _configuration.SetCVar(CCVars.GameRoleWhitelist, true));
             foreach (var job in MutableWhitelists)
                 await EnsureRemoved(session.UserId, job);
+        }
+    }
+
+    [TestCase("RuCMWhitelistEasy", "AU14JobGOVFORPlatCo")]
+    [TestCase("RuCMWhitelistMedium", "RMCJobSynthetic")]
+    [TestCase("RuCMWhitelistHard", "CMUJobINDFORProvostInspector")]
+    public async Task TierGrantsReachClientAndUnlockTheirRoles(string tier, string role)
+    {
+        var session = _players.Sessions.Single();
+        await _userDatabase.WaitLoadComplete(session);
+
+        await Client.WaitAssertion(() =>
+        {
+            foreach (var job in _clientPrototypes.EnumeratePrototypes<JobPrototype>())
+            {
+                if (job.WhitelistParent is { } parent)
+                    Assert.That(_clientPrototypes.HasIndex(parent), Is.True,
+                        $"{job.ID} references missing whitelist {parent}");
+            }
+        });
+
+        try
+        {
+            await EnsureRemoved(session.UserId, tier);
+            await EnsureRemoved(session.UserId, role);
+            await CheckTier(false);
+            await Add(session.UserId, tier);
+            await CheckTier(true);
+            await Remove(session.UserId, tier);
+            await CheckTier(false);
+        }
+        finally
+        {
+            await EnsureRemoved(session.UserId, tier);
+            await EnsureRemoved(session.UserId, role);
+        }
+
+        async Task CheckTier(bool expected)
+        {
+            await Server.WaitAssertion(() =>
+            {
+                Assert.That(_whitelist.IsAllowed(session, role), Is.EqualTo(expected));
+                if (tier == "RuCMWhitelistMedium")
+                    Assert.That(_whitelist.IsAllowed(session, CMUSyntheticRoles.SyntheticWhitelistJob), Is.EqualTo(expected));
+            });
+
+            await PoolManager.WaitUntil(Client, () => _clientRequirements.IsWhitelisted(tier) == expected);
+            await Client.WaitAssertion(() =>
+            {
+                var job = _clientPrototypes.Index<JobPrototype>(role);
+                Assert.That(_clientRequirements.CheckWhitelist(job, out _), Is.EqualTo(expected));
+                if (tier == "RuCMWhitelistMedium")
+                {
+                    // Same prototype lookup and whitelist check as the profile editor's Synthetic selector.
+                    var marker = _clientPrototypes.Index<JobPrototype>(CMUSyntheticRoles.SyntheticWhitelistJob);
+                    Assert.That(_clientRequirements.CheckWhitelist(marker, out _), Is.EqualTo(expected));
+                }
+            });
         }
     }
 

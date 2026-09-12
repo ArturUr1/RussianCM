@@ -2,7 +2,7 @@
   parent: CMJobBase
   id: AU14FORECONSynth
   whitelisted: true
-  whitelistParent: CMUJobSyntheticWhitelist
+  whitelistParent: RuCMWhitelistMedium
   isSynthetic: true
   roundSide: ThirdParty
   roundForce: FORECON

@@ -1,9 +1,10 @@
-- type: job
-  parent: CMJobBase
-  id: CMUJobCommandWhitelist
-  playTimeTracker: CMUJobCommandWhitelist
-  whitelisted: true
-  hidden: true
+# Этот вид белого списка не используется Russian Marine Corps
+# - type: job
+#   parent: CMJobBase
+#   id: CMUJobCommandWhitelist
+#   playTimeTracker: CMUJobCommandWhitelist
+#   whitelisted: true
+#   hidden: true
 
-- type: playTimeTracker
-  id: CMUJobCommandWhitelist
+# - type: playTimeTracker
+#   id: CMUJobCommandWhitelist

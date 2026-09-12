@@ -8,5 +8,5 @@ public static class CMUSyntheticRoles
     /// <summary>
     /// Job id of the hidden whitelist-marker job that gates the "Synthetic" character option.
     /// </summary>
-    public const string SyntheticWhitelistJob = "CMUJobSyntheticWhitelist";
+    public const string SyntheticWhitelistJob = "RuCMWhitelistMedium"; // Russian Colonial Marines: Medium Whitelist change
 }

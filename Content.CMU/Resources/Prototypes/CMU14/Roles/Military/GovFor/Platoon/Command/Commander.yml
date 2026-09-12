@@ -14,7 +14,7 @@
   joinNotifyCrew: true
   canBeAntag: false
   whitelisted: true
-  whitelistParent: CMUJobCommandWhitelist
+  whitelistParent: RuCMWhitelistEasy
   displayWeight: 10
   accessGroups:
   - AU14GovforCommand

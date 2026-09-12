@@ -80,7 +80,7 @@
   joinNotifyCrew: false
   supervisors: au14-job-supervisors-colonycivilian
   whitelisted: true
-  whitelistParent: CMUJobSyntheticWhitelist
+  whitelistParent: RuCMWhitelistMedium
   isSynthetic: true
   accessGroups:
   - Colonist

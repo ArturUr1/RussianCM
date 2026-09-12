@@ -1,3 +1,4 @@
+# Этот вид белого списка не используется Russian Marine Corps
 ## legacy/deprecated - do not use
 - type: job
   parent: CMJobBase

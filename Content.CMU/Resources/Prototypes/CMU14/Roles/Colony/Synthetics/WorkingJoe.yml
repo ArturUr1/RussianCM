@@ -9,7 +9,7 @@
   setPreference: true
   canBeAntag: false
   whitelisted: true
-  whitelistParent: CMUJobSyntheticWhitelist
+  whitelistParent: RuCMWhitelistMedium
   isSynthetic: true
   requirements:
     - !type:TraitsRequirement

@@ -11,7 +11,7 @@
   icon: "RMCJobIconTSEPASynth"
   joinNotifyCrew: false
   whitelisted: true
-  whitelistParent: CMUJobSyntheticWhitelist
+  whitelistParent: RuCMWhitelistMedium
   isSynthetic: true
   accessGroups:
   - ColonistTSEPAInspector
