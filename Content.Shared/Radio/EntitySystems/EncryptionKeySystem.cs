@@ -236,7 +236,7 @@ public sealed partial class EncryptionKeySystem : EntitySystem
 
             var key = id == SharedChatSystem.CommonChannel
                 ? SharedChatSystem.RadioCommonPrefix.ToString()
-                : $"{SharedChatSystem.RadioChannelPrefix}{proto.KeyCode}";
+                : $"{SharedChatSystem.RadioChannelPrefix}{proto.DisplayKeyCode}";
 
 
             var readOnlyMarkup = "";
