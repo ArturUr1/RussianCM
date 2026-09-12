@@ -77,7 +77,7 @@ public sealed partial class CMChatSystem : SharedCMChatSystem
 
     public override string SanitizeMessageReplaceWords(EntityUid source, string msg)
     {
-        msg = ReplaceLocalizedRadioKey(source, msg);
+        msg = NormalizeLocalizedRadioKey(source, msg);
         msg = _wordreplacement.ApplyReplacements(msg, ChatSanitize);
 
         var factionSanitize = HasComp<XenoComponent>(source) && !UsesHumanChatSanitize(source)
@@ -88,7 +88,7 @@ public sealed partial class CMChatSystem : SharedCMChatSystem
         return msg;
     }
 
-    private string ReplaceLocalizedRadioKey(EntityUid source, string msg)
+    public string NormalizeLocalizedRadioKey(EntityUid source, string msg)
     {
         if (msg.Length < 2 || !TryComp(source, out WearingHeadsetComponent? wearing))
             return msg;
