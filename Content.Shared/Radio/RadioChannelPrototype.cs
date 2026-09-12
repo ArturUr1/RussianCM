@@ -27,6 +27,23 @@ public sealed partial class RadioChannelPrototype : IPrototype
     public char KeyCode { get; private set; } = '\0';
 
     /// <summary>
+    /// Optional RuCM-facing alias for <see cref="KeyCode"/>.
+    /// The canonical keycode remains unchanged so upstream CMU keycodes keep working.
+    /// </summary>
+    [DataField("localizedKeycode")]
+    public char LocalizedKeyCode { get; private set; } = '\0';
+
+    [ViewVariables(VVAccess.ReadOnly)]
+    public char DisplayKeyCode => LocalizedKeyCode == '\0' ? KeyCode : LocalizedKeyCode;
+
+    public bool MatchesKeyCode(char keyCode)
+    {
+        var normalized = char.ToLowerInvariant(keyCode);
+        return char.ToLowerInvariant(KeyCode) == normalized ||
+               LocalizedKeyCode != '\0' && char.ToLowerInvariant(LocalizedKeyCode) == normalized;
+    }
+
+    /// <summary>
     /// Frequency used by the channel.
     /// </summary>
     [DataField]
