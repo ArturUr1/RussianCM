@@ -460,7 +460,7 @@
   - message: Fixed crushers charge dealing lower damage than intended to walls and
       Rwalls, it now deals the correct 750 structural damage.
     type: Fix
-  - message: "Fixed crushers knockback not matching parity (1\xBD -> 3 tiles)"
+  - message: Fixed crushers knockback not matching parity (1½ -> 3 tiles)
     type: Fix
   - message: Fixed crusher charge not being targetable, causing it to always travel
       the full length, regardless of targeting.
@@ -1103,8 +1103,8 @@
   - message: Crusher charge now bowls flung marines through other marines in the path,
       damaging and knocking down each one
     type: Add
-  - message: "Crusher stomp is now a targeted 90\xB0 cone aimed at your mouse with\
-      \ a preview overlay"
+  - message: Crusher stomp is now a targeted 90° cone aimed at your mouse with a preview
+      overlay
     type: Add
   - message: Crusher defensive shield now reflects enemy projectiles (40% front, 30%
       sides, 25% back)
@@ -1118,7 +1118,7 @@
     type: Tweak
   - message: 'Crusher armor is now directional: 45 front, 30 sides, 25 back'
     type: Tweak
-  - message: "Crusher wide swing restored: 60\xB0 arc, 2 max targets"
+  - message: 'Crusher wide swing restored: 60° arc, 2 max targets'
     type: Tweak
   - message: 'Crusher charge: faster wind-up, 90 damage, distance-scaled knockback
       (5-10 tiles)'
@@ -1399,6 +1399,23 @@
   id: 138
   time: '2026-06-01T21:42:49.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1177
+- author: TheHellFireo
+  time: '2026-06-01T23:37:12.0000000+00:00'
+  changes:
+  - type: Add
+    message: Added a wound-driven medical foundation with mechanism wound types, limb
+      health caps, bleeding control, and detailed injury examination.
+  - type: Add
+    message: Added field-mixed gauze and trauma dressing treatments with new medical
+      ingredients and treatment sprites.
+  - type: Tweak
+    message: Updated health analyzers, surgery flow, medical vendors, rifleman equipment
+      vendors, and ASRS medical purchasing for the new wound system.
+  - type: Fix
+    message: Fixed surgical lines, synth grafts, retained fragments, and trauma governor
+      interactions against the new wound and limb recovery rules.
+  id: 718
+  url: null
 - author: TheHellFireo
   changes:
   - message: '"Added mechanism wounds for 8 injury sources: bullet, stab, slash, crush,
@@ -1808,7 +1825,7 @@
   changes:
   - message: Heatshield Vomit Bile now spews fire in 3 tiles infront of it
     type: Add
-  - message: "Added a flamer burst sound to Heatshield\u2019s burning Vomit Bile spray."
+  - message: Added a flamer burst sound to Heatshield’s burning Vomit Bile spray.
     type: Add
   - message: Increased Heatshield Vomit Bile targeting range by 20%, from 1.5 to 1.8.
     type: Tweak
@@ -1846,8 +1863,8 @@
   - message: Xeno hives now get a shared 200-use instant-build pool for the first
       30 minutes of the round.
     type: Add
-  - message: "Secrete structure actions show the hive\u2019s remaining instant builds\
-      \ in the lower-right while available."
+  - message: Secrete structure actions show the hive’s remaining instant builds in
+      the lower-right while available.
     type: Tweak
   - message: Hive instant builds no longer consume plasma and refund their charge
       if placement fails.
@@ -3167,8 +3184,8 @@
     type: Tweak
   - message: Disabled the silly automatic-fire for semi-automatic and burst modes
     type: Remove
-  - message: "Melee weapons can no longer be throw-spammed to chop down trees (new\
-      \ meta: \U0001F525)"
+  - message: 'Melee weapons can no longer be throw-spammed to chop down trees (new
+      meta: 🔥)'
     type: Remove
   - message: Machete does x3 damage against trees (chops 1250HP down in 9 hits) &
       Pickaxe damage nerf (10sl./33bl.), but multiplied so that fragile-rock remains
@@ -3245,9 +3262,9 @@
   - message: 'Wound size thresholds did not change from the previous wound profile:
       small below 15 damage, deep at 15+, gaping at 35+, and massive at 60+.'
     type: Tweak
-  - message: "Wound treatment changed from \u201Cauto-find and patch wounds\u201D\
-      \ to \u201Ctreat the selected body part.\u201D If you target the chest, treatment\
-      \ stays on the chest unless a radial selection is needed."
+  - message: Wound treatment changed from “auto-find and patch wounds” to “treat the
+      selected body part.” If you target the chest, treatment stays on the chest unless
+      a radial selection is needed.
     type: Tweak
   - message: Repeated wound treatment now chains with a 0.2 second repeat delay instead
       of blasting every remaining use instantly.
@@ -3262,9 +3279,9 @@
       and burn recovery defaults to 0.375 per second, with stronger tools able to
       raise the recovery rate based on treatment amount.
     type: Tweak
-  - message: "Surgical line and synth graft no longer behave like simple \u201Cbetter\
-      \ gauze/ointment.\u201D They now repair up to 10 damage, capped by both the\
-      \ wound damage and half the current region damage."
+  - message: Surgical line and synth graft no longer behave like simple “better gauze/ointment.”
+      They now repair up to 10 damage, capped by both the wound damage and half the
+      current region damage.
     type: Tweak
   - message: Gauze and trauma kits now focus on brute wounds and external bleeding
       on the selected part, rather than globally cleaning up eligible wounds.
@@ -3513,8 +3530,8 @@
     type: Remove
   - message: Removed old condition-driven surgery UI/flow as the active surgery system.
     type: Remove
-  - message: "Fixed surgery steps completing the do-after and then saying \u201Csurgery\
-      \ is no longer available.\u201D"
+  - message: Fixed surgery steps completing the do-after and then saying “surgery
+      is no longer available.”
     type: Fix
   - message: Fixed surgery mode toggling multiple times from one press.
     type: Fix
@@ -3887,7 +3904,7 @@
     type: Tweak
   - message: Increased UZI RoF to 7.5
     type: Tweak
-  - message: "Improved UZI accuracy slightly \U0001F90F"
+  - message: Improved UZI accuracy slightly 🤏
     type: Tweak
   - message: Added SpikeBootsComponent, a marker component that sits on the boots
       item and does nothing exciting on its own
@@ -5359,7 +5376,7 @@
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1549
 - author: murdocstarsim
   changes:
-  - message: "SOP rewrite for real this time. \U0001F91E"
+  - message: SOP rewrite for real this time. 🤞
     type: Add
   id: 370
   time: '2026-07-07T10:17:46.0000000+00:00'
@@ -5442,8 +5459,7 @@
     type: Add
   - message: Added staged insanity curse progression from cursed zombie attacks.
     type: Add
-  - message: "Added halt, attack, follow, and cheese \u2019em commands for summoned\
-      \ cursed."
+  - message: Added halt, attack, follow, and cheese ’em commands for summoned cursed.
     type: Add
   - message: Cursed zombies now use melee weapons, scream on death, and have randomized
       civilian or faction-matched military clothing.
@@ -5467,8 +5483,8 @@
   - message: Summoned cursed now disappear with their weapons on death and have a
       reduced delimb chance.
     type: Tweak
-  - message: "Cheese \u2019em now orders cursed to pathfind to and attack the pointed\
-      \ target regardless of line of sight."
+  - message: Cheese ’em now orders cursed to pathfind to and attack the pointed target
+      regardless of line of sight.
     type: Tweak
   - message: Spawned cursed are no longer available as ghost roles.
     type: Fix
@@ -6759,9 +6775,9 @@
   - message: CLF Leader can now pick which INSFOR faction they want. It is dependent
       on the GOVFOR faction in the round.
     type: Add
-  - message: "New Role! \U0001F527\U0001F9F0 CLF Sapper. Able to lay down traps, craft\
-      \ them from the sapper's workbench, and gunsmith-lite. Equipment include: [Tripwire,\
-      \ Audio, Buried *#&, Snare, Spy Camera, \U0001F4B5 Siphon Rig \U0001F4B5 ]"
+  - message: 'New Role! 🔧🧰 CLF Sapper. Able to lay down traps, craft them from the
+      sapper''s workbench, and gunsmith-lite. Equipment include: [Tripwire, Audio,
+      Buried *#&, Snare, Spy Camera, 💵 Siphon Rig 💵 ]'
     type: Add
   - message: Siphon Rig, able to siphon from colony budget console, ASRS consoles,
       and ATMs. ATM siphon is based on how many ATMs are in the round(i.e 10 ATMs
@@ -6900,9 +6916,9 @@
   - message: CLF Leader can now pick which INSFOR faction they want. It is dependent
       on the GOVFOR faction in the round.
     type: Add
-  - message: "New Role! \U0001F527\U0001F9F0 CLF Sapper. Able to lay down traps, craft\
-      \ them from the sapper's workbench, and gunsmith-lite. Equipment include: [Tripwire,\
-      \ Audio, Buried *#&, Snare, Spy Camera, \U0001F4B5 Siphon Rig \U0001F4B5 ]"
+  - message: 'New Role! 🔧🧰 CLF Sapper. Able to lay down traps, craft them from the
+      sapper''s workbench, and gunsmith-lite. Equipment include: [Tripwire, Audio,
+      Buried *#&, Snare, Spy Camera, 💵 Siphon Rig 💵 ]'
     type: Add
   - message: Siphon Rig, able to siphon from colony budget console, ASRS consoles,
       and ATMs. ATM siphon is based on how many ATMs are in the round(i.e 10 ATMs
@@ -7046,9 +7062,9 @@
   - message: CLF Leader can now pick which INSFOR faction they want. It is dependent
       on the GOVFOR faction in the round.
     type: Add
-  - message: "New Role! \U0001F527\U0001F9F0 CLF Sapper. Able to lay down traps, craft\
-      \ them from the sapper's workbench, and gunsmith-lite. Equipment include: [Tripwire,\
-      \ Audio, Buried *#&, Snare, Spy Camera, \U0001F4B5 Siphon Rig \U0001F4B5 ]"
+  - message: 'New Role! 🔧🧰 CLF Sapper. Able to lay down traps, craft them from the
+      sapper''s workbench, and gunsmith-lite. Equipment include: [Tripwire, Audio,
+      Buried *#&, Snare, Spy Camera, 💵 Siphon Rig 💵 ]'
     type: Add
   - message: Siphon Rig, able to siphon from colony budget console, ASRS consoles,
       and ATMs. ATM siphon is based on how many ATMs are in the round(i.e 10 ATMs
@@ -7144,9 +7160,9 @@
   - message: CLF Leader can now pick which INSFOR faction they want. It is dependent
       on the GOVFOR faction in the round.
     type: Add
-  - message: "New Role! \U0001F527\U0001F9F0 CLF Sapper. Able to lay down traps, craft\
-      \ them from the sapper's workbench, and gunsmith-lite. Equipment include: [Tripwire,\
-      \ Audio, Buried *#&, Snare, Spy Camera, \U0001F4B5 Siphon Rig \U0001F4B5 ]"
+  - message: 'New Role! 🔧🧰 CLF Sapper. Able to lay down traps, craft them from the
+      sapper''s workbench, and gunsmith-lite. Equipment include: [Tripwire, Audio,
+      Buried *#&, Snare, Spy Camera, 💵 Siphon Rig 💵 ]'
     type: Add
   - message: Siphon Rig, able to siphon from colony budget console, ASRS consoles,
       and ATMs. ATM siphon is based on how many ATMs are in the round(i.e 10 ATMs
@@ -7619,9 +7635,9 @@
     type: Add
   - message: Added your callsign to your headset's examine text.
     type: Add
-  - message: "Added per-operation frequency plans: faction net frequencies are randomized\
-      \ every round, and frequency cards print the current assignments \u2014 captured\
-      \ cards are now real intel."
+  - message: 'Added per-operation frequency plans: faction net frequencies are randomized
+      every round, and frequency cards print the current assignments — captured cards
+      are now real intel.'
     type: Add
   - message: Support synthetics are now radio trained and can operate the AN/PRC.
     type: Add
@@ -7728,9 +7744,9 @@
     type: Add
   - message: Added your callsign to your headset's examine text.
     type: Add
-  - message: "Added per-operation frequency plans: faction net frequencies are randomized\
-      \ every round, and frequency cards print the current assignments \u2014 captured\
-      \ cards are now real intel."
+  - message: 'Added per-operation frequency plans: faction net frequencies are randomized
+      every round, and frequency cards print the current assignments — captured cards
+      are now real intel.'
     type: Add
   - message: Support synthetics are now radio trained and can operate the AN/PRC.
     type: Add
@@ -8176,8 +8192,8 @@
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1720
 - author: rokudara-sen
   changes:
-  - message: "CLF Radio Operators can splice antenna masts and communications arrays\
-      \ to carry the CLF radio nets at the mast\u2019s full range"
+  - message: CLF Radio Operators can splice antenna masts and communications arrays
+      to carry the CLF radio nets at the mast’s full range
     type: Add
   - message: Splicing uses a band search with a limited probe budget and a detection
       meter. Failed attempts fault the junction for 90 seconds
@@ -8185,8 +8201,8 @@
   - message: Successful splices leave a visible feeder tap that anyone can remove
       to recover a live CLF fill card
     type: Add
-  - message: "CLF relay sets can now be built at the sapper\u2019s workbench. Radio\
-      \ Operators receive one relay and one splice kit at round start"
+  - message: CLF relay sets can now be built at the sapper’s workbench. Radio Operators
+      receive one relay and one splice kit at round start
     type: Add
   - message: Tapped masts keep working normally for their owners. A splice only adds
       the CLF nets
@@ -9373,6 +9389,19 @@
   id: 610
   time: '2026-08-12T01:57:00.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1815
+- author: '- fix: Ported Yautja combat, communications, Medicomp, Hunter Ship, dropship,
+    and equipment fixes from CMU PR 1648.'
+  time: '2026-08-12T16:40:39.0000000+00:00'
+  changes:
+  - type: Code
+    message: Added focused Yautja regression coverage.
+  id: 694
+  url: https://github.com/flex5hybrid/RussianCM/pull/379
+  labels:
+  - 'Changes: Sprites'
+  - 'Changes: Map'
+  - 'Changes: Translations'
+  - L
 - author: Vencallium
   changes:
   - message: Fixed various mapping issues on Stable Garrison and the USS George W.
@@ -9600,6 +9629,38 @@
   id: 627
   time: '2026-08-15T21:51:31.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1833
+- author: ArturUr1
+  time: '2026-08-15T23:45:39.0000000+00:00'
+  changes:
+  - type: Add
+    message: Всем неоморфам добавлены TTS
+  id: 696
+  url: https://github.com/flex5hybrid/RussianCM/pull/392
+  labels:
+  - 'Changes: No C#'
+  - S
+- author: TheMaiji
+  time: '2026-08-15T23:49:39.0000000+00:00'
+  changes:
+  - type: Add
+    message: Консоли камер используют логические подсети и показывают доступные камеры
+      на общей многослойной карте.
+  - type: Add
+    message: Пользователи с доступом могут управлять подсетями CMU/RMC, членством
+      камер и названиями камер.
+  - type: Tweak
+    message: Изменения питания, проводов, положения, удаления и провода MAP обновляют
+      списки консолей и маркеры карты.
+  - type: Fix
+    message: Выбор камеры, названия, удалённые карты гридов и видеопотоки синхронизируются
+      после смены подсети и этажа.
+  id: 698
+  url: https://github.com/flex5hybrid/RussianCM/pull/398
+  labels:
+  - 'Changes: UI'
+  - 'Changes: Map'
+  - 'Changes: Translations'
+  - XL
 - author: Vencallium
   changes:
   - message: Hotfixed Stable Garrison and the USS George W. Bush, including communications,
@@ -9629,6 +9690,16 @@
   id: 630
   time: '2026-08-16T13:46:30.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1837
+- author: RomiGur
+  time: '2026-08-16T16:25:39.0000000+00:00'
+  changes:
+  - type: Fix
+    message: Стулья больше не парят в воздухе, а падают как и задумано.
+  id: 699
+  url: https://github.com/flex5hybrid/RussianCM/pull/402
+  labels:
+  - 'Changes: No C#'
+  - XS
 - author: CatoChristopherMrow
   changes:
   - message: Fixed govfor pointbuy amount
@@ -9719,6 +9790,97 @@
   id: 638
   time: '2026-08-17T19:57:53.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1848
+- author: EmperorStukov
+  time: '2026-08-19T14:29:42.0000000+00:00'
+  changes:
+  - type: Add
+    message: Добавлены звания послов
+  - type: Add
+    message: Добавлены лычки послов
+  - type: Add
+    message: Добавлена прогрессия званий послов за 10/40/70 часов игры на роли
+  - type: Fix
+    message: Исправлены мелкие ошибки перевода
+  - type: Add
+    message: Послу СПН добавлено понимание и разговор на всех базовых языках СПН
+  - type: Add
+    message: Послу ИТМ добавлено понимание и разговор на базовых языках ИТМ
+  - type: Add
+    message: Послу ОА добавлено понимание и разговор на базовых языках ОА
+  - type: Add
+    message: Переведены звания IASF
+  id: 695
+  url: https://github.com/flex5hybrid/RussianCM/pull/390
+  labels:
+  - 'Changes: No C#'
+  - 'Changes: Translations'
+  - L
+- author: ArturUr1
+  time: '2026-08-19T14:34:09.0000000+00:00'
+  changes:
+  - type: Fix
+    message: Чай из раздатчиков безалкогольных напитков теперь можно использовать
+      для исследований.
+  id: 697
+  url: https://github.com/flex5hybrid/RussianCM/pull/397
+  labels:
+  - 'Changes: No C#'
+  - XS
+- author: ArturUr1
+  time: '2026-08-19T14:34:32.0000000+00:00'
+  changes:
+  - type: Tweak
+    message: Крафты усиленных и сверх-усиленных металлических стен убраны из G-меню.
+      Крафт обычной металлической стены заменен на крафт стеновой балки, из которой
+      уже можно собрать полноценную стену.
+  id: 700
+  url: https://github.com/flex5hybrid/RussianCM/pull/405
+  labels:
+  - 'Changes: No C#'
+  - M
+- author: RomiGur
+  time: '2026-08-19T14:34:40.0000000+00:00'
+  changes:
+  - type: Tweak
+    message: Удочкой больше нельзя притягивать людей. Больше никаких лифтов на удочке
+      и швыряний солдат на мины.
+  id: 701
+  url: https://github.com/flex5hybrid/RussianCM/pull/406
+  labels:
+  - S
+- author: RomiGur
+  time: '2026-08-19T14:34:53.0000000+00:00'
+  changes:
+  - type: Tweak
+    message: Все виды авторевольвера Матеба по умолчанию заряжены стандартными патронами.
+      Пояс RMCMatebaBeltLuxuriousFilled теперь комплектуется стандартными патронами
+      вместо ПВ.
+  id: 702
+  url: https://github.com/flex5hybrid/RussianCM/pull/407
+  labels:
+  - 'Changes: No C#'
+  - S
+- author: RomiGur
+  time: '2026-08-19T14:39:00.0000000+00:00'
+  changes:
+  - type: Tweak
+    message: Значительно уменьшены шансы попадания из огнестрельного оружия по кистям
+      и стопам.
+  id: 704
+  url: https://github.com/flex5hybrid/RussianCM/pull/409
+  labels:
+  - S
+- author: ArturUr1
+  time: '2026-08-19T14:39:10.0000000+00:00'
+  changes:
+  - type: Tweak
+    message: Перчатки СПН заменены на свои боевые аналоги. Теперь они дают защиту
+      кистей.
+  id: 703
+  url: https://github.com/flex5hybrid/RussianCM/pull/408
+  labels:
+  - 'Changes: No C#'
+  - XS
 - author: potatoed6
   changes:
   - message: chevron preference for govfor, also platoon specific chevrons
@@ -10523,6 +10685,86 @@
   id: 672
   time: '2026-08-30T16:03:07.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1887
+- author: ArturUr1
+  time: '2026-08-31T04:56:56.0000000+00:00'
+  changes:
+  - type: Tweak
+    message: Исправлен лодаут спец снаряжения синтетиков. Теперь они могут брать два
+      спец предмета, и очки спец предметов не затрагивают косметику.
+  id: 705
+  url: https://github.com/flex5hybrid/RussianCM/pull/410
+  labels:
+  - 'Changes: No C#'
+  - S
+- author: ArturUr1
+  time: '2026-08-31T04:57:17.0000000+00:00'
+  changes:
+  - type: Add
+    message: Всем фракциям говфор в заказы карго добавлена возможность заказать каркасные
+      рюкзаки
+  id: 706
+  url: https://github.com/flex5hybrid/RussianCM/pull/411
+  labels:
+  - 'Changes: No C#'
+  - 'Changes: Translations'
+  - S
+- author: EmperorStukov
+  time: '2026-08-31T04:57:45.0000000+00:00'
+  changes:
+  - type: Tweak
+    message: Изменены названия рангов и лычек СПН
+  id: 707
+  url: https://github.com/flex5hybrid/RussianCM/pull/413
+  labels:
+  - 'Changes: No C#'
+  - 'Changes: Translations'
+  - S
+- author: ArturUr1
+  time: '2026-08-31T04:58:20.0000000+00:00'
+  changes:
+  - type: Fix
+    message: Теперь Главный врач колонии имеет доступ в администрацию, как и остальные
+      главы колонии.
+  id: 708
+  url: https://github.com/flex5hybrid/RussianCM/pull/419
+  labels:
+  - 'Changes: No C#'
+  - XS
+- author: karakula228
+  time: '2026-08-31T04:59:02.0000000+00:00'
+  changes:
+  - type: Add
+    message: Добавлен настенный баннер-флаг СПН для мапперов.
+  id: 709
+  url: https://github.com/flex5hybrid/RussianCM/pull/422
+  labels:
+  - 'Changes: No C#'
+  - 'Changes: Sprites'
+  - S
+- author: RomiGur
+  time: '2026-08-31T04:59:16.0000000+00:00'
+  changes:
+  - type: Tweak
+    message: Теперь доступ к ПулемётМату имеет только автоматчик. Командование лишилось
+      этого доступа.
+  id: 710
+  url: https://github.com/flex5hybrid/RussianCM/pull/423
+  labels:
+  - 'Changes: No C#'
+  - XS
+- author: jok989372-lgtm
+  time: '2026-08-31T05:00:38.0000000+00:00'
+  changes:
+  - type: Add
+    message: Добавлено три новых ОБР для посла ИТМ.
+  - type: Fix
+    message: Исправлен канал ИТМ
+  id: 711
+  url: https://github.com/flex5hybrid/RussianCM/pull/428
+  labels:
+  - 'Changes: No C#'
+  - 'Changes: Sprites'
+  - L
 - author: Berkin101
   changes:
   - message: Razorwires now make noises when walked on and have an appropriate hit
@@ -10581,6 +10823,35 @@
   id: 677
   time: '2026-09-03T06:28:55.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1891
+- author: ArturUr1
+  time: '2026-09-05T05:25:17.0000000+00:00'
+  changes:
+  - type: Add
+    message: Майка корпорации SeegSon в кастомизацию маек в разделе нижнего белья
+      персонажа
+  - type: Add
+    message: Кепка SeegSon была добавлена всем рабочим Джо
+  - type: Add
+    message: Добавлен берет в лодаут корпоративного связного Ве-Ю за 150 часов игры
+      на связном
+  id: 713
+  url: https://github.com/flex5hybrid/RussianCM/pull/434
+  labels:
+  - 'Changes: No C#'
+  - 'Changes: Sprites'
+  - 'Changes: Translations'
+  - S
+- author: jok989372-lgtm
+  time: '2026-09-05T05:26:29.0000000+00:00'
+  changes:
+  - type: Fix
+    message: Исправлены спрайты магазинов, ппшки и айди ролей.
+  id: 712
+  url: https://github.com/flex5hybrid/RussianCM/pull/431
+  labels:
+  - 'Changes: No C#'
+  - 'Changes: Sprites'
+  - M
 - author: johnnny34y
   changes:
   - message: The new dynamic gunships now spawn correctly
@@ -10708,6 +10979,63 @@
   id: 692
   time: '2026-09-10T13:35:04.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1921
+- author: '- fix: Раунд с охотой загружает корабль яутжа без ошибки создания отсутствующих
+    сущностей.'
+  time: '2026-09-10T14:09:18.0000000+00:00'
+  changes:
+  - type: Fix
+    message: Вожди и совет яутжа используют дополнительные слоты, сохраняя обычные
+      места охотников.
+  - type: Fix
+    message: Молодые охотники появляются в спальнях корабля; вызов показывает фактический
+      диапазон численности.
+  - type: Fix
+    message: В персонализации яутжа снова доступны варианты плазмакастера, переведены
+      группы наручей и исправлены границы карточек.
+  - type: Fix
+    message: Цвет дредов применяется в игре, маска ронина располагается на лице, а
+      трофеи корректно крепятся к броне.
+  - type: Fix
+    message: Информация о фракции яутжа больше не подменяется описанием человеческих
+      сторон, а человеческие черты не применяются к охотникам.
+  - type: Fix
+    message: Метки раба и окровавления отправляют обязательное обоснование из окна
+      наручей.
+  - type: Fix
+    message: Модули наручей снова раскрываются после сворачивания или удаления разложенного
+      оружия; наручный щит не разрушается от ошибочного порога прочности.
+  - type: Fix
+    message: Наручи предоставляют обе кнопки самоуничтожения; большой режим использует
+      исправленную мощность взрыва.
+  - type: Fix
+    message: Основные платформы яутжа предлагают выбор точки колонии, а реле по умолчанию
+      ведёт только на корабли охотников и морпехов.
+  - type: Fix
+    message: Яутжа не гниют и могут выполнять самолечение Medicomp через броню; корабельные
+      меднаборы заполнены, а разделение трав сохраняет инопланетную медицину.
+  - type: Fix
+    message: Химия учитывает совместимость с организмом яутжа, а адские гончие знают
+      язык охотников.
+  - type: Tweak
+    message: Метание оружия яутжа учитывает скорость, броню, застревание в конечностях
+      и последствия извлечения по правилам CMSS13.
+  - type: Fix
+    message: Исправлены кровавый заряд оружия и возврат смарт-диска, включая броски
+      в невесомости.
+  - type: Fix
+    message: Оружие яутжа использует правильные спрайты хвата и ношения на спине;
+      лук отображает загруженную стрелу.
+  - type: Map
+    message: На Redux Stable Garrison доступны три точки высадки охотников; граничные
+      скалы поверхности и пещер пустынной луны защищают малые угодья от выхода в космос.
+  id: 714
+  url: https://github.com/flex5hybrid/RussianCM/pull/439
+  labels:
+  - 'Changes: UI'
+  - 'Changes: Sprites'
+  - 'Changes: Map'
+  - 'Changes: Translations'
+  - XL
 - author: OverusedMeme
   changes:
   - message: The M240 now has a wield delay of 1 second, the M240-T now has a wield
@@ -10719,5 +11047,47 @@
   id: 693
   time: '2026-09-10T15:30:49.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1920
+- author: flex5hybrid
+  time: '2026-09-12T16:14:16.0000000+00:00'
+  changes:
+  - type: Code
+    message: Вернули старую вайтлист-систему.
+  id: 716
+  url: https://github.com/flex5hybrid/RussianCM/pull/444
+  labels:
+  - 'Changes: Translations'
+  - M
+- author: flex5hybrid
+  time: '2026-09-12T17:35:18.0000000+00:00'
+  changes:
+  - type: Fix
+    message: Возврат логотипа RuCM
+  - type: Fix
+    message: Вкладка ТТС теперь работает исправно
+  id: 717
+  url: https://github.com/flex5hybrid/RussianCM/pull/445
+  labels:
+  - M
+- author: '- fix: Исправлена автоматическая обработка changelog RuCM: локальные PR
+    больше не теряются между запусками Publish.'
+  time: '2026-09-12T17:58:10.0000000+00:00'
+  changes:
+  - type: Fix
+    message: Publish теперь включает только что сгенерированный changelog в тот же
+      релиз.
+  - type: Fix
+    message: Индикатор новых обновлений больше не сломается после обрезки старых записей
+      changelog.
+  - type: Fix
+    message: Исправлено определение прочитанного changelog и выбор основной вкладки
+      на клиенте.
+  - type: Code
+    message: 'Changelog workflow получил дедупликацию PR, стабильные ID и более строгую
+      проверку :cl: блоков.'
+  id: 715
+  url: https://github.com/flex5hybrid/RussianCM/pull/441
+  labels:
+  - 'Changes: Translations'
+  - M
 Name: CMU
 Order: -1
