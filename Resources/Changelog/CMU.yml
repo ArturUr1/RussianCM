@@ -11063,5 +11063,47 @@
   id: 695
   time: '2026-09-12T00:24:09.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1933
+- author: flex5hybrid
+  time: '2026-09-12T16:14:16.0000000+00:00'
+  changes:
+  - type: Code
+    message: Вернули старую вайтлист-систему.
+  id: 720
+  url: https://github.com/flex5hybrid/RussianCM/pull/444
+  labels:
+  - 'Changes: Translations'
+  - M
+- author: flex5hybrid
+  time: '2026-09-12T17:35:18.0000000+00:00'
+  changes:
+  - type: Fix
+    message: Возврат логотипа RuCM
+  - type: Fix
+    message: Вкладка ТТС теперь работает исправно
+  id: 721
+  url: https://github.com/flex5hybrid/RussianCM/pull/445
+  labels:
+  - M
+- author: '- fix: Исправлена автоматическая обработка changelog RuCM: локальные PR
+    больше не теряются между запусками Publish.'
+  time: '2026-09-12T17:58:10.0000000+00:00'
+  changes:
+  - type: Fix
+    message: Publish теперь включает только что сгенерированный changelog в тот же
+      релиз.
+  - type: Fix
+    message: Индикатор новых обновлений больше не сломается после обрезки старых записей
+      changelog.
+  - type: Fix
+    message: Исправлено определение прочитанного changelog и выбор основной вкладки
+      на клиенте.
+  - type: Code
+    message: 'Changelog workflow получил дедупликацию PR, стабильные ID и более строгую
+      проверку :cl: блоков.'
+  id: 719
+  url: https://github.com/flex5hybrid/RussianCM/pull/441
+  labels:
+  - 'Changes: Translations'
+  - M
 Name: CMU
 Order: -1
