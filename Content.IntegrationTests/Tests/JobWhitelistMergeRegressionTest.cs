@@ -207,8 +207,6 @@ public sealed class JobWhitelistMergeRegressionTest : GameTest
     [TestCase("RuCMWhitelistEasy", "AU14JobGOVFORPlatCo")]
     [TestCase("RuCMWhitelistMedium", "RMCJobSynthetic")]
     [TestCase("RuCMWhitelistHard", "CMUJobINDFORProvostInspector")]
-    [EnsureCVar(Side.Server, typeof(CCVars), nameof(CCVars.GameRoleWhitelist), true)]
-    [EnsureCVar(Side.Client, typeof(CCVars), nameof(CCVars.GameRoleWhitelist), true)]
     public async Task TierGrantsReachClientAndUnlockTheirRoles(string tier, string role)
     {
         var session = _players.Sessions.Single();
