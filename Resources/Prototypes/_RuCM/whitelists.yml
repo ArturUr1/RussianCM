@@ -1,0 +1,41 @@
+- type: job
+  parent: CMJobBase
+  id: RuCMWhitelistEasy
+  name: rmc-job-name-whitelist-easy
+  playTimeTracker: RuCMWhitelistEasy
+  whitelisted: true
+  setPreference: false
+  # hidden: true
+  hasIcon: false
+
+- type: job
+  parent: CMJobBase
+  id: RuCMWhitelistMedium
+  name: rmc-job-name-whitelist-medium
+  playTimeTracker: RuCMWhitelistMedium
+  whitelisted: true
+  setPreference: false
+  # hidden: true
+  hasIcon: false
+
+- type: job
+  parent: CMJobBase
+  id: RuCMWhitelistHard
+  name: rmc-job-name-whitelist-hard
+  playTimeTracker: RuCMWhitelistHard
+  whitelisted: true
+  setPreference: false
+  # hidden: true
+  hasIcon: false
+
+- type: playTimeTracker
+  id: RuCMWhitelistEasy
+  isHumanoid: true
+
+- type: playTimeTracker
+  id: RuCMWhitelistMedium
+  isHumanoid: true
+
+- type: playTimeTracker
+  id: RuCMWhitelistHard
+  isHumanoid: true
