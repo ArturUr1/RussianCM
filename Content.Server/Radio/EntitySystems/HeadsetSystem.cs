@@ -13,8 +13,6 @@ public sealed partial class HeadsetSystem : SharedHeadsetSystem
 {
     [Dependency] private INetManager _netMan = default!;
     [Dependency] private RadioSystem _radio = default!;
-
-    //RMC14
     [Dependency] private SharedCMChatSystem _cmChat = default!;
 
     public override void Initialize()
@@ -22,7 +20,6 @@ public sealed partial class HeadsetSystem : SharedHeadsetSystem
         base.Initialize();
         SubscribeLocalEvent<HeadsetComponent, RadioReceiveEvent>(OnHeadsetReceive);
         SubscribeLocalEvent<HeadsetComponent, EncryptionChannelsChangedEvent>(OnKeysChanged);
-
         SubscribeLocalEvent<WearingHeadsetComponent, EntitySpokeEvent>(OnSpeak);
     }
 
@@ -33,10 +30,8 @@ public sealed partial class HeadsetSystem : SharedHeadsetSystem
 
     private void UpdateRadioChannels(EntityUid uid, HeadsetComponent headset, EncryptionKeyHolderComponent? keyHolder = null)
     {
-        // make sure to not add ActiveRadioComponent when headset is being deleted
         if (!headset.Enabled || MetaData(uid).EntityLifeStage >= EntityLifeStage.Terminating)
             return;
-
         if (!Resolve(uid, ref keyHolder))
             return;
 
@@ -52,7 +47,6 @@ public sealed partial class HeadsetSystem : SharedHeadsetSystem
             && TryComp(component.Headset, out EncryptionKeyHolderComponent? keys)
             && keys.Channels.Contains(args.Channel.ID))
         {
-            //RMC14
             if (keys.ReadOnlyChannels.Contains(args.Channel.ID))
             {
                 _cmChat.ChatMessageToOne("You hear a crackle as if nothing goes through", args.Source);
@@ -60,7 +54,7 @@ public sealed partial class HeadsetSystem : SharedHeadsetSystem
                 return;
             }
             _radio.SendRadioMessage(uid, args.Message, args.Channel, component.Headset, args.Language);
-            args.Channel = null; // prevent duplicate messages from other listeners.
+            args.Channel = null;
         }
     }
 
@@ -69,7 +63,9 @@ public sealed partial class HeadsetSystem : SharedHeadsetSystem
         base.OnGotEquipped(uid, component, args);
         if (component.IsEquipped && component.Enabled)
         {
-            EnsureComp<WearingHeadsetComponent>(args.EquipTarget).Headset = uid;
+            var wearing = EnsureComp<WearingHeadsetComponent>(args.EquipTarget);
+            wearing.Headset = uid;
+            Dirty(args.EquipTarget, wearing);
             UpdateRadioChannels(uid, component);
         }
     }
@@ -85,7 +81,6 @@ public sealed partial class HeadsetSystem : SharedHeadsetSystem
     {
         if (!Resolve(uid, ref component))
             return;
-
         if (component.Enabled == value)
             return;
 
@@ -95,25 +90,22 @@ public sealed partial class HeadsetSystem : SharedHeadsetSystem
         if (!value)
         {
             RemCompDeferred<ActiveRadioComponent>(uid);
-
             if (component.IsEquipped)
                 RemCompDeferred<WearingHeadsetComponent>(Transform(uid).ParentUid);
         }
         else if (component.IsEquipped)
         {
-            EnsureComp<WearingHeadsetComponent>(Transform(uid).ParentUid).Headset = uid;
+            var wearer = Transform(uid).ParentUid;
+            var wearing = EnsureComp<WearingHeadsetComponent>(wearer);
+            wearing.Headset = uid;
+            Dirty(wearer, wearing);
             UpdateRadioChannels(uid, component);
         }
     }
 
     private void OnHeadsetReceive(EntityUid uid, HeadsetComponent component, ref RadioReceiveEvent args)
     {
-        // TODO: change this when a code refactor is done
-        // this is currently done this way because receiving radio messages on an entity otherwise requires that entity
-        // to have an ActiveRadioComponent
-
         var parent = Transform(uid).ParentUid;
-
         if (parent.IsValid())
         {
             var relayEvent = new HeadsetRadioReceiveRelayEvent(args);
