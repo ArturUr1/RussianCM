@@ -11,6 +11,8 @@
   <aside class="sidebar">
     <a class="brand" href="/" aria-label="Переводная, главная"><span class="brand-icon">文</span><span>Переводная<small>COLONIAL MARINES UNIVERSE</small></span></a>
     <div class="locales"><span id="source-locale">en-US</span><span>→</span><strong id="target-locale">ru-RU</strong><i></i></div>
+    <label class="section-label" for="kind">ТИП ЗАПИСЕЙ</label>
+    <select id="kind"><option value="all">Все записи</option><option value="entity">Сущности (entity)</option><option value="message">Обычные строки</option></select>
     <div class="section-label">РАБОЧАЯ ОБЛАСТЬ</div>
     <nav id="filters" aria-label="Статус перевода">
       <button data-status="all">Все записи <span id="count-all">—</span></button>
@@ -34,6 +36,7 @@
         <div id="empty" class="empty"><span>А ↔ 文</span><h2>Выберите запись слева</h2><p>Сравните оригинал с переводом<br>и сохраните изменения прямо в проект.</p></div>
         <div id="edit-content" hidden>
           <div class="entry-heading"><div class="eyebrow">ТЕКУЩАЯ ЗАПИСЬ</div><h2 id="entry-key"></h2><p id="entry-path"></p></div>
+          <div id="entity-context" class="comment" hidden></div>
           <div id="comment" class="comment" hidden></div>
           <div class="panes">
             <div class="pane"><div class="pane-title"><label for="source">ОРИГИНАЛ <span id="source-tag">EN-US</span></label><button id="copy" class="text-button">Взять за основу ↘</button></div><textarea id="source" readonly spellcheck="false" aria-label="Оригинальная запись Fluent"></textarea></div>

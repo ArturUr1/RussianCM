@@ -55,7 +55,7 @@ function renderRows() {
 }
 async function load(more = false) {
   const generation = ++state.generation;
-  const query = new URLSearchParams({q: $('search').value, status: state.status, folder: $('folder').value, offset: more ? state.rows.length : 0});
+  const query = new URLSearchParams({q: $('search').value, kind: $('kind').value, status: state.status, folder: $('folder').value, offset: more ? state.rows.length : 0});
   try {
     const data = await api('/api/entries?' + query);
     if (generation !== state.generation) return;
@@ -65,8 +65,11 @@ async function load(more = false) {
     $('filter-label').textContent = labels[state.status];
     for (const [status, count] of Object.entries(data.counts)) $('count-' + status).textContent = number(count);
     $('count-all').textContent = number(Object.values(data.counts).reduce((a, b) => a + b, 0));
-    $('catalog-errors').hidden = !data.errors.length;
-    $('catalog-errors').textContent = data.errors.length ? 'Ошибки каталога (сохранение заблокировано):\n' + data.errors.join('\n') : '';
+    const diagnostics = [];
+    if (data.errors.length) diagnostics.push('Ошибки каталога (сохранение заблокировано):\n' + data.errors.join('\n'));
+    if (data.warnings?.length) diagnostics.push('Пропущены некорректные прототипы:\n' + data.warnings.join('\n'));
+    $('catalog-errors').hidden = !diagnostics.length;
+    $('catalog-errors').textContent = diagnostics.join('\n\n');
     const folder = $('folder').value;
     $('folder').replaceChildren(new Option('Все разделы', ''), ...data.folders.map(f => new Option(f, f)));
     $('folder').value = folder;
@@ -84,6 +87,10 @@ function display(detail) {
   $('entry-key').textContent = detail.key; $('entry-path').textContent = detail.file;
   $('source').value = detail.source; $('target').value = detail.target;
   $('comment').textContent = detail.comment; $('comment').hidden = !detail.comment;
+  $('entity-context').hidden = !detail.entity?.length;
+  $('entity-context').textContent = (detail.entity || []).map(p =>
+    `Entity: ${p.id}${p.abstract ? ' (абстрактный)' : ''}\n${p.path}\nРодители: ${p.parents.join(', ') || 'нет'}`
+  ).join('\n\n') + '\nИсточник учитывает FTL, поля YAML и наследование. Сохраняется только русский FTL.';
   $('variables').replaceChildren(...detail.variables.map(v => {
     const tag = document.createElement('span'); tag.className = 'variable'; tag.textContent = v; return tag;
   }));
@@ -148,6 +155,7 @@ $('filters').addEventListener('click', event => {
 let debounce;
 $('search').addEventListener('input', () => { clearTimeout(debounce); debounce = setTimeout(() => load(), 200); });
 $('folder').addEventListener('change', () => load());
+$('kind').addEventListener('change', () => load());
 $('refresh').addEventListener('click', async () => {
   if (!canLeave()) return;
   state.busy = true; updateDirty(); $('refresh').disabled = true; $('refresh').textContent = 'Чтение файлов…';

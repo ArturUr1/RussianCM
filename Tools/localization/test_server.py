@@ -90,6 +90,86 @@ class CatalogTests(unittest.TestCase):
         with self.assertRaises(EditorError):
             self.save('same', 'same = То же')
 
+    def entities(self):
+        base = self.root / 'Resources/Prototypes/Test'
+        base.mkdir(parents=True)
+        path = base / 'items.yml'
+        path.write_text('- type: entity\n  id: BaseItem\n  abstract: true\n  name: base item\n'
+                        '  description: Base description\n  suffix: Debug\n'
+                        '- type: entity\n  id: ChildItem\n  parent: BaseItem\n  name: child item\n'
+                        '  components:\n  - type: Test\n    effect: !type:SomeEffect {}\n', encoding='utf-8')
+        return path
+
+    def test_entity_yaml_inheritance_save_and_original_preservation(self):
+        yaml_path = self.entities()
+        before = yaml_path.read_bytes()
+        self.catalog.refresh()
+        detail = self.catalog.detail('ent-ChildItem')
+        self.assertIn('child item', detail['source'])
+        self.assertIn('Base description', detail['source'])
+        self.assertIn('.suffix', detail['source'])
+        self.assertEqual(detail['entity'][0]['parents'], ['BaseItem'])
+        self.save('ent-ChildItem', 'ent-ChildItem = Предмет\n    .desc = Описание\n    .suffix = Отладка')
+        self.assertEqual(yaml_path.read_bytes(), before)
+        self.assertTrue((self.ru / 'Entities/Test/items.ftl').exists())
+        self.assertEqual(self.catalog.listing({'kind': ['entity'], 'status': ['different']})['total'], 1)
+
+    def test_entity_existing_translation_in_other_file_and_en_override(self):
+        self.entities()
+        (self.en / 'entity.ftl').write_text('ent-BaseItem = FTL base\n    .desc = FTL description\n', encoding='utf-8')
+        (self.ru / 'custom.ftl').write_text('ent-ChildItem = Предмет\n', encoding='utf-8')
+        self.catalog.refresh()
+        detail = self.catalog.detail('ent-ChildItem')
+        self.assertIn('FTL description', detail['source'])
+        self.assertTrue(detail['file'].endswith('custom.ftl'))
+        self.assertEqual(self.catalog.listing({'q':['ChildItem'], 'kind':['entity'], 'status':['missing']})['total'], 1)
+
+    def test_entity_parent_change_requires_refresh(self):
+        path = self.entities()
+        self.catalog.refresh()
+        detail = self.catalog.detail('ent-ChildItem')
+        path.write_bytes(path.read_bytes() + b'\n# Changed parent\n')
+        with self.assertRaises(EditorError) as exc:
+            self.save('ent-ChildItem', detail['source'], detail)
+        self.assertEqual(exc.exception.status, 409)
+
+    def test_entity_cmu_custom_localization_id_and_literal_braces(self):
+        base = self.root / 'Content.CMU/Resources/Prototypes/CMU14'
+        base.mkdir(parents=True)
+        (base / 'custom.yml').write_text('- type: entity\n  id: Custom\n  localizationId: custom-entity\n'
+                                       '  name: \'Tool {special} "quoted"\'\n', encoding='utf-8')
+        self.catalog.refresh()
+        detail = self.catalog.detail('custom-entity')
+        self.assertIn('CMU14/custom.ftl', detail['file'])
+        self.assertEqual(self.catalog.listing({'kind':['entity']})['total'], 1)
+        self.save('custom-entity', 'custom-entity = Инструмент')
+
+    def test_entity_same_yaml_literal_and_plain_ftl(self):
+        self.entities()
+        (self.ru / 'entity.ftl').write_text('ent-ChildItem = child item\n    .desc = Base description\n    .suffix = Debug\n', encoding='utf-8')
+        self.catalog.refresh()
+        self.assertEqual(self.catalog.listing({'kind':['entity'],'status':['same']})['total'], 1)
+
+    def test_entity_variants_and_breadth_first_parent_order(self):
+        path = self.entities()
+        with path.open('a', encoding='utf-8') as file:
+            file.write('- type: entity\n  id: SecondParent\n  description: Direct parent\n'
+                       '- type: entity\n  id: !type:CreateVariants\n    values: [VariantA, VariantB]\n'
+                       '  parent: [ChildItem, SecondParent]\n')
+        self.catalog.refresh()
+        for key in ('ent-VariantA', 'ent-VariantB'):
+            self.assertIn('Direct parent', self.catalog.detail(key)['source'])
+            self.assertNotIn('Base description', self.catalog.detail(key)['source'])
+
+    def test_invalid_entity_warns_without_blocking_valid_entries(self):
+        path = self.entities()
+        with path.open('a', encoding='utf-8') as file:
+            file.write('- type: entity\n  id: Invalid=\n  name: Invalid\n')
+        self.catalog.refresh()
+        self.assertTrue(self.catalog.warnings)
+        self.assertFalse(self.catalog.errors)
+        self.save('same', 'same = То же')
+
     def test_http_rejects_foreign_origin_missing_token_and_host(self):
         server = make_server(self.catalog)
         thread = threading.Thread(target=server.serve_forever, daemon=True)

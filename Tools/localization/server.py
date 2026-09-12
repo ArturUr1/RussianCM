@@ -16,6 +16,7 @@ import webbrowser
 
 try:
     from fluent.syntax import FluentParser, ast
+    from entities import scan_entities, literal
 except ImportError:
     raise SystemExit('Установите зависимости: python -m pip install -r Tools/localization/requirements.txt')
 
@@ -55,7 +56,8 @@ def pattern_text(text, node):
     parts = [text[node.value.span.start:node.value.span.end].strip()] if node.value else []
     parts.extend(a.id.name + '=' + text[a.value.span.start:a.value.span.end].strip()
                  for a in node.attributes)
-    return '\n'.join(parts).replace('\r\n', '\n')
+    result = '\n'.join(parts).replace('\r\n', '\n')
+    return re.sub(r'\{\s*("(?:[^"\\]|\\.)*")\s*\}', lambda m: json.loads(m[1]), result)
 
 
 class Catalog:
@@ -108,7 +110,12 @@ class Catalog:
         with self.lock:
             self.en, self.enfiles, en_errors = self.scan(self.source_root)
             self.ru, self.rufiles, ru_errors = self.scan(self.target_root)
+            self.prototypes, entity_errors = scan_entities(self.root)
+            self.entity_info = {}
+            self.entity_dependencies = {}
+            self.add_entity_sources()
             self.errors = en_errors + ru_errors
+            self.warnings = entity_errors
             self.rows = []
             self.counts = dict(missing=0, same=0, different=0, extra=0)
             for key in sorted(self.en.keys() | self.ru.keys()):
@@ -129,21 +136,101 @@ class Catalog:
                 path = record[0]['path'].relative_to(base).as_posix()
                 source = entry_text(en[0]['text'], en[1]) if en else ''
                 target = entry_text(ru[0]['text'], ru[1]) if ru else ''
+                entity = self.entity_info.get(key, [])
+                context = ' '.join(p['id'] + ' ' + p['path'].relative_to(self.root).as_posix() for p in entity)
                 self.rows.append({'key': key, 'file': path, 'status': status,
+                                  'kind': 'entity' if entity or key.startswith('ent-') else 'message',
                                   'preview': (target or source).split('=', 1)[-1].strip()[:160],
-                                  '_search': (key + '\n' + path + '\n' + source + '\n' + target).casefold()})
+                                  '_search': (key + '\n' + path + '\n' + source + '\n' + target + '\n' + context).casefold()})
                 self.counts[status] += 1
+
+    def add_entity_sources(self):
+        original = dict(self.en)
+        hashes = {}
+        resolved = {}
+
+        def resolve(ident, field):
+            cache_key = (ident, field)
+            if cache_key in resolved:
+                return resolved[cache_key]
+            queue, visited, deps = [ident], set(), set()
+            value = None
+            # Match PrototypeManager.EnumerateParents: breadth-first, not DFS.
+            for ancestor in queue:
+                if ancestor in visited or ancestor not in self.prototypes:
+                    continue
+                visited.add(ancestor)
+                proto = self.prototypes[ancestor]
+                deps.add(proto['path'])
+                source = original.get(proto['key'])
+                if source:
+                    file, node = source
+                    deps.add(file['path'])
+                    pattern = node.value if field == 'name' else next(
+                        (a.value for a in node.attributes if a.id.name == {'description': 'desc', 'suffix': 'suffix'}[field]), None)
+                    if pattern is not None:
+                        value = file['text'][pattern.span.start:pattern.span.end]
+                if value is None and field in proto['fields']:
+                    value = literal(proto['fields'][field])
+                if value is not None:
+                    break
+                queue.extend(proto['parents'])
+            resolved[cache_key] = (value, deps)
+            return value, deps
+
+        for proto in self.prototypes.values():
+            self.entity_info.setdefault(proto['key'], []).append(proto)
+        for key, protos in self.entity_info.items():
+            proto = protos[0]
+            existing = original.get(key)
+            text = entry_text(existing[0]['text'], existing[1]) if existing else key + ' ='
+            attrs = {a.id.name for a in existing[1].attributes} if existing else set()
+            deps = {p['path'] for p in protos}
+            for field, attr in (('name', None), ('description', 'desc'), ('suffix', 'suffix')):
+                value, field_deps = resolve(proto['id'], field)
+                deps.update(field_deps)
+                if value is None:
+                    continue
+                if attr is None and (not existing or existing[1].value is None):
+                    eq = text.index('=')
+                    text = text[:eq + 1] + ' ' + value + text[eq + 1:]
+                elif attr and attr not in attrs:
+                    text += '\n    .' + attr + ' = ' + value
+            if text == key + ' =':
+                text += ' { "" }'
+            resource = parse(text)
+            if any(isinstance(n, ast.Junk) for n in resource.body):
+                # Never silently hide an entity whose source cannot be represented.
+                raise EditorError('Не удалось подготовить Fluent для entity ' + proto['id'])
+            node = next(n for n in resource.body if isinstance(n, ast.Message))
+            relative = proto['relative']
+            if relative.parts[0] == 'Entities':
+                relative = Path(*relative.parts[1:])
+            path = existing[0]['path'] if existing else self.source_root / 'Entities' / relative.with_suffix('.ftl')
+            virtual = dict(path=path, raw=text.encode('utf-8'), text=text, nodes={key: node}, errors=[], virtual=True)
+            if existing and existing[1].comment:
+                comment = existing[1].comment
+                virtual['comment'] = existing[0]['text'][comment.span.start:comment.span.end]
+            self.en[key] = (virtual, node)
+            self.entity_dependencies[key] = {}
+            for dep in deps:
+                if dep not in hashes:
+                    hashes[dep] = digest(dep.read_bytes())
+                self.entity_dependencies[key][dep] = hashes[dep]
 
     def listing(self, query):
         with self.lock:
             search = query.get('q', [''])[0].casefold()
             status = query.get('status', ['all'])[0]
             folder = query.get('folder', [''])[0]
+            kind = query.get('kind', ['all'])[0]
+            scope = [r for r in self.rows if kind == 'all' or r['kind'] == kind]
+            counts = {status: sum(r['status'] == status for r in scope) for status in self.counts}
             offset = max(0, int(query.get('offset', ['0'])[0]))
-            rows = [r for r in self.rows if (status == 'all' or r['status'] == status)
+            rows = [r for r in scope if (status == 'all' or r['status'] == status)
                     and (not folder or r['file'].startswith(folder)) and search in r['_search']]
             return {'rows': [{k: v for k, v in r.items() if not k.startswith('_')} for r in rows[offset:offset + 80]],
-                    'total': len(rows), 'counts': self.counts, 'errors': self.errors,
+                    'total': len(rows), 'counts': counts, 'errors': self.errors, 'warnings': self.warnings,
                     'folders': sorted({r['file'].split('/')[0] + '/' for r in self.rows if '/' in r['file']}),
                     'source': self.source, 'target': self.target}
 
@@ -155,14 +242,21 @@ class Catalog:
             path = ru[0]['path'] if ru else self.target_root / en[0]['path'].relative_to(self.source_root)
             file = self.read_file(path, self.target_root)
             node = file['nodes'].get(key)
-            enfile = self.read_file(en[0]['path'], self.source_root) if en else None
+            dependencies = self.entity_dependencies.get(key, {})
+            if any(digest(path.read_bytes()) != version for path, version in dependencies.items()):
+                raise EditorError('Прототип или его исходный перевод изменился. Нажмите «Перечитать файлы».', 409)
+            enfile = (en[0] if en[0].get('virtual') else self.read_file(en[0]['path'], self.source_root)) if en else None
             ennode = enfile['nodes'].get(key) if enfile else None
             source = entry_text(enfile['text'], ennode) if ennode else ''
             target = entry_text(file['text'], node) if node else ''
             comment = enfile['text'][ennode.comment.span.start:ennode.comment.span.end] if ennode and ennode.comment else ''
+            if enfile:
+                comment = enfile.get('comment', comment)
             return {'key': key, 'source': source, 'target': target,
                     'file': path.relative_to(self.root).as_posix(), 'comment': comment,
                     'version': digest(file['raw']), 'sourceVersion': digest(enfile['raw']) if enfile else '',
+                    'entity': [{'id': p['id'], 'path': p['path'].relative_to(self.root).as_posix(),
+                                'parents': p['parents'], 'abstract': p['abstract']} for p in self.entity_info.get(key, [])],
                     'variables': sorted(set(VARIABLE.findall(source))), 'errors': file['errors']}
 
     def save(self, data):
@@ -238,6 +332,8 @@ class Catalog:
             self.counts[row['status']] += 1
             row['preview'] = translation.split('=', 1)[-1].strip()[:160]
             row['_search'] = (key + '\n' + row['file'] + '\n' + source + '\n' + translation).casefold()
+            row['_search'] += ' ' + ' '.join(p['id'] + ' ' + p['path'].relative_to(self.root).as_posix()
+                                           for p in self.entity_info.get(key, [])).casefold()
             return self.detail(key)
 
 

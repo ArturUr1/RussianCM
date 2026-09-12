@@ -5,7 +5,7 @@ if (-not (Test-Path -LiteralPath $runtime)) {
     python -m venv (Join-Path $toolRoot '.venv')
     if ($LASTEXITCODE -ne 0) { throw 'Не удалось создать окружение Python.' }
 }
-& $runtime -c "import importlib.util, sys; sys.exit(0 if importlib.util.find_spec('fluent') else 1)"
+& $runtime -c "import importlib.util, sys; sys.exit(0 if all(importlib.util.find_spec(m) for m in ('fluent', 'yaml')) else 1)"
 if ($LASTEXITCODE -ne 0) {
     & $runtime -m pip install -r (Join-Path $toolRoot 'requirements.txt')
     if ($LASTEXITCODE -ne 0) { throw 'Не удалось установить парсер Fluent.' }
