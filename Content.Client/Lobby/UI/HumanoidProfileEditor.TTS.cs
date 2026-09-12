@@ -27,7 +27,15 @@ public sealed partial class HumanoidProfileEditor
     {
         if (_ttsTab == null)
             return;
-        _ttsTab.Visible = _cfgManager.GetCVar(CCCVars.TTSEnabled);
+
+        var enabled = _cfgManager.GetCVar(CCCVars.TTSEnabled);
+        var tabIndex = _ttsTab.GetPositionInParent();
+
+        TabContainer.SetTabVisible(tabIndex, enabled);
+
+        if (!enabled && TabContainer.CurrentTab == tabIndex)
+            TabContainer.CurrentTab = 0;
+
         if (Profile != null)
             _ttsTab.UpdateControls(Profile, Profile.Sex);
     }

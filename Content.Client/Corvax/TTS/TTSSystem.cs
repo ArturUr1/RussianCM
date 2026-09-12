@@ -57,10 +57,12 @@ public sealed partial class TTSSystem : EntitySystem
     public override void Update(float frameTime)
     {
         base.Update(frameTime);
+
         foreach (var (uid, sound) in _playing.ToArray())
         {
-            if (TryComp<AudioComponent>(uid, out var audio) && (!audio.Started || audio.Playing))
+            if (Exists(uid) && HasComp<AudioComponent>(uid))
                 continue;
+
             sound.Stream.Dispose();
             _playing.Remove(uid);
         }
@@ -73,7 +75,10 @@ public sealed partial class TTSSystem : EntitySystem
             _audio.Stop(uid);
             sound.Stream.Dispose();
         }
+
         _playing.Clear();
+
+        CleanupRadioEffect();
     }
 
     private void OnVolumeChanged(float volume)
@@ -144,9 +149,17 @@ public sealed partial class TTSSystem : EntitySystem
             var globalPlayback = _audio.PlayGlobal(
                 audioResource.AudioStream,
                 soundSpecifier,
-                audioParams);
+                ev.IsRadio
+                    ? audioParams
+                        .WithPitchScale(0.98f)
+                        .WithVariation(0.015f)
+                    : audioParams);
+
             if (globalPlayback is { } global)
             {
+                if (ev.IsRadio)
+                    ApplyRadioEffect(global);
+
                 _playing.Add(global.Entity, (stream, ev.IsWhisper));
                 stream = null;
             }
