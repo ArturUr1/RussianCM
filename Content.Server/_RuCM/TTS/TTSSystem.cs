@@ -205,9 +205,53 @@ public sealed partial class TTSSystem : EntitySystem
     private static string Sanitize(string text)
     {
         var clean = FormattedMessage.RemoveMarkupPermissive(text);
-        // Keep all languages, but strip chat formatting sentinels and SSML delimiters.
-        return new string(clean.Where(c => !char.IsControl(c) &&
-            char.GetUnicodeCategory(c) != System.Globalization.UnicodeCategory.PrivateUse &&
-            c is not '<' and not '>').ToArray()).Trim();
+
+        // Символы, которые TTS не должен пытаться произносить.
+        ReadOnlySpan<char> ignored = [
+            '~',
+        '`',
+        '^',
+        '|',
+        '\\',
+        '_',
+        '*'
+        ];
+
+        var result = new System.Text.StringBuilder(clean.Length);
+        var lastWasSpace = false;
+
+        foreach (var c in clean)
+        {
+            if (char.IsControl(c) ||
+                char.GetUnicodeCategory(c) == System.Globalization.UnicodeCategory.PrivateUse ||
+                c is '<' or '>' ||
+                ignored.Contains(c))
+            {
+                // Не склеиваем слова: "привет~мир" -> "привет мир".
+                if (!lastWasSpace && result.Length > 0)
+                {
+                    result.Append(' ');
+                    lastWasSpace = true;
+                }
+
+                continue;
+            }
+
+            if (char.IsWhiteSpace(c))
+            {
+                if (!lastWasSpace && result.Length > 0)
+                {
+                    result.Append(' ');
+                    lastWasSpace = true;
+                }
+
+                continue;
+            }
+
+            result.Append(c);
+            lastWasSpace = false;
+        }
+
+        return result.ToString().Trim();
     }
 }
