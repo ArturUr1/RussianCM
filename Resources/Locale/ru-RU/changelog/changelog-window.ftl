@@ -11,6 +11,7 @@ changelog-version-tag = { $fork }/{ $version }
 changelog-button = Обновления
 changelog-button-new-entries = Обновления (!)
 
+changelog-tab-title-CMU = Colonial Marines Universe
 changelog-tab-title-Changelog = Список изменений
 changelog-tab-title-Admin = Админское
 changelog-tab-title-Maps = Карты

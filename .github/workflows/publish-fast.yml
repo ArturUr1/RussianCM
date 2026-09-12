@@ -37,6 +37,7 @@ jobs:
     steps:
       - uses: actions/checkout@v7
         with:
+          ref: ${{ needs.changelog.outputs.commit_hash || github.sha }}
           persist-credentials: true
           submodules: false
           sparse-checkout: |
@@ -87,6 +88,7 @@ jobs:
     steps:
       - uses: actions/checkout@v7
         with:
+          ref: ${{ needs.changelog.outputs.commit_hash || github.sha }}
           persist-credentials: true
           submodules: false
 
@@ -153,10 +155,11 @@ jobs:
       needs.publish_start.result == 'success' &&
       needs.publish_start.outputs.already-published != 'true'
     runs-on: blacksmith-2vcpu-ubuntu-2404
-    needs: [publish_start, package]
+    needs: [changelog, publish_start, package]
     steps:
       - uses: actions/checkout@v7
         with:
+          ref: ${{ needs.changelog.outputs.commit_hash || github.sha }}
           persist-credentials: true
           submodules: false
           sparse-checkout: Tools

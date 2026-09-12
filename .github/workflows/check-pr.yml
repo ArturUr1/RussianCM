@@ -30,7 +30,7 @@ jobs:
           const messages = [];
           const maintainer = ['MEMBER', 'OWNER'].includes(pr.author_association);
 
-          // template defaults or a missing :cl: in the PR description
+          // Template defaults, missing changelog headers and malformed changelog lines.
           const description = pr.body || '';
           if (!maintainer && description.trim() !== '') {
             const template = [];
@@ -52,12 +52,34 @@ jobs:
                 `Please replace it with your actual changelog entries, or remove them entirely.`);
             }
 
-            if (!description.includes(':cl:')) {
-              template.push(`You are missing the required \`:cl:\` emoji-tag for the changelog bot.\n\n` +
+            const withoutComments = description.replace(/<!--[\s\S]*?-->/g, '');
+            const headerRegex = /^\s*(?::cl:|🆑)\s*[^\r\n]*$/im;
+            const header = headerRegex.exec(withoutComments);
+
+            if (!header) {
+              template.push(`You are missing the required \`:cl:\`/\`🆑\` changelog header.\n\n` +
                 `Please add a changelog section in your PR description detailing major changes, like:\n\n` +
                 `\`\`\`\n:cl:\n- add: New feature added\n- fix: Resolved a bug\n\`\`\`\n\n` +
                 `If your change does not need a changelog, you can add an empty one:\n\n` +
                 `\`\`\`\n:cl:\n\`\`\``);
+            } else {
+              const afterHeader = withoutComments.slice(header.index + header[0].length);
+              const nextHeading = afterHeader.search(/^\s*#{1,6}\s+/m);
+              const block = (nextHeading >= 0 ? afterHeader.slice(0, nextHeading) : afterHeader).trim();
+              const validLine = /^\s*[-*]?\s*(add|remove|tweak|fix|map|code|admin):\s*\S.*$/i;
+              const candidateLine = /^\s*[-*]?\s*[a-z]+\s*:/i;
+              const lines = block.split(/\r?\n/).filter(line => line.trim() !== '');
+              const invalid = lines.filter(line => candidateLine.test(line) && !validLine.test(line));
+              const valid = lines.filter(line => validLine.test(line));
+
+              if (invalid.length > 0) {
+                template.push(`Your changelog contains unsupported or malformed entries:\n\n` +
+                  `${invalid.map(l => `- \`${l.trim()}\``).join('\n')}\n\n` +
+                  `Allowed types are \`add\`, \`remove\`, \`tweak\`, \`fix\`, \`map\`, \`code\`, and \`admin\`.`);
+              } else if (block !== '' && valid.length === 0) {
+                template.push(`A changelog header was found, but the block is not empty and contains no valid changelog entries. ` +
+                  `Use lines such as \`- fix: Description\`, or leave the block empty if no changelog is needed.`);
+              }
             }
 
             if (template.length > 0)
@@ -85,7 +107,7 @@ jobs:
             }
             if (editsParts) {
               changelog += `It looks like this PR adds or edits files in \`Resources/Changelog/Parts/\`.\n\n` +
-                `Hand-written parts are picked up by \`Tools/update_changelog_parts.py\` and do work, ` +
+                `Hand-written parts are consumed by \`Tools/update_changelog.py\` and do work, ` +
                 `but they are very discouraged: the \`:cl:\` section of the PR description is the normal ` +
                 `method, and parts are extra work for no gain.\n\n`;
             }
@@ -185,4 +207,4 @@ jobs:
     - name: Close and comment
       uses: superbrothers/close-pull-request@v3.1.2
       with:
-        comment: "Thank you for your contribution! It appears you created a pull request from the master branch or another main development branch. This is [something you should avoid doing](https://jmeridth.com/posts/do-not-issue-pull-requests-from-your-master-branch/), and thus this pull request has been automatically closed. \n \n We suggest you follow [the SS14 git usage documentation](https://docs.spacestation14.com/en/general-development/setup/git-for-the-ss14-developer.html). \n \n You can move your current work to another branch by following [these commands](https://ohshitgit.com/#accidental-commit-master). Then, you may recreate your pull request using the new branch."
+        comment: "Thank you for your contribution! It appears you created a pull request from the master branch or another main development branch. This is [something you should avoid doing](https://jmeridth.com/posts/do-not-issue-pull-requests-from-your-master-branch/), and thus this pull request has been automatically closed. \n \n We suggest you follow the [SS14 git usage documentation](https://docs.spacestation14.com/en/general-development/setup/git-for-the-ss14-developer.html). \n \n You can move your current work to another branch by following [these commands](https://ohshitgit.com/#accidental-commit-master). Then, you may recreate your pull request using the new branch."

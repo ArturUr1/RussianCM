@@ -1,30 +1,31 @@
 #!/usr/bin/env python3
 """
-Assembles the changelog .yml parts into a changelog file.
-Each part includes: author (required), changes (required), time, url, category
-Prunes the oldest past 500 entries.
+Assemble changelog .yml parts into a changelog file.
+
+Entry IDs are append-only and never renumbered. This is required by the client,
+which persists the last-read ID between sessions. Old entries may be pruned, but
+surviving IDs remain stable and new entries always use max(existing id) + 1.
+
 usage: update_changelog.py <changelog-file> <parts-dir> --category "Main"
 """
 
-import os
-from typing import List, Any
-import yaml
 import argparse
 import datetime
+import os
+from typing import Any
+
+import yaml
 
 MAX_ENTRIES = 1500
-
-HEADER_RE = r"(?::cl:|🆑) *\r?\n(.+)$"
-ENTRY_RE = r"^ *[*-]? *(\S[^\n\r]+)\r?$"
-
 CATEGORY_MAIN = "Main"
 
 
-# From https://stackoverflow.com/a/37958106/4678631
+# Prevent PyYAML from turning ISO-8601 strings into datetime instances and then
+# serializing them in a different format on every changelog update.
 class NoDatesSafeLoader(yaml.SafeLoader):
     @classmethod
     def remove_implicit_resolver(cls, tag_to_remove):
-        if not "yaml_implicit_resolvers" in cls.__dict__:
+        if "yaml_implicit_resolvers" not in cls.__dict__:
             cls.yaml_implicit_resolvers = cls.yaml_implicit_resolvers.copy()
 
         for first_letter, mappings in cls.yaml_implicit_resolvers.items():
@@ -33,18 +34,16 @@ class NoDatesSafeLoader(yaml.SafeLoader):
             ]
 
 
-# Hrm yes let's make the fucking default of our serialization library to PARSE ISO-8601
-# but then output garbage when re-serializing.
 NoDatesSafeLoader.remove_implicit_resolver("tag:yaml.org,2002:timestamp")
 
 
-def sort_and_renumber(data):
-    if "Entries" not in data:
-        return data
-    data["Entries"].sort(key=lambda e: e.get("time", ""))
-    for i, entry in enumerate(data["Entries"], start=1):
-        entry["id"] = i
-    return data
+def entry_sort_key(entry: dict[str, Any]) -> tuple[str, int]:
+    return (str(entry.get("time", "")), int(entry.get("id", 0)))
+
+
+def load_yaml(path: str) -> dict[str, Any]:
+    with open(path, "r", encoding="utf-8-sig") as f:
+        return yaml.load(f, Loader=NoDatesSafeLoader) or {}
 
 
 def main():
@@ -55,28 +54,23 @@ def main():
     args = parser.parse_args()
     category = args.category
 
-    with open(args.changelog_file, "r", encoding="utf-8-sig") as f:
-        raw = yaml.load(f, Loader=NoDatesSafeLoader)
+    current_data = load_yaml(args.changelog_file)
+    entries_list: list[dict[str, Any]] = current_data.get("Entries", [])
+    max_id = max((int(entry.get("id", 0)) for entry in entries_list), default=0)
+    existing_urls = {str(entry["url"]) for entry in entries_list if entry.get("url")}
 
-    if raw is None:
-        raw = {}
-    current_data: dict[str, Any] = raw
-
-    # Get the existing entries, or an empty list if the key is missing.
-    entries_list: List[Any] = current_data.get("Entries", [])
-    max_id = max(map(lambda e: e["id"], entries_list), default=0)
-
-    for partname in os.listdir(args.parts_dir):
+    for partname in sorted(os.listdir(args.parts_dir)):
         if not partname.endswith(".yml"):
             continue
 
         partpath = os.path.join(args.parts_dir, partname)
         print(partpath)
+        partyaml = load_yaml(partpath)
 
-        with open(partpath, "r", encoding="utf-8-sig") as f:
-            partyaml = yaml.load(f, Loader=NoDatesSafeLoader)
-
-        part_category = partyaml.get("category", CATEGORY_MAIN)
+        # Historical hand-written parts did not always have a category. If the
+        # workflow is assembling a specific changelog, an untagged part belongs
+        # to that target rather than becoming permanently stuck as "Main".
+        part_category = partyaml.get("category", category)
         if part_category != category:
             print(f"Skipping: wrong category ({part_category} vs {category})")
             continue
@@ -87,30 +81,40 @@ def main():
         )
         changes = partyaml["changes"]
         url = partyaml.get("url")
+        labels = partyaml.get("labels", [])
 
         if not isinstance(changes, list):
             changes = [changes]
 
-        if len(changes):
-            # Don't add empty changelog entries...
-            max_id += 1
-            new_id = max_id
+        if url and str(url) in existing_urls:
+            print(f"Skipping duplicate changelog URL: {url}")
+            os.remove(partpath)
+            continue
 
-            entries_list.append(
-                {
-                    "author": author,
-                    "time": time,
-                    "changes": changes,
-                    "id": new_id,
-                    "url": url,
-                }
-            )
+        if changes:
+            max_id += 1
+            entry: dict[str, Any] = {
+                "author": author,
+                "time": time,
+                "changes": changes,
+                "id": max_id,
+                "url": url,
+            }
+            if labels:
+                entry["labels"] = labels
+
+            entries_list.append(entry)
+            if url:
+                existing_urls.add(str(url))
+
         os.remove(partpath)
+
+    entries_list.sort(key=entry_sort_key)
     print(f"Have {len(entries_list)} changelog entries")
 
     overflow = len(entries_list) - MAX_ENTRIES
     if overflow > 0:
-        print(f"Removing {overflow} old entries.")
+        print(f"Removing {overflow} old entries while preserving stable IDs.")
         entries_list = entries_list[overflow:]
 
     new_data = {"Entries": entries_list}
@@ -118,11 +122,8 @@ def main():
         if key != "Entries":
             new_data[key] = value
 
-    # why yes, this is slightly cursed but- path of least resistance
-    new_data = sort_and_renumber(new_data)
-
     with open(args.changelog_file, "w", encoding="utf-8-sig") as f:
-        yaml.safe_dump(new_data, f)
+        yaml.safe_dump(new_data, f, allow_unicode=True, sort_keys=False)
 
 
 if __name__ == "__main__":
