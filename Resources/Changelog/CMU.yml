@@ -10991,6 +10991,63 @@
   id: 693
   time: '2026-09-10T13:35:04.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1921
+- author: '- fix: Раунд с охотой загружает корабль яутжа без ошибки создания отсутствующих
+    сущностей.'
+  time: '2026-09-10T14:09:18.0000000+00:00'
+  changes:
+  - type: Fix
+    message: Вожди и совет яутжа используют дополнительные слоты, сохраняя обычные
+      места охотников.
+  - type: Fix
+    message: Молодые охотники появляются в спальнях корабля; вызов показывает фактический
+      диапазон численности.
+  - type: Fix
+    message: В персонализации яутжа снова доступны варианты плазмакастера, переведены
+      группы наручей и исправлены границы карточек.
+  - type: Fix
+    message: Цвет дредов применяется в игре, маска ронина располагается на лице, а
+      трофеи корректно крепятся к броне.
+  - type: Fix
+    message: Информация о фракции яутжа больше не подменяется описанием человеческих
+      сторон, а человеческие черты не применяются к охотникам.
+  - type: Fix
+    message: Метки раба и окровавления отправляют обязательное обоснование из окна
+      наручей.
+  - type: Fix
+    message: Модули наручей снова раскрываются после сворачивания или удаления разложенного
+      оружия; наручный щит не разрушается от ошибочного порога прочности.
+  - type: Fix
+    message: Наручи предоставляют обе кнопки самоуничтожения; большой режим использует
+      исправленную мощность взрыва.
+  - type: Fix
+    message: Основные платформы яутжа предлагают выбор точки колонии, а реле по умолчанию
+      ведёт только на корабли охотников и морпехов.
+  - type: Fix
+    message: Яутжа не гниют и могут выполнять самолечение Medicomp через броню; корабельные
+      меднаборы заполнены, а разделение трав сохраняет инопланетную медицину.
+  - type: Fix
+    message: Химия учитывает совместимость с организмом яутжа, а адские гончие знают
+      язык охотников.
+  - type: Tweak
+    message: Метание оружия яутжа учитывает скорость, броню, застревание в конечностях
+      и последствия извлечения по правилам CMSS13.
+  - type: Fix
+    message: Исправлены кровавый заряд оружия и возврат смарт-диска, включая броски
+      в невесомости.
+  - type: Fix
+    message: Оружие яутжа использует правильные спрайты хвата и ношения на спине;
+      лук отображает загруженную стрелу.
+  - type: Map
+    message: На Redux Stable Garrison доступны три точки высадки охотников; граничные
+      скалы поверхности и пещер пустынной луны защищают малые угодья от выхода в космос.
+  id: 719
+  url: https://github.com/flex5hybrid/RussianCM/pull/439
+  labels:
+  - 'Changes: UI'
+  - 'Changes: Sprites'
+  - 'Changes: Map'
+  - 'Changes: Translations'
+  - XL
 - author: OverusedMeme
   changes:
   - message: The M240 now has a wield delay of 1 second, the M240-T now has a wield
@@ -11046,6 +11103,48 @@
   time: '2026-09-12T00:24:09.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1933
 - author: flex5hybrid
+  time: '2026-09-12T16:14:16.0000000+00:00'
+  changes:
+  - type: Code
+    message: Вернули старую вайтлист-систему.
+  id: 721
+  url: https://github.com/flex5hybrid/RussianCM/pull/444
+  labels:
+  - 'Changes: Translations'
+  - M
+- author: flex5hybrid
+  time: '2026-09-12T17:35:18.0000000+00:00'
+  changes:
+  - type: Fix
+    message: Возврат логотипа RuCM
+  - type: Fix
+    message: Вкладка ТТС теперь работает исправно
+  id: 722
+  url: https://github.com/flex5hybrid/RussianCM/pull/445
+  labels:
+  - M
+- author: '- fix: Исправлена автоматическая обработка changelog RuCM: локальные PR
+    больше не теряются между запусками Publish.'
+  time: '2026-09-12T17:58:10.0000000+00:00'
+  changes:
+  - type: Fix
+    message: Publish теперь включает только что сгенерированный changelog в тот же
+      релиз.
+  - type: Fix
+    message: Индикатор новых обновлений больше не сломается после обрезки старых записей
+      changelog.
+  - type: Fix
+    message: Исправлено определение прочитанного changelog и выбор основной вкладки
+      на клиенте.
+  - type: Code
+    message: 'Changelog workflow получил дедупликацию PR, стабильные ID и более строгую
+      проверку :cl: блоков.'
+  id: 720
+  url: https://github.com/flex5hybrid/RussianCM/pull/441
+  labels:
+  - 'Changes: Translations'
+  - M
+- author: flex5hybrid
   changes:
   - message: Moved hardcoded CMU user-facing strings into Fluent localization.
     type: Code
@@ -11054,8 +11153,8 @@
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1938
 - author: Vencallium
   changes:
-  - message: "Fixed tactical hovering over empty +1 airspace during Distress Signal,\
-      \ excluding Hope\u2019s Retreat."
+  - message: Fixed tactical hovering over empty +1 airspace during Distress Signal,
+      excluding Hope’s Retreat.
     type: Fix
   - message: Added an empty upper z-level to Bosenmori Basho.
     type: Map
