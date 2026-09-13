@@ -1,47 +1,47 @@
-﻿<Document>
-  #INSURGENCY RULES
-    These rules apply to the Insurgency gamemode.
+<Document>
+  # ПРАВИЛА РЕЖИМА «ПОВСТАНЧЕСТВО»
+    Эти правила действуют в игровом режиме Insurgency.
 
-  ##General Rules
-    No player may kill another player within the first 5 minutes of the round.
+  ## Общие правила
+    Ни один игрок не может убивать другого игрока в первые 5 минут раунда.
 
-    Colonists and other non-affiliated roles must have a valid in-character reason to participate in hostilities.
+    Колонисты и другие роли, не принадлежащие к участникам конфликта, должны иметь действительную внутриигровую причину для участия в боевых действиях.
 
-    ##Insurgent Rules
+  ## Правила повстанцев
 
-    You are a radical devoted to your cause.
-    - Direct orders from the Cell Leader must be followed unless they directly contradict insurgent ideology or server rules. You must refuse orders to indiscriminately kill civilians.
+    Вы — радикал, преданный своему делу.
+    - Прямые приказы Лидера ячейки обязательны, если они не противоречат идеологии повстанцев или правилам сервера. Приказ неизбирательно убивать гражданских необходимо отклонить.
 
-    Insurgents may not kill or harm civilians unless they are clearly hostile toward the insurgency.
-    - Ambassadors, liaisons, administrators and other unarmed government/corporate personnel are considered civilians under this rule.
-    - Colony Law Enforcement, Corporate Security and armed government/corporate personnel are not considered civilians under this rule.
+    Повстанцы не могут убивать или причинять вред гражданским, если те явно не проявляют враждебность к повстанцам.
+    - Послы, связные, администраторы и другой безоружный государственный/корпоративный персонал для этого правила считаются гражданскими.
+    - Колониальные правоохранительные органы, корпоративная охрана и вооружённый государственный/корпоративный персонал гражданскими по этому правилу не считаются.
 
-    Insurgents may NOT kill or harm Colony Law Enforcement, Corporate Security and/or armed government/corporate personnel until 10 minutes into the round.
+    Повстанцы НЕ могут убивать или причинять вред колониальным правоохранительным органам, корпоративной охране и/или вооружённому государственному/корпоративному персоналу до истечения 10 минут с начала раунда.
 
-    Insurgents may NOT attack groundside GOVFOR bases or attempt to board the GOVFOR ship until 30 minutes into the round. FOBs are not considered groundside bases.
+    Повстанцы НЕ могут атаковать наземные базы GOVFOR или пытаться подняться на корабль GOVFOR до истечения 30 минут с начала раунда. FOB не считается наземной базой.
 
-    ##GOVFOR Rules
+  ## Правила GOVFOR
 
-    GOVFOR may not enter the colony unless:
-    - They are explicitly alerted by the Colony Command
-    - 30 minutes have passed since round start.
-    - If GOVFOR spawn on a ship, they may deploy to their primary LZ and secure an FOB before the thirty minute mark, but must not leave their FOB.
+    GOVFOR не может входить в колонию, если:
+    - Командование колонии прямо не сообщило об угрозе.
+    - С начала раунда не прошло 30 минут.
+    - Если GOVFOR появляется на корабле, до тридцатой минуты разрешено высадиться на основную LZ и укрепить FOB, но покидать FOB нельзя.
 
-    GOVFOR may not shoot civilians without reasonable cause such as:
-    - Ignoring one clear warnings to leave while in sight.
-    - Wearing or possessing illegal firearms or equipment.
-    - Being reported to be carrying explosives.
-    - They are using lethal force or you have seen them use lethal force.
+    GOVFOR не может стрелять по гражданским без разумной причины, например:
+    - Гражданский проигнорировал одно ясное предупреждение покинуть место, оставаясь в поле зрения.
+    - Гражданский носит или имеет при себе незаконное огнестрельное оружие либо снаряжение.
+    - Есть сообщение, что гражданский переносит взрывчатку.
+    - Гражданский применяет летальную силу или вы лично видели, как он её применял.
 
-    GOVFOR may not raid an insurgent base unless:
-    - They are actively following an insurgent member to it.
-    - They have received credible intelligence about its location.
+    GOVFOR не может совершать рейд на базу повстанцев, если:
+    - Они не преследуют участника повстанцев непосредственно до базы.
+    - Они не получили достоверные разведданные о её местонахождении.
 
-    ##Colony Command Rules
+  ## Правила командования колонии
 
-    A valid in-character reason is required to request GOVFOR assistance such as:
-    - Insurgents openly carrying illegal weapons.
-    - Law Enforcement or multiple civilians being killed.
-    - Explicit IC death threats.
-    - An attempt on the life of a colony command member.
+    Для запроса помощи GOVFOR требуется действительная внутриигровая причина, например:
+    - Повстанцы открыто носят незаконное оружие.
+    - Убиты сотрудники правоохранительных органов или несколько гражданских.
+    - Прозвучали прямые IC-угрозы убийством.
+    - Совершено покушение на представителя командования колонии.
 </Document>
