@@ -1,7 +1,7 @@
 - type: guideEntry
   parent: RMC
   id: CMUResearchIndex
-  name: cmu-guide-entry-research
+  name: Research
   text: "/ServerInfo/Guidebook/CMU14/research/CMURBIndex.xml"
   priority: 3
   children:
@@ -11,7 +11,7 @@
 - type: guideEntry
   parent: RMC
   id: CMUResearch
-  name: cmu-guide-entry-research-chemistry
+  name: Chemistry
   priority: 1
   text: "/ServerInfo/Guidebook/CMU14/research/CMUResearch.xml"
   children:
@@ -22,27 +22,27 @@
 - type: guideEntry
   parent: RMC
   id: CMURDT
-  name: cmu-guide-entry-research-rdt
+  name: The Research Data Terminal
   priority: 1
   text: "/ServerInfo/Guidebook/CMU14/research/CMURDT.xml"
 
 - type: guideEntry
   parent: RMC
   id: CMUXRF
-  name: cmu-guide-entry-research-xrf
+  name: The XRF Scanner
   priority: 2
   text: "/ServerInfo/Guidebook/CMU14/research/CMUXRF.xml"
 
 - type: guideEntry
   parent: RMC
   id: CMUSIM
-  name: cmu-guide-entry-research-simulator
+  name: The Synthesis Simulator
   priority: 3
   text: "/ServerInfo/Guidebook/CMU14/research/CMUSIM.xml"
 
 - type: guideEntry
   parent: RMC
   id: CMUBotany
-  name: cmu-guide-entry-research-hydroponics
+  name: Hydroponics
   priority: 2
   text: "/ServerInfo/Guidebook/CMU14/research/CMUBotany.xml"
