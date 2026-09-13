@@ -1,167 +1,112 @@
-﻿<Document>
-  #ROLEPLAY RULES 
+<Document>
+  # ПРАВИЛА РОЛЕВОЙ ИГРЫ
 
-  These rules apply in character and are enforced universally. 
+  Эти правила действуют внутри роли и применяются ко всем игрокам.
 
-  
+  ## Ведите себя как настоящий персонаж этого сеттинга
 
-  ##Act like an actual character in this setting. 
+  - Не используйте в IC текстовый сленг или смайлики и не упоминайте внутри игры OOC-понятия вроде администраторов или раундов. Не выходите из роли, кроме общения в LOOC/OOC.
+  - Не ссылайтесь на мемы внутри роли.
+  - Не используйте эмоции или LOOC/OOC для обхода речевых фильтров, акцентов или немоты.
+  - Подробная предыстория не обязательна, однако вы должны хотя бы стараться правдоподобно отыгрывать свою роль и персонажа.
+  - Некоторые действия, например перезарядка, не имеют задержки ради плавности игры. Не злоупотребляйте этим для спама звуками.
+  - Соблюдайте разумное самосохранение. Не причиняйте намеренно серьёзный вред или смерть своему персонажу либо персонажам других игроков без веской причины.
+  - В основном здравомыслящий и полноценный персонаж не будет бездумно совершать чрезмерно болезненные действия или подвергать себя опасности. Исключения возможны для культистов и других явно безумных ролей.
 
-  - Do not use text speak or emoticons in character, and do not refer to out of character things like admins or rounds in-game. Do not break character at anytime except when using LOOC/OOC. 
+  ## Используйте реалистичные имена персонажей
 
-  - Do not reference memes in character. 
+  Используйте разумное, уникальное и соответствующее лору имя, которое могло бы быть записано в свидетельстве о рождении и содержит как минимум имя и фамилию.
 
-  - Do not use emotes or LOOC/OOC to bypass speech filters/accents or muteness. 
+  - Запрещены имена и явные отсылки к реальным людям, персонажам франшизы Alien и другим произведениям.
+  - Имя не должно быть полностью написано ЗАГЛАВНЫМИ БУКВАМИ.
+  - Запрещены титулы, звания и формы обращения, включая, помимо прочего, Dr/Doctor, Jr/Junior, Major.
+  - В качестве имён нельзя использовать никнеймы пользователей, предметы, случайные символы, очевидно «ленивые», «метовые» или иным образом неправдоподобные имена.
+  - Вместо прозвища допускается до трёх символов римских цифр.
 
-  - You are not required to write a backstory; however, you are expected to at least make an effort to act like your role and a believable character. 
+  ### Прозвища
 
-  - Some actions have no delay to make gameplay like reloading smoother. Do not abuse this to spam any kind of sounds. 
+  - Прозвище оформляется в одинарных кавычках: Имя 'Прозвище' Фамилия.
+  - Прозвище может состоять максимум из двух слов.
+  - Вместо прозвища допускается до трёх символов римских цифр.
 
-  - Exercise reasonable self preservation. Don't intentionally hurt or kill your character (or other players characters) without good reasoning. 
+  ### Исключения
 
-  - A (mostly) sane, well-rounded character would not engage in actions that are overly painful, or put themselves in harm's way, without consideration. Exceptions are made for characters in cultist or other overtly insane roles.  
+  - Персонажи-солдаты Artificial Womb (AW) могут использовать «AW» вместо прозвища. У AW-солдата фамилией должно быть название оружия, созданного до 2010 года, либо фамилия его создателя. Имя AW не должно содержать цифр или символов и должно состоять из одного слова в соответствующей части имени (пример: Joe AW Browning).
+  - Синтетики могут использовать в качестве имени одно слово. При желании синтетик может использовать и обычное полное имя.
+  - Совпадение с известным человеком допускается для комбинаций крайне распространённых имён (например, John Williams), если игрок не пытается изображать или явно отсылать к этому человеку.
 
-  
+  ## Память персонажа
 
-  ##Use Realistic Character Names 
+  Ваш постоянный персонаж может помнить события предыдущих раундов и обсуждать их, но не может упоминать или помнить собственную смерть либо смерть другого персонажа, который присутствует в текущем раунде.
 
-  Use a reasonable, unique, lore-friendly character name that could appear on a birth certificate with at least a first and last name. 
+  CMU/RuCM использует принцип «первого контакта». Персонаж не сохраняет знания или воспоминания о конкретных нечеловеческих, секретных угрозах или третьих сторонах из предыдущих раундов. Если роль или администрация прямо не указали иное, каждый раунд с перечисленными ниже угрозами должен восприниматься как первый контакт: персонаж не знает об их существовании заранее.
 
-  - No names or references of people or characters from the real world, alien franchise and/or other forms of media. 
+  - Эскадроны смерти.
+  - Вопиющие и/или секретные эксперименты Weyland-Yutani.
+  - Чёрная жижа (зомби).
+  - Ксеноморфы (включая культистов ксеноморфов).
+  - Инженеры (Alien).
+  - Претоморфы.
+  - Фулфремен.
+  - Яутжа (Хищники).
+  - Абоминации.
 
-  - Names should not be written in all Caps Lock 
+  ## Возрождение
 
-  - No titles/ranks/honorifics. Titles, ranks and honorifics include but are not limited to; Dr/Doctor, Jr/Junior, Major. 
+  Если вы умерли и возродились, нельзя возвращаться тем же персонажем, которым вы уже играли в этом раунде. Например, сыграв за «John Doe», вы не должны возрождаться снова как «John Doe».
 
-  - Usernames, objects, random characters, very "low effort" names, "meta" names, or otherwise implausible names cannot be used as names. 
+  Можно использовать ту же внешность под другим именем, если вы отыгрываете отдельного человека и не используете воспоминания предыдущего персонажа.
 
-  - Up to three characters of Roman numerals may be used in the place of a nickname. 
+  ## Самоубийства
 
-  
+  - Для самоубийства требуется действительная ролевая причина. У персонажа действительно не должно оставаться другого выхода либо ему должна угрожать участь хуже смерти — например пытки или захват ксеноморфами.
+  - Начатая, а затем отменённая попытка самоубийства рассматривается так же, как совершённое самоубийство, если только она не была случайной, и также требует действительной причины.
 
-  ###Nicknames 
+  ## Роли с повышенными требованиями к ролевой игре
 
-  - Nicknames may be used in the format of, in single quotes, Firstname 'Nickname' Lastname. 
+  Некоторые роли значительно влияют на раунд и требуют более высокого уровня ролевой игры, поэтому имеют собственные правила. [textlink="Нажмите здесь, чтобы прочитать правила этих ролей." link="AU14HighRoleplayRoles"]
 
-  - Nicknames can be at most two words. 
+  ## Военные роли
 
-  - Up to three characters of Roman numerals may be used in the place of a nickname. 
+  «Военной ролью» считается любой персонаж GOVFOR и/или OPFOR либо участник формализованных вооружённых сил признанного государства (UA, TWE, CCA, UPP и т. п.). CLF и другие повстанческие силы не считаются военной ролью, даже если их поддерживает государство.
 
-  
+  ### Игроки на военных ролях обязаны соблюдать следующее
 
-  ###Exceptions 
+  - Не пытайтесь открыто сотрудничать с очевидно или заведомо враждебными силами, кроме крайних обстоятельств, когда это единственный способ сохранить жизнь (сдача и т. п.).
+  - Все персонажи на военных ролях считаются психически устойчивыми и пригодными к службе. Незначительная нестабильность может допускаться, но она не должна мешать выполнять обязанности роли.
+  - Все военные роли должны выполнять цели своей роли и приказы вышестоящих, кроме случаев, когда приказ явно ведёт к неминуемой гибели из-за очевидной халатности или некомпетентности.
+  - Небоевые роли поддержки (медицина, инженерия, логистика, лётный экипаж, небоевые синтетики, военная полиция) должны прежде всего выполнять свои профильные задачи и вступать в бой только для самообороны или защиты находящихся рядом членов своей фракции.
+  - Военная полиция (кроме полевых арестов), медицинский персонал, лётный экипаж, логистика и инженерный персонал обязаны соблюдать все правила развёртывания. Перед участием в высадке персонал отдела должен убедиться, что отдел остаётся достаточно укомплектован.
 
-  - Artificial Womb (AW) Soldier characters may have "AW" in the place of a nickname. As an AW Soldier you must have a weapon produced pre-2010 or the name of the weapon's creator as your last name. AW names must not include numbers or symbols and must be a single word (Ex. Joe AW Browning).
+  ## Временная линия и лор
 
-  - Synthetic characters may use a single first name as their character name. Synthetic characters may choose to use a normal name alternatively. 
+  От вас не требуется знать каждую деталь лора Alien, и за незнание деталей вас не будут наказывать, однако от вас ожидается разумная оценка ситуации при ролевой игре.
 
-  - A name comprised of extremely common names (I.E John Williams) can be excused for being shared with someone famous, provided the player is not attempting to imitate or overtly reference the linked person. 
+  Интернет в привычном нам виде во вселенной Alien не развился, поэтому не используйте современный интернет-сленг и интернет-культуру внутри роли.
 
-  
+  Если отдельно не указано иное, канон определяется в следующем порядке:
 
-  ##Character Memory 
+  CMU Lore > CM13 Lore > ALIEN The Roleplaying Game > фильмы.
 
-  Your personal character may remember events that occurred in previous rounds and discuss them, but may not mention or remember their own death or the death of another present character. 
+  ## Стандарты ролевой игры ксеноморфов
 
-  
+  Ксеноморфы XX121 — крайне агрессивный эндопаразитоидный эусоциальный вид. У них нет высших целей, кроме размножения своего вида и уничтожения того, что представляет угрозу.
 
-  CMU is a "first contact" server. Your character does not retain any knowledge or memories of encountering specific non-human or covert threats/third parties from previous rounds. All rounds involving the threats/third parties listed below should be treated as first contact (your character has no idea they exist) unless explicitly stated otherwise by your role or staff. 
+  ### Коллективный разум
 
-  - Death Squads 
+  Как эусоциальный вид, ксеноморфы, связанные с Королевой, не обладают собственной свободной волей. Они действуют как единый коллективный разум, а их основное стремление — размножаться и убивать. Ксеноморфы могут иметь базовые знания о человеческом оборудовании и принципах его работы; границы «базовых знаний» определяются здравым смыслом и при необходимости игровой администрацией. Если в атмосфере присутствует корабль GOVFOR, ксеноморфы способны чувствовать его и понимают, что человеческое военное подразделение может их атаковать.
 
-  - Egregious and/or covert Weyland-Yutani experiments.
+  Играя за ксеноморфа, вы никогда не дружелюбны к подходящим носителям. Вы не обязаны немедленно убивать носителей и можете в определённых пределах играть с добычей. Ксеноморфы никогда не могут нарушать прямые или косвенные приказы Королевы и обязаны всегда выполнять её волю без исключений. Королева может изгнать неподчиняющегося ксеноморфа; неподчинение также может повлечь OOC-наказание.
 
-  - Black Goo (Zombies) 
+  ### Язык
 
-  - Xenomorphs (including xeno cultists) 
+  Чат коллективного разума представляет собой английский/человеческий перевод коммуникации и мыслей ксеноморфов. Они могут использовать общие человеческие термины вроде «посадочная зона» или «десантный корабль», но не конкретные названия вроде Fallujah. Нельзя изображать в чате коллективного разума звуки вроде «мяу». «Mommy talk» также запрещён.
 
-  - Engineers (Alien)
+  ### Синтетические единицы
 
-  - Praetomorphs 
+  Ксеноморфы не должны проявлять враждебность к синтетикам, сбивать их с ног даже в шутку, таскать или иным образом взаимодействовать с ними негативно. Базово синтетиков следует игнорировать, кроме простого общения вроде шипения или рычания. Исключение возникает, если синтетик сам становится помехой: уничтожает смолу, забирает трупы людей (даже окончательно погибших), входит в основной Улей или совершает иное подозрительное действие.
 
-  - Fulfremmen 
+  ### Личинки
 
-  - Yautja (Predators)
-
-  - Abominations
-
-  ##Respawning 
-
-  If you die and respawn, you may not return as a character you previously played in the same round. For example, if you played "John Doe," you should not respawn as "John Doe." 
-
-  
-
-  You may use the same character appearance and respawn under a different name, as long as you roleplay as a separate individual and do not use their previous.  
-
-  
-
-  ##Suicides 
-
-  - You must have a valid roleplay reason to commit suicide. Your character must truly have no other way out or be faced with a circumstance worse than death (torture, capture by xenos, etc). 
-
-  - Starting and then cancelling a suicide will be treated the same as an actual suicide unless accidental and also requires a valid reason. 
-
-  
-
-  ##High Roleplay Roles 
-
-  Some roles greatly affect the round and require a higher level of roleplay prowess and, as such, have their own rules. [textlink="Click here to read about these roles." link="AU14HighRoleplayRoles"] 
-
-  
-
-  ##Military Roles 
-
-  A person with a "military role" is defined as any character apart of GOVFOR and/or OPFOR or currently apart of a uniformed force of an established nation (UA, TWE, CCA, UPP, etc). CLF and other insurgents are not considered to be a military role, even if backed by a nation. 
-
-  
-
-  ###Players in military roles must abide by the following: 
-
-  - Don't openly try to cooperate with obvious or known hostile forces except in extreme circumstances where it is the only way to preserve your life (surrender, etc). 
-
-  - All characters in military roles are mentally stable and fit for duty. Some leeway may be provided when it comes to being minorly mentally unstable, however it must not effect your ability to function in your role. 
-
-  - All military roles should be following their role objectives and the orders of those above them, except where it would lead to imminent loss of life through obvious negligence or incompetence. 
-
-  - Non-combat support roles (medical, engineering, logistics, aircrew, non-combat synths, military police) should primarily focus on providing support in their role and engage in combat only in self-defense or to protect nearby fellow faction members. 
-
-  - Military Police (except when conducting field arrests), Medical Staff, Aircrew, Logistics Staff and Engineering Staff must follow all deployment regulations. Department personnel must ensure their department remains appropriately staffed before participating in any deployment.
-
-  
-
-  ##Timeline and Lore 
-
-  You are not expected to know every bit of Aliens lore and will not be moderated for it, you are however expected to exercise reasonable judgment with your roleplay. 
-
-  
-
-  The internet as we know it never developed in the Alien setting, so do not use modern internet slang and culture in-character. 
-
-  
-
-  Except where otherwise specified, CMU canon is determined by the following: 
-
-  
-
-  CMU Lore > CM13 Lore > ALIEN The Roleplaying Game > The Films. 
-  
-  ##Xenomorph Roleplay Standards 
-
-  The XX121 Xenomorphs are a highly aggressive, endoparasitoid eusocial species. These creatures have no higher objectives other than propagating their own species and destroying any who may pose a threat.  
-
-  ###The Hivemind 
-
-  Being an eusocial species, the Xenomorphs have no free will of their own when connected to a Queen. They act in a Hivemind, and their whole drive is to reproduce and kill. All Xenomorphs may have basic knowledge on human equipment and their workings - what constitutes "basic knowledge" is up to common sense and may be handled by a game admin. In case there is one, Xenomorphs are able to sense there's a GOVFOR ship in the atmosphere and are aware they may be assaulted by a human military unit. As a Xenomorph, you are not friendly to any suitable hosts and will never be. You aren't required to outright kill hosts, and you have some freedom to play with your prey. Xenomorphs may never go against the Queen's orders, direct or indirect, and must abide by her will at all times with absolutely no exceptions. The Queen may banish any unsubordinated Xenomorphs. Unsubordinated Xenomorphs will also be punished OOC accordingly.  
-
-  ###Language 
-
-  The Hivemind is an english translation of the Xenomorph's communication and thoughts. They may use human terms, such as "landing zone" or "dropship", but not their specific name (e.g. Fallujah). Xenomorphs may not utilize sounds in the Hivemind chat, such as "meow". Mommy talk is also prohibited.  
-
-  ###Synthetic Units 
-
-  Xenomorphs may not act hostile to any synthetic units, tackle them (even if playingly), drag them or any other interaction that may prove negative - all Xenomorphs are obligated to ignore synthetics aside from basic communication, like hisses and growls. The only exception to this is if the synthetic unit prove themselves to be bothersome, such by destroying weeds, recovering dead humans corpses (even if permadead), entering the main Hive or any other suspicious action. 
-
-  ###Larvae 
-
-  Larvae Xenomorphs should avoid any danger whatsoever whenever given possibility, and should stay inside the Hive at all times unless under attack. Larvae who heads to danger, even if they are accompanied and survive, will be punished accordingly.  
+  Личинки ксеноморфов должны по возможности избегать любой опасности и постоянно оставаться внутри Улья, если на него не напали. Личинка, которая сама направляется к опасности, даже в сопровождении и даже если выживает, может быть наказана.
 </Document>
