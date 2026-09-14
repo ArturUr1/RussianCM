@@ -33,7 +33,7 @@ stamp-component-stamped-name-cmu14-prodigy-lawyer = Юрист Prodigy
 stamp-component-stamped-name-au14-ll = Связной Laselle
 stamp-component-stamped-name-au14-uaa = Посол ОА
 stamp-component-stamped-name-au14-uppa = Посол СПН
-stamp-component-stamped-name-au14-twea = Посол ТРЗ
+stamp-component-stamped-name-au14-twea = Посол ИТМ
 stamp-component-stamped-name-au14-icsca = Посол ICSC
 stamp-component-stamped-name-au14-ccaa = Посол ККА
 
