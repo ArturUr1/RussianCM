@@ -11170,8 +11170,8 @@
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1939
 - author: Vencallium
   changes:
-  - message: "Fixed tactical hovering over empty +1 airspace during Distress Signal,\
-      \ excluding Hope\u2019s Retreat."
+  - message: Fixed tactical hovering over empty +1 airspace during Distress Signal,
+      excluding Hope’s Retreat.
     type: Fix
   - message: Added an empty upper z-level to Bosenmori Basho.
     type: Map
