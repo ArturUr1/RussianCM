@@ -38,36 +38,36 @@ origin-ua-argentina-name = ОА - Аргентина
 origin-ua-argentina-description = Родом из Аргентины, входящей в состав Объединённых Америк.
 
 # Происхождение — Третья Римская Империя
-origin-twe-japan-name = ТРЗ - Япония
+origin-twe-japan-name = ИТМ - Япония
 origin-twe-japan-description = Родом из Японии, одного из ключевых членов Третьей Римской Империи.
-origin-twe-india-name = ТРЗ - Индия
+origin-twe-india-name = ИТМ - Индия
 origin-twe-india-description = Родом из Индии, одного из ключевых членов Третьей Римской Империи.
-origin-twe-colony-name = ТРЗ - Колония
+origin-twe-colony-name = ИТМ - Колония
 origin-twe-colony-description = Выросли в одной из внесолнечных колоний Третьей Римской Империи.
-origin-twe-mars-name = ТРЗ - Марс
-origin-twe-mars-description = Выросли в одном из районов ТРЗ на Марсе.
-origin-twe-luna-name = ТРЗ - Рождённый на Луне
-origin-twe-luna-description = Родились на борту корабля или космической станции ТРЗ.
-origin-twe-australia-name = ТРЗ - Австралия
+origin-twe-mars-name = ИТМ - Марс
+origin-twe-mars-description = Выросли в одном из районов ИТМ на Марсе.
+origin-twe-luna-name = ИТМ - Рождённый на Луне
+origin-twe-luna-description = Родились на борту корабля или космической станции ИТМ.
+origin-twe-australia-name = ИТМ - Австралия
 origin-twe-australia-description = Родом из Австралии, одного из ключевых членов Третьей Римской Империи.
-origin-twe-other-name = ТРЗ - Другое
+origin-twe-other-name = ИТМ - Другое
 origin-twe-other-description = Родом из другого региона Третьей Римской Империи.
-origin-twe-tian-name = ТРЗ - Тянь
-origin-twe-tian-description = Выросли на Тяне, мире ТРЗ.
+origin-twe-tian-name = ИТМ - Тянь
+origin-twe-tian-description = Выросли на Тяне, мире ИТМ.
 
-origin-twe-netherlands-name = ТРЗ - Нидерланды
+origin-twe-netherlands-name = ИТМ - Нидерланды
 origin-twe-netherlands-description = Родом из Нидерландов, входящих в состав Третьей Римской Империи.
 
-origin-twe-indonesia-name = ТРЗ - Индонезия
+origin-twe-indonesia-name = ИТМ - Индонезия
 origin-twe-indonesia-description = Родом из Индонезии, входящей в состав Третьей Римской Империи.
 
-origin-twe-philippines-name = ТРЗ - Филиппины
+origin-twe-philippines-name = ИТМ - Филиппины
 origin-twe-philippines-description = Родом с Филиппин, входящих в состав Третьей Римской Империи.
 
-origin-twe-kenya-name = ТРЗ - Кения
+origin-twe-kenya-name = ИТМ - Кения
 origin-twe-kenya-description = Родом из Кении, входящей в состав Третьей Римской Империи.
 
-origin-twe-ireland-name = ТРЗ - Ирландия
+origin-twe-ireland-name = ИТМ - Ирландия
 origin-twe-ireland-description = Родом из Ирландии, входящей в состав Третьей Римской Империи.
 
 # Происхождение — Центральноафриканская Конфедерация

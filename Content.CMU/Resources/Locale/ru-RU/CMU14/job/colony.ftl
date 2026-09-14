@@ -236,8 +236,8 @@ au14-job-name-civilianambassadorua = Посол ОА
 au14-job-description-civilianambassadorua = Возглавляйте дипломатическую миссию ОА в колонии.
 au14-job-prefix-civilianambassadorua = UA Amb.
 
-au14-job-name-civilianambassadortwe = Посол ТРЗ
-au14-job-description-civilianambassadortwe = Возглавляйте дипломатическую миссию ТРЗ в колонии.
+au14-job-name-civilianambassadortwe = Посол ИТМ
+au14-job-description-civilianambassadortwe = Возглавляйте дипломатическую миссию ИТМ в колонии.
 au14-job-prefix-civilianambassadortwe = TWE Amb.
 
 au14-job-name-civilianambassadorcca = Посол ККА
