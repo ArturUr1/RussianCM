@@ -133,7 +133,7 @@ public sealed partial class CMUClientZLevelsSystem : CMUSharedZLevelsSystem
         }
 
         Angle rotation = _eye.CurrentEye.Rotation * -1;
-        zPassOffset = rotation.ToWorldVec() * ZLevelOffset * depthOffset;
+        zPassOffset = rotation.ToWorldVec() * GetZLevelVisualOffset(playerMap) * depthOffset;
         return true;
     }
 

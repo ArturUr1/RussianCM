@@ -131,10 +131,10 @@ public abstract partial class CMUSharedZLevelsSystem
         if (!ShouldProcessMoveGroundSnap(_net.IsClient, _timing.ApplyingState))
             return;
 
-        // Container insertion also raises MoveEvent. Only snap entities directly on
-        // a map; reparenting a contained item here breaks the insertion in progress.
+        // Container insertion also raises MoveEvent. Only map/deck children may
+        // move vertically; contained items and ordinary shuttle passengers may not.
         var xform = Transform(ent);
-        if (xform.MapUid is not { } map || xform.ParentUid != map || xform.Anchored)
+        if (!HasZPhysicsParent(xform) || xform.Anchored)
             return;
 
         var oldVelocity = ent.Comp.Velocity;
@@ -247,7 +247,7 @@ public abstract partial class CMUSharedZLevelsSystem
 
             processed++;
 
-            if (xform.ParentUid != xform.MapUid)
+            if (!HasZPhysicsParent(xform))
             {
                 if (profiling)
                     _profileZMovementStoppedParent++;
@@ -663,6 +663,13 @@ public abstract partial class CMUSharedZLevelsSystem
         return score < bestScore;
     }
 
+    protected bool HasZPhysicsParent(TransformComponent xform)
+    {
+        return xform.MapUid != null &&
+               (xform.ParentUid == xform.MapUid ||
+                xform.ParentUid == xform.GridUid && HasComp<CMUZLevelDeckComponent>(xform.ParentUid));
+    }
+
     private void StopZMovement(EntityUid uid, CMUZPhysicsComponent zPhys)
     {
         var oldVelocity = zPhys.Velocity;
@@ -837,13 +844,13 @@ public abstract partial class CMUSharedZLevelsSystem
         var xform = Transform(uid);
         if (xform.MapUid is not { } mapUid ||
             !_zMapQuery.TryComp(mapUid, out _) ||
-            !_gridQuery.TryComp(mapUid, out var mapGrid))
+            !TryResolveMovementGrid(mapUid, _transform.GetWorldPosition(uid), out var gridUid, out var mapGrid))
         {
             return false;
         }
 
-        var worldPosI = _transform.GetGridOrMapTilePosition(uid);
-        var queryHigh = _map.GetAnchoredEntitiesEnumerator(mapUid, mapGrid, worldPosI);
+        var worldPosI = _map.WorldToTile(gridUid, mapGrid, _transform.GetWorldPosition(uid));
+        var queryHigh = _map.GetAnchoredEntitiesEnumerator(gridUid, mapGrid, worldPosI);
         while (queryHigh.MoveNext(out var anchoredUid))
         {
             if (_highgroundQuery.HasComp(anchoredUid))
@@ -1154,7 +1161,7 @@ public abstract partial class CMUSharedZLevelsSystem
         return maxFloors;
     }
 
-    private bool TryResolveMovementGrid(
+    protected bool TryResolveMovementGrid(
         EntityUid mapUid,
         Vector2 worldPosition,
         out EntityUid gridUid,
@@ -1639,10 +1646,11 @@ public abstract partial class CMUSharedZLevelsSystem
         if (!TryMapUp(currentMapUid.Value, out var mapAboveUid))
             return false;
 
-        if (!_gridQuery.TryComp(mapAboveUid.Value, out var mapAboveGrid))
+        var worldPosition = _transform.GetWorldPosition(ent);
+        if (!TryResolveMovementGrid(mapAboveUid.Value, worldPosition, out var aboveGridUid, out var mapAboveGrid))
             return false;
 
-        if (_map.TryGetTileRef(mapAboveUid.Value, mapAboveGrid, _transform.GetWorldPosition(ent), out var tileRef) &&
+        if (_map.TryGetTileRef(aboveGridUid, mapAboveGrid, worldPosition, out var tileRef) &&
             !tileRef.Tile.IsEmpty)
             return true;
 
@@ -1662,10 +1670,11 @@ public abstract partial class CMUSharedZLevelsSystem
         if (!TryMapUp(map, out var mapAboveUid))
             return false;
 
-        if (!_gridQuery.TryComp(mapAboveUid.Value, out var mapAboveGrid))
+        var worldPosition = (Vector2) indices + new Vector2(0.5f);
+        if (!TryResolveMovementGrid(mapAboveUid.Value, worldPosition, out var aboveGridUid, out var mapAboveGrid))
             return false;
 
-        if (_map.TryGetTileRef(mapAboveUid.Value, mapAboveGrid, indices, out var tileRef) &&
+        if (_map.TryGetTileRef(aboveGridUid, mapAboveGrid, worldPosition, out var tileRef) &&
             !tileRef.Tile.IsEmpty)
             return true;
 
@@ -1680,31 +1689,29 @@ public abstract partial class CMUSharedZLevelsSystem
         var mapCoordinates = _transform.ToMapCoordinates(coordinates);
         if (!_map.TryGetMap(mapCoordinates.MapId, out var mapUid) ||
             mapUid is not { } resolvedMapUid ||
-            !_zMapQuery.TryComp(resolvedMapUid, out var zMap) ||
-            !_gridQuery.TryComp(resolvedMapUid, out var grid))
+            !_zMapQuery.TryComp(resolvedMapUid, out var zMap))
         {
             return true;
         }
 
         var worldPosition = mapCoordinates.Position;
         Entity<CMUZLevelMapComponent?> checkingMap = (resolvedMapUid, zMap);
-        var checkingGrid = grid;
-
         for (var floor = 0; floor <= maxFloors; floor++)
         {
-            var tile = _map.WorldToTile(checkingMap, checkingGrid, worldPosition);
-            if (_map.TryGetTileRef(checkingMap, checkingGrid, tile, out var tileRef) &&
+            if (TryResolveMovementGrid(checkingMap, worldPosition, out var gridUid, out var checkingGrid) &&
+                _map.TryGetTileRef(gridUid, checkingGrid, worldPosition, out var tileRef) &&
                 !tileRef.Tile.IsEmpty)
             {
                 if (!_mapQuery.TryComp(checkingMap.Owner, out var map))
                     return false;
 
-                projected = _transform.ToCoordinates(new MapCoordinates(worldPosition, map.MapId));
+                // Preserve the supporting grid: the map entity can own an empty
+                // background grid, which makes tile-based fire resolve as space.
+                projected = _transform.ToCoordinates(gridUid, new MapCoordinates(worldPosition, map.MapId));
                 return true;
             }
 
-            if (!TryMapDown(checkingMap, out var belowMap) ||
-                !_gridQuery.TryComp(belowMap.Value, out checkingGrid))
+            if (!TryMapDown(checkingMap, out var belowMap))
             {
                 break;
             }

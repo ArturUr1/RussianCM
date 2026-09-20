@@ -277,13 +277,9 @@ public abstract partial class CMUSharedZLevelsSystem
 
         bool TryUseOpeningTile(Vector2i tile)
         {
-            if (_map.TryGetTileRef(openingMap, grid, tile, out var tileRef) &&
-                !CMUZLevelOpeningCache.IsOpeningTile(tileRef.Tile, TilDefMan))
-            {
-                return false;
-            }
-
             var openingCenter = _map.ToCenterCoordinates(openingMap, tile, grid).Position;
+            if (!IsOpeningOnMap(openingMap, openingCenter))
+                return false;
             if (Vector2.DistanceSquared(from, openingCenter) > maxSourceDistanceSquared)
                 return false;
 
@@ -342,14 +338,19 @@ public abstract partial class CMUSharedZLevelsSystem
 
         foreach (var tile in EnumerateZShotLine((map, grid), from, to))
         {
-            if (_map.TryGetTileRef(map, grid, tile, out var tileRef) &&
-                !CMUZLevelOpeningCache.IsOpeningTile(tileRef.Tile, TilDefMan))
-            {
+            if (!IsOpeningOnMap(map, _map.GridTileToWorld(map, grid, tile).Position))
                 return false;
-            }
         }
 
         return true;
+    }
+
+    private bool IsOpeningOnMap(EntityUid map, Vector2 worldPosition)
+    {
+        // The map may be an empty background for a movable ship deck. Test the
+        // actual supporting grid, otherwise every intact deck is shoot-through.
+        return !_map.TryFindGridAt(map, worldPosition, out var gridUid, out var grid) ||
+               CMUZLevelOpeningCache.IsOpeningTile(gridUid, grid, worldPosition, _map, TilDefMan);
     }
 
     private IEnumerable<Vector2i> EnumerateZShotLine(Entity<MapGridComponent> map, Vector2 from, Vector2 to)
