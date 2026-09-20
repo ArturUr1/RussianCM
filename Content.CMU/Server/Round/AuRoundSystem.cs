@@ -959,7 +959,7 @@ namespace Content.Server.CMU14.Round
                                     if (!IsCurrentVoteSequence(sequenceId))
                                         return;
 
-                                    StartShipVote(winnerId.PossibleShips,
+                                    StartShipVote(winnerId.GovforShips ?? winnerId.PossibleShips,
                                         "Govfor Ship Vote",
                                         Loc.GetString("au14-vote-name-govfor-ship"),
                                         shipId => _selectedGovforShip = shipId);
