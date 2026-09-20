@@ -717,6 +717,16 @@ public sealed partial class DropshipSystem : SharedDropshipSystem
         if (offset)
             destCoords = destCoords.Offset(new Vector2(-0.5f, -0.5f));
 
+        // CMU14: Almayer's decks are separate grids. Grid-relative FTL targets are
+        // treated as docking requests and fall back to a random point outside the
+        // hull when no docking port exists; dropships must land on the exact marker.
+        if (EntityManager.System<Content.Server.CMU14.Hijack.ShipHijackSystem>()
+                .TryGetShip(destination, out _) && destTransform.MapUid is { } destinationMap)
+        {
+            destCoords = new EntityCoordinates(destinationMap, _transform.ToMapCoordinates(destCoords).Position);
+            rotation = _transform.GetWorldRotation(destination);
+        }
+
         _shuttle.FTLToCoordinates(dropshipId.Value, shuttleComp, destCoords, rotation, startupTime: startupTime, hyperspaceTime: hyperspaceTime);
         if (reroutingFromTacticalHover)
             _tacticalLand.EndTacticalHoverForReroute(dropshipId.Value);
