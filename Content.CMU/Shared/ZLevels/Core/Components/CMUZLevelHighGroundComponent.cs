@@ -32,6 +32,10 @@ public sealed partial class CMUZLevelHighGroundComponent : Component
     [DataField, AutoNetworkedField]
     public bool SupportOnlyFromAbove = false;
 
+    /// <summary>Whether vehicles can climb onto this surface from its own level.</summary>
+    [DataField, AutoNetworkedField]
+    public bool AllowVehicles = true;
+
     /// <summary>
     /// Allows this highground to automatically reveal a nearby preview of the level above.
     /// </summary>
@@ -43,6 +47,12 @@ public sealed partial class CMUZLevelHighGroundComponent : Component
     /// </summary>
     [DataField, AutoNetworkedField]
     public float PreviewRange = 5f;
+
+    /// <summary>
+    /// Optional upper grid to reveal in full when this stair is visible and in preview range.
+    /// Assigned by boarding mechanisms while deployed.
+    /// </summary>
+    public EntityUid? PreviewGrid;
 
     /// <summary>
     /// TODO: Workaround for the inability to place map entities rotated by 45 degrees.

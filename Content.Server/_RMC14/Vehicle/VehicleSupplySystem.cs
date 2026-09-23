@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
 using Content.Shared._RMC14.Intel;
-using Content.Shared._RMC14.Intel.Tech;
 using Content.Shared._RMC14.Requisitions;
 using Content.Shared._RMC14.Requisitions.Components;
 using Content.Shared._RMC14.Vehicle;
@@ -27,6 +26,7 @@ using Robust.Shared.Timing;
 
 namespace Content.Server._RMC14.Vehicle;
 
+// CMU14: platoon catalogs and round-wide allowances are shared across all depots.
 public sealed partial class VehicleSupplySystem : EntitySystem
 {
     private readonly record struct HardpointItemInfo(string ProtoId, HashSet<ProtoId<TagPrototype>> Tags);
@@ -83,7 +83,8 @@ public sealed partial class VehicleSupplySystem : EntitySystem
             subs.Event<VehicleSupplyLiftMsg>(OnLiftToggleRequested);
         });
 
-        SubscribeLocalEvent<TechUnlockVehicleEvent>(OnTechUnlockVehicle);
+        // CMU14: static platoon catalogs; research never adds vehicle stock.
+        SubscribeLocalEvent<Content.Shared.GameTicking.RoundRestartCleanupEvent>(OnSupplyRoundRestart);
 
         ReloadHardpointItems();
     }
@@ -98,89 +99,11 @@ public sealed partial class VehicleSupplySystem : EntitySystem
         return lift.Stored.TryGetValue(key, out var count) ? count : 0;
     }
 
-    private static int GetVendorAvailableVehicleCount(VehicleSupplyLiftComponent lift, string key)
-    {
-        var count = GetStoredCount(lift, key);
-
-        if (lift.Deployed.Contains(key))
-            count++;
-
-        if (!string.IsNullOrWhiteSpace(lift.PendingVehicle) &&
-            Normalize(lift.PendingVehicle) == key)
-        {
-            count++;
-        }
-
-        return count;
-    }
-
     private static string? GetEntryGroupKey(VehicleSupplyEntry entry)
     {
         return string.IsNullOrWhiteSpace(entry.Group)
             ? null
             : Normalize(entry.Group);
-    }
-
-    private static bool IsVehicleClaimed(VehicleSupplyLiftComponent lift, string key)
-    {
-        return lift.Ordered.Contains(key) ||
-               lift.Deployed.Contains(key) ||
-               !string.IsNullOrWhiteSpace(lift.PendingVehicle) &&
-               Normalize(lift.PendingVehicle) == key;
-    }
-
-    private static bool IsEntryGroupClaimedByOther(VehicleSupplyLiftComponent lift, VehicleSupplyEntry entry, string key)
-    {
-        var groupKey = GetEntryGroupKey(entry);
-        return groupKey != null &&
-               !lift.TechGranted.Contains(key) && // CMU14: tech-granted extras ignore group claims
-               lift.OrderedGroups.TryGetValue(groupKey, out var claimedKey) &&
-               claimedKey != key;
-    }
-
-    private static bool IsEntryGroupPendingForOther(VehicleSupplyLiftComponent lift, VehicleSupplyEntry entry, string key)
-    {
-        var groupKey = GetEntryGroupKey(entry);
-        return groupKey != null &&
-               !lift.TechGranted.Contains(key) && // CMU14
-               !string.IsNullOrWhiteSpace(lift.PendingVehicleGroup) &&
-               lift.PendingVehicleGroup == groupKey &&
-               Normalize(lift.PendingVehicle) != key;
-    }
-
-    // CMU14 method: raw group claim check for a vehicle key, resolved from any console entry defining it
-    private bool IsVehicleGroupClaimedByOther(VehicleSupplyLiftComponent lift, string key)
-    {
-        var consoleQuery = EntityQueryEnumerator<VehicleSupplyConsoleComponent>();
-        while (consoleQuery.MoveNext(out _, out var console))
-        {
-            foreach (var entry in console.Vehicles)
-            {
-                if (Normalize(entry.Vehicle.Id) != key)
-                    continue;
-
-                var groupKey = GetEntryGroupKey(entry);
-                return groupKey != null &&
-                       lift.OrderedGroups.TryGetValue(groupKey, out var claimedKey) &&
-                       claimedKey != key;
-            }
-        }
-
-        return false;
-    }
-
-    private static bool IsEntryAvailableForConsole(VehicleSupplyLiftComponent lift, VehicleSupplyEntry entry, string key)
-    {
-        return GetStoredCount(lift, key) > 0 &&
-               !IsEntryGroupClaimedByOther(lift, entry, key) &&
-               !IsEntryGroupPendingForOther(lift, entry, key);
-    }
-
-    private static bool IsEntryClaimedForSeed(VehicleSupplyLiftComponent lift, VehicleSupplyEntry entry, string key)
-    {
-        return IsVehicleClaimed(lift, key) ||
-               IsEntryGroupClaimedByOther(lift, entry, key) ||
-               IsEntryGroupPendingForOther(lift, entry, key);
     }
 
     private static void ClaimOrderedEntry(VehicleSupplyLiftComponent lift, string key, string groupKey)
@@ -225,32 +148,6 @@ public sealed partial class VehicleSupplySystem : EntitySystem
         }
 
         list.Add(vehicle);
-    }
-
-    private bool TryPopStoredEntity(VehicleSupplyLiftComponent lift, string key, out EntityUid vehicle)
-    {
-        vehicle = default;
-        if (!lift.StoredEntities.TryGetValue(key, out var list))
-            return false;
-
-        for (var i = list.Count - 1; i >= 0; i--)
-        {
-            var candidate = list[i];
-            list.RemoveAt(i);
-            if (Deleted(candidate))
-                continue;
-
-            if (list.Count == 0)
-                lift.StoredEntities.Remove(key);
-
-            vehicle = candidate;
-            return true;
-        }
-
-        if (list.Count == 0)
-            lift.StoredEntities.Remove(key);
-
-        return false;
     }
 
     private bool TryTakeStoredEntity(VehicleSupplyLiftComponent lift, string key, int index, out EntityUid vehicle)
@@ -353,49 +250,6 @@ public sealed partial class VehicleSupplySystem : EntitySystem
         }
     }
 
-    private void OnTechUnlockVehicle(TechUnlockVehicleEvent ev)
-    {
-        if (string.IsNullOrWhiteSpace(ev.Unlock))
-            return;
-
-        var tech = EnsureSupplyTech();
-        var unlock = Normalize(ev.Unlock);
-        if (!tech.Comp.Unlocked.Contains(unlock))
-        {
-            tech.Comp.Unlocked.Add(unlock);
-            Dirty(tech);
-        }
-
-        var liftQuery = EntityQueryEnumerator<VehicleSupplyLiftComponent>();
-        while (liftQuery.MoveNext(out var uid, out var lift))
-        {
-            // CMU14: additional grants stack on top of the group/one-use limits
-            if (ev.Additional)
-            {
-                if (!lift.TechGranted.Contains(unlock) &&
-                    IsVehicleGroupClaimedByOther(lift, unlock))
-                {
-                    // the group was spent on another variant, its seeded stock here is dead
-                    lift.Stored.Remove(unlock);
-                }
-
-                lift.TechGranted.Add(unlock);
-                AddStored(lift, unlock);
-                Dirty(uid, lift);
-                continue;
-            }
-
-            if (GetStoredCount(lift, unlock) > 0 || IsVehicleClaimed(lift, unlock))
-                continue;
-
-            AddStored(lift, unlock);
-            Dirty(uid, lift);
-        }
-
-        SendConsoleStateAll();
-        UpdateVendorSectionsAll();
-    }
-
     private void OnConsoleBeforeUiOpen(Entity<VehicleSupplyConsoleComponent> ent, ref BeforeActivatableUIOpenEvent args)
     {
         BackfillLiftFromConsole(ent);
@@ -417,7 +271,6 @@ public sealed partial class VehicleSupplySystem : EntitySystem
 
     private void SeedStoredFromConsoles(Entity<VehicleSupplyLiftComponent> lift)
     {
-        var unlocked = BuildUnlockedSet();
         var mapId = _transform.GetMapId(lift.Owner);
 
         var query = EntityQueryEnumerator<VehicleSupplyConsoleComponent, TransformComponent>();
@@ -426,13 +279,13 @@ public sealed partial class VehicleSupplySystem : EntitySystem
             if (xform.MapID != mapId)
                 continue;
 
-            foreach (var entry in console.Vehicles)
-            {
-                if (!IsEntryUnlocked(entry, unlocked))
-                    continue;
+            if (!TryGetLift(uid, console, out var linked) || linked.Owner != lift.Owner)
+                continue;
 
+            foreach (var entry in GetCatalog(uid, console))
+            {
                 var key = Normalize(entry.Vehicle.Id);
-                if (IsEntryClaimedForSeed(lift.Comp, entry, key))
+                if (!CanIssueVehicle(GetSupplySide(uid), entry) || Normalize(lift.Comp.PendingVehicle) == key)
                     continue;
 
                 if (GetStoredCount(lift.Comp, key) > 0)
@@ -518,11 +371,7 @@ public sealed partial class VehicleSupplySystem : EntitySystem
         if (!TryGetLift(ent.Owner, ent.Comp, out var lift))
             return;
 
-        if (!TryGetEntry(ent.Comp, args.VehicleId, out var entry))
-            return;
-
-        var unlocked = BuildUnlockedSet();
-        if (!IsEntryUnlocked(entry, unlocked))
+        if (!TryGetEntry(ent.Owner, ent.Comp, args.VehicleId, out var entry))
             return;
 
         var id = entry.Vehicle.Id;
@@ -530,7 +379,7 @@ public sealed partial class VehicleSupplySystem : EntitySystem
         if (Normalize(lift.Comp.PendingVehicle) == idKey)
             return;
 
-        if (!IsEntryAvailableForConsole(lift.Comp, entry, idKey))
+        if (!CanSelectVehicle(lift, entry, GetSupplySide(ent.Owner)))
             return;
 
         if (Normalize(ent.Comp.SelectedVehicle) != idKey)
@@ -546,7 +395,7 @@ public sealed partial class VehicleSupplySystem : EntitySystem
         if (string.IsNullOrWhiteSpace(ent.Comp.SelectedVehicle))
             return;
 
-        if (!TryGetEntry(ent.Comp, ent.Comp.SelectedVehicle, out var entry))
+        if (!TryGetEntry(ent.Owner, ent.Comp, ent.Comp.SelectedVehicle, out var entry))
             return;
 
         if (!TryGetLoadoutCategory(entry, args.CategoryId, out var category))
@@ -596,13 +445,12 @@ public sealed partial class VehicleSupplySystem : EntitySystem
 
             if (!string.IsNullOrWhiteSpace(selected))
             {
-                if (TryGetEntry(console.Comp, selected, out var entry))
+                if (TryGetEntry(console.Owner, console.Comp, selected, out var entry))
                 {
-                    var unlocked = BuildUnlockedSet();
-                    if (IsEntryUnlocked(entry, unlocked))
+                    if (GetSupplySide(console.Owner) is { } side)
                     {
                         var key = Normalize(selected);
-                        if (IsEntryAvailableForConsole(comp, entry, key) &&
+                        if (CanSelectVehicle(lift, entry, side) &&
                             _prototypes.TryIndex<EntityPrototype>(selected, out _))
                         {
                             if (TryRemoveStored(comp, key))
@@ -614,7 +462,11 @@ public sealed partial class VehicleSupplySystem : EntitySystem
                                 if (TryTakeStoredEntity(comp, key, console.Comp.SelectedVehicleCopyIndex, out var pendingEntity))
                                     comp.PendingVehicleEntity = pendingEntity;
 
-                                QueuePendingLoadout(comp, entry, console.Comp);
+                                comp.PendingSupplySide = side;
+                                comp.PendingSupplyConsole = console.Owner;
+                                // Returned vehicles keep their equipment and do not generate another bundle.
+                                if (comp.PendingVehicleEntity == null)
+                                    QueuePendingLoadout(comp, entry, console.Comp);
                                 console.Comp.SelectedVehicle = string.Empty;
                                 console.Comp.SelectedVehicleCopyIndex = 0;
                                 console.Comp.SelectedLoadouts.Clear();
@@ -630,10 +482,7 @@ public sealed partial class VehicleSupplySystem : EntitySystem
             }
             else
             {
-                comp.PendingVehicle = string.Empty;
-                comp.PendingVehicleEntity = null;
-                comp.PendingVehicleGroup = string.Empty;
-                ClearPendingLoadout(comp);
+                CancelPendingVehicle(lift); // CMU14
             }
 
             UpdateVendorSectionsAll();
@@ -847,6 +696,16 @@ public sealed partial class VehicleSupplySystem : EntitySystem
         if (string.IsNullOrWhiteSpace(pending))
             return;
 
+        // CMU14: revalidate ownership and catalog after the lift animation.
+        if (comp.PendingSupplyConsole is not { } consoleUid ||
+            !TryComp(consoleUid, out VehicleSupplyConsoleComponent? console) ||
+            GetSupplySide(consoleUid) != comp.PendingSupplySide ||
+            !TryGetEntry(consoleUid, console, pending, out var entry))
+        {
+            CancelPendingVehicle(lift);
+            return;
+        }
+
         var key = Normalize(pending);
         if (comp.PendingVehicleEntity is { } pendingEntity && Exists(pendingEntity))
         {
@@ -858,39 +717,21 @@ public sealed partial class VehicleSupplySystem : EntitySystem
             return;
         }
 
-        comp.PendingVehicleEntity = null;
-        if (TryPopStoredEntity(comp, key, out var stored))
+        if (comp.PendingVehicleEntity != null)
         {
-            var moverCoords = _transform.GetMoverCoordinates(lift);
-            var mapCoords = _transform.ToMapCoordinates(moverCoords);
-            _transform.SetMapCoordinates(stored, mapCoords);
-
-            FinishRaisedVehicle(lift, stored, pending, key);
+            CancelPendingVehicle(lift);
             return;
         }
-
-        if (comp.Ordered.Contains(key)
-            && !comp.TechGranted.Contains(key)) // CMU14: tech-granted extras bypass the one-use spawn guard
+        if (!CanIssueVehicle(comp.PendingSupplySide, entry, lift.Owner) ||
+            !_prototypes.TryIndex<EntityPrototype>(pending, out _))
         {
-            comp.PendingVehicle = string.Empty;
-            comp.PendingVehicleGroup = string.Empty;
-            ClearPendingLoadout(comp);
-            UpdateVendorSectionsAll();
-            return;
-        }
-
-        if (!_prototypes.TryIndex<EntityPrototype>(pending, out _))
-        {
-            AddStored(comp, key);
-            comp.PendingVehicle = string.Empty;
-            comp.PendingVehicleGroup = string.Empty;
-            ClearPendingLoadout(comp);
-            UpdateVendorSectionsAll();
+            CancelPendingVehicle(lift);
             return;
         }
 
         var spawnCoords = _transform.GetMoverCoordinates(lift);
         var vehicle = SpawnAtPosition(pending, spawnCoords);
+        GetIssued(comp.PendingSupplySide!).Add(new IssuedVehicle(entry.Vehicle, GetEntryGroupKey(entry)));
 
         FinishRaisedVehicle(lift, vehicle, pending, key);
     }
@@ -903,6 +744,8 @@ public sealed partial class VehicleSupplySystem : EntitySystem
         lift.Comp.PendingVehicle = string.Empty;
         lift.Comp.PendingVehicleEntity = null;
         lift.Comp.PendingVehicleGroup = string.Empty;
+        lift.Comp.PendingSupplySide = null;
+        lift.Comp.PendingSupplyConsole = null;
         lift.Comp.Deployed.Add(key);
 
         ApplyPendingLoadout(vehicle, lift.Comp);
@@ -1103,7 +946,7 @@ public sealed partial class VehicleSupplySystem : EntitySystem
         if (!Resolve(uid, ref console, logMissing: false))
             return;
 
-        var unlocked = BuildUnlockedSet();
+        BackfillLiftFromConsole((uid, console)); // CMU14: refresh choices after the first issue.
         var available = new List<VehicleSupplyEntryState>();
 
         VehicleSupplyLiftMode? mode = null;
@@ -1135,18 +978,20 @@ public sealed partial class VehicleSupplySystem : EntitySystem
             }
         }
 
-        foreach (var entry in console.Vehicles)
+        foreach (var entry in GetCatalog(uid, console))
         {
-            if (!IsEntryUnlocked(entry, unlocked))
-                continue;
-
             if (hasLift)
             {
                 var key = Normalize(entry.Vehicle.Id);
-                if (!IsEntryAvailableForConsole(lift.Comp, entry, key))
+                if (!CanSelectVehicle(lift, entry, GetSupplySide(uid)))
                     continue;
 
                 var count = GetStoredCount(lift.Comp, key);
+                // CMU14: once the allowance is spent, list only actual stored hulls.
+                if (!CanIssueVehicle(GetSupplySide(uid), entry))
+                    count = lift.Comp.StoredEntities.TryGetValue(key, out var storedVehicles)
+                        ? storedVehicles.Count(vehicle => !Deleted(vehicle))
+                        : 0;
                 if (count <= 0)
                     continue;
 
@@ -1157,8 +1002,14 @@ public sealed partial class VehicleSupplySystem : EntitySystem
             available.Add(new VehicleSupplyEntryState(entry.Vehicle.Id, GetEntryName(entry), 1));
         }
 
-        var loadouts = BuildLoadoutStates(console, selectedId);
+        var loadouts = BuildLoadoutStates(uid, console, selectedId);
         var state = new VehicleSupplyBuiState(mode, busy, activeId, selectedId, selectedCopyIndex, preview, available, loadouts);
+        var side = GetSupplySide(uid);
+        var platoon = GetSupplyPlatoon(side);
+        state.PlatoonName = platoon?.Name;
+        state.VehicleLimit = platoon?.MaxSuppliedVehicles ?? 2;
+        if (side != null)
+            state.IssuedVehicles = GetIssued(side).Select(vehicle => GetPrototypeName(vehicle.Prototype.Id)).ToList();
         _ui.SetUiState(uid, VehicleSupplyUIKey.Key, state);
     }
 
@@ -1179,10 +1030,7 @@ public sealed partial class VehicleSupplySystem : EntitySystem
         if (!Resolve(uid, ref vendor, ref automated, logMissing: false))
             return;
 
-        var hasLift = TryGetLiftForVendor(uid, vendor, out var lift);
-
         var catalog = BuildVendorCatalog(uid, vendor);
-        var unlocked = BuildUnlockedSet();
 
         var existingAmounts = new Dictionary<EntProtoId, int>();
         foreach (var section in automated.Sections)
@@ -1201,15 +1049,9 @@ public sealed partial class VehicleSupplySystem : EntitySystem
         var sections = new List<CMVendorSection>();
         foreach (var entry in catalog)
         {
-            if (!IsEntryUnlocked(entry, unlocked))
-                continue;
-
             var vehicleKey = Normalize(entry.Vehicle.Id);
-            var count = hasLift &&
-                        !IsEntryGroupClaimedByOther(lift.Comp, entry, vehicleKey) &&
-                        !IsEntryGroupPendingForOther(lift.Comp, entry, vehicleKey)
-                ? GetVendorAvailableVehicleCount(lift.Comp, vehicleKey)
-                : 0;
+            var side = GetSupplySide(uid);
+            var count = side == null ? 0 : Math.Max(1, GetIssued(side).Count(v => Normalize(v.Prototype.Id) == vehicleKey));
             var lastCount = previousCounts.TryGetValue(vehicleKey, out var prev) ? prev : 0;
             var delta = count - lastCount;
 
@@ -1407,64 +1249,6 @@ public sealed partial class VehicleSupplySystem : EntitySystem
         }
     }
 
-    private bool TryGetLiftForVendor(
-        EntityUid vendorUid,
-        VehicleHardpointVendorComponent vendor,
-        out Entity<VehicleSupplyLiftComponent> lift)
-    {
-        lift = default;
-        var found = false;
-
-        var vendorCoords = _transform.GetMapCoordinates(vendorUid);
-        var maxDistance = vendor.ConsoleSearchRange * vendor.ConsoleSearchRange;
-
-        if (TryFindLiftForVendor(vendorCoords, maxDistance, true, out var rangedLift))
-        {
-            lift = rangedLift;
-            return true;
-        }
-
-        if (TryFindLiftForVendor(vendorCoords, maxDistance, false, out var anyLift))
-        {
-            lift = anyLift;
-            return true;
-        }
-
-        return found;
-    }
-
-    private bool TryFindLiftForVendor(
-        MapCoordinates vendorCoords,
-        float maxDistance,
-        bool useRange,
-        out Entity<VehicleSupplyLiftComponent> lift)
-    {
-        lift = default;
-        var found = false;
-        var bestDistance = float.MaxValue;
-
-        var query = EntityQueryEnumerator<VehicleSupplyLiftComponent, TransformComponent>();
-        while (query.MoveNext(out var uid, out var comp, out var xform))
-        {
-            var liftCoords = _transform.GetMapCoordinates(uid, xform);
-            if (liftCoords.MapId != vendorCoords.MapId)
-                continue;
-
-            var distance = (liftCoords.Position - vendorCoords.Position).LengthSquared();
-            if (useRange && distance > maxDistance)
-                continue;
-
-            if (distance >= bestDistance)
-                continue;
-
-            bestDistance = distance;
-            lift = (uid, comp);
-            found = true;
-        }
-
-        return found;
-    }
-
     public bool TryGetAnyLift(out Entity<VehicleSupplyLiftComponent> lift)
     {
         var query = EntityQueryEnumerator<VehicleSupplyLiftComponent>();
@@ -1542,7 +1326,7 @@ public sealed partial class VehicleSupplySystem : EntitySystem
             if (xform.MapID != mapId)
                 continue;
 
-            if (TryGetEntry(console, vehicleId, out _))
+            if (console.Vehicles.Any(entry => Normalize(entry.Vehicle.Id) == Normalize(vehicleId)))
                 continue;
 
             console.Vehicles.Add(new VehicleSupplyEntry
@@ -1626,6 +1410,8 @@ public sealed partial class VehicleSupplySystem : EntitySystem
             var query = EntityQueryEnumerator<VehicleSupplyConsoleComponent, TransformComponent>();
             while (query.MoveNext(out var uid, out var console, out var xform))
             {
+                if (GetSupplySide(uid) != GetSupplySide(vendorUid))
+                    continue;
                 var consoleCoords = _transform.GetMapCoordinates(uid, xform);
                 if (consoleCoords.MapId != vendorCoords.MapId)
                     continue;
@@ -1637,7 +1423,7 @@ public sealed partial class VehicleSupplySystem : EntitySystem
                         continue;
                 }
 
-                foreach (var entry in console.Vehicles)
+                foreach (var entry in GetCatalog(uid, console))
                 {
                     var key = Normalize(entry.Vehicle.Id);
                     if (seen.Add(key))
@@ -1653,10 +1439,10 @@ public sealed partial class VehicleSupplySystem : EntitySystem
         return list;
     }
 
-    private bool TryGetEntry(VehicleSupplyConsoleComponent console, string vehicleId, out VehicleSupplyEntry entry)
+    private bool TryGetEntry(EntityUid uid, VehicleSupplyConsoleComponent console, string vehicleId, out VehicleSupplyEntry entry)
     {
         var key = Normalize(vehicleId);
-        foreach (var candidate in console.Vehicles)
+        foreach (var candidate in GetCatalog(uid, console))
         {
             if (Normalize(candidate.Vehicle.Id) == key)
             {
@@ -1670,6 +1456,7 @@ public sealed partial class VehicleSupplySystem : EntitySystem
     }
 
     private List<VehicleSupplyLoadoutCategoryState> BuildLoadoutStates(
+        EntityUid uid,
         VehicleSupplyConsoleComponent console,
         string? selectedVehicleId)
     {
@@ -1677,7 +1464,7 @@ public sealed partial class VehicleSupplySystem : EntitySystem
         if (string.IsNullOrWhiteSpace(selectedVehicleId))
             return states;
 
-        if (!TryGetEntry(console, selectedVehicleId, out var entry))
+        if (!TryGetEntry(uid, console, selectedVehicleId, out var entry))
             return states;
 
         foreach (var category in entry.LoadoutCategories)
@@ -2046,56 +1833,18 @@ public sealed partial class VehicleSupplySystem : EntitySystem
         return string.Empty;
     }
 
-    private HashSet<string> BuildUnlockedSet()
-    {
-        var unlocked = new HashSet<string>();
-        if (!TryGetSupplyTech(out var tech))
-            return unlocked;
-
-        foreach (var id in tech.Comp.Unlocked)
-        {
-            if (string.IsNullOrWhiteSpace(id))
-                continue;
-
-            unlocked.Add(Normalize(id));
-        }
-
-        return unlocked;
-    }
-
-    private bool TryGetSupplyTech(out Entity<VehicleSupplyTechComponent> tech)
-    {
-        var query = EntityQueryEnumerator<VehicleSupplyTechComponent>();
-        if (query.MoveNext(out var uid, out var comp))
-        {
-            tech = (uid, comp);
-            return true;
-        }
-
-        tech = default;
-        return false;
-    }
-
-    private static bool IsEntryUnlocked(VehicleSupplyEntry entry, HashSet<string> unlocked)
-    {
-        if (string.IsNullOrWhiteSpace(entry.Unlock))
-            return true;
-
-        return unlocked.Contains(Normalize(entry.Unlock));
-    }
-
     private IReadOnlyList<string> GetHardpointsForVehicle(string vehicleId, IReadOnlyList<VehicleSupplyEntry> entries)
     {
         var key = Normalize(vehicleId);
-        if (_hardpointsByVehicleCache.TryGetValue(key, out var cached))
-            return cached;
-
+        // CMU14: explicit lists depend on the platoon catalog and must not share a cached result.
         var explicitList = GetExplicitHardpoints(vehicleId, entries);
         if (explicitList != null)
         {
-            _hardpointsByVehicleCache[key] = explicitList;
             return explicitList;
         }
+
+        if (_hardpointsByVehicleCache.TryGetValue(key, out var cached))
+            return cached;
 
         if (!_prototypes.TryIndex<EntityPrototype>(vehicleId, out var vehicleProto))
         {

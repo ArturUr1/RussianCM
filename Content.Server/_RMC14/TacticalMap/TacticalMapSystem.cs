@@ -675,11 +675,13 @@ public sealed partial class TacticalMapSystem : SharedTacticalMapSystem
 
     private void OnUserBUIClosed(Entity<TacticalMapUserComponent> ent, ref BoundUIClosedEvent args)
     {
+        EntityManager.System<Content.Server.CMU14.TacticalMap.Reconstruction.CMUTacticalReconstructionSystem>().CloseSurvey(ent.Owner, args.Actor); // CMU14
         RemCompDeferred<ActiveTacticalMapUserComponent>(ent);
     }
 
     private void OnUserUpdateCanvasMsg(Entity<TacticalMapUserComponent> ent, ref TacticalMapUpdateCanvasMsg args)
     {
+        if (!ValidReconstructionCanvas(args)) return; // CMU14: validate the shared drawing payload.
         var user = args.Actor;
         if (!ent.Comp.CanDraw)
             return;
@@ -718,6 +720,7 @@ public sealed partial class TacticalMapSystem : SharedTacticalMapSystem
 
     private void OnComputerUpdateCanvasMsg(Entity<TacticalMapComputerComponent> ent, ref TacticalMapUpdateCanvasMsg args)
     {
+        if (!ValidReconstructionCanvas(args)) return; // CMU14: validate the shared drawing payload.
         var user = args.Actor;
         if (!_skills.HasSkill(user, ent.Comp.Skill, ent.Comp.SkillLevel))
             return;
@@ -1896,11 +1899,13 @@ public sealed partial class TacticalMapSystem : SharedTacticalMapSystem
         return null;
     }
 
-    private void UpdateCanvas(List<TacticalMapLine> lines, Dictionary<Vector2i, string> labels, bool marine, bool xeno, bool opfor, bool govfor, bool clf, EntityUid user, SoundSpecifier? sound = null)
+    private void UpdateCanvas(List<TacticalMapLine> lines, Dictionary<Vector2i, string> labels, bool marine, bool xeno, bool opfor, bool govfor, bool clf, EntityUid user, SoundSpecifier? sound = null,
+        EntityUid? onlyMap = null, bool announce = true, bool weyu = false) // CMU14: shared 3D publication.
     {
         var maps = EntityQueryEnumerator<TacticalMapComponent>();
         while (maps.MoveNext(out var mapId, out var map))
         {
+            if (onlyMap != null && mapId != onlyMap) continue; // CMU14
             map.MapDirty = true;
 
             // Collect infra IDs (comms, sensors, tunnels) so they will not be converted to enemy_blip
@@ -1985,7 +1990,7 @@ public sealed partial class TacticalMapSystem : SharedTacticalMapSystem
                 if (TeamHasActiveSensors("MARINES"))
                     ReduceHumanBlipsToEnemy(map.LastUpdateMarineBlips, "MARINES");
 
-                AnnounceHumanTacticalMapUpdated(user, sound, "MARINES");
+                if (announce) AnnounceHumanTacticalMapUpdated(user, sound, "MARINES");
                 _adminLog.Add(LogType.RMCTacticalMapUpdated, $"{ToPrettyString(user)} updated the marine tactical map for {ToPrettyString(mapId)}");
             }
 
@@ -1995,7 +2000,7 @@ public sealed partial class TacticalMapSystem : SharedTacticalMapSystem
                 map.XenoLabels = new Dictionary<Vector2i, string>(labels);
                 map.LastUpdateXenoBlips = map.XenoBlips.ToDictionary();
                 map.LastUpdateXenoStructureBlips = map.XenoStructureBlips.ToDictionary();
-                _xenoAnnounce.AnnounceSameHive(user, "There's a shift in the hivemind's tactical picture. The mental map sharpens.", sound);
+                if (announce) _xenoAnnounce.AnnounceSameHive(user, "There's a shift in the hivemind's tactical picture. The mental map sharpens.", sound);
                 _adminLog.Add(LogType.RMCTacticalMapUpdated, $"{ToPrettyString(user)} updated the xenonid tactical map for {ToPrettyString(mapId)}");
             }
 
@@ -2021,7 +2026,7 @@ public sealed partial class TacticalMapSystem : SharedTacticalMapSystem
                 // Convert others to enemy blips for opfor updates
                 if (TeamHasActiveSensors("OPFOR"))
                     ReduceHumanBlipsToEnemy(map.LastUpdateOpforBlips, "OPFOR");
-                AnnounceHumanTacticalMapUpdated(user, sound, "OPFOR");
+                if (announce) AnnounceHumanTacticalMapUpdated(user, sound, "OPFOR");
                 _adminLog.Add(LogType.RMCTacticalMapUpdated, $"{ToPrettyString(user)} updated the opfor tactical map for {ToPrettyString(mapId)}");
             }
 
@@ -2045,7 +2050,7 @@ public sealed partial class TacticalMapSystem : SharedTacticalMapSystem
                 }
                 if (TeamHasActiveSensors("GOVFOR"))
                     ReduceHumanBlipsToEnemy(map.LastUpdateGovforBlips, "GOVFOR");
-                AnnounceHumanTacticalMapUpdated(user, sound, "GOVFOR");
+                if (announce) AnnounceHumanTacticalMapUpdated(user, sound, "GOVFOR");
                 _adminLog.Add(LogType.RMCTacticalMapUpdated, $"{ToPrettyString(user)} updated the govfor tactical map for {ToPrettyString(mapId)}");
             }
 
@@ -2069,10 +2074,19 @@ public sealed partial class TacticalMapSystem : SharedTacticalMapSystem
                 }
                 if (TeamHasActiveSensors("CLF"))
                     ReduceHumanBlipsToEnemy(map.LastUpdateClfBlips, "CLF");
-                AnnounceHumanTacticalMapUpdated(user, sound, "CLF");
+                if (announce) AnnounceHumanTacticalMapUpdated(user, sound, "CLF");
                 _adminLog.Add(LogType.RMCTacticalMapUpdated, $"{ToPrettyString(user)} updated the clf tactical map for {ToPrettyString(mapId)}");
             }
 
+            // CMU14: WeYu uses the same faction-isolated publication contract.
+            if (weyu)
+            {
+                map.WeYuLines = lines;
+                map.WeYuLabels = new Dictionary<Vector2i, string>(labels);
+                map.LastUpdateWeYuBlips = map.WeYuBlips.ToDictionary();
+                if (announce) AnnounceHumanTacticalMapUpdated(user, sound, WeYuFaction);
+                _adminLog.Add(LogType.RMCTacticalMapUpdated, $"{ToPrettyString(user)} updated the WeYu tactical map for {ToPrettyString(mapId)}");
+            }
             RaiseLocalEvent(ref ev);
             // Immediately update open tactical computers on this map so canvases reflect the enemy_blip changes
             var computers = EntityQueryEnumerator<TacticalMapComputerComponent>();

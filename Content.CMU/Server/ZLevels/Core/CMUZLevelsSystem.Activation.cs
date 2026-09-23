@@ -122,11 +122,11 @@ public sealed partial class CMUZLevelsSystem
             return false;
 
         var xform = Transform(ent);
-        // Ordinary child grids provide an isolated supporting surface. Fixed decks
-        // explicitly participate in the network, including ramps and hull breaches.
+        // Ordinary shuttles provide their own supporting surface. Linked decks
+        // opt into Z movement so occupants can traverse their boarding ramps.
         if (xform.MapUid is not { } map ||
             !HasComp<CMUZLevelMapComponent>(map) ||
-            !HasZPhysicsParent(xform) ||
+            !IsZPhysicsParent(xform) ||
             xform.Anchored)
         {
             return false;
@@ -164,7 +164,7 @@ public sealed partial class CMUZLevelsSystem
         }
 
         map = gridUid;
-        tile = _map.WorldToTile(gridUid, grid, _transform.GetWorldPosition(ent));
+        tile = _map.TileIndicesFor(gridUid, grid, new MapCoordinates(_transform.GetWorldPosition(ent), xform.MapID));
         return true;
     }
 

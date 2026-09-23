@@ -95,6 +95,7 @@ namespace Content.Server.GameTicking
             InitializeStatusShell();
             InitializeCVars();
             InitializePlayer();
+            _prefsManager.SelectedCharacterChanged += OnLineupCharacterChanged;
             InitializeLobbyBackground();
             InitializeGamePreset();
             DebugTools.Assert(ProtoMan.Index(FallbackOverflowJob).Name == FallbackOverflowJobName,
@@ -120,6 +121,7 @@ namespace Content.Server.GameTicking
 
         public override void Shutdown()
         {
+            _prefsManager.SelectedCharacterChanged -= OnLineupCharacterChanged;
             base.Shutdown();
 
             SendServerShutdownDiscordMessage();

@@ -1,5 +1,16 @@
 - type: platoon
   id: USCM
+  vehicleSupplyCatalog:
+  - VehicleTank
+  - VehicleAPC
+  - VehicleAPCMed
+  - VehicleAPCCommand
+  - VehicleAev
+  - VehicleHumvee
+  - VehicleHumveeTransport
+  - VehicleHumveeMedical
+  - VehicleBlackfootDoorGunVariant
+  - VehicleBlackfootTransport
   name: US Colonial Marines
   lorePrimer: AU14PrimerPlatoonUSCM
   Allegiance: UA
@@ -11,7 +22,7 @@
     - English
   CompatibleDropships:
   - /Maps/CMU14/Shuttles/alamo.yml
-  - /Maps/_RMC14/Shuttles/dynamic_gunship.yml
+  - /Maps/CMU14/ShuttlesDropships/Mohawk/midway_deployment.yml
   compatibleFighters:
     - /Maps/CMU14/Vehicles/Dropships/ud_6.yml
   possibleships:
@@ -23,6 +34,15 @@
 
 - type: platoon
   id: LACN
+  vehicleSupplyCatalog:
+  - VehicleTank
+  - VehicleAPC
+  - VehicleAPCMed
+  - VehicleHumvee
+  - VehicleHumveeTransport
+  - VehicleHumveeMedical
+  - VehicleBlackfootDoorGunVariant
+  - VehicleBlackfootTransport
   name: LACN Landing Forces
   lorePrimer: AU14PrimerPlatoonLACN
   Allegiance: UA
@@ -334,6 +354,14 @@
 
 - type: platoon
   id: UPP
+  vehicleSupplyCatalog:
+  - VehicleSPPTank
+  - VehicleSPPAPC
+  - VehicleSPPVan
+  - VehicleSPPVanArmed
+  - VehicleSPPVanMedical
+  - VehicleSPPVanLogistics
+  - VehicleSPPVanPrisoner
   name: UPP Naval Infantry
   lorePrimer: AU14PrimerPlatoonUPP
   Allegiance: UPP
@@ -653,6 +681,15 @@
 
 - type: platoon
   id: WEYU
+  vehicleSupplyCatalog:
+  - VehicleTankPMC
+  - VehicleAPCPMC
+  - VehicleHumvee
+  - VehicleHumveeTransport
+  - VehicleHumveeMedical
+  - VehicleHumveeARC
+  - VehicleBlackfootDoorGunVariant
+  - VehicleBlackfootTransport
   name: WY PMC
   lorePrimer: AU14PrimerPlatoonWEYU
   reqlist: WYPMCCargoCatalog
@@ -966,6 +1003,12 @@
 
 - type: platoon
   id: CMBCIU
+  vehicleSupplyCatalog:
+  - AU14VehicleCivHSVan
+  - AU14VehicleCivArmoredTruck
+  - AU14VehicleCivVan
+  - AU14VehicleCivEMSAmbulance
+  - VehicleBlackfootTransport
   name: CMB Crisis Intervention
   lorePrimer: AU14PrimerPlatoonCMBCIU
   Allegiance: UA
@@ -1176,6 +1219,13 @@
 
 - type: platoon
   id: HAZOPS
+  vehicleSupplyCatalog:
+  - VehicleAev
+  - VehicleAPC
+  - VehicleAPCMed
+  - VehicleHumveeMedical
+  - VehicleHumveeTransport
+  - VehicleBlackfootTransport
   name: USCM Hazardous Operations Unit
   lorePrimer: AU14PrimerPlatoonHAZOPS
   Allegiance: UA
@@ -1191,7 +1241,7 @@
   - Almayer
   CompatibleDropships:
   - /Maps/CMU14/Shuttles/osprey.yml
-  - /Maps/_RMC14/Shuttles/dynamic_gunship.yml
+  - /Maps/CMU14/ShuttlesDropships/Mohawk/midway_deployment.yml
   compatibleFighters:
   - /Maps/CMU14/Vehicles/Dropships/f84owl.yml
   - /Maps/CMU14/Vehicles/Dropships/ud_6.yml
@@ -1199,6 +1249,12 @@
 
 - type: platoon
   id: ProdigySF
+  vehicleSupplyCatalog:
+  - VehicleHumvee
+  - VehicleHumveeTransport
+  - AU14VehicleCivArmoredTruck
+  - AU14VehicleCivTruck
+  - AU14VehicleCivEMSAmbulance
   name: Prodigy Security Forces
   lorePrimer: AU14PrimerPlatoonProdigySF
   reqlist: ProdigyCargoCatalog
@@ -1472,6 +1528,13 @@
 
 - type: platoon
   id: VAIPO
+  vehicleSupplyCatalog:
+  - VehicleAPC
+  - VehicleHumvee
+  - VehicleHumveeTransport
+  - VehicleHumveeMedical
+  - VehicleBlackfootDoorGunVariant
+  - VehicleBlackfootTransport
   name: VAI Primary Operations
   lorePrimer: AU14PrimerPlatoonVAIPO
   reqlist: VAIPOCargoCatalog
@@ -1647,6 +1710,10 @@
 
 - type: platoon
   id: RMC
+  vehicleSupplyCatalog:
+  - VehicleTankTWE
+  - VehicleHumveeTransport
+  - VehicleHumveeMedical
   name: TWE Royal Marine Commandos
   lorePrimer: AU14PrimerPlatoonRMC
   Allegiance: TWE
