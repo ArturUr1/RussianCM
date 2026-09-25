@@ -34,9 +34,9 @@ public sealed partial class AU14CallsignSystem : EntitySystem
 
     private static readonly Dictionary<string, string> DefaultCommandWords = new()
     {
-        ["govfor"] = "HAVOC",
-        ["opfor"] = "VICTOR",
-        ["clf"] = "CELL",
+        ["govfor"] = "ХАОС",
+        ["opfor"] = "ВЫМПЕЛ",
+        ["clf"] = "ЗВЕНО",
     };
 
     private readonly Dictionary<string, string> _commandWords = new();
@@ -48,12 +48,12 @@ public sealed partial class AU14CallsignSystem : EntitySystem
     // role sections carry their own element words, renamable per faction
     private static readonly Dictionary<string, string> DefaultCategoryWords = new(StringComparer.OrdinalIgnoreCase)
     {
-        ["AIR"] = "TALON",
-        ["ARMOR"] = "DRAGOON",
-        ["MP"] = "WARDEN",
-        ["MEDICAL"] = "DUSTOFF",
-        ["INTEL"] = "PROPHET",
-        ["SYNTH"] = "APOLLO",
+        ["AIR"] = "СОКОЛ",
+        ["ARMOR"] = "КОРОБОЧКА",
+        ["MP"] = "СТРАЖ",
+        ["MEDICAL"] = "АНГЕЛ",
+        ["INTEL"] = "ВЕДУН",
+        ["SYNTH"] = "АПОЛЛО",
     };
 
     private readonly Dictionary<(string Faction, string Category), string> _categoryWords = new();
