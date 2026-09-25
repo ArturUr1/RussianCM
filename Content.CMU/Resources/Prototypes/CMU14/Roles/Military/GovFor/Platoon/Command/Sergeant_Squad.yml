@@ -26,8 +26,7 @@
   - AU14RoundJobProfileMilitaryBase
   roundComponents:
   - type: AU14CallsignRole
-    suffix: ACTUAL
-    radioTag: SL
+    suffix: "01"
   - type: ANPRCRadioUser # radio trained so an SL can run the manpack if the RTO drops, they don't spawn with one
   - type: CMVendorUser
     id: AU14JobSquadSergeantBase

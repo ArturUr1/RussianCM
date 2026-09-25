@@ -24,7 +24,7 @@
   - AU14RoundJobProfileMilitaryBase
   roundComponents:
   - type: AU14CallsignRole
-    suffix: "6"
+    suffix: "01"
     commandElement: true
     category: ARMOR
   - type: Skills

@@ -25,7 +25,7 @@
   - AU14RoundJobProfileMilitaryBase
   roundComponents:
   - type: AU14CallsignRole
-    suffix: OPS
+    suffix: "05"
     commandElement: true
   - type: ANPRCRadioUser # command staff are radio trained, backup manpack operators
   - type: Skills

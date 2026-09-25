@@ -27,7 +27,7 @@
 
   [color=#a4885c]:r Текст сообщения.[/color]
 
-  Надетая радиостанция обычно использует назначенный носителю позывной. Если позывной не назначен, передача идёт как [bold]UNKNOWN STATION[/bold].
+  Надетая радиостанция обычно использует назначенный носителю позывной. Если позывной не назначен, передача идёт как [bold]НЕИЗВЕСТНАЯ СТАНЦИЯ[/bold].
 
   ## Допуск оператора
 
@@ -120,33 +120,31 @@
   Участники фракции автоматически получают позывные при развёртывании.
 
   <Table Columns="2" MinForcedColumnWidth="100">
-    <ColorBox Color="#263238"><Box Margin="4">[bold]Пример[/bold]</Box></ColorBox>
-    <ColorBox Color="#263238"><Box Margin="4">[bold]Станция[/bold]</Box></ColorBox>
-    <ColorBox><Box Margin="4">HAVOC 6</Box></ColorBox><ColorBox><Box Margin="4">Командующий офицер.</Box></ColorBox>
-    <ColorBox><Box Margin="4">HAVOC 5</Box></ColorBox><ColorBox><Box Margin="4">Исполнительный офицер или второй в командовании.</Box></ColorBox>
-    <ColorBox><Box Margin="4">HAVOC 7</Box></ColorBox><ColorBox><Box Margin="4">Старший унтер-офицер.</Box></ColorBox>
-    <ColorBox><Box Margin="4">HAVOC ROMEO</Box></ColorBox><ColorBox><Box Margin="4">Оператор командной радиосвязи.</Box></ColorBox>
-    <ColorBox><Box Margin="4">HAVOC OPS</Box></ColorBox><ColorBox><Box Margin="4">Штабные офицеры.</Box></ColorBox>
-    <ColorBox><Box Margin="4">SABRE ACTUAL</Box></ColorBox><ColorBox><Box Margin="4">Командир отряда Sabre (Alpha).</Box></ColorBox>
-    <ColorBox><Box Margin="4">SABRE ROMEO</Box></ColorBox><ColorBox><Box Margin="4">Радист, прикреплённый к Sabre (Alpha).</Box></ColorBox>
-    <ColorBox><Box Margin="4">SABRE 1-1 ... 1-N</Box></ColorBox><ColorBox><Box Margin="4">Бойцы отряда Sabre (Alpha).</Box></ColorBox>
+    <ColorBox><Box Margin="4">[bold]Позывной[/bold]</Box></ColorBox><ColorBox><Box Margin="4">[bold]Начальное назначение[/bold]</Box></ColorBox>
+    <ColorBox><Box Margin="4">ХАОС 01</Box></ColorBox><ColorBox><Box Margin="4">Командир взвода.</Box></ColorBox>
+    <ColorBox><Box Margin="4">ХАОС 02</Box></ColorBox><ColorBox><Box Margin="4">Заместитель командира.</Box></ColorBox>
+    <ColorBox><Box Margin="4">ХАОС 03</Box></ColorBox><ColorBox><Box Margin="4">Старший сержант.</Box></ColorBox>
+    <ColorBox><Box Margin="4">ХАОС 04</Box></ColorBox><ColorBox><Box Margin="4">Радист командной группы.</Box></ColorBox>
+    <ColorBox><Box Margin="4">ХАОС 05</Box></ColorBox><ColorBox><Box Margin="4">Первый назначенный штабной офицер.</Box></ColorBox>
+    <ColorBox><Box Margin="4">САБЛЯ 01</Box></ColorBox><ColorBox><Box Margin="4">Командир отряда Альфа.</Box></ColorBox>
+    <ColorBox><Box Margin="4">САБЛЯ 04</Box></ColorBox><ColorBox><Box Margin="4">Радист отряда Альфа.</Box></ColorBox>
+    <ColorBox><Box Margin="4">САБЛЯ 10, САБЛЯ 11…</Box></ColorBox><ColorBox><Box Margin="4">Остальные станции отряда Альфа.</Box></ColorBox>
+    <ColorBox><Box Margin="4">СОКОЛ 01 / СОКОЛ 02</Box></ColorBox><ColorBox><Box Margin="4">Пилот / борттехник.</Box></ColorBox>
   </Table>
 
-  [bold]ACTUAL[/bold] обозначает, что лично говорит командир, а не оператор, передающий сообщение от его имени.
-
-  Командиры отрядов отвечают как станция ACTUAL своего подразделения, например [bold]SABRE ACTUAL[/bold]. На уровне взвода [bold]HAVOC 6 ACTUAL[/bold] означает, что Командир лично взял трубку вместо RTO.
+  Это игровые начальные назначения, а не таблица должностных позывных из военного руководства. При занятости предпочтительного номера выдаётся свободный номер начиная с 10. Проверяйте актуальные назначения в справочнике. Номер не кодирует огневую группу.
 
   ### Справочник радиосети
 
-  [bold]Comms Net Directory[/bold] показывает, какой человек назначен на каждый позывной. Он доступен на ноутбуках командного пункта и консолях Overwatch.
+  [bold]Справочник радиосети[/bold] показывает, какой человек назначен на каждый позывной. Он доступен на ноутбуках командного пункта и консолях Overwatch.
 
   Уполномоченный персонал связи может:
 
   - Переименовывать словесные обозначения подразделений.
-  - Переназначать индивидуальные суффиксы.
+  - Переназначать номера станций.
   - Просматривать текущие назначения позывных.
 
-  Надетая AN/PRC обычно следует позывному владельца. На панели это отображается как [bold]AUTO[/bold].
+  Надетая AN/PRC обычно следует позывному владельца. На панели это отображается как [bold]АВТО[/bold].
 
   Позывной радиостанции автоматически обновляется, когда:
 
@@ -158,10 +156,10 @@
 
   На панели можно задать фиксированный позывной станции.
 
-  - Выберите позывной в меню [bold]PRESETS[/bold] либо введите его вручную.
+  - Выберите позывной в меню [bold]ШАБЛОНЫ[/bold] либо введите его вручную.
   - Ручной позывной может содержать до 16 символов.
-  - Нажмите [bold]SET[/bold], чтобы применить переопределение.
-  - Очистите поле и нажмите [bold]SET[/bold], чтобы снять его.
+  - Нажмите [bold]ЗАДАТЬ[/bold], чтобы применить переопределение.
+  - Очистите поле и нажмите [bold]ЗАДАТЬ[/bold], чтобы снять его.
 
   Фиксированные позывные можно использовать для командных пунктов, ретрансляционных позиций и других постоянных станций.
 
@@ -337,11 +335,11 @@
 
   ## Проверка связи
 
-  Нажмите [bold]RADIO CHECK[/bold], чтобы проверить покрытие активной сети.
+  Нажмите [bold]ПРОВЕРКА СВЯЗИ[/bold], чтобы проверить покрытие активной сети.
 
   Радиостанция передаст:
 
-  [bold]RADIO CHECK, HOW COPY, OVER[/bold]
+  [bold]ВСЕМ СТАНЦИЯМ, Я САБЛЯ 04, ПРОВЕРКА СВЯЗИ, ПРИЁМ[/bold]
 
   Оператор получит личный отчёт со станциями, которые принимают сеть чисто или с ухудшением. Учитываются все станции: ранцевые радиостанции, гарнитуры и закреплённые скрытые наушники.
 

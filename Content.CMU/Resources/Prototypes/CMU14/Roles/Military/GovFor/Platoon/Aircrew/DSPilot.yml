@@ -26,7 +26,7 @@
   - AU14RoundJobProfileMilitaryBase
   roundComponents:
   - type: AU14CallsignRole
-    suffix: PAPA
+    suffix: "01"
     commandElement: true
     category: AIR
   - type: Skills

@@ -23,7 +23,7 @@
   - AU14RoundJobProfileMilitaryBase
   roundComponents:
   - type: AU14CallsignRole
-    suffix: ROMEO
+    suffix: "04"
   - type: ANPRCRadioUser
   - type: Skills
     preset: AU14SkillPresetPlatoonRTO
