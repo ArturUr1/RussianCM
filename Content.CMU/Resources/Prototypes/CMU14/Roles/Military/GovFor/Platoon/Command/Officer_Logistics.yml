@@ -27,7 +27,7 @@
   - AU14RoundJobProfileMilitaryBase
   roundComponents:
   - type: AU14CallsignRole
-    suffix: OPS
+    suffix: "05"
     commandElement: true
   - type: Skills
     preset: AU14SkillPresetOfficerLogistics

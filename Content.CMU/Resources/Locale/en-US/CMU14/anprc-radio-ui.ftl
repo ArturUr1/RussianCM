@@ -44,7 +44,7 @@ anprc-ui-fault-no-net = FAULT: NO NET
 
 anprc-ui-callsign = CALLSIGN
 anprc-ui-callsign-not-set = NOT SET
-anprc-ui-callsign-placeholder = Max 16 chars (e.g. LIMA-6)
+anprc-ui-callsign-placeholder = Max 16 chars (e.g. SABRE 01)
 anprc-ui-callsign-auto = { $callsign } (AUTO)
 anprc-ui-set-button = SET
 anprc-ui-callsign-help = Station override. Blank = your assigned callsign (AUTO). SET empty to clear.

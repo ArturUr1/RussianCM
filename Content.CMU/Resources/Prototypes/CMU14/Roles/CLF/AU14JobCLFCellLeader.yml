@@ -6,7 +6,7 @@
   roundRole: CLFCellLeader
   roundComponents:
   - type: AU14CallsignRole
-    suffix: "6"
+    suffix: "01"
     commandElement: true
   - type: NpcFactionMember
     factions:

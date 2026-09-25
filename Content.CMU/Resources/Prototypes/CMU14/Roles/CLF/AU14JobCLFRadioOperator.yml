@@ -6,7 +6,7 @@
   roundRole: CLFRadioOperator
   roundComponents:
   - type: AU14CallsignRole
-    suffix: ROMEO
+    suffix: "04"
   - type: NpcFactionMember
     factions:
     - AUColonist

@@ -28,7 +28,7 @@
   - AU14RoundJobProfileMilitaryBase
   roundComponents:
   - type: AU14CallsignRole
-    suffix: "5"
+    suffix: "02"
     commandElement: true
   - type: CommendationGiver
   - type: InnateCommandSpeech
