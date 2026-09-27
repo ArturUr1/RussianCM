@@ -76,6 +76,7 @@ jobs:
             restore: |
               dotnet restore Content.Packaging/Content.Packaging.csproj
               dotnet restore Content.Client/Content.Client.csproj
+
           - name: server-linux-x64
             command: server --platform linux-x64
             restore: dotnet restore Content.Server/Content.Server.csproj --runtime linux-x64 /p:TargetOs=Linux
@@ -141,6 +142,7 @@ jobs:
     name: Upload packages to Robust.Cdn
     needs: [publish_start, package]
     if: >-
+      always() &&
       needs.publish_start.result == 'success' &&
       needs.publish_start.outputs.already-published != 'true' &&
       needs.package.result == 'success'
