@@ -38,7 +38,6 @@ jobs:
     steps:
       - uses: actions/checkout@v7
         with:
-          ref: ${{ needs.changelog.outputs.commit_hash || github.sha }}
           persist-credentials: true
           submodules: false
           sparse-checkout: |
@@ -87,7 +86,6 @@ jobs:
     steps:
       - uses: actions/checkout@v7
         with:
-          ref: ${{ needs.changelog.outputs.commit_hash || github.sha }}
           persist-credentials: true
           submodules: false
 
@@ -159,7 +157,6 @@ jobs:
     steps:
       - uses: actions/checkout@v7
         with:
-          ref: ${{ needs.changelog.outputs.commit_hash || github.sha }}
           persist-credentials: true
           submodules: false
           sparse-checkout: Tools
