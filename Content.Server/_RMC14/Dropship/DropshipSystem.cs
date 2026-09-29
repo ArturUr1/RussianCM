@@ -998,25 +998,6 @@ public sealed partial class DropshipSystem : SharedDropshipSystem
         _ui.SetUiState(computer.Owner, DropshipNavigationUiKey.Key, travelState);
     }
 
-    /// <summary>CMU14: return flights already inbound when a mainship jumps or starts falling.</summary>
-    public void DivertIncomingHijackFlights()
-    {
-        var hijack = EntityManager.System<Content.Shared.CMU14.Hijack.CMUShipHijackSystem>();
-        var query = EntityQueryEnumerator<DropshipComponent, FTLComponent>();
-        while (query.MoveNext(out var uid, out var dropship, out var ftl))
-        {
-            if (dropship.Destination is not { } destination || hijack.CanArrive(destination) ||
-                dropship.DepartureLocation is not { } departure || TerminatingOrDeleted(departure) ||
-                !hijack.CanArrive(departure))
-                continue;
-            dropship.Destination = departure;
-            ftl.TargetCoordinates = Transform(departure).Coordinates;
-            ftl.TargetAngle = Transform(departure).LocalRotation;
-            Dirty(uid, ftl);
-            Dirty(uid, dropship);
-        }
-    }
-
     /// <summary>
     /// Determines the shuttle type for a navigation console. Defaults to Dropship if not set.
     /// </summary>
@@ -1557,10 +1538,6 @@ public sealed partial class DropshipSystem : SharedDropshipSystem
                 Dirty(uid, dropship);
 
                 Audio.PlayGlobal(dropship.CrashSound, destinationFilter, true);
-                // CMU14: the ship hijack sequence owns its impact effects.
-                if (EntityManager.System<Content.Server.CMU14.Hijack.ShipHijackSystem>()
-                    .TryApplyDropshipImpact(uid, destination))
-                    continue;
                 _rmcFlammable.SpawnFireDiamond(
                     dropship.FireId,
                     destinationEntityCoords,

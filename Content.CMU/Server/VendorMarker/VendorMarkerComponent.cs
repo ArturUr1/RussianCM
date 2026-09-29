@@ -29,9 +29,6 @@ namespace Content.Server.CMU14.VendorMarker
         [DataField("ship")]
         public bool Ship { get; set; } = false;
 
-        // Runtime-only: multiple grids in one z-network can own the same markers.
-        public bool Spawned;
-
 
         // Designates the vendor's job
         [DataField("class")]

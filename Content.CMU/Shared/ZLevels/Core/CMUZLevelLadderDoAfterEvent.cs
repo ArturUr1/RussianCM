@@ -4,8 +4,4 @@ using Robust.Shared.Serialization;
 namespace Content.Shared.CMU14.ZLevels.Core;
 
 [Serializable, NetSerializable]
-public sealed partial class CMUZLevelLadderDoAfterEvent : SimpleDoAfterEvent
-{
-    [DataField]
-    public int Offset;
-}
+public sealed partial class CMUZLevelLadderDoAfterEvent : SimpleDoAfterEvent;

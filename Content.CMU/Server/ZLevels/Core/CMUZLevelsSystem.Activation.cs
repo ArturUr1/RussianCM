@@ -20,24 +20,14 @@ public sealed partial class CMUZLevelsSystem
         // existing, already initialized maps through mapping/construction tools.
         foreach (var map in maps.Keys)
         {
-            // Visit only this map and opted-in fixed decks, never nested containers
-            // or ordinary shuttle grids.
+            // Only direct map children can use Z physics. Avoid scanning every body
+            // in the world each time construction attaches a new, often empty level.
             var children = Transform(map).ChildEnumerator;
             while (children.MoveNext(out var uid))
             {
                 if (TryComp<CMUZPhysicsComponent>(uid, out var physics) &&
                     Comp<MetaDataComponent>(uid).EntityLifeStage >= EntityLifeStage.MapInitialized)
                     CheckActivation((uid, physics));
-
-                if (!HasComp<CMUZLevelDeckComponent>(uid))
-                    continue;
-                var deckChildren = Transform(uid).ChildEnumerator;
-                while (deckChildren.MoveNext(out var child))
-                {
-                    if (TryComp<CMUZPhysicsComponent>(child, out var deckPhysics) &&
-                        Comp<MetaDataComponent>(child).EntityLifeStage >= EntityLifeStage.MapInitialized)
-                        CheckActivation((child, deckPhysics));
-                }
             }
         }
     }

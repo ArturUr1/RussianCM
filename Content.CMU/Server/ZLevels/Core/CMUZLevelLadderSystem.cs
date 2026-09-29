@@ -44,15 +44,10 @@ public sealed partial class CMUZLevelLadderSystem : EntitySystem
             return;
 
         args.Handled = true;
-        StartClimb(ent, args.User, ent.Comp.Offset);
-    }
 
-    private void StartClimb(Entity<CMUZLevelLadderComponent> ent, EntityUid user, int offset)
-    {
-        if (!_interaction.InRangeUnobstructed(user, ent.Owner, ent.Comp.Range, popup: true))
-            return;
+        var user = args.User;
         var delay = HasComp<GhostComponent>(user) ? TimeSpan.Zero : ent.Comp.Delay;
-        var doAfter = new DoAfterArgs(EntityManager, user, delay, new CMUZLevelLadderDoAfterEvent { Offset = offset }, ent, ent, ent)
+        var doAfter = new DoAfterArgs(EntityManager, user, delay, new CMUZLevelLadderDoAfterEvent(), ent, ent, ent)
         {
             AttemptFrequency = delay == TimeSpan.Zero ? AttemptFrequency.Never : AttemptFrequency.EveryTick,
             BlockDuplicate = true,
@@ -97,24 +92,12 @@ public sealed partial class CMUZLevelLadderSystem : EntitySystem
             return;
 
         args.Handled = true;
-        Climb(ent, args.User, args.Offset);
+        Climb(ent, args.User);
     }
 
     private void OnGetAltVerbs(Entity<CMUZLevelLadderComponent> ent, ref GetVerbsEvent<AlternativeVerb> args)
     {
         var user = args.User;
-        if (args.CanAccess && args.CanInteract && ent.Comp.AdditionalOffset is { } extra)
-        {
-            foreach (var offset in new[] { ent.Comp.Offset, extra })
-            {
-                args.Verbs.Add(new AlternativeVerb
-                {
-                    Act = () => StartClimb(ent, user, offset),
-                    Text = Loc.GetString(offset > 0 ? "cmu-zlevel-ladder-climb-up" : "cmu-zlevel-ladder-climb-down"),
-                    Priority = 110,
-                });
-            }
-        }
         if (!HasComp<EyeComponent>(user) ||
             !CanWatchPopup(ent, user) ||
             !TryGetLookCoordinates(ent, out _))
@@ -161,14 +144,13 @@ public sealed partial class CMUZLevelLadderSystem : EntitySystem
         CleanupLook(ent.Owner, ent.Comp);
     }
 
-    private void Climb(Entity<CMUZLevelLadderComponent> ent, EntityUid user, int offset)
+    private void Climb(Entity<CMUZLevelLadderComponent> ent, EntityUid user)
     {
         CloseLook(user);
 
-        var ladderPosition = LandingPosition(ent, offset);
+        var ladderPosition = _transform.GetWorldPosition(ent);
 
-        if (offset != ent.Comp.Offset && offset != ent.Comp.AdditionalOffset ||
-            !_zLevels.TryMove(user, offset, worldPosition: ladderPosition))
+        if (!_zLevels.TryMove(user, ent.Comp.Offset, worldPosition: ladderPosition))
         {
             _popup.PopupClient(Loc.GetString("cmu-zlevel-ladder-no-level"), ent, user, PopupType.SmallCaution);
             return;
@@ -268,15 +250,8 @@ public sealed partial class CMUZLevelLadderSystem : EntitySystem
         return _zLevels.TryProjectToZMap(
             (map, null),
             ladder.Comp.Offset,
-            LandingPosition(ladder, ladder.Comp.Offset),
+            _transform.GetWorldPosition(ladder),
             out coordinates,
             out _);
-    }
-
-    private System.Numerics.Vector2 LandingPosition(Entity<CMUZLevelLadderComponent> ladder, int offset)
-    {
-        var displacement = offset == ladder.Comp.Offset ? ladder.Comp.LandingOffset : ladder.Comp.AdditionalLandingOffset;
-        return _transform.GetWorldPosition(ladder) +
-               _transform.GetWorldRotation(Transform(ladder).ParentUid).RotateVec(displacement);
     }
 }
