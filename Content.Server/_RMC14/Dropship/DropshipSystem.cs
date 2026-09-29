@@ -150,6 +150,7 @@ public sealed partial class DropshipSystem : SharedDropshipSystem
             });
 
         SubscribeLocalEvent<WithdrawFactionHijackLockEvent>(OnWithdrawHijackLock);
+        SubscribeLocalEvent<Content.Shared._RMC14.WeedKiller.WeedKillerDeployAttemptEvent>(OnForceOnForceWeedKillerAttempt);
 
         Subs.CVar(_config, RMCCVars.RMCLandingZonePrimaryAutoMinutes, v => _lzPrimaryAutoDelay = TimeSpan.FromMinutes(v), true);
         Subs.CVar(_config, RMCCVars.RMCDropshipFlyByTimeSeconds, v => _flyByTime = TimeSpan.FromSeconds(v), true);
@@ -545,6 +546,12 @@ public sealed partial class DropshipSystem : SharedDropshipSystem
     public override bool FlyTo(Entity<DropshipNavigationComputerComponent> computer, EntityUid destination, EntityUid? user, bool hijack = false, float? startupTime = null, float? hyperspaceTime = null, bool offset = false)
     {
         // CMU14: Force on Force roles, hijacking, announcements and identification.
+        if (!hijack && user is { } actor && !CanUseNavigation(computer, actor))
+        {
+            _popup.PopupEntity(Loc.GetString("cmu-dropship-navigation-access-denied"), computer, actor);
+            return false;
+        }
+
         if (!hijack && !CanLandAt(computer, destination))
         {
             if (user is { } pilot)
@@ -756,17 +763,15 @@ public sealed partial class DropshipSystem : SharedDropshipSystem
             RaiseLocalEvent(dropshipId.Value, ref hijackFlight);
         }
 
-        // CMU14: Almayer's decks are separate grids. Grid-relative FTL targets are
-        // treated as docking requests and fall back to a random point outside the
-        // hull when no docking port exists; dropships must land on the exact marker.
-        if (EntityManager.System<Content.Server.CMU14.Hijack.ShipHijackSystem>()
-                .TryGetShip(destination, out _) && destTransform.MapUid is { } destinationMap)
-        {
-            destCoords = new EntityCoordinates(destinationMap, _transform.ToMapCoordinates(destCoords).Position);
-            rotation = _transform.GetWorldRotation(destination);
-        }
+        RemComp<Content.Server.CMU14.ForceOnForce.ForceOnForceLaunchComponent>(dropshipId.Value);
+        var coordinated = TryGetForceOnForceLaunchWindow(computer, destination, hijack,
+            out var opposingFaction, out var departureAt, out var newLaunchWindow);
+        if (coordinated)
+            startupTime = (float) (departureAt - _timing.CurTime).TotalSeconds;
 
         _shuttle.FTLToCoordinates(dropshipId.Value, shuttleComp, destCoords, rotation, startupTime: startupTime, hyperspaceTime: hyperspaceTime);
+        if (coordinated)
+            FinishForceOnForceLaunchWindow(dropshipId.Value, departureAt, opposingFaction, newLaunchWindow);
         if (reroutingFromTacticalHover)
             _tacticalLand.EndTacticalHoverForReroute(dropshipId.Value);
         ResetThirdPartyAutoReturnCountdown(dropshipId.Value);

@@ -1387,6 +1387,12 @@ namespace Content.Shared.Preferences
                 name = GetName(Species, gender);
             }
 
+            // cmu edit start
+            name = Content.Shared.CMU14.Preferences.CMUCharacterName.Normalize(name,
+                Origin == Content.Shared.CMU14.Preferences.CMUCharacterName.ArtificialWombOrigin,
+                Synthetic);
+            // cmu edit end
+
             string flavortext;
             var maxFlavorTextLength = configManager.GetCVar(CCVars.MaxFlavorTextLength);
             if (FlavorText.Length > maxFlavorTextLength)

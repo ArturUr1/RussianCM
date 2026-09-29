@@ -67,7 +67,7 @@ public sealed partial class CMUZLevelsSystem
 
     private void OnZPhysicsMove(Entity<CMUZPhysicsComponent> ent, ref MoveEvent args)
     {
-        OnZPhysicsMoveGroundSnap(ent, ref args);
+        OnZPhysicsMoveGroundSnap(ent, ref args, out var unchangedGround);
 
         if (!TryGetFallCheckTile(ent, out var map, out var tile))
             return;
@@ -81,7 +81,7 @@ public sealed partial class CMUZLevelsSystem
 
         ent.Comp.LastFallCheckMap = map;
         ent.Comp.LastFallCheckTile = tile;
-        CheckActivation(ent);
+        CheckActivation(ent, unchangedGround);
     }
 
     private void OnZPhysicsTileChanged(ref TileChangedEvent args)
@@ -99,7 +99,7 @@ public sealed partial class CMUZLevelsSystem
         }
     }
 
-    private void CheckActivation(Entity<CMUZPhysicsComponent> ent)
+    private void CheckActivation(Entity<CMUZPhysicsComponent> ent, ZGroundContact? unchangedGround = null)
     {
         if (!CanUseZPhysics(ent))
         {
@@ -107,7 +107,7 @@ public sealed partial class CMUZLevelsSystem
             return;
         }
 
-        SetActiveStatus(ent, true);
+        SetActiveStatus(ent, true, unchangedGround);
     }
 
     private bool CanUseZPhysics(Entity<CMUZPhysicsComponent> ent)
@@ -141,10 +141,10 @@ public sealed partial class CMUZLevelsSystem
         return true;
     }
 
-    private void SetActiveStatus(EntityUid ent, bool active)
+    private void SetActiveStatus(EntityUid ent, bool active, ZGroundContact? unchangedGround = null)
     {
         if (active)
-            WakeZPhysics(ent);
+            WakeZPhysics(ent, unchangedGround);
         else
         {
             RemCompDeferred<CMUZFallingComponent>(ent);
@@ -164,7 +164,7 @@ public sealed partial class CMUZLevelsSystem
         }
 
         map = gridUid;
-        tile = _map.TileIndicesFor(gridUid, grid, new MapCoordinates(_transform.GetWorldPosition(ent), xform.MapID));
+        tile = _map.TileIndicesFor(gridUid, grid, new MapCoordinates(_transform.GetWorldPosition(xform), xform.MapID));
         return true;
     }
 

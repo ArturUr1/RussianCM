@@ -55,6 +55,7 @@ public abstract partial class SharedDropshipSystem : EntitySystem
     [Dependency] protected SharedAudioSystem Audio = default!;
 
     [Dependency] private AreaSystem _areas = default!;
+    [Dependency] private AccessReaderSystem _navigationAccess = default!;
     [Dependency] private ISharedAdminLogManager _adminLog = default!;
     [Dependency] private IConfigurationManager _config = default!;
     [Dependency] private SharedContainerSystem _container = default!;
@@ -221,6 +222,13 @@ public abstract partial class SharedDropshipSystem : EntitySystem
         {
             args.Cancel();
             _popup.PopupClient(Loc.GetString("rmc-dropship-hijack-thirdparty"), ent, args.User, PopupType.MediumCaution);
+            return;
+        }
+
+        if (!isHijacker && !CanUseNavigation(ent, args.User))
+        {
+            args.Cancel();
+            _popup.PopupClient(Loc.GetString("cmu-dropship-navigation-access-denied"), ent, args.User);
             return;
         }
 
@@ -853,7 +861,8 @@ public abstract partial class SharedDropshipSystem : EntitySystem
             return;
         }
 
-        FlyTo(ent, destination.Value, user);
+        if (!FlyTo(ent, destination.Value, user))
+            return;
 
         var grid = _transform.GetGrid((ent.Owner, Transform(ent.Owner)));
         if (grid != null)
@@ -863,6 +872,9 @@ public abstract partial class SharedDropshipSystem : EntitySystem
     private void OnDropshipNavigationCancelMsg(Entity<DropshipNavigationComputerComponent> ent,
         ref DropshipNavigationCancelMsg args)
     {
+        if (!CanUseNavigation(ent, args.Actor))
+            return;
+
         var grid = _transform.GetGrid((ent.Owner, Transform(ent.Owner)));
         if (!TryComp(grid, out FTLComponent? ftl) || !TryComp(grid, out DropshipComponent? dropship))
             return;
