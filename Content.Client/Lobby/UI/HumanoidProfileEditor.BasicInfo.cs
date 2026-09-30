@@ -11,9 +11,9 @@ namespace Content.Client.Lobby.UI;
 public sealed partial class HumanoidProfileEditor
 {
     // cmu edit start
-    private static readonly Regex CMUSingleNamePart = new(@"^[A-Za-z0-9\-\.']*$");
-    private static readonly Regex CMUMultiNamePart = new(@"^[A-Za-z0-9 \-\.']*$");
-    private static readonly Regex CMUNicknamePart = new(@"^[A-Za-z0-9 \-\.]*$");
+private static readonly Regex CMUSingleNamePart = new(@"^[A-Za-zА-Яа-яЁё0-9\-\.']*$");
+private static readonly Regex CMUMultiNamePart = new(@"^[A-Za-zА-Яа-яЁё0-9 \-\.']*$");
+private static readonly Regex CMUNicknamePart = new(@"^[A-Za-zА-Яа-яЁё0-9 \-\.]*$");
 
     private bool _cmuUpdatingNameEdits;
 
