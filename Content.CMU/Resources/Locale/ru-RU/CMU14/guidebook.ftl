@@ -17,10 +17,10 @@ cmu-guide-entry-sop-roe = Правила применения силы
 cmu-guide-entry-sop-equipment = Снаряжение и персонал
 cmu-guide-entry-sop-command = Командные правила
 cmu-guide-entry-sop-dropships = Десантные корабли и авиация
-cmu-guide-entry-sop-ranks = Структура званий
 cmu-guide-entry-sop-third-party = Правила для третьих сторон
 cmu-guide-entry-sop-vehicles = Транспорт
 cmu-guide-entry-sop-deployment = Развёртывание
+cmu-guide-entry-sop-departments = Департаменты
 
 # Единый кодекс военной юстиции
 cmu-guide-entry-ucmj = Единый кодекс военной юстиции

@@ -1,59 +1,58 @@
 <Document>
-  # Departments
+  # Департаменты
 
-    These are non-modifiable SOP's that cannot be changed unless approved by a member of Provost.
+    Это немодифицируемые СОП, которые нельзя изменить без одобрения члена Провоста.
 
-  ## Department Equipment
-    Department issued equipment, clothing and weapons may not be provided to others unless given approval from the head of the department.
+  ## Оборудование отдела
+    Оборудование, одежда и оружие, выданные отделом, не могут быть переданы другим лицам без одобрения руководителя отдела.
 
-  ## Medical
-    ### Chief Medical Officer
-      - Holds complete authority over the medbay, medical preparations, research and surgery on board the ship/installation, except when overruled by the Commander.
-      - May authorize or prohibit any type of research or experimentation.
-    ### Medical Regulations
-      - Pills must be stored in a sealed, labelled container showing either the maximum dosage before overdose or the number of units provided.
-      - Loose chemicals containing anything other than water or welding fuel must be labelled with their contents and maximum safe dosage.
+  ## Медицинский отдел
+    ### Главный медицинский офицер
+      - Обладает полной властью над медотсеком, медицинскими препаратами, исследованиями и хирургическими операциями на борту корабля/объекта, за исключением случаев, когда его решения отменяются Командиром.
+      - Может разрешать или запрещать любой вид исследований или экспериментов.
+    ### Процедуры медицинского отдела
+      - Таблетки должны храниться в герметичном контейнере с маркировкой, указывающей либо максимальную дозу до передозировки, либо количество предоставленных единиц.
+      - Химические вещества в неупакованном виде, содержащие что-либо кроме воды или сварочного топлива, должны быть маркированы с указанием их содержимого и максимальной безопасной дозы.
 
-  ## Engineering
-    ### Engineer Officer
-      - Holds complete authority over ship/installation modifications, repairs and maintenance, except when overruled by the Commander.
-    ### Engineering Regulations
-      - May not dismantle or deconstruct any vital area's of the ship/installation to create modifications.
-      - May not dismantle or deconstruct any area's of the ship/installation to gather materials.
-      - Ship/Installation modifications cannot be done purely for decorative purposes and must have a reason behind them.
+  ## Инженерный отдел
+    ### Инженерный офицер
+      - Обладает полной властью над модификациями, ремонтом и техническим обслуживанием корабля/объекта, за исключением случаев, когда его решения отменяются Командиром.
+    ### Процедуры инженерного отдела
+      - Нельзя разбирать или демонтировать какие-либо жизненно важные участки корабля/объекта для создания модификаций.
+      - Нельзя разбирать или демонтировать какие-либо участки корабля/объекта для сбора материалов.
+      - Модификации корабля/объекта не могут выполняться исключительно в декоративных целях и должны иметь обоснование.
 
-  ## Requsitions
-    ### Logistics Officer
-      - Holds complete authority over requisitions and its equipment as well as any purchases made through the ASRS, except when overruled by the Commander.
-    ### Requisition Regulations
-      - The right to deny service to any personnel with a valid reason, such as threats, not wearing a uniform or armor etc.
-      - Any equipment taken from requisitions by a non-member of requisitions without permission is treated as theft.
-      - May collect and distribute weapons and equipment given to them by other departments as well as found within the squad preparation bays.
-      - May not distribute any items taken from vendors in other departments without permission with the exception of the vendors found within the squad preparation bays.
+  ## Отдел поставок
+    ### Офицер логистики
+      - Обладает полной властью над заявками на снабжение и его оборудованием, а также над любыми закупками, осуществляемыми через СХПГ, за исключением случаев, когда его решения отменяются Командиром.
+    ### Процедуры отдела поставок
+      - Сотрудники имеют право отказать в обслуживании любому сотруднику при наличии веской причины, например: угрозы, отсутствие униформы или брони и т. д.
+      - Любое оборудование, взятое со склада снабжения лицом, не являющимся сотрудником снабжения, без разрешения, рассматривается как кража.
+      - Сотрудники отдела могут собирать и распределять оружие и оборудование, переданное им другими отделами, а также найденное в помещениях подготовки отряда.
+      - Сотрудники не могут распределять какие-либо предметы, взятые из торговых автоматов в других отделах, без разрешения, за исключением торговых автоматов, находящихся в помещениях подготовки отрядов.
 
-  ## Military Police
-    ### Chief of Military Police
-      - Holds the ultimate authority in regards to UCMJ on board the ship/installation.
-      - May grant non-members of command military police equipment and clothing as well as permission to carry out UCMJ law.
-      - Settles any SOP or UCMJ related dispute.
-    ### Military Police Regulations
-      - Must always carry non-lethal detainment methods to perform their duties.
-      - Permitted access to all areas of the ship with the exception of the AI core and synthetic areas.
-      - Must always uphold UCMJ law and cannot ignore a crime or reported crime.
+  ## Военная полиция
+    ### Начальник военной полиции
+      - Обладает высшей властью в вопросах, касающихся Единого кодекса военной юстиции, на борту корабля/объекта.
+      - Может выдавать лицам, не являющимся членами командования, снаряжение и одежду военной полиции, а также разрешение на надзор за исполнением единого кодекса военной юстиции.
+      - Регулирует любые споры, связанные с СОП или единым кодексом военной юстиции.
+    ### Процедуры отдела военной полиции
+      - Сотрудники всегда должны иметь при себе нелетальные средства задержания для выполнения своих обязанностей.
+      - Сотрудникам разрешен доступ во все зоны корабля, за исключением ядра ИИ и зон синтетиков.
+      - Сотрудники всегда должны соблюдать закон единый кодекс военной юстиции и не могут игнорировать преступление или сообщение о преступлении.
 
-  ## Synthetics and AI
-    ### APOLLO
-      - APOLLO's core may only be accessed by the Engineering Officer, Commander and Synthetics and requires approval from APOLLO.
-      - Trespassing past initial security gates will result in non-lethal removal from the area.
-      - Trespassing into APOLLO's core will result in immediate lethal harm.
-    ### Synthetics
-      - Required to uphold all crew orders so long as they do not violate their directives or would otherwise stunt their operational capability, such as being told to hand over their surgical equipment.
-      - Must maintain the Medical Bay or Requisitions in the absence of department staff, they may never replace department staff, for example being held in Medbay so a Doctor may deploy.
-      - Must arrest individuals who have committed a crime and bring them to a member of military police or command, they may not sentence the individual arrested.
-      - Expected to perform all tasks to an exceptional standard, they may specialise in a specific role but should not neglect their other tasks.
-      - May operate completely independently and without orders so long as their task is benefiting the operation.
-      - May operate vehicles that do not have any weapons attached to them.
-      - May carry weapons, knives and any equipment either for transport or to help perform their duties.
-    ### Working Joes
-      - Working Joes perform on orders directly from APOLLO and may take orders from crew members so long as they are simple tasks.
+  ## Синтетики и ИИ
+    ### АПОЛЛО
+      - Доступ к ядру АПОЛЛО разрешён только инженерному офицеру, командиру и синтетикам, и требует одобрения от АПОЛЛО.
+      - Проникновение за пределы первоначальных контрольно-пропускных пунктов повлечёт за собой нелетальное удаление из данной зоны.
+      - Проникновение в ядро АПОЛЛО повлечёт за собой немедленное применение летальной силы.
+    ### Синтетики
+      - Обязаны выполнять все приказы экипажа, если они не нарушают его директивы и не снижают его эффективность в рамках операции, например, приказ передать своё хирургическое оборудование.
+      - Обязаны арестовывать лиц, совершивших преступление, и доставлять их сотруднику военной полиции или командованию; он не может выносить приговор арестованному.
+      - Ожидается, что они будут выполнять все задачи на исключительно высоком уровне; они могут специализироваться в определённой роли, но не должны пренебрегать другими своими обязанностями.
+      - Могут действовать полностью самостоятельно и без приказов, если их задача приносит пользу операции.
+      - Могут управлять транспортными средствами, на которых не установлено никакого вооружения.
+      - Могут носить оружие, ножи и любое снаряжение либо для транспортировки, либо для помощи в выполнении своих обязанностей.
+    ### Рабочие Джо
+      - Рабочие Джо действуют по прямым приказам АПОЛЛО и могут принимать приказы от членов экипажа, если это простые задачи.
 </Document>
