@@ -34,14 +34,14 @@
     requiredSlot: back
     operatorFaction: govfor
     callsignPresets:
-    - PLT ACTUAL
-    - PLT MAIN
-    - SABRE ACTUAL
-    - DAGGER ACTUAL
-    - PIKE 6
-    - SUNRAY
-    - OVERLORD
-    - DUSTOFF
+    - cmu-callsign-preset-command
+    - cmu-callsign-preset-command-post
+    - cmu-callsign-preset-sabre
+    - cmu-callsign-preset-dagger
+    - cmu-callsign-preset-pike
+    - cmu-callsign-preset-sunray
+    - cmu-callsign-preset-overlord
+    - cmu-callsign-preset-dustoff
     dfReportFactions:
     - OPFOR
     - CLF
@@ -110,13 +110,13 @@
   - type: ANPRCRadio
     operatorFaction: opfor
     callsignPresets:
-    - 1-0 ACTUAL
-    - 1-1 ACTUAL
-    - 1-2 ACTUAL
-    - 1-3 ACTUAL
-    - ANVIL
-    - HAMMER
-    - RELAY 1
+    - cmu-callsign-preset-opfor-command
+    - cmu-callsign-preset-violet
+    - cmu-callsign-preset-tan
+    - cmu-callsign-preset-sage
+    - cmu-callsign-preset-anvil
+    - cmu-callsign-preset-hammer
+    - cmu-callsign-preset-relay
     dfReportFactions:
     - GOVFOR
   - type: RTORelay
@@ -136,12 +136,12 @@
   - type: ANPRCRadio
     operatorFaction: clf
     callsignPresets:
-    - CELL ACTUAL
-    - FIREBRAND
-    - JACKAL
-    - MAGPIE
-    - LONGSHOT
-    - COURIER
+    - cmu-callsign-preset-cell
+    - cmu-callsign-preset-firebrand
+    - cmu-callsign-preset-jackal
+    - cmu-callsign-preset-magpie
+    - cmu-callsign-preset-longshot
+    - cmu-callsign-preset-courier
     dfReportFactions:
     - GOVFOR
   - type: RTORelay
@@ -226,10 +226,10 @@
     operatorFaction: clf
     requiredSlot: none
     callsignPresets:
-    - CELL ACTUAL
-    - BASE
-    - FIREBRAND
-    - MAGPIE
+    - cmu-callsign-preset-cell
+    - cmu-callsign-preset-base
+    - cmu-callsign-preset-firebrand
+    - cmu-callsign-preset-magpie
     dfReportFactions:
     - GOVFOR
     # comes up tuned so the leader can work it without a trained operator present

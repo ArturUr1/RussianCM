@@ -2,7 +2,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
 using Content.Server.CMU14.Dropship.Integrity;
-using Content.Server.CMU14.Round;
 using Content.Server.CMU14.Dropship.MultiDeck;
 using Content.Shared.CMU14.Dropship.MultiDeck;
 using Content.Server.CMU14.ZLevels.Core;
@@ -59,7 +58,6 @@ public sealed partial class DropshipTacticalLandSystem : SharedDropshipTacticalL
     [Dependency] private DropshipIntegritySystem _integrity = default!;
     [Dependency] private MultiDeckDropshipSystem _multiDeck = default!;
     [Dependency] private IConfigurationManager _configuration = default!;
-    [Dependency] private AuRoundSystem _round = default!;
 
     private static readonly TimeSpan FootprintTickInterval = TimeSpan.FromMilliseconds(150);
     private static readonly TimeSpan HoverEffectUpdateInterval = TimeSpan.FromMilliseconds(50);
@@ -130,6 +128,9 @@ public sealed partial class DropshipTacticalLandSystem : SharedDropshipTacticalL
     {
         var pilot = args.Actor;
 
+        if (!_dropship.CanUseNavigation(ent, pilot))
+            return;
+
         if (HasComp<DropshipTacticalLandSessionComponent>(ent))
         {
             _popup.PopupEntity(Loc.GetString("cmu-tactical-land-session-active"), ent, pilot, PopupType.MediumCaution);
@@ -168,7 +169,7 @@ public sealed partial class DropshipTacticalLandSystem : SharedDropshipTacticalL
         eyeComp.Console = ent;
         eyeComp.Footprint = GetFootprint(ent, dropship);
         eyeComp.BlockedTiles.Clear();
-        eyeComp.ClearForLanding = false;
+        eyeComp.ClearForLanding = HasComp<MohawkMechanismsComponent>(gridUid);
         Dirty(eye, eyeComp);
         _zLevels.EnsureZLevelViewer(eye);
 
@@ -429,6 +430,13 @@ public sealed partial class DropshipTacticalLandSystem : SharedDropshipTacticalL
 
     private void UpdateFootprint(Entity<DropshipPilotEyeComponent> eye, TransformComponent xform)
     {
+        if (eye.Comp.Console is { } mohawkConsole && Transform(mohawkConsole).GridUid is { } mohawk &&
+            HasComp<MohawkMechanismsComponent>(mohawk))
+        {
+            UpdateFootprintState(eye, Array.Empty<Vector2i>());
+            return;
+        }
+
         var allowUnmappedAir = CanHoverOverUnmappedAir(eye.Comp, xform);
         var footprintOffsets = GetRotatedFootprintOffsets(eye.Comp);
         var blocked = eye.Comp.BlockedTilesScratch;
@@ -503,6 +511,11 @@ public sealed partial class DropshipTacticalLandSystem : SharedDropshipTacticalL
             }
         }
 
+        UpdateFootprintState(eye, blocked);
+    }
+
+    private void UpdateFootprintState(Entity<DropshipPilotEyeComponent> eye, IReadOnlyList<Vector2i> blocked)
+    {
         var clear = blocked.Count == 0;
         if (eye.Comp.ClearForLanding == clear &&
             eye.Comp.BlockedTiles.Count == blocked.Count &&
@@ -539,13 +552,7 @@ public sealed partial class DropshipTacticalLandSystem : SharedDropshipTacticalL
             return false;
         }
 
-        return AllowsUnmappedHoverAir(_round.SelectedPreset?.ID, level.Depth);
-    }
-
-    private static bool AllowsUnmappedHoverAir(string? preset, int depth)
-    {
-        return depth == 1 &&
-               string.Equals(preset, "DistressSignal", StringComparison.OrdinalIgnoreCase);
+        return level.Depth == 1;
     }
 
     private IReadOnlyList<Vector2i> GetRotatedFootprintOffsets(DropshipPilotEyeComponent eye)
@@ -697,6 +704,12 @@ public sealed partial class DropshipTacticalLandSystem : SharedDropshipTacticalL
         var hover = EnsureComp<DropshipTacticalHoverComponent>(dropshipGrid);
         CleanupHoverEffects((dropshipGrid, hover));
 
+        if (TryComp<DropshipTacticalHoverAppearanceComponent>(dropshipGrid, out var appearance))
+        {
+            hover.ShadowPrototype = appearance.ShadowPrototype;
+            hover.DownwashPrototype = appearance.DownwashPrototype;
+        }
+
         if (TryComp<MultiDeckDropshipComponent>(dropshipGrid, out var assembly))
             hover.GroundMapOffset = -1 - assembly.LandingOffset;
 
@@ -741,6 +754,7 @@ public sealed partial class DropshipTacticalLandSystem : SharedDropshipTacticalL
                 continue;
 
             hover.NextHoverEffectsUpdate = now + HoverEffectUpdateInterval;
+            UpdateHoverJetThrust((dropship, hover));
             var xform = Transform(dropship);
             var position = _transform.GetWorldPosition(xform);
             var rotation = _transform.GetWorldRotation(xform);
@@ -782,6 +796,8 @@ public sealed partial class DropshipTacticalLandSystem : SharedDropshipTacticalL
         var shadowComp = EnsureComp<DropshipTacticalHoverShadowComponent>(shadow);
         shadowComp.Dropship = hover.Owner;
         shadowComp.Footprint = hover.Comp.Footprint;
+        if (HasComp<DropshipTacticalHoverAppearanceComponent>(hover))
+            CaptureHoverSilhouette(hover.Owner, shadowComp);
         shadowComp.ProjectedMapOffset = hover.Comp.GroundMapOffset;
         Dirty(shadow, shadowComp);
 
@@ -790,7 +806,11 @@ public sealed partial class DropshipTacticalLandSystem : SharedDropshipTacticalL
 
     private void SpawnHoverDownwashes(Entity<DropshipTacticalHoverComponent> hover)
     {
-        foreach (var offset in GetHoverDownwashOffsets(hover.Comp.Footprint))
+        var offsets = TryComp<DropshipTacticalHoverAppearanceComponent>(hover, out var appearance) &&
+                      appearance.DownwashOffsets.Count > 0
+            ? appearance.DownwashOffsets
+            : GetHoverDownwashOffsets(hover.Comp.Footprint);
+        foreach (var offset in offsets)
         {
             if (!TryGetHoverEffectCoordinates(hover.Owner, offset, hover.Comp.GroundMapOffset, out var coords, out var rotation))
                 continue;
@@ -803,6 +823,11 @@ public sealed partial class DropshipTacticalLandSystem : SharedDropshipTacticalL
             Dirty(downwash, downwashComp);
 
             hover.Comp.Downwashes.Add(downwash);
+            if (appearance != null)
+            {
+                var light = Spawn(appearance.NozzleLightPrototype, new EntityCoordinates(hover.Owner, offset));
+                hover.Comp.NozzleLights.Add(light);
+            }
         }
     }
 
@@ -880,6 +905,13 @@ public sealed partial class DropshipTacticalLandSystem : SharedDropshipTacticalL
         }
 
         hover.Comp.Downwashes.Clear();
+        foreach (var light in hover.Comp.NozzleLights)
+        {
+            if (!TerminatingOrDeleted(light))
+                QueueDel(light);
+        }
+
+        hover.Comp.NozzleLights.Clear();
     }
 
     private bool TryGetFootprintGrid(TransformComponent xform, out EntityUid gridUid, out MapGridComponent grid)

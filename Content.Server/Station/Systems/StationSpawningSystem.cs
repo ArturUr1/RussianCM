@@ -1,4 +1,5 @@
 using System.Collections.Frozen;
+using System.Linq;
 using Content.Server.Access.Systems;
 using Content.Server.CMU14.Roles;
 using Content.Server.CMU14.Diagnostics.Performance; // CMU14
@@ -9,8 +10,9 @@ using Content.Server.Mind.Commands;
 using Content.Server.Mind;
 using Content.Server.PDA;
 using Content.Server.Station.Components;
-using Content.Shared.CMU14.Round.Roles;
+using Content.Server.CMU14.Yautja;
 using Content.Shared._RMC14.Marines;
+using Content.Shared.CMU14.Yautja;
 using Content.Shared._RMC14.Marines.Squads;
 using Content.Shared._RMC14.Weapons.Ranged.IFF;
 using Content.Shared.Access;
@@ -32,6 +34,7 @@ using Content.Shared.Preferences;
 using Content.Shared.Preferences.Loadouts;
 using Content.Shared.Roles;
 using Content.Shared.Station;
+using Content.Shared.CMU14.Round.Roles;
 using Content.Shared.Traits;
 using JetBrains.Annotations;
 using Robust.Shared.Configuration;
@@ -72,18 +75,21 @@ public sealed partial class StationSpawningSystem : SharedStationSpawningSystem
     [Dependency] private SquadSystem _squadSystem = default!;
     [Dependency] private NpcFactionSystem _npcFaction = default!;
     [Dependency] private MarkingManager _markingManager = default!;
+    [Dependency] private YautjaProfileApplySystem _yautjaProfile = default!;
     [Dependency] private ISharedAdminLogManager _adminLog = default!;
     [Dependency] private MindSystem _mindSystem = default!;
     [Dependency] private ICMUServerPerformanceDiagnostics _performance = default!; // CMU14
 
     private static readonly PlatoonJobClass[] PlatoonJobClasses = Enum.GetValues<PlatoonJobClass>();
-    private static readonly FrozenDictionary<PlatoonJobClass, string> PlatoonJobClassNames = PlatoonJobClasses.ToFrozenDictionary(v => v, v => v.ToString());
+    private static readonly FrozenDictionary<PlatoonJobClass, string> PlatoonJobClassNames =
+        PlatoonJobClasses.ToFrozenDictionary(v => v, v => v.ToString());
 
     // Round-robin rotation indices for squads per side
     private readonly string[] _govforSquads = { "SquadGovfor", "SquadGovforBravo", "SquadGovforCharlie" };
     private readonly string[] _opforSquads = { "SquadOpfor", "SquadOpforBravo", "SquadOpforCharlie" };
     private int _govforNextSquadIndex;
     private int _opforNextSquadIndex;
+    private static readonly ProtoId<NpcFactionPrototype> YautjaBadBloodFaction = "CMUYautjaBadBlood";
 
     private static readonly HashSet<string> NoSquadRoundRoles = new(StringComparer.OrdinalIgnoreCase)
     {
@@ -146,12 +152,17 @@ public sealed partial class StationSpawningSystem : SharedStationSpawningSystem
     /// <remarks>
     /// This only spawns the character, and does none of the mind-related setup you'd need for it to be playable.
     /// </remarks>
-    public EntityUid? SpawnPlayerCharacterOnStation(EntityUid? station, ProtoId<JobPrototype>? job, HumanoidCharacterProfile? profile, StationSpawningComponent? stationSpawning = null)
+    public EntityUid? SpawnPlayerCharacterOnStation(
+        EntityUid? station,
+        ProtoId<JobPrototype>? job,
+        HumanoidCharacterProfile? profile,
+        StationSpawningComponent? stationSpawning = null,
+        ICommonSession? player = null)
     {
         if (station != null && !Resolve(station.Value, ref stationSpawning))
             throw new ArgumentException("Tried to use a non-station entity as a station!", nameof(station));
 
-        var ev = new PlayerSpawningEvent(job, profile, station);
+        var ev = new PlayerSpawningEvent(job, profile, station, player);
 
         RaiseLocalEvent(ev);
         DebugTools.Assert(ev.SpawnResult is { Valid: true } or null);
@@ -177,7 +188,9 @@ public sealed partial class StationSpawningSystem : SharedStationSpawningSystem
         ProtoId<JobPrototype>? job,
         HumanoidCharacterProfile? profile,
         EntityUid? station,
-        EntityUid? entity = null)
+        EntityUid? entity = null,
+        YautjaRank? authoritativeYautjaRank = null,
+        YautjaProfileCapabilities? authoritativeYautjaCapabilities = null)
     {
         // --- Platoon job override logic start ---
         using var operation = _performance.MeasureOperation("player-spawn", job?.Id); // CMU14: retain slow spawn attribution.
@@ -269,7 +282,11 @@ public sealed partial class StationSpawningSystem : SharedStationSpawningSystem
 
             // Make sure custom names get handled, what is gameticker control flow whoopy.
             if (loadout != null && loadoutProto != null)
+            {
+                // CMU14: custom job bodies also receive their selected equipment.
+                EquipRoleLoadout(jobEntity, loadout, loadoutProto, applyEffects: false);
                 EquipRoleName(jobEntity, loadout, loadoutProto);
+            }
 
             DoJobSpecials(job, jobEntity);
             if (loadout != null && loadoutProto != null)
@@ -277,6 +294,18 @@ public sealed partial class StationSpawningSystem : SharedStationSpawningSystem
 
             ApplyRegulationAppearance(jobEntity, profile);
             ApplyTeamFaction(jobEntity, team);
+
+            if (HasComp<YautjaComponent>(jobEntity) &&
+                !IsBadBloodFactionMember(jobEntity))
+            {
+                if (profile != null)
+                    _yautjaProfile.ApplyProfile(
+                        jobEntity,
+                        profile.YautjaProfile,
+                        authoritativeYautjaRank,
+                        authoritativeYautjaCapabilities,
+                        equipProfileGear: false);
+            }
 
             // Use originalPrototype for access, ID, and faction
             _identity.QueueIdentityUpdate(jobEntity);
@@ -853,6 +882,12 @@ public sealed partial class StationSpawningSystem : SharedStationSpawningSystem
         _humanoidAppearance.SetMarkings(uid, organ, layer, markings);
     }
 
+    private bool IsBadBloodFactionMember(EntityUid uid)
+    {
+        return TryComp(uid, out NpcFactionMemberComponent? faction) &&
+               faction.Factions.Contains(YautjaBadBloodFaction);
+    }
+
     /// <summary>
     /// Sets the ID card and PDA name, job, and access data.
     /// </summary>
@@ -891,6 +926,8 @@ public sealed partial class StationSpawningSystem : SharedStationSpawningSystem
         }
 
         _accessSystem.SetAccessToJob(cardId, jobPrototype, extendedAccess);
+        // CMU14: side-specific specialist access.
+        SetWeaponsSpecialistAccess(cardId, jobPrototype, jobPrototype);
 
         if (pdaComponent != null)
             _pdaSystem.SetOwner(idUid.Value, pdaComponent, entity, characterName);
@@ -939,10 +976,27 @@ public sealed partial class StationSpawningSystem : SharedStationSpawningSystem
             _accessSystem.SetAccessToJob(cardId, accessJobPrototype, extendedAccess);
         }
 
+        // CMU14: side-specific specialist access.
+        SetWeaponsSpecialistAccess(cardId, titleJobPrototype, accessJobPrototype);
         if (pdaComponent != null)
             _pdaSystem.SetOwner(idUid.Value, pdaComponent, entity, characterName);
     }
 
+    private void SetWeaponsSpecialistAccess(EntityUid card, JobPrototype role, JobPrototype sideJob)
+    {
+        var specialist = role.RoundRole == "WeaponsSpecialist" || sideJob.RoundRole == "WeaponsSpecialist";
+        foreach (var job in new[] { role, sideJob })
+        foreach (var group in job.AccessGroups)
+            specialist |= group.Id is "AU14GovforWeaponsSpecialist" or "AU14OpforWeaponsSpecialist";
+        if (!specialist || !TryComp(card, out AccessComponent? access)) return;
+        var side = _roundJobProfiles.GetRoundSide(sideJob);
+        if (side is not (RoundJobSide.Govfor or RoundJobSide.Opfor)) return;
+        // Platoon equipment jobs can inherit the GOVFOR specialist base even when selected for OPFOR.
+        var tags = new HashSet<ProtoId<AccessLevelPrototype>>(access.Tags);
+        tags.Remove(side == RoundJobSide.Opfor ? "AU14AccessGovforSquadWeaponsSpecialist" : "AU14AccessOpforSquadWeaponsSpecialist");
+        tags.Add(side == RoundJobSide.Opfor ? "AU14AccessOpforSquadWeaponsSpecialist" : "AU14AccessGovforSquadWeaponsSpecialist");
+        _accessSystem.TrySetTags(card, tags, access);
+    }
 
     #endregion Player spawning helpers
 }
@@ -972,11 +1026,17 @@ public sealed partial class PlayerSpawningEvent : EntityEventArgs
     /// The target station, if any.
     /// </summary>
     public readonly EntityUid? Station;
+    public readonly ICommonSession? PlayerSession;
 
-    public PlayerSpawningEvent(ProtoId<JobPrototype>? job, HumanoidCharacterProfile? humanoidCharacterProfile, EntityUid? station)
+    public PlayerSpawningEvent(
+        ProtoId<JobPrototype>? job,
+        HumanoidCharacterProfile? humanoidCharacterProfile,
+        EntityUid? station,
+        ICommonSession? playerSession = null)
     {
         Job = job;
         HumanoidCharacterProfile = humanoidCharacterProfile;
         Station = station;
+        PlayerSession = playerSession;
     }
 }

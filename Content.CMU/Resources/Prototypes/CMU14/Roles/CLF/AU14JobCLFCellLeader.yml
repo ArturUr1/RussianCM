@@ -6,7 +6,7 @@
   roundRole: CLFCellLeader
   roundComponents:
   - type: AU14CallsignRole
-    suffix: "6"
+    suffix: "01"
     commandElement: true
   - type: NpcFactionMember
     factions:
@@ -57,7 +57,10 @@
   playTimeTracker: AU14JobCLFCellLeader
   requirements:
   - !type:OverallPlaytimeRequirement
-    time: 18000 # 5 hours
+    time: 86400 # 24 hours
+  - !type:DepartmentTimeRequirement
+    department: AU14DepartmentColonialLiberationFront
+    time: 36000 # 10 hours
   - !type:TraitsRequirement
     inverted: true
     traits:

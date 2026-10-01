@@ -1,8 +1,8 @@
 using Content.Server._RMC14.Rules;
 using Content.Server.Administration.Logs;
 using Content.Server.Administration.Managers;
+using Content.Server.CMU14.Ops.ForceOnForce; // CMU14
 using Content.Server.CMU14.Round.Objectives;
-using Content.Server.CMU14.Round;
 using Content.Server.Chat.Managers;
 using Content.Server.Chat.Systems;
 using Content.Server.Database;
@@ -159,6 +159,21 @@ namespace Content.Server.GameTicking
                 return;
 
             }
+            var respawn = EntityManager.System<Content.Server.CMU14.ForceOnForce.ForceOnForceRespawnSystem>();
+            if (respawn.HasSpawned(args.SenderSession.UserId) && !respawn.HasDied(args.SenderSession.UserId))
+            {
+                _chatManager.DispatchServerMessage(args.SenderSession, Loc.GetString("cmu-fof-respawn-alive"));
+                return;
+            }
+
+            var remaining = respawn.Remaining(args.SenderSession.UserId);
+            if (remaining > TimeSpan.Zero)
+            {
+                _chatManager.DispatchServerMessage(args.SenderSession,
+                    Loc.GetString("cmu-fof-respawn-wait", ("seconds", (int) Math.Ceiling(remaining.TotalSeconds))));
+                return;
+            }
+
             // Send the requesting player to the lobby
             PlayerJoinLobby(args.SenderSession);
         }

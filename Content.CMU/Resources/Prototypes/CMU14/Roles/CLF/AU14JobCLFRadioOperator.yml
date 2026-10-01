@@ -6,7 +6,7 @@
   roundRole: CLFRadioOperator
   roundComponents:
   - type: AU14CallsignRole
-    suffix: ROMEO
+    suffix: "04"
   - type: NpcFactionMember
     factions:
     - AUColonist
@@ -47,6 +47,8 @@
   playTimeTracker: AU14JobCLFRadioOperator
   basePlaytimeTracker: true
   requirements:
+  - !type:OverallPlaytimeRequirement
+    time: 18000 # 5 hours
   - !type:TraitsRequirement
     inverted: true
     traits:

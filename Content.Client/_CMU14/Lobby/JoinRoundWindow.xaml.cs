@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Content.Client.Lobby.UI;
 using Content.Client._CMU14.Interface;
 using Content.Client.Stylesheets;
@@ -40,10 +40,10 @@ public sealed partial class JoinRoundWindow : DefaultWindow
         Color.FromHex("#5E6B64"), Color.FromHex("#0E1211"), Color.FromHex("#18201D"), Color.FromHex("#C2CCC6"));
 
     /// <summary>Govfor keeps the terminal green - it is the house faction and the theme's own hue.</summary>
-    private static readonly CmuChoiceCard.Palette GovforPalette = new(
+    internal static readonly CmuChoiceCard.Palette GovforPalette = new(
         Color.FromHex("#2E6241"), Color.FromHex("#0B1710"), Color.FromHex("#152F20"), Color.FromHex("#8FE9AE"));
 
-    private static readonly CmuChoiceCard.Palette OpforPalette = new(
+    internal static readonly CmuChoiceCard.Palette OpforPalette = new(
         Color.FromHex("#8C3038"), Color.FromHex("#170C0E"), Color.FromHex("#2A1417"), Color.FromHex("#FF9E9E"));
 
     /// <summary>Other - mostly xenomorphs, hence purple.</summary>
@@ -66,6 +66,9 @@ public sealed partial class JoinRoundWindow : DefaultWindow
     private readonly CmuChoiceCard _govfor;
     private readonly CmuChoiceCard _opfor;
     private readonly CmuChoiceCard _other;
+    private readonly CmuChoiceCard _hunt;
+    public Button JoinHuntButton => _hunt.Button;
+    public void SetHuntVisible(bool visible) => _hunt.Visible = visible;
 
     public JoinRoundWindow()
     {
@@ -80,6 +83,9 @@ public sealed partial class JoinRoundWindow : DefaultWindow
         _govfor = AddCard("rmc-lobby-join-govfor", "cmu-lobby-join-govfor-desc", GovforPalette, buttonOnLeft: false);
         _opfor = AddCard("rmc-lobby-join-opfor", "cmu-lobby-join-opfor-desc", OpforPalette, buttonOnLeft: true);
         _other = AddCard("rmc-lobby-join-other", "cmu-lobby-join-other-desc", OtherPalette, buttonOnLeft: false);
+
+        _hunt = AddCard("rmc-lobby-join-hunt", "cmu-lobby-join-hunt-desc", GovforPalette, buttonOnLeft: true);
+        _hunt.Visible = false;
 
         ApplyCrtPalette();
 
@@ -129,5 +135,6 @@ public sealed partial class JoinRoundWindow : DefaultWindow
         _govfor.ApplyPalette();
         _opfor.ApplyPalette();
         _other.ApplyPalette();
+        _hunt.ApplyPalette();
     }
 }

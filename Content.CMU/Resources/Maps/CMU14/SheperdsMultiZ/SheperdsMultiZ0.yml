@@ -5,7 +5,7 @@ meta:
   forkId: ""
   forkVersion: ""
   time: 07/31/2026 09:55:14
-  entityCount: 43500
+  entityCount: 43499
 maps:
 - 1
 grids:
@@ -85264,6 +85264,8 @@ entities:
   entities:
   - uid: 1195
     components:
+    - type: DropshipDestination
+      forceOnForceFaction: opfor
     - type: MetaData
       name: 'LZ1: Southwest Jungle'
     - type: Transform
@@ -85271,6 +85273,8 @@ entities:
       parent: 1
   - uid: 1197
     components:
+    - type: DropshipDestination
+      forceOnForceFaction: thirdparty
     - type: MetaData
       name: 'LZ2: Northwest Jungle'
     - type: Transform
@@ -85278,6 +85282,8 @@ entities:
       parent: 1
   - uid: 1199
     components:
+    - type: DropshipDestination
+      forceOnForceFaction: govfor
     - type: MetaData
       name: 'LZ3: North Colony'
     - type: Transform
@@ -85287,6 +85293,8 @@ entities:
   entities:
   - uid: 984
     components:
+    - type: DropshipDestination
+      forceOnForceFaction: thirdparty
     - type: MetaData
       name: South Colony
     - type: Transform
@@ -85294,6 +85302,8 @@ entities:
       parent: 1
   - uid: 354134
     components:
+    - type: DropshipDestination
+      forceOnForceFaction: thirdparty
     - type: MetaData
       name: North Colony
     - type: Transform
@@ -316597,3 +316607,16 @@ entities:
       rot: 4.71238898038469 rad
       pos: -31.5,-35.5
       parent: 1
+- proto: CMUYautjaGroundRelayDestination
+  entities:
+  - uid: 43363
+    components:
+    - type: MetaData
+      name: Shepherds Pride ground relay
+    - type: Transform
+      pos: 2.5,60.5
+      parent: 1
+    - type: YautjaRelayDestination
+      kind: Ground
+      id: shepherds.ground.relay
+      displayName: Shepherds' Pride Ground Relay

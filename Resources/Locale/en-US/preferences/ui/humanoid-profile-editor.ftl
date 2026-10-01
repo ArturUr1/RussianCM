@@ -40,6 +40,8 @@ humanoid-profile-editor-military-jobs-tab = Military Jobs
 humanoid-profile-editor-threat-jobs-tab = Threat Jobs
 humanoid-profile-editor-civilian-jobs-tab = Civilian Jobs
 humanoid-profile-editor-insurgency-tab = Insurgency
+# CMU14: Force on Force reuses these role lists
+humanoid-profile-editor-fof-included-label = Insurgency and FoF
 humanoid-profile-editor-colony-fall-tab = Colony Fall
 humanoid-profile-editor-distress-signal-tab = Distress Signal
 humanoid-profile-editor-government-jobs-tab = Government Jobs
@@ -60,7 +62,9 @@ humanoid-profile-editor-allegiance-label = Allegiance:
 humanoid-profile-editor-allegiance-none = None
 humanoid-profile-editor-origin-label = Origin:
 humanoid-profile-editor-origin-none = None
-humanoid-profile-editor-character-description-tab = Character
+# cmu edit start
+humanoid-profile-editor-character-description-tab = Character Records
+# cmu edit end
 humanoid-profile-editor-short-examine-label = Short Examine Text:
 humanoid-profile-editor-height-label = Height:
 humanoid-profile-editor-weight-label = Weight:

@@ -50,6 +50,12 @@ public sealed partial class HiveComponent : Component
     [DataField, AutoNetworkedField, ViewVariables]
     public Color HiveUIColor = Color.FromHex("#921992");
 
+    /// <summary>
+    /// Optional NPC faction used by hives that must be hostile to other xeno hives.
+    /// </summary>
+    [DataField, AutoNetworkedField, ViewVariables]
+    public ProtoId<NpcFactionPrototype>? NpcFaction;
+
     //lets them understand humans
     [DataField, AutoNetworkedField, ViewVariables]
     public bool Corrupted = false;
@@ -96,7 +102,7 @@ public sealed partial class HiveComponent : Component
     public TimeSpan NewCoreCooldown = TimeSpan.FromMinutes(5);
 
     [DataField, AutoNetworkedField]
-    public TimeSpan PreSetupCutoff = TimeSpan.FromMinutes(20);
+    public TimeSpan PreSetupCutoff = TimeSpan.FromMinutes(15); // CMU14
 
     [DataField(customTypeSerializer: typeof(TimeOffsetSerializer)), AutoNetworkedField, AutoPausedField]
     public TimeSpan? NewCoreAt;

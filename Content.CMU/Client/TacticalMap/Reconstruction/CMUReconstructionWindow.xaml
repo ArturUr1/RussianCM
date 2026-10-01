@@ -1,8 +1,8 @@
-<DefaultWindow xmlns="https://spacestation14.io"
+<recon:CMUReconstructionWindow xmlns="https://spacestation14.io"
                xmlns:recon="clr-namespace:Content.Client.CMU14.TacticalMap.Reconstruction"
                xmlns:gfx="clr-namespace:Robust.Client.Graphics;assembly=Robust.Client"
                Title="{Loc cmu-recon-title}" MinSize="680 420" SetSize="1280 820">
-  <PanelContainer>
+  <PanelContainer Name="ContentPanel">
     <PanelContainer.PanelOverride>
       <gfx:StyleBoxFlat BackgroundColor="#0B141D" BorderColor="#304751" BorderThickness="1" />
     </PanelContainer.PanelOverride>
@@ -41,6 +41,7 @@
             <CheckBox Name="Isolate" Text="{Loc cmu-recon-isolate}" />
             <CheckBox Name="Labels" Text="{Loc cmu-recon-labels}" Pressed="True" />
             <CheckBox Name="Contacts" Text="{Loc cmu-recon-contacts}" Pressed="True" />
+            <CheckBox Name="MarineNames" Text="{Loc cmu-recon-marine-names}" />
             <BoxContainer Name="DrawingSidebar" Orientation="Vertical" SeparationOverride="7" Visible="False">
               <Label Text="{Loc cmu-recon-draw}" FontColorOverride="#E7BC78" Margin="0,12,0,0" />
               <GridContainer Name="Colors" Columns="3" />
@@ -57,4 +58,4 @@
       <RichTextLabel Name="Status" Text="{Loc cmu-recon-loading}" />
     </BoxContainer>
   </PanelContainer>
-</DefaultWindow>
+</recon:CMUReconstructionWindow>

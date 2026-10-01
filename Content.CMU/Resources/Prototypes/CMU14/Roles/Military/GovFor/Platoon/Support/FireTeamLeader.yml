@@ -23,8 +23,8 @@
   roundProfiles:
   - AU14RoundJobProfileMilitaryBase
   roundComponents:
+  - type: AU14CallToAttentionAbility
   - type: AU14CallsignRole
-    radioTag: FTL
   - type: ANPRCRadioUser # radio trained so an FTL can run the manpack if the RTO drops, they don't spawn with one
   - type: Skills
     preset: AU14SkillPresetPlatoonRTO
@@ -73,6 +73,9 @@
       prefix: au14-job-prefix-AU14JobGOVFORRadioTelephoneOperatorWYPMC
 
   requirements:
+  - !type:TotalDepartmentsTimeRequirement
+    group: CMUDepartmentsMilitary
+    time: 18000 # 5 hours
   - !type:TraitsRequirement
     inverted: true
     traits:

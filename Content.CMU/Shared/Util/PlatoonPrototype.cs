@@ -66,6 +66,9 @@ public sealed partial class PlatoonPrototype : IPrototype
     public int MaxSuppliedVtols = 1;
 
     [DataField]
+    public int MaxSuppliedFighters = 1;
+
+    [DataField]
     public ProtoId<PlatoonVendorSetPrototype>? VendorSet { get; private set; }
 
     [DataField]
@@ -76,12 +79,6 @@ public sealed partial class PlatoonPrototype : IPrototype
 
     [DataField("possibleships")]
     public List<string> PossibleShips { get; private set; } = new();
-
-    /// <summary>
-    /// Overrides the shared ship list for Govfor; omitted lists use PossibleShips.
-    /// </summary>
-    [DataField("govforShips")]
-    public List<string>? GovforShips { get; private set; }
 
     [DataField("jobClassOverride")]
     public Dictionary<PlatoonJobClass, string> JobClassOverride { get; private set; } = new();

@@ -159,12 +159,12 @@ humanoid-profile-editor-threat-xeno = Ксеноморфы
 humanoid-profile-editor-threat-ape = Обезьяны
 humanoid-profile-editor-threat-cultist = Культисты
 humanoid-profile-editor-threat-wendigo = Вендиго
-humanoid-profile-editor-threat-abomination = Мерзости
+humanoid-profile-editor-threat-abomination = Биоморфы
 humanoid-profile-editor-threat-tribal = Дикари
 
 
 
-humanoid-profile-editor-randomize = Случайно
+humanoid-profile-editor-randomize = Рандомизировать
 
 humanoid-profile-editor-randomize-unlocked-button = Случайно для разблокированных
 
@@ -180,11 +180,11 @@ humanoid-profile-editor-randomize-skin-button = Цвет кожи
 
 humanoid-profile-editor-randomize-eye-button = Цвет глаз
 
-humanoid-profile-editor-randomize-markings-button = Метки
+humanoid-profile-editor-randomize-markings-button = Отметины
 
 humanoid-profile-editor-voice-label = Голос:
 
-humanoid-profile-editor-randomizer-lock-tooltip = Не даёт значению измениться при случайной генерации
+humanoid-profile-editor-randomizer-lock-tooltip = Запрещает случайное изменение этого значения
 
 humanoid-profile-editor-voice-masculine = Мужской
 

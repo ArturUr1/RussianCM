@@ -78,6 +78,9 @@ public sealed partial class ScalingViewport
 
     internal static ZLevelRenderDebugStats LastZRenderDebugStats { get; } = new();
 
+    /// <summary>Allows focused camera feeds to render depth passes without distance blur.</summary>
+    public bool ApplyZLevelBlur { get; set; } = true;
+
     private bool TryFindEmptyTiles(
         EntityUid mapUid,
         IClydeViewport viewport,
@@ -146,6 +149,7 @@ public sealed partial class ScalingViewport
         }
 
         using var renderState = new CMUZViewportRenderState(viewport);
+        _zEye.ApplyZLevelBlur = ApplyZLevelBlur;
         viewport.ClearColor = Color.Black;
         ClearZLevelCompositeState();
         _zRenderPlan.Reset(LowerRenderGracePending());
@@ -250,7 +254,7 @@ public sealed partial class ScalingViewport
             LastZRenderDebugStats.ViewportWorldArea = GetArea(viewportWorldAabb);
         }
         var zRenderRotation = -fallbackEye.Rotation;
-        var zRenderOffsetPerDepth = zRenderRotation.ToWorldVec() * _zLevels.GetZLevelVisualOffset(viewXform.MapUid);
+        var zRenderOffsetPerDepth = zRenderRotation.ToWorldVec() * CMUClientZLevelsSystem.ZLevelOffset;
         if (_zRenderDiagnostics)
             LastZRenderDebugStats.ZRenderOffsetPerDepth = zRenderOffsetPerDepth;
 
@@ -375,36 +379,32 @@ public sealed partial class ScalingViewport
             {
                 if (depth == 0)
                 {
-                    if (zLevelViewer.LookUp)
-                    {
-                        _zEye.LowestDepth = lowestDepth;
-                        _zEye.Depth = 0;
-                        _zEye.HighestDepth = lookUp;
-                        _zEye.BaseMapId = viewXform.MapID;
-                        _zEye.WeatherSourceMapId = viewXform.MapID;
-                        _zEye.Position = fallbackEye.Position;
-                        _zEye.DrawFov = fallbackEye.DrawFov;
-                        _zEye.DrawLight = fallbackEye.DrawLight;
-                        _zEye.Offset = fallbackEye.Offset;
-                        _zEye.Rotation = fallbackEye.Rotation;
-                        _zEye.Scale = fallbackEye.Scale;
-                        _zEye.VisualZOffset = Vector2.Zero;
-                        _zEye.BlurCurrentLevel = true;
-                        _zEye.ConfigureVisibleEntityIndicators(false, _zOpeningBounds);
-
-                        viewport.Eye = _zEye;
-                    }
-                    else
-                    {
-                        viewport.Eye = fallbackEye;
-                    }
+                    // The base pass must describe the passes actually rendered too.
+                    // Inferring them from the existence of a lower map suppressed
+                    // parallax when the opening gate skipped that lower level.
+                    _zEye.LowestDepth = lowestDepth;
+                    _zEye.Depth = 0;
+                    _zEye.HighestDepth = lookUp;
+                    _zEye.BaseMapId = viewXform.MapID;
+                    _zEye.WeatherSourceMapId = viewXform.MapID;
+                    _zEye.Position = fallbackEye.Position;
+                    _zEye.DrawFov = fallbackEye.DrawFov;
+                    _zEye.DrawLight = fallbackEye.DrawLight;
+                    _zEye.Offset = fallbackEye.Offset;
+                    _zEye.Rotation = fallbackEye.Rotation;
+                    _zEye.Scale = fallbackEye.Scale;
+                    _zEye.VisualZOffset = Vector2.Zero;
+                    _zEye.BlurCurrentLevel = zLevelViewer.LookUp;
+                    _zEye.ConfigureVisibleEntityIndicators(false, _zOpeningBounds);
+                    viewport.Eye = _zEye;
                 }
                 else
                 {
                     if (!_zLevels.TryMapOffset(viewXform.MapUid.Value, depth, out _, out var mapComp))
                         continue;
 
-                    var offset = zRenderOffsetPerDepth * depth;
+                    Angle rotation = fallbackEye.Rotation * -1;
+                    var offset = rotation.ToWorldVec() * CMUClientZLevelsSystem.ZLevelOffset * depth;
                     var renderPosition = fallbackEye.Position.Position;
                     var fovPosition = renderPosition;
                     var eyeOffset = fallbackEye.Offset + offset;
@@ -818,6 +818,7 @@ public sealed partial class ScalingViewport
         target.Scale = source.Scale;
         target.VisualZOffset = source.VisualZOffset;
         target.BlurCurrentLevel = source.BlurCurrentLevel;
+        target.ApplyZLevelBlur = source.ApplyZLevelBlur;
     }
 
     private void DrawZLevelComposites(IRenderHandle handle, UIBox2i drawBox)
@@ -870,7 +871,7 @@ public sealed partial class ScalingViewport
             return;
 
         Angle rotation = fallbackEye.Rotation * -1;
-        var offset = rotation.ToWorldVec() * _zLevels.GetZLevelVisualOffset(mapUid);
+        var offset = rotation.ToWorldVec() * CMUClientZLevelsSystem.ZLevelOffset;
 
         _zEye.LowestDepth = lowestDepth;
         _zEye.Depth = 1;
@@ -1248,6 +1249,7 @@ public sealed partial class ScalingViewport
         public MapId WeatherSourceMapId;
         public Vector2 VisualZOffset;
         public bool BlurCurrentLevel;
+        public bool ApplyZLevelBlur = true;
 
         public IReadOnlyList<Box2> VisibleEntityIndicatorBounds => _visibleEntityIndicatorBounds;
         public bool DrawVisibleEntityIndicators { get; private set; }
