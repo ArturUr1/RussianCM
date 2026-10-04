@@ -20,7 +20,7 @@ using Robust.Client.ResourceManagement;
 namespace Content.Client._RuCM.Qualifications;
 
 /// <summary>Private training terminal shared by EUI and BUI. Authorization remains server-owned.</summary>
-public sealed class QualificationWindow : DefaultWindow
+public sealed partial class QualificationWindow : DefaultWindow
 {
     private readonly Action<QualificationAction, QualificationRequest> _send;
     private readonly BoxContainer _root = Column();
@@ -430,6 +430,7 @@ public sealed class QualificationWindow : DefaultWindow
             var card = Card(checklist, (completion == null ? "[ ] " : "[+] ") + Name(item.Name));
             Text(card, item.Required ? L("required-step") : L("optional-step"), completion == null ? StyleNano.CrtWarning : StyleNano.CrtGreen);
             if (ItemHelp(item).Length > 0) Text(card, ItemHelp(item));
+            AddTrainingMaterials(card, definition.Id, item.Id);
             if (completion != null) Text(card, L("completed-by") + " " + Author(completion.By) + " · " + completion.By.At.ToLocalTime().ToString("g"));
         }
         if (items.Length == 0) Text(checklist, L("empty-checklist"));
@@ -505,6 +506,7 @@ public sealed class QualificationWindow : DefaultWindow
             {
                 var completion = State?.Progress.GetValueOrDefault(definition.Id)?.GetValueOrDefault(item.Id);
                 var step = Card(_content, Name(item.Name), ItemHelp(item));
+                AddTrainingMaterials(step, definition.Id, item.Id);
                 if (completion != null) Text(step, L("completed-by") + " " + Author(completion.By), StyleNano.CrtGreen);
                 else Button(step, L("complete"), () => { var req = Request(definition.Id); req.Item = item.Id; Send(QualificationAction.Complete, req); },
                     () => Confirmed && TrainingTargetReady, name: "complete-" + item.Id);

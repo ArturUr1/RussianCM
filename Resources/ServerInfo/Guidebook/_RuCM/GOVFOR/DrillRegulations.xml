@@ -492,4 +492,10 @@
   И после приказа способны вместе отправиться её выполнять.
 
   Если это работает — строевая дисциплина выполняет своё назначение.
+
+  <!-- end-approved-text -->
+  <GOVFORLocalizedText Key="rucm-guide-cross-drill"/>
+  <GOVFORGuideLink Guide="RuCMGOVFORCommunications"/>
+  <GOVFORGuideLink Guide="AU14SOP"/>
+  <GOVFORGuideLink Guide="AU14UCMJ"/>
 </Document>
