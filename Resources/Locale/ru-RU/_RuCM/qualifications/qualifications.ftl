@@ -379,3 +379,8 @@ rucm-qualifications-nav-recruit-reset = Вернуть в рекруты
 rucm-qualifications-help-recruit-reset = Сброс выбранного аккаунта до базового уровня. Проверьте имя, укажите причину и подтвердите решение.
 rucm-qualifications-reset-self-locked = Сброс своего личного дела запрещён. Выберите другого игрока.
 rucm-qualifications-reset-awaiting-second = Заявка ожидает подписи второго офицера. Подтверждение находится в разделе «Ограничения».
+
+rucm-qualifications-instructor-accreditation = Действующая аккредитация инструктора
+rucm-qualifications-synthetic-excluded = Синтетик — отдельный допуск
+rucm-qualifications-synthetic-excluded-help = Синтетики допускаются по отдельному whitelist. Военные уровни и учебные зачёты людей к ним не применяются.
+rucm-qualifications-error-synthetic_excluded = Синтетики исключены из системы военной подготовки людей.

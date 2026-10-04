@@ -23,8 +23,9 @@ public sealed partial class QualificationService
     private bool _loaded;
     public bool Available { get; private set; }
     public long Revision => Volatile.Read(ref _cache).Revision;
-    public string[] EnabledJobIds() => (_loaded ? Volatile.Read(ref _cache) : _seed).Roles.Values.Where(r => r.Enabled).Select(r => r.JobId).ToArray();
-    public bool IsRoleEnabled(string job) => (_loaded ? Volatile.Read(ref _cache) : _seed).Roles.GetValueOrDefault(job)?.Enabled == true;
+    public string[] EnabledJobIds() => (_loaded ? Volatile.Read(ref _cache) : _seed).Roles.Values.Where(r => !r.Synthetic && (r.Enabled || QualificationRules.IsDrillInstructor(r.JobId))).Select(r => r.JobId).ToArray();
+    public bool IsRoleEnabled(string job) => (_loaded ? Volatile.Read(ref _cache) : _seed).Roles.GetValueOrDefault(job) is { Synthetic: false } role &&
+        (role.Enabled || QualificationRules.IsDrillInstructor(job));
     public event Action<QualificationMutationEvent>? Changed;
     public event Action<Exception>? StorageFailure;
     public QualificationService(IRuCMQualificationRepository repository) { _repository = repository; }
@@ -61,6 +62,7 @@ public sealed partial class QualificationService
                 loaded.Revision++;
                 await _repository.Save(loaded, previousRevision);
             }
+            ApplyPrototypeFacts(loaded);
             Volatile.Write(ref _cache, loaded);
             _loaded = true;
             Available = true;
@@ -76,6 +78,7 @@ public sealed partial class QualificationService
         try
         {
             var loaded = await _repository.Load() ?? throw new QualificationValidationException("storage");
+            ApplyPrototypeFacts(loaded);
             Volatile.Write(ref _cache, loaded); Available = true;
         }
         catch (Exception e) { Available = false; StorageFailure?.Invoke(e); }
@@ -87,8 +90,25 @@ public sealed partial class QualificationService
         var cache = Volatile.Read(ref _cache);
         cache.Players.TryGetValue(player, out var state);
         cache.Roles.TryGetValue(job, out var requirement);
-        return QualificationRules.CanTakeJob(state, requirement);
+        if (requirement == null && QualificationRules.IsDrillInstructor(job))
+            requirement = new() { JobId = job, MinimumLevel = MilitaryLevel.Sergeant };
+        return QualificationRules.CanTakeJob(state, requirement, cache.Instructors.GetValueOrDefault(player));
     }
+    // Reapply runtime prototype facts to old persisted stores and every cross-server refresh.
+    // This also ignores legacy synthetic participation without rewriting historical audit data.
+    private void ApplyPrototypeFacts(QualificationStore store)
+    {
+        foreach (var fact in _seed.Roles.Values)
+        {
+            if (!store.Roles.TryGetValue(fact.JobId, out var role)) store.Roles[fact.JobId] = role = new()
+            { JobId = fact.JobId, Enabled = fact.Enabled, MinimumLevel = fact.MinimumLevel,
+                Professional = new(fact.Professional) };
+            role.Govfor = fact.Govfor;
+            role.Synthetic = fact.Synthetic;
+            role.Tracker = fact.Tracker;
+        }
+    }
+
     public bool HasCachedPlayer(Guid player) => Volatile.Read(ref _cache).Players.ContainsKey(player);
     public PlayerTrainingState? GetPlayerTrainingState(Guid player) => Snapshot().Players.GetValueOrDefault(player);
 
@@ -275,7 +295,7 @@ public sealed partial class QualificationService
         catch (QualificationConflictException)
         {
             // Another server won the CAS: refresh, never overwrite it silently.
-            try { var fresh = await _repository.Load(); if (fresh != null) Volatile.Write(ref _cache, fresh); }
+            try { var fresh = await _repository.Load(); if (fresh != null) { ApplyPrototypeFacts(fresh); Volatile.Write(ref _cache, fresh); } }
             catch (Exception e) { StorageFailure?.Invoke(e); }
             throw;
         }
@@ -321,6 +341,8 @@ public sealed partial class QualificationService
                 var role = JsonSerializer.Deserialize<RoleRequirement>(request.Payload) ?? throw new QualificationValidationException("role");
                 if (string.IsNullOrWhiteSpace(role.JobId) || role.Professional is null || !Enum.IsDefined(role.MinimumLevel) || role.Professional.Any(id => !next.Definitions.ContainsKey(id) || QualificationRules.Levels.Contains(id)))
                     throw new QualificationValidationException("role");
+                if (next.Roles.TryGetValue(role.JobId, out var facts))
+                { role.Synthetic = facts.Synthetic; role.Govfor = facts.Govfor; role.Tracker = facts.Tracker; }
                 next.Roles[role.JobId] = role;
                 break;
             case QualificationAction.SaveDefinition:

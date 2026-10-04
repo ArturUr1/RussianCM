@@ -42,6 +42,8 @@ public sealed class RoleRequirement
     public HashSet<string> Professional { get; set; } = new();
     public string Tracker { get; set; } = "";
     public bool Govfor { get; set; }
+    // Derived from the loaded JobPrototype, never from management/client configuration.
+    public bool Synthetic { get; set; }
 }
 
 [Serializable, NetSerializable]
@@ -154,7 +156,7 @@ public sealed class QualificationStore
         Roles = Roles.ToDictionary(p => p.Key, p => new RoleRequirement
         {
             JobId = p.Value.JobId, Enabled = p.Value.Enabled, MinimumLevel = p.Value.MinimumLevel,
-            Professional = new(p.Value.Professional), Tracker = p.Value.Tracker, Govfor = p.Value.Govfor
+            Professional = new(p.Value.Professional), Tracker = p.Value.Tracker, Govfor = p.Value.Govfor, Synthetic = p.Value.Synthetic
         }),
         Players = Players.ToDictionary(p => p.Key, p => new PlayerTrainingState
         {
@@ -208,11 +210,19 @@ public static class QualificationRules
         return highest;
     }
 
-    public static JobEligibility CanTakeJob(PlayerTrainingState? player, RoleRequirement? role)
+    public static bool IsDrillInstructor(string job) => job is
+        "AU14JobGOVFORadvisor" or "AU14JobGOVFORadvisorRMC" or "AU14JobGOVFORadvisorUPP";
+
+    public static JobEligibility CanTakeJob(PlayerTrainingState? player, RoleRequirement? role,
+        InstructorAccreditation? accreditation = null)
     {
-        if (role == null || !role.Enabled) return new(true, Array.Empty<string>());
+        if (role == null || role.Synthetic) return new(true, Array.Empty<string>());
+        var instructor = IsDrillInstructor(role.JobId);
+        if (!role.Enabled && !instructor) return new(true, Array.Empty<string>());
         var missing = new List<string>();
-        if (EffectiveLevel(player) < role.MinimumLevel) missing.Add(role.MinimumLevel.ToString().ToLowerInvariant());
+        var minimum = instructor && role.MinimumLevel < MilitaryLevel.Sergeant ? MilitaryLevel.Sergeant : role.MinimumLevel;
+        if (instructor && accreditation is not { Active: true }) missing.Add("instructor_accreditation");
+        if (EffectiveLevel(player) < minimum) missing.Add(minimum.ToString().ToLowerInvariant());
         foreach (var id in role.Professional.OrderBy(x => x, StringComparer.Ordinal))
         {
             if (player == null || !player.Grants.TryGetValue(id, out var grant) || grant.Status != QualificationStatus.Active)

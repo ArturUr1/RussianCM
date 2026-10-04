@@ -21,17 +21,22 @@ public sealed partial class QualificationService
         var s = VolatileSnapshot();
         var grants = new Dictionary<Guid, HashSet<string>>();
         if (s.Migrations.Contains(MigrationKey)) return new(MigrationKey, s.Revision, at, grants);
+        var roles = s.Roles.Values.Where(r => r.Enabled && !r.Synthetic && !s.CommandingOfficerJobs.Contains(r.JobId)).ToArray();
+        // Reject synthetic evidence before alias folding, including aliases to human trackers.
+        // Trackers shared by human and synthetic jobs cannot prove human service.
+        var syntheticTrackers = s.Roles.Values.Where(r => r.Synthetic).Select(r => r.Tracker).Where(t => t.Length > 0).ToHashSet();
+        var syntheticCanonical = syntheticTrackers.Select(t => s.TrackerAliases.GetValueOrDefault(t, t)).ToHashSet();
         foreach (var candidate in candidates.GroupBy(c => c.Player).Select(g => g.First()))
         {
             var earned = new HashSet<string>();
-            var roles = s.Roles.Values.Where(r => r.Enabled && !s.CommandingOfficerJobs.Contains(r.JobId)).ToArray();
-            var canonicalHours = candidate.TrackerHours.GroupBy(t => s.TrackerAliases.GetValueOrDefault(t.Key, t.Key)).ToDictionary(g => g.Key, g => g.Sum(t => Math.Max(0, t.Value)));
+            var canonicalHours = candidate.TrackerHours.Where(t => !syntheticTrackers.Contains(t.Key) &&
+                !syntheticCanonical.Contains(s.TrackerAliases.GetValueOrDefault(t.Key, t.Key))).GroupBy(t => s.TrackerAliases.GetValueOrDefault(t.Key, t.Key)).ToDictionary(g => g.Key, g => g.Sum(t => Math.Max(0, t.Value)));
             double Hours(string groupId, IEnumerable<RoleRequirement> fallback)
             {
-                var group = s.MigrationGroups.TryGetValue(groupId, out var jobs) ? s.Roles.Values.Where(r => jobs.Contains(r.JobId) && !s.CommandingOfficerJobs.Contains(r.JobId)) : fallback;
+                var group = s.MigrationGroups.TryGetValue(groupId, out var jobs) ? s.Roles.Values.Where(r => jobs.Contains(r.JobId) && !r.Synthetic && !s.CommandingOfficerJobs.Contains(r.JobId)) : fallback;
                 return group.Select(r => r.Tracker).Where(t => t.Length > 0).Distinct().Sum(t => canonicalHours.GetValueOrDefault(t));
             }
-            if (s.Participation.Any(p => p.Player == candidate.Player && p.At >= at.AddDays(-14) && p.At <= at && s.Roles.TryGetValue(p.Job, out var participated) && participated.Govfor)) earned.Add("enlisted");
+            if (s.Participation.Any(p => p.Player == candidate.Player && p.At >= at.AddDays(-14) && p.At <= at && s.Roles.TryGetValue(p.Job, out var participated) && participated.Govfor && !participated.Synthetic)) earned.Add("enlisted");
             if (Hours("sergeant", roles.Where(r => r.MinimumLevel == MilitaryLevel.Sergeant)) >= 5) earned.UnionWith(new[] { "enlisted", "sergeant" });
             if (Hours("officer", roles.Where(r => r.MinimumLevel == MilitaryLevel.Officer)) >= 10) earned.UnionWith(QualificationRules.Levels);
             foreach (var definition in s.Definitions.Values.Where(d => d.Enabled && !QualificationRules.Levels.Contains(d.Id) && d.Id != "commanding_officer"))
@@ -90,7 +95,7 @@ public sealed partial class QualificationService
         {
             if (!_loaded) return;
             var current = VolatileSnapshot();
-            if (!current.Roles.TryGetValue(participation.Job, out var role) || !role.Govfor || current.Participation.Any(p => p.Player == participation.Player && p.Round == participation.Round && p.Server == participation.Server && p.Job == participation.Job)) return;
+            if (!current.Roles.TryGetValue(participation.Job, out var role) || !role.Govfor || role.Synthetic || current.Participation.Any(p => p.Player == participation.Player && p.Round == participation.Round && p.Server == participation.Server && p.Job == participation.Job)) return;
             var next = current.Clone();
             next.Participation.Add(participation);
             Player(next, participation.Player, participation.At);
