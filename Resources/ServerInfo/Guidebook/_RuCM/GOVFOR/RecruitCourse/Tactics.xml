@@ -55,4 +55,5 @@
   <GOVFORLocalizedText Key="rucm-guide-course-references"/>
   <GOVFORGuideLink Guide="RuCMGOVFORUnitCommand"/>
   <GOVFORGuideLink Guide="AU14SOP"/>
+  <GOVFORGuideLink Guide="RuCMGOVFORInstructorHandbookTactics"/>
 </Document>

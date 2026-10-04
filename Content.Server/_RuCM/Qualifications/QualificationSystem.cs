@@ -213,6 +213,9 @@ public sealed partial class QualificationSystem : EntitySystem
 
     public bool CanTakeJob(Guid player, string job)
     {
+        // Initial training must remain reachable even when qualification storage is unavailable.
+        // Mode availability and ordinary job bans are enforced by the recruit system and ticker.
+        if (job == GOVFORRecruitJob.Id) return true;
         SynchronizeRolePolicy();
         if (Mode == QualificationMode.Disabled || !ProtoMan.TryIndex<JobPrototype>(job, out var prototype) || prototype.RoundSide != RoundJobSide.Govfor) return true;
         if (!_ready) return _cfg.GetCVar(QualificationCVars.FailOpen);
@@ -242,6 +245,7 @@ public sealed partial class QualificationSystem : EntitySystem
     }
     private void OnBeforeSpawn(PlayerBeforeSpawnEvent ev)
     {
+        if (ev.JobId == GOVFORRecruitJob.Id) return;
         SynchronizeRolePolicy();
         if (Mode == QualificationMode.Disabled || ev.JobId == null || !ProtoMan.TryIndex<JobPrototype>(ev.JobId, out var job) || job.RoundSide != RoundJobSide.Govfor) return;
         var eligibility = Service.CanTakeJob(ev.Player.UserId, ev.JobId);

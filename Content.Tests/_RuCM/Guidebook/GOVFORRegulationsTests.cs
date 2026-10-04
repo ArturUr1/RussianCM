@@ -77,10 +77,14 @@ public sealed class GOVFORRegulationsTests : ContentUnitTest
         root.AddOrUpdateFile(new ResPath($"Locale/{culture}/govfor.ftl"), File.ReadAllBytes(file));
         var courseFile = Find($"Resources/Locale/{culture}/_RuCM/guidebook/govfor_recruit_course.ftl");
         root.AddOrUpdateFile(new ResPath($"Locale/{culture}/course.ftl"), File.ReadAllBytes(courseFile));
+        var instructorFile = Find($"Resources/Locale/{culture}/_RuCM/guidebook/govfor_instructor_handbook.ftl");
+        root.AddOrUpdateFile(new ResPath($"Locale/{culture}/instructor.ftl"), File.ReadAllBytes(instructorFile));
+        var advancedFile = Find($"Resources/Locale/{culture}/_RuCM/guidebook/govfor_advanced_training.ftl");
+        root.AddOrUpdateFile(new ResPath($"Locale/{culture}/advanced.ftl"), File.ReadAllBytes(advancedFile));
         IoCManager.Resolve<IResourceManager>().AddRoot(new ResPath("/"), root);
         var loc = IoCManager.Resolve<ILocalizationManager>();
         loc.Initialize(); loc.LoadCulture(new CultureInfo(culture, false));
-        var keys = Regex.Matches(File.ReadAllText(file) + File.ReadAllText(courseFile), @"(?m)^([a-zA-Z][a-zA-Z0-9_-]*) =").Select(m => m.Groups[1].Value).ToArray();
+        var keys = Regex.Matches(File.ReadAllText(file) + File.ReadAllText(courseFile) + File.ReadAllText(instructorFile) + File.ReadAllText(advancedFile), @"(?m)^([a-zA-Z][a-zA-Z0-9_-]*) =").Select(m => m.Groups[1].Value).ToArray();
         Assert.That(keys.Distinct().Count(), Is.EqualTo(keys.Length));
         foreach (var key in keys)
         {

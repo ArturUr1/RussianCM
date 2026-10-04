@@ -103,7 +103,7 @@ public sealed class GOVFORGuidebookTests : GameTest
             var parser = Client.ResolveDependency<DocumentParsingManager>();
             var owned = prototypes.EnumeratePrototypes<GuideEntryPrototype>()
                 .Where(p => p.Id.StartsWith("RuCMGOVFOR")).Select(p => p.Id).Order().ToArray();
-            Assert.That(owned, Has.Length.EqualTo(20));
+            Assert.That(owned, Has.Length.EqualTo(66));
             foreach (var id in owned)
             {
                 var prototype = prototypes.Index<GuideEntryPrototype>(id);

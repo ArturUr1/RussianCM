@@ -41,4 +41,5 @@
   <!-- end-approved-text -->
   <GOVFORLocalizedText Key="rucm-guide-course-references"/>
   <GOVFORGuideLink Guide="RuCMGOVFORDrillRegulations"/>
+  <GOVFORGuideLink Guide="RuCMGOVFORInstructorHandbookDrill"/>
 </Document>

@@ -18,4 +18,5 @@
   <!-- end-approved-text -->
   <GOVFORLocalizedText Key="rucm-guide-course-references"/>
   <GOVFORGuideLink Guide="RuCMGOVFORTrainingQualifications"/>
+  <GOVFORGuideLink Guide="RuCMGOVFORInstructorHandbookFieldExercise"/>
 </Document>

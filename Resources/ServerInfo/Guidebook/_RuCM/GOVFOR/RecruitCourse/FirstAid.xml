@@ -26,4 +26,5 @@
   <!-- end-approved-text -->
   <GOVFORLocalizedText Key="rucm-guide-course-references"/>
   <GOVFORGuideLink Guide="AU14SOP"/>
+  <GOVFORGuideLink Guide="RuCMGOVFORInstructorHandbookFirstAid"/>
 </Document>

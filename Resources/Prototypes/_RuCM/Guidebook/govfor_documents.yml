@@ -39,6 +39,14 @@
   text: "/ServerInfo/Guidebook/_RuCM/GOVFOR/Training.xml"
   children:
   - RuCMGOVFORRecruitCourse
+  - RuCMGOVFORInstructorHandbook
+  - RuCMGOVFORSergeantCourse
+  - RuCMGOVFORSergeantAssessment
+  - RuCMGOVFOROfficerCourse
+  - RuCMGOVFOROfficerAssessment
+  - RuCMGOVFORProfessionalTraining
+  - RuCMGOVFORProfessionalAssessments
+  - RuCMGOVFORCommandingOfficerCourse
 
 - type: guideEntry
   parent: RMC
