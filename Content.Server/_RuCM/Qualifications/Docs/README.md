@@ -59,9 +59,12 @@ restore the original role requirements and configured `game.role_timer_override`
 Defaults are enabled/enforce/fail-closed. Existing explicit settings continue to take precedence:
 `enabled=false` is Disabled, `enabled=true,enforce=false` is Warn. Disabled/Warn retain the original
 timers. Enforce uses `JobRequirementOverridePrototype` to replace only Overall/Role/Department timer
-requirements for enabled qualification roles. Age/traits, bans, whitelist and allegiance remain intact.
+requirements for enabled qualification roles. Age/traits, bans and allegiance remain intact. Whitelists
+remain intact except for the three GOVFOR Drill Instructor roles: Enforce replaces their old role
+whitelist with Sergeant plus active Instructor Accreditation on both client and server.
 Storage failures deny admission when no player cache exists, with a Critical/Fatal log; `fail_open=true`
-explicitly enables fail-open. Last-loaded records remain effective. Failed mutations do not publish cache
+explicitly enables fail-open for ordinary qualification roles. Drill Instructor always requires positive
+Sergeant/accreditation evidence, including with fail-open enabled. Last-loaded records remain effective. Failed mutations do not publish cache
 or lose prior data. A background 30-second refresh retries storage and observes other writers.
 Configuration is immediately effective on the committing server; other servers refresh within 30 seconds.
 
@@ -82,10 +85,21 @@ permissions and physical reach on the server. The same entry works for managemen
 The Esc button is shown for active administrators, management, officers/CO and instructors;
 existing Host/ACL rights still govern management actions.
 Platoon Advisor is displayed as **Drill Instructor / Сержант-инструктор** on the three real GOVFOR
-IDs (`AU14JobGOVFORadvisor`, `...RMC`, `...UPP`); IDs, preferences, gear, ranks and whitelist stay
-compatible. Those roles require Sergeant qualification. A one-time audited additive upgrade enables
+IDs (`AU14JobGOVFORadvisor`, `...RMC`, `...UPP`); IDs, preferences, gear and ranks stay
+compatible. In Enforce, those roles require at least Sergeant and active Instructor Accreditation.
+Revoking accreditation immediately denies further admission; holding the job never creates accreditation.
+Their old whitelist returns when the gate is disabled or outside Insurgency. A one-time audited additive upgrade enables
 their default role requirements in existing stores unless management has explicitly edited that role.
 Holding the role allows browsing; certification still requires explicit instructor accreditation.
+Every loaded job with `isSynthetic=true` is excluded from human qualification admission, participation,
+recent-participation Enlisted migration and all hours-based migration groups. Prototype facts override
+old stored classification and management edits. Synthetic tracker hours are excluded before alias folding;
+ambiguous shared trackers are excluded conservatively. Historical synthetic participation is retained
+as history but cannot grant Enlisted. This does not revoke previously migrated account grants.
+The synthetic role whitelist remains unchanged. A currently synthetic character has a separate-admission
+record heading instead of Recruit, and cannot receive human checklist completions, certifications or
+Recruit resets. The server rechecks the current job/body after queueing an action. Accounts are not
+permanently classified as synthetic: their genuine human-job evidence remains eligible.
 Ordinary players see only their own preparation and suspension reasons. Accredited instructors can
 browse online recruits even before spawning. Mutations require the instructor's current round character
 and explicit persisted accreditation, independent of Sergeant/Officer qualifications.

@@ -379,3 +379,8 @@ rucm-qualifications-nav-recruit-reset = Return to Recruit
 rucm-qualifications-help-recruit-reset = Reset the selected account to basic training. Verify the name, enter a reason and confirm your decision.
 rucm-qualifications-reset-self-locked = You cannot reset your own record. Select another player.
 rucm-qualifications-reset-awaiting-second = This request awaits a second officer signature. Confirmation is available under Suspensions.
+
+rucm-qualifications-instructor-accreditation = Active Instructor Accreditation
+rucm-qualifications-synthetic-excluded = Synthetic — separate admission
+rucm-qualifications-synthetic-excluded-help = Synthetics use their separate whitelist. Human military levels and training checklists do not apply.
+rucm-qualifications-error-synthetic_excluded = Synthetics cannot receive human military training.

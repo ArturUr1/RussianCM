@@ -71,7 +71,7 @@ public sealed partial class QualificationWindow : DefaultWindow
 
     private static string L(string key) => Loc.GetString("rucm-qualifications-" + key);
     private static string Name(string name) => Loc.TryGetString(name, out var translated) ? translated : name;
-    private string DefinitionName(string id) => id == "recruit" ? L("level-none") : Name(_view.Store.Definitions.GetValueOrDefault(id)?.Name ?? id);
+    private string DefinitionName(string id) => id == "instructor_accreditation" ? L("instructor-accreditation") : id == "recruit" ? L("level-none") : Name(_view.Store.Definitions.GetValueOrDefault(id)?.Name ?? id);
     private string AccountName(Guid id) => id == Guid.Empty ? L("server-console") :
         _view.OnlinePlayers.GetValueOrDefault(id, _view.AccountNames.GetValueOrDefault(id, L("unknown-account")));
     private string TargetName => AccountName(_view.Target);
@@ -82,7 +82,7 @@ public sealed partial class QualificationWindow : DefaultWindow
     private bool CanSuspend => _view.Officer || _view.CommandingOfficer || _view.Administrator;
     private bool Ready => _view.Available && !_pending && !_preview;
     private bool Confirmed => Ready && _confirmed && !string.IsNullOrWhiteSpace(_reason);
-    private bool TrainingTargetReady => _view.Target != _view.Viewer && (_view.Management || _view.InstructorOnDuty && _view.TargetOnline);
+    private bool TrainingTargetReady => !_view.TargetSynthetic && _view.Target != _view.Viewer && (_view.Management || _view.InstructorOnDuty && _view.TargetOnline);
     private static BoxContainer Column() => new() { Orientation = BoxContainer.LayoutOrientation.Vertical,
         HorizontalExpand = true, SeparationOverride = 8 };
     private static BoxContainer Row() => new() { HorizontalExpand = true, SeparationOverride = 10 };
@@ -400,6 +400,12 @@ public sealed partial class QualificationWindow : DefaultWindow
     private void RenderDossier()
     {
         var summary = Card(_content, L("service-record"));
+        if (_view.TargetSynthetic)
+        {
+            Heading(summary, L("synthetic-excluded"));
+            Text(summary, L("synthetic-excluded-help"));
+            return;
+        }
         summary.ToolTip = L("level-help");
         var stats = Row(); summary.AddChild(stats);
         var level = Column(); stats.AddChild(level); Text(level, L("level"));
@@ -455,10 +461,10 @@ public sealed partial class QualificationWindow : DefaultWindow
         {
             list.RemoveAllChildren();
             var count = 0;
-            foreach (var role in _view.Store.Roles.Values.Where(r => r.Enabled).OrderBy(r => _view.Jobs.GetValueOrDefault(r.JobId, r.JobId)))
+            foreach (var role in _view.Store.Roles.Values.Where(r => !r.Synthetic && (r.Enabled || QualificationRules.IsDrillInstructor(r.JobId))).OrderBy(r => _view.Jobs.GetValueOrDefault(r.JobId, r.JobId)))
             {
                 var name = _view.Jobs.GetValueOrDefault(role.JobId, role.JobId);
-                var eligibility = QualificationRules.CanTakeJob(State, role);
+                var eligibility = QualificationRules.CanTakeJob(State, role, _view.Store.Instructors.GetValueOrDefault(_view.Target));
                 if (!name.Contains(search.Text, StringComparison.OrdinalIgnoreCase) && !role.JobId.Contains(search.Text, StringComparison.OrdinalIgnoreCase) || onlyMissing.Pressed && eligibility.Allowed) continue;
                 count++;
                 var card = Card(list, name);
@@ -488,6 +494,7 @@ public sealed partial class QualificationWindow : DefaultWindow
     private void RenderTraining()
     {
         var action = Card(_content, L("instructor-workflow"));
+        if (_view.TargetSynthetic) { Text(action, L("synthetic-excluded-help")); return; }
         Text(action, L("training-steps"));
         if (_view.Target == _view.Viewer) Text(action, L("training-self-locked"), StyleNano.CrtWarning);
         else if (!_view.Management && !_view.TargetOnline) Text(action, L("training-offline-locked"), StyleNano.CrtWarning);
@@ -571,6 +578,7 @@ public sealed partial class QualificationWindow : DefaultWindow
 
     private void RenderRecruitReset()
     {
+        if (_view.TargetSynthetic) { Text(_content, L("synthetic-excluded-help")); return; }
         // The header and confirmation already identify the selected player; keep the primary action visible.
         var form = Card(_content, "", L("reset-recruit-help"), true);
         if (_view.Target == _view.Viewer) Text(form, L("reset-self-locked"), StyleNano.CrtWarning);

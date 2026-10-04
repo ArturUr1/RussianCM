@@ -95,6 +95,7 @@ public sealed class QualificationView
     public bool Instructor { get; set; }
     public bool InstructorOnDuty { get; set; }
     public bool TargetOnline { get; set; }
+    public bool TargetSynthetic { get; set; }
     public bool Officer { get; set; }
     public bool CommandingOfficer { get; set; }
     public bool Administrator { get; set; }

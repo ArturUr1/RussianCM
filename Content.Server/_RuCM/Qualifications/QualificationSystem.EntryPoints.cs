@@ -24,7 +24,7 @@ public sealed partial class QualificationSystem
     public bool IsInsurgency => string.Equals(_ticker.RunLevel == Content.Server.GameTicking.GameRunLevel.PreRoundLobby
         ? _round.SelectedPreset?.ID ?? _ticker.Preset?.ID
         : _ticker.CurrentPreset?.ID ?? _ticker.Preset?.ID ?? _round.SelectedPreset?.ID, "Insurgency", StringComparison.OrdinalIgnoreCase);
-    private static bool IsDrillInstructor(QualificationAuthority actor) => actor.CurrentParticipant && actor.Context.Job.StartsWith("AU14JobGOVFORadvisor", StringComparison.Ordinal);
+    private static bool IsDrillInstructor(QualificationAuthority actor) => actor.CurrentParticipant && QualificationRules.IsDrillInstructor(actor.Context.Job);
     public bool CanBrowseRecords(ICommonSession player)
     {
         var actor = Authority(player);
@@ -36,9 +36,9 @@ public sealed partial class QualificationSystem
         if (_policySource == Service && _policyRevision == Service.Revision) return _policyJobs;
         _policySource = Service;
         _policyRevision = Service.Revision;
-        _policyJobs = Service.EnabledJobIds().Where(id =>
+        _policyJobs = Service.EnabledJobIds().Concat(new[] { "AU14JobGOVFORadvisor", "AU14JobGOVFORadvisorRMC", "AU14JobGOVFORadvisorUPP" }).Where(id =>
             ProtoMan.TryIndex<Content.Shared.Roles.JobPrototype>(id, out var job) &&
-            job.RoundSide == Content.Shared.CMU14.Round.Roles.RoundJobSide.Govfor).ToHashSet();
+            job.RoundSide == Content.Shared.CMU14.Round.Roles.RoundJobSide.Govfor && !job.IsSynthetic).ToHashSet();
         return _policyJobs;
     }
     public void SynchronizeRolePolicy() => _policy.Apply(Mode == QualificationMode.Enforce, PolicyJobs());

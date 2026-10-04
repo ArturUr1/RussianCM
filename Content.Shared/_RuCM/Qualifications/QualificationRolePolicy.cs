@@ -12,7 +12,7 @@ using Robust.Shared.Utility;
 
 namespace Content.Shared._RuCM.Qualifications;
 
-// Public role_timer_override extension: preserve every non-time requirement, ban and whitelist.
+// Public role_timer_override extension: preserve non-time requirements and bans; instructor accreditation replaces only their old whitelist.
 public sealed partial class QualificationRolePolicy : EntitySystem
 {
     public const string OverrideId = "RuCMInsurgencyQualifications";
@@ -28,7 +28,20 @@ public sealed partial class QualificationRolePolicy : EntitySystem
     { base.Initialize(); ProtoMan.PrototypesReloaded += OnReload; }
     private void OnReload(PrototypesReloadedEventArgs _) { _renamed = false; _active = false; _signature = ""; }
     public override void Shutdown()
-    { ProtoMan.PrototypesReloaded -= OnReload; base.Shutdown(); }
+    { SetInstructorWhitelists(false); ProtoMan.PrototypesReloaded -= OnReload; base.Shutdown(); }
+    private static readonly string[] InstructorJobs =
+        { "AU14JobGOVFORadvisor", "AU14JobGOVFORadvisorRMC", "AU14JobGOVFORadvisorUPP" };
+    private readonly Dictionary<string, bool> _instructorWhitelists = new();
+    private void SetInstructorWhitelists(bool active)
+    {
+        foreach (var id in InstructorJobs)
+        {
+            if (!ProtoMan.TryIndex<JobPrototype>(id, out var job) || job.IsSynthetic) continue;
+            _instructorWhitelists.TryAdd(job.ID, job.Whitelisted);
+            // The whitelist managers consume this public prototype field on both client and server.
+            job.Whitelisted = active ? false : _instructorWhitelists[job.ID];
+        }
+    }
     private string _signature = "";
     private readonly Dictionary<string, HashSet<JobRequirement>> _baseRequirements = new();
 
@@ -38,7 +51,7 @@ public sealed partial class QualificationRolePolicy : EntitySystem
         if (_renamed) return;
         _renamed = true;
         // Keep existing IDs, trackers, gear, ranks and job preferences compatible.
-        foreach (var job in ProtoMan.EnumeratePrototypes<JobPrototype>().Where(j => j.ID.StartsWith("AU14JobGOVFORadvisor", StringComparison.Ordinal)))
+        foreach (var job in ProtoMan.EnumeratePrototypes<JobPrototype>().Where(j => QualificationRules.IsDrillInstructor(j.ID)))
         {
             job.Name = "rucm-qualifications-drill-instructor-name";
             job.Description = "rucm-qualifications-drill-instructor-description";
@@ -49,7 +62,8 @@ public sealed partial class QualificationRolePolicy : EntitySystem
     public string Apply(bool active, IEnumerable<string> jobs, bool client = false, string? baseline = null, Dictionary<string, HashSet<JobRequirement>>? requirements = null)
     {
         ClientPolicy = client;
-        var ids = jobs.OrderBy(j => j).ToArray();
+        SetInstructorWhitelists(active);
+        var ids = jobs.Where(id => ProtoMan.TryIndex<JobPrototype>(id, out var job) && !job.IsSynthetic).OrderBy(j => j).ToArray();
         var current = _cfg.GetCVar(CCVars.GameRoleTimerOverride);
         if (baseline != null) _baseOverride = baseline;
         else if (current != OverrideId) _baseOverride = current;

@@ -148,9 +148,10 @@ public sealed partial class QualificationSystem : EntitySystem
                 if (!ProtoMan.TryIndex<JobPrototype>(role.JobId, out var job)) throw new QualificationValidationException("seed_job");
                 role.Tracker = job.PlayTimeTracker.Id;
                 role.Govfor = job.RoundSide == RoundJobSide.Govfor;
+                role.Synthetic = job.IsSynthetic;
             }
             foreach (var job in ProtoMan.EnumeratePrototypes<JobPrototype>())
-                seed.Roles.TryAdd(job.ID, new RoleRequirement { JobId = job.ID, Enabled = false, Tracker = job.PlayTimeTracker.Id, Govfor = job.RoundSide == RoundJobSide.Govfor });
+                seed.Roles.TryAdd(job.ID, new RoleRequirement { JobId = job.ID, Enabled = false, Tracker = job.PlayTimeTracker.Id, Govfor = job.RoundSide == RoundJobSide.Govfor, Synthetic = job.IsSynthetic });
             if (!_refreshStorage)
             {
                 if (Mode == QualificationMode.Disabled) _log.Info("RuCM qualifications are disabled; storage is unsupported or the game uses a private in-memory SQLite database.");
@@ -217,7 +218,10 @@ public sealed partial class QualificationSystem : EntitySystem
         // Mode availability and ordinary job bans are enforced by the recruit system and ticker.
         if (job == GOVFORRecruitJob.Id) return true;
         SynchronizeRolePolicy();
-        if (Mode == QualificationMode.Disabled || !ProtoMan.TryIndex<JobPrototype>(job, out var prototype) || prototype.RoundSide != RoundJobSide.Govfor) return true;
+        if (Mode == QualificationMode.Disabled || !ProtoMan.TryIndex<JobPrototype>(job, out var prototype) || prototype.RoundSide != RoundJobSide.Govfor || prototype.IsSynthetic) return true;
+        // Instructor admission requires positive rank/accreditation evidence, even in fail-open mode.
+        if (Mode == QualificationMode.Enforce && QualificationRules.IsDrillInstructor(job))
+            return _ready && Service.CanTakeJob(player, job).Allowed;
         if (!_ready) return _cfg.GetCVar(QualificationCVars.FailOpen);
         if (!Service.IsRoleEnabled(job)) return true;
         if (Service.Available) _warnedUnavailable = false;
@@ -247,9 +251,10 @@ public sealed partial class QualificationSystem : EntitySystem
     {
         if (ev.JobId == GOVFORRecruitJob.Id) return;
         SynchronizeRolePolicy();
-        if (Mode == QualificationMode.Disabled || ev.JobId == null || !ProtoMan.TryIndex<JobPrototype>(ev.JobId, out var job) || job.RoundSide != RoundJobSide.Govfor) return;
+        if (Mode == QualificationMode.Disabled || ev.JobId == null || !ProtoMan.TryIndex<JobPrototype>(ev.JobId, out var job) || job.RoundSide != RoundJobSide.Govfor || job.IsSynthetic) return;
         var eligibility = Service.CanTakeJob(ev.Player.UserId, ev.JobId);
-        if (eligibility.Allowed || !Service.Available && !Service.HasCachedPlayer(ev.Player.UserId) && _cfg.GetCVar(QualificationCVars.FailOpen)) return;
+        if (eligibility.Allowed || !QualificationRules.IsDrillInstructor(ev.JobId) &&
+            !Service.Available && !Service.HasCachedPlayer(ev.Player.UserId) && _cfg.GetCVar(QualificationCVars.FailOpen)) return;
         _chat.DispatchServerMessage(ev.Player, Loc.GetString("rucm-qualifications-job-denied", ("requirements", string.Join(", ", eligibility.Missing.Select(DisplayQualification)))));
         Log.Warning($"RuCM qualifications job violation: player={ev.Player.UserId}, job={ev.JobId}, mode={Mode}");
         if (Mode == QualificationMode.Enforce) ev.JobId = null;
@@ -257,14 +262,24 @@ public sealed partial class QualificationSystem : EntitySystem
     private string DisplayQualification(string id)
     {
         var definition = Service.Snapshot().Definitions.GetValueOrDefault(id);
+        if (id == "instructor_accreditation") return Loc.GetString("rucm-qualifications-instructor-accreditation");
         return definition == null ? id : Loc.TryGetString(definition.Name, out var name) ? name : definition.Name;
     }
     private void OnSpawnComplete(PlayerSpawnCompleteEvent ev)
     {
-        if (ev.JobId == null || _queue.Count >= 1024) return;
+        if (ev.JobId == null || _queue.Count >= 1024 || !ProtoMan.TryIndex<JobPrototype>(ev.JobId, out var job) ||
+            job.RoundSide != RoundJobSide.Govfor || job.IsSynthetic) return;
         var participation = new GovforParticipation(ev.Player.UserId, ev.JobId, DateTimeOffset.UtcNow,
             GameTicker.GetRoundId(EntityManager.EntitySysManager), _cfg.GetCVar(QualificationCVars.ServerId));
         _queue.Enqueue(() => _running = Service.RecordParticipation(participation));
+    }
+
+    public bool IsSynthetic(Guid target)
+    {
+        if (!_players.TryGetSessionById(new NetUserId(target), out var session) || !Online(session)) return false;
+        if (session.AttachedEntity is { } body && HasComp<Content.Shared._RMC14.Synth.SynthComponent>(body)) return true;
+        return session.AttachedEntity != null && _minds.TryGetMind(session.UserId, out var mind, out _) &&
+            _jobs.MindTryGetJobId(mind, out var job) && job is { } id && ProtoMan.TryIndex(id, out var prototype) && prototype.IsSynthetic;
     }
 
     public QualificationAuthority Authority(ICommonSession player, Guid? verified = null)
@@ -272,7 +287,7 @@ public sealed partial class QualificationSystem : EntitySystem
         var snapshot = Service.Snapshot();
         var job = "";
         if (_minds.TryGetMind(player.UserId, out var mind, out var mindComp) && _jobs.MindTryGetJobId(mind, out var prototype)) job = prototype?.Id ?? "";
-        var participant = _ticker.RunLevel == GameRunLevel.InRound && player.AttachedEntity != null && mindComp?.OwnedEntity == player.AttachedEntity;
+        var participant = _ticker.RunLevel == GameRunLevel.InRound && player.AttachedEntity != null && mindComp?.OwnedEntity == player.AttachedEntity && !IsSynthetic(player.UserId);
         return new(new(player.UserId, _minds.GetCharacterName(player.UserId) ?? "", job, GameTicker.GetRoundId(EntityManager.EntitySysManager),
             _cfg.GetCVar(QualificationCVars.ServerId), DateTimeOffset.UtcNow), _admins.HasAdminFlag(player, AdminFlags.Host),
             snapshot.Management.Contains(player.UserId), participant && snapshot.OfficerJobs.Contains(job),
@@ -283,6 +298,14 @@ public sealed partial class QualificationSystem : EntitySystem
     public void ConfigureRepository(IRuCMQualificationRepository repository, QualificationStore seed)
     {
         if (_running is { IsCompleted: false }) throw new InvalidOperationException("Qualification operation in progress");
+        // Test/embedded hosts use the same authoritative prototype classification as production.
+        foreach (var job in ProtoMan.EnumeratePrototypes<JobPrototype>())
+        {
+            if (!seed.Roles.TryGetValue(job.ID, out var role)) seed.Roles[job.ID] = role = new() { JobId = job.ID, Enabled = false };
+            role.Synthetic = job.IsSynthetic;
+            role.Govfor = job.RoundSide == RoundJobSide.Govfor;
+            role.Tracker = job.PlayTimeTracker.Id;
+        }
         _ready = false;
         _refreshStorage = false;
         Service = new(repository);
@@ -318,7 +341,7 @@ public sealed partial class QualificationSystem : EntitySystem
         if (!manager && !instructor && !actor.CurrentOfficer && !actor.CurrentCo) target = player.UserId;
         if (target == Guid.Empty) target = player.UserId;
         var result = new QualificationView { Viewer = player.UserId, Target = target, Management = manager, Instructor = instructor,
-            InstructorOnDuty = actor.CurrentParticipant, TargetOnline = TargetOnline(target),
+            InstructorOnDuty = actor.CurrentParticipant, TargetOnline = TargetOnline(target), TargetSynthetic = IsSynthetic(target),
             Officer = actor.CurrentOfficer, CommandingOfficer = actor.CurrentCo, Administrator = actor.Administrator, Available = Service.Available, Enforcing = Mode == QualificationMode.Enforce, Error = error };
         foreach (var job in ProtoMan.EnumeratePrototypes<JobPrototype>()) result.Jobs[job.ID] = job.LocalizedName;
         if (manager)
@@ -340,7 +363,9 @@ public sealed partial class QualificationSystem : EntitySystem
             result.Store.Roles = s.Roles;
             if (s.Players.TryGetValue(target, out var training)) result.Store.Players[target] = training;
             result.Store.Suspensions = s.Suspensions.Where(x => x.Target == target || (actor.CurrentOfficer || actor.CurrentCo) && x.Status == "pending").ToList();
-            if (instructor) if (accreditation != null) result.Store.Instructors[player.UserId] = accreditation;
+            // Own admission and the selected record must show the same accreditation requirement.
+            if (s.Instructors.TryGetValue(target, out var targetAccreditation)) result.Store.Instructors[target] = targetAccreditation;
+            if (instructor && accreditation != null) result.Store.Instructors[player.UserId] = accreditation;
             if (instructor) result.Store.Notes = s.Notes.Where(n => n.Target == target).ToList();
         }
         if (manager || instructor || actor.CurrentOfficer || actor.CurrentCo)
@@ -464,7 +489,7 @@ public sealed partial class QualificationSystem : EntitySystem
                 {
                     var role = JsonSerializer.Deserialize<RoleRequirement>(request.Payload) ?? throw new QualificationValidationException("role");
                     if (!ProtoMan.TryIndex<JobPrototype>(role.JobId, out var job)) throw new QualificationValidationException("job");
-                    role.Tracker = job.PlayTimeTracker.Id; request.Payload = JsonSerializer.Serialize(role);
+                    role.Tracker = job.PlayTimeTracker.Id; role.Synthetic = job.IsSynthetic;
                     role.Govfor = job.RoundSide == RoundJobSide.Govfor; request.Payload = JsonSerializer.Serialize(role);
                 }
                 if (action == QualificationAction.SaveMigrationSettings)
@@ -479,6 +504,10 @@ public sealed partial class QualificationSystem : EntitySystem
                     if (jobs.Officer is null || jobs.CommandingOfficer is null) throw new QualificationValidationException("jobs");
                     if (jobs.Officer.Concat(jobs.CommandingOfficer).Any(j => !ProtoMan.HasIndex<JobPrototype>(j))) throw new QualificationValidationException("job");
                 }
+                // Resolve the current body/job after dequeueing: a stale window cannot train a synthetic.
+                if (action is QualificationAction.Complete or QualificationAction.Certify or QualificationAction.Note or
+                    QualificationAction.Grant or QualificationAction.CorrectProgress or QualificationAction.ResetRecruit)
+                    if (IsSynthetic(request.Target)) throw new QualificationValidationException("synthetic_excluded");
                 if (action == QualificationAction.Complete || action == QualificationAction.Certify || action == QualificationAction.Note)
                 {
                     if (!Service.IsManagement(authority))
