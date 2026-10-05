@@ -303,7 +303,7 @@ public sealed partial class QualificationService
             next.Audit.Add(new(Guid.NewGuid(), action.ToString(), context.Actor, request.Target == Guid.Empty ? null : request.Target,
                 context.At, context.Round, context.Server, oldState, newState, request.Reason, metadata));
             next.Revision = current.Revision + 1;
-            await _repository.Save(next, current.Revision);
+            await PersistChanges(next, current); // CMU14: only owned player projections and appended history.
             Volatile.Write(ref _cache, next);
             Available = true;
             var eventAction = action == QualificationAction.Suspend && next.Suspensions.Last().Status == "pending" ? "SuspensionRequested" : action.ToString();

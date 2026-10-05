@@ -87,7 +87,7 @@ public sealed partial class QualificationService
             next.Audit.Add(new(Guid.NewGuid(), "MigrationExecute", actor.Context.Actor, null, actor.Context.At,
                 actor.Context.Round, actor.Context.Server, "", JsonSerializer.Serialize(plan.Grants), MigrationKey, plan.Key));
             next.Revision = current.Revision + 1;
-            await _repository.Save(next, current.Revision);
+            await PersistChanges(next, current); // CMU14: only owned player projections and appended history.
             System.Threading.Volatile.Write(ref _cache, next);
             Available = true;
         }
@@ -113,7 +113,7 @@ public sealed partial class QualificationService
             next.Participation.Add(participation);
             Player(next, participation.Player, participation.At);
             next.Revision++;
-            await _repository.Save(next, current.Revision);
+            await PersistChanges(next, current); // CMU14: only owned player projections and appended history.
             System.Threading.Volatile.Write(ref _cache, next);
             Available = true;
         }

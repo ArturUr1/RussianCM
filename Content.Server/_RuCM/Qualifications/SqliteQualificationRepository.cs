@@ -12,7 +12,7 @@ using Robust.Shared.Configuration;
 namespace Content.Server._RuCM.Qualifications;
 
 /// <summary>Own prefixed tables in the existing game SQLite file. No ATTACH or separate file.</summary>
-public sealed partial class SqliteQualificationRepository : IRuCMQualificationRepository // CMU14: revision-aware refresh.
+public sealed partial class SqliteQualificationRepository : IRuCMQualificationRepository, ICMUQualificationDeltaRepository // CMU14: selective transactional writes.
 {
     private readonly string _connection;
     public SqliteQualificationRepository(string connection) { _connection = connection; }
@@ -49,7 +49,11 @@ public sealed partial class SqliteQualificationRepository : IRuCMQualificationRe
     // a file lock or run a large transaction on the simulation thread.
     public Task<QualificationStore?> Load(CancellationToken cancel = default) => Task.Run(() => LoadCore(cancel), cancel);
     public Task Save(QualificationStore store, long expectedRevision, CancellationToken cancel = default) =>
-        Task.Run(() => SaveCore(store, expectedRevision, cancel), cancel);
+        Task.Run(() => SaveCore(store, expectedRevision, CMUQualificationWriteSet.Full(store), cancel), cancel);
+
+    // CMU14: SQLite serialization and file-lock waits stay off the simulation caller.
+    public Task SaveChanges(QualificationStore store, QualificationStore previous, CancellationToken cancel = default) =>
+        Task.Run(() => SaveCore(store, previous.Revision, CMUQualificationWriteSet.Changes(store, previous), cancel), cancel);
 
     // CMU14 method: schema initialization is once per repository; unchanged refreshes don't read JSON.
     private QualificationStore? LoadCore(CancellationToken cancel) => LoadVersion(null, cancel);
@@ -80,7 +84,7 @@ public sealed partial class SqliteQualificationRepository : IRuCMQualificationRe
     }
     */
 
-    private void SaveCore(QualificationStore store, long expectedRevision, CancellationToken cancel)
+    private void SaveCore(QualificationStore store, long expectedRevision, CMUQualificationWriteSet changes, CancellationToken cancel)
     {
         cancel.ThrowIfCancellationRequested();
         var body = JsonSerializer.Serialize(store);
@@ -100,10 +104,23 @@ public sealed partial class SqliteQualificationRepository : IRuCMQualificationRe
             if (state.ExecuteNonQuery() != 1) throw new QualificationConflictException();
         }
 
-        // Rebuild only current progress within the same transaction. This also handles removals
-        // without a variable-length IN list exceeding SQLite's parameter limit.
-        using (var obsolete = Command(connection, transaction, "DELETE FROM rucm_training_record WHERE kind='progress'"))
-            obsolete.ExecuteNonQuery();
+        // CMU14: clear progress only for owned players; full bootstrap retains replacement semantics.
+        using (var obsolete = Command(connection, transaction, changes.Players == null
+                   ? "DELETE FROM rucm_training_record WHERE kind='progress'"
+                   : "DELETE FROM rucm_training_record WHERE kind='progress' AND player=@player"))
+        {
+            if (changes.Players == null) obsolete.ExecuteNonQuery();
+            else
+            {
+                var player = obsolete.Parameters.Add("player", SqliteType.Text);
+                foreach (var id in changes.Players)
+                {
+                    cancel.ThrowIfCancellationRequested();
+                    player.Value = id.ToString();
+                    obsolete.ExecuteNonQuery();
+                }
+            }
+        }
         using var record = Command(connection, transaction, """
             INSERT INTO rucm_training_record(kind,key,player,body) VALUES(@kind,@key,@player,@body)
             ON CONFLICT(kind,key) DO UPDATE SET player=excluded.player,body=excluded.body
@@ -121,9 +138,9 @@ public sealed partial class SqliteQualificationRepository : IRuCMQualificationRe
             bodyParameter.Value = JsonSerializer.Serialize(value);
             record.ExecuteNonQuery();
         }
-        foreach (var (id, definition) in store.Definitions) Record("qualification_definition", id, null, definition);
-        foreach (var (id, role) in store.Roles) Record("role_requirement", id, null, role);
-        foreach (var (id, player) in store.Players)
+        foreach (var (id, definition) in changes.Records.Definitions) Record("qualification_definition", id, null, definition);
+        foreach (var (id, role) in changes.Records.Roles) Record("role_requirement", id, null, role);
+        foreach (var (id, player) in changes.Records.Players)
         {
             Record("player", id.ToString(), id, player);
             foreach (var (qualification, grant) in player.Grants)
@@ -132,16 +149,16 @@ public sealed partial class SqliteQualificationRepository : IRuCMQualificationRe
             foreach (var (item, completion) in progress)
                 Record("progress", JsonSerializer.Serialize(new[] { id.ToString(), qualification, item }), id, completion);
         }
-        foreach (var (id, accreditation) in store.Instructors) Record("instructor", id.ToString(), id, accreditation);
-        foreach (var note in store.Notes) Record("training_note", note.Id.ToString(), note.Target, note);
-        foreach (var suspension in store.Suspensions) Record("suspension", suspension.Id.ToString(), suspension.Target, suspension);
-        Record("system_setting", "management", null, store.Management);
-        Record("system_setting", "officer_jobs", null, store.OfficerJobs);
-        Record("system_setting", "co_jobs", null, store.CommandingOfficerJobs);
-        Record("system_setting", "migration_groups", null, store.MigrationGroups);
-        Record("system_setting", "tracker_aliases", null, store.TrackerAliases);
-        foreach (var key in store.Migrations) Record("migration_state", key, null, new { Key = key });
-        foreach (var entry in store.Audit)
+        foreach (var (id, accreditation) in changes.Records.Instructors) Record("instructor", id.ToString(), id, accreditation);
+        foreach (var note in changes.Records.Notes) Record("training_note", note.Id.ToString(), note.Target, note);
+        foreach (var suspension in changes.Records.Suspensions) Record("suspension", suspension.Id.ToString(), suspension.Target, suspension);
+        Record("system_setting", "management", null, changes.Records.Management);
+        Record("system_setting", "officer_jobs", null, changes.Records.OfficerJobs);
+        Record("system_setting", "co_jobs", null, changes.Records.CommandingOfficerJobs);
+        Record("system_setting", "migration_groups", null, changes.Records.MigrationGroups);
+        Record("system_setting", "tracker_aliases", null, changes.Records.TrackerAliases);
+        foreach (var key in changes.Records.Migrations) Record("migration_state", key, null, new { Key = key });
+        foreach (var entry in changes.Records.Audit)
         {
             cancel.ThrowIfCancellationRequested();
             // Skip existing IDs before INSERT so the duplicate-ID trigger can also reject

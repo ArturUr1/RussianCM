@@ -17,7 +17,7 @@ public interface IRuCMQualificationRepository
 }
 
 /// <summary>Own tables in the game's PostgreSQL database, transactional CAS and append-only audit.</summary>
-public sealed partial class PostgresQualificationRepository : IRuCMQualificationRepository // CMU14: revision-aware refresh.
+public sealed partial class PostgresQualificationRepository : IRuCMQualificationRepository, ICMUQualificationDeltaRepository // CMU14: selective transactional writes.
 {
     private readonly string _connection;
     public PostgresQualificationRepository(string connection) { _connection = connection; }
@@ -60,7 +60,14 @@ public sealed partial class PostgresQualificationRepository : IRuCMQualification
     public Task<QualificationStore?> Load(CancellationToken cancel = default) =>
         Task.Run(() => LoadVersion(null, cancel), cancel);
 
-    public async Task Save(QualificationStore store, long expectedRevision, CancellationToken cancel = default)
+    // CMU14: full writes remain available for initialization and callers without an owned mutation.
+    public Task Save(QualificationStore store, long expectedRevision, CancellationToken cancel = default) =>
+        SaveCore(store, expectedRevision, CMUQualificationWriteSet.Full(store), cancel);
+
+    public Task SaveChanges(QualificationStore store, QualificationStore previous, CancellationToken cancel = default) =>
+        SaveCore(store, previous.Revision, CMUQualificationWriteSet.Changes(store, previous), cancel);
+
+    private async Task SaveCore(QualificationStore store, long expectedRevision, CMUQualificationWriteSet changes, CancellationToken cancel)
     {
         await using var connection = new NpgsqlConnection(_connection);
         await connection.OpenAsync(cancel);
@@ -79,23 +86,35 @@ public sealed partial class PostgresQualificationRepository : IRuCMQualification
                 throw new QualificationConflictException();
         }
 
-        // Queryable projections. Unique(kind,key) also enforces stable progress/qualification identity.
+        // CMU14: bounded batches reduce network round trips while retaining the single CAS transaction.
+        await using var batch = new NpgsqlBatch(connection, transaction);
+        async Task Flush()
+        {
+            if (batch.BatchCommands.Count == 0) return;
+            await batch.ExecuteNonQueryAsync(cancel);
+            batch.BatchCommands.Clear();
+        }
+        async Task Queue(NpgsqlBatchCommand command)
+        {
+            batch.BatchCommands.Add(command);
+            if (batch.BatchCommands.Count >= 256) await Flush();
+        }
         async Task Record(string kind, string key, Guid? player, object value)
         {
-            await using var command = new NpgsqlCommand("""
+            var command = new NpgsqlBatchCommand("""
                 INSERT INTO rucm_training.record(kind,key,player,body) VALUES(@kind,@key,@player,CAST(@body AS jsonb))
                 ON CONFLICT(kind,key) DO UPDATE SET player=EXCLUDED.player,body=EXCLUDED.body
-                """, connection, transaction);
+                """);
             command.Parameters.AddWithValue("kind", kind);
             command.Parameters.AddWithValue("key", key);
             command.Parameters.AddWithValue("player", NpgsqlTypes.NpgsqlDbType.Uuid, (object?) player ?? DBNull.Value);
             command.Parameters.AddWithValue("body", JsonSerializer.Serialize(value));
-            await command.ExecuteNonQueryAsync(cancel);
+            await Queue(command);
         }
-        foreach (var (id, definition) in store.Definitions) await Record("qualification_definition", id, null, definition);
-        foreach (var (id, role) in store.Roles) await Record("role_requirement", id, null, role);
+        foreach (var (id, definition) in changes.Records.Definitions) await Record("qualification_definition", id, null, definition);
+        foreach (var (id, role) in changes.Records.Roles) await Record("role_requirement", id, null, role);
         var progressKeys = new System.Collections.Generic.List<string>();
-        foreach (var (id, player) in store.Players)
+        foreach (var (id, player) in changes.Records.Players)
         {
             await Record("player", id.ToString(), id, player);
             foreach (var (qualification, grant) in player.Grants)
@@ -107,31 +126,41 @@ public sealed partial class PostgresQualificationRepository : IRuCMQualification
                 progressKeys.Add(key); await Record("progress", key, id, completion);
             }
         }
-        await using (var obsolete = new NpgsqlCommand("DELETE FROM rucm_training.record WHERE kind='progress' AND NOT(key=ANY(@keys))", connection, transaction))
-        { obsolete.Parameters.AddWithValue("keys", progressKeys.ToArray()); await obsolete.ExecuteNonQueryAsync(cancel); }
-        foreach (var (id, accreditation) in store.Instructors) await Record("instructor", id.ToString(), id, accreditation);
-        foreach (var note in store.Notes) await Record("training_note", note.Id.ToString(), note.Target, note);
-        foreach (var suspension in store.Suspensions) await Record("suspension", suspension.Id.ToString(), suspension.Target, suspension);
-        await Record("system_setting", "management", null, store.Management);
-        await Record("system_setting", "officer_jobs", null, store.OfficerJobs);
-        await Record("system_setting", "co_jobs", null, store.CommandingOfficerJobs);
-        await Record("system_setting", "migration_groups", null, store.MigrationGroups);
-        await Record("system_setting", "tracker_aliases", null, store.TrackerAliases);
-        foreach (var key in store.Migrations) await Record("migration_state", key, null, new { Key = key });
-        foreach (var audit in store.Audit)
+        await Flush();
+        await using (var obsolete = new NpgsqlCommand(
+            changes.Players == null
+                ? "DELETE FROM rucm_training.record WHERE kind='progress' AND NOT(key=ANY(@keys))"
+                : "DELETE FROM rucm_training.record WHERE kind='progress' AND player=ANY(@players) AND NOT(key=ANY(@keys))",
+            connection, transaction))
         {
-            await using var command = new NpgsqlCommand("""
+            obsolete.Parameters.AddWithValue("keys", progressKeys.ToArray());
+            if (changes.Players != null) obsolete.Parameters.AddWithValue("players", changes.Players);
+            await obsolete.ExecuteNonQueryAsync(cancel);
+        }
+        foreach (var (id, accreditation) in changes.Records.Instructors) await Record("instructor", id.ToString(), id, accreditation);
+        foreach (var note in changes.Records.Notes) await Record("training_note", note.Id.ToString(), note.Target, note);
+        foreach (var suspension in changes.Records.Suspensions) await Record("suspension", suspension.Id.ToString(), suspension.Target, suspension);
+        await Record("system_setting", "management", null, changes.Records.Management);
+        await Record("system_setting", "officer_jobs", null, changes.Records.OfficerJobs);
+        await Record("system_setting", "co_jobs", null, changes.Records.CommandingOfficerJobs);
+        await Record("system_setting", "migration_groups", null, changes.Records.MigrationGroups);
+        await Record("system_setting", "tracker_aliases", null, changes.Records.TrackerAliases);
+        foreach (var key in changes.Records.Migrations) await Record("migration_state", key, null, new { Key = key });
+        foreach (var audit in changes.Records.Audit)
+        {
+            var command = new NpgsqlBatchCommand("""
                 INSERT INTO rucm_training.audit(id,actor,target,at,action,body)
                 VALUES(@id,@actor,@target,@at,@action,CAST(@body AS jsonb)) ON CONFLICT(id) DO NOTHING
-                """, connection, transaction);
+                """);
             command.Parameters.AddWithValue("id", audit.Id);
             command.Parameters.AddWithValue("actor", audit.Actor);
             command.Parameters.AddWithValue("target", NpgsqlTypes.NpgsqlDbType.Uuid, (object?) audit.Target ?? DBNull.Value);
             command.Parameters.AddWithValue("at", audit.At.ToUniversalTime());
             command.Parameters.AddWithValue("action", audit.Action);
             command.Parameters.AddWithValue("body", JsonSerializer.Serialize(audit));
-            await command.ExecuteNonQueryAsync(cancel);
+            await Queue(command);
         }
+        await Flush();
         await transaction.CommitAsync(cancel);
     }
 }
