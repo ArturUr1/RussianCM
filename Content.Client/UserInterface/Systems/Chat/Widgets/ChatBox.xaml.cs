@@ -3,6 +3,7 @@ using System.Text.RegularExpressions;
 // cmu edit end
 using System;
 using System.Linq;
+using Content.Client.CMU14.Chat; // CMU14: channel prefix formatting
 using Content.Client.CMU14.Interface;
 using Content.Client._RMC14.Chat;
 using Content.Client.Stylesheets;
@@ -1391,7 +1392,7 @@ public partial class ChatBox : UIWidget
         // the message - invisible until announcements gained a background. RMC14's WrapHive is the
         // one that does it today.
         var markup = StripChatActionCommandLink(message.WrappedMessage.TrimEnd(), message);
-        markup = StripDuplicateChannelPrefix(markup, message);
+        // markup = StripDuplicateChannelPrefix(markup, message); // CMU14: strip parsed text below to preserve nested markup
         markup = _colorWholeMessage
             ? ChatUserSettings.ApplyStyleMarkup(markup, style, ChatUserSettings.DefaultFontSize)
             : ChatUserSettings.ApplyFontMarkup(RemoveOuterColorMarkup(markup), style, ChatUserSettings.DefaultFontSize);
@@ -1408,6 +1409,17 @@ public partial class ChatBox : UIWidget
 
         if (_colorWholeMessage)
             formatted.Pop();
+
+        // CMU14 Chat Begin: remove one channel label while preserving sender and body formatting.
+        var localizedChannelLabel = message.Channel switch
+        {
+            ChatChannel.Dead => Loc.GetString("chat-manager-dead-channel-name"),
+            ChatChannel.Admin or ChatChannel.AdminAlert or ChatChannel.AdminChat => Loc.GetString("chat-manager-admin-channel-name"),
+            _ => null
+        };
+        formatted = CMUChatMessageFormatting.StripChannelPrefix(formatted, message, localizedChannelLabel,
+            message.Channel == ChatChannel.Dead ? Loc.GetString("chat-manager-admin-channel-name") : null);
+        // CMU14 End
 
         return FilterProblematicTags(formatted, allowCommandLinks: true);
     }
