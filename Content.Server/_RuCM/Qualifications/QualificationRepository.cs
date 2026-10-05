@@ -17,7 +17,7 @@ public interface IRuCMQualificationRepository
 }
 
 /// <summary>Own tables in the game's PostgreSQL database, transactional CAS and append-only audit.</summary>
-public sealed class PostgresQualificationRepository : IRuCMQualificationRepository
+public sealed partial class PostgresQualificationRepository : IRuCMQualificationRepository // CMU14: revision-aware refresh.
 {
     private readonly string _connection;
     public PostgresQualificationRepository(string connection) { _connection = connection; }
@@ -56,27 +56,9 @@ public sealed class PostgresQualificationRepository : IRuCMQualificationReposito
         INSERT INTO rucm_training.schema_migration(version) VALUES(1) ON CONFLICT DO NOTHING;
         """;
 
-    public async Task<QualificationStore?> Load(CancellationToken cancel = default)
-    {
-        await using var connection = new NpgsqlConnection(_connection);
-        await connection.OpenAsync(cancel);
-        await using (var transaction = await connection.BeginTransactionAsync(cancel))
-        {
-            // Serializes independent schema migrations across concurrent server starts.
-            await using (var setup = new NpgsqlCommand("SELECT pg_advisory_xact_lock(71714501); CREATE SCHEMA IF NOT EXISTS rucm_training; CREATE TABLE IF NOT EXISTS rucm_training.schema_migration(version integer PRIMARY KEY, applied_at timestamptz NOT NULL DEFAULT now());", connection, transaction))
-                await setup.ExecuteNonQueryAsync(cancel);
-            await using var version = new NpgsqlCommand("SELECT EXISTS(SELECT 1 FROM rucm_training.schema_migration WHERE version=1)", connection, transaction);
-            if (await version.ExecuteScalarAsync(cancel) is not true)
-            {
-                await using var schema = new NpgsqlCommand(Schema, connection, transaction);
-                await schema.ExecuteNonQueryAsync(cancel);
-            }
-            await transaction.CommitAsync(cancel);
-        }
-        await using var command = new NpgsqlCommand("SELECT body::text FROM rucm_training.state WHERE id=1", connection);
-        var json = await command.ExecuteScalarAsync(cancel) as string;
-        return json == null ? null : JsonSerializer.Deserialize<QualificationStore>(json);
-    }
+    // CMU14 method: schema setup and deserialization are outside the game tick.
+    public Task<QualificationStore?> Load(CancellationToken cancel = default) =>
+        Task.Run(() => LoadVersion(null, cancel), cancel);
 
     public async Task Save(QualificationStore store, long expectedRevision, CancellationToken cancel = default)
     {

@@ -12,7 +12,7 @@ using Robust.Shared.Configuration;
 namespace Content.Server._RuCM.Qualifications;
 
 /// <summary>Own prefixed tables in the existing game SQLite file. No ATTACH or separate file.</summary>
-public sealed class SqliteQualificationRepository : IRuCMQualificationRepository
+public sealed partial class SqliteQualificationRepository : IRuCMQualificationRepository // CMU14: revision-aware refresh.
 {
     private readonly string _connection;
     public SqliteQualificationRepository(string connection) { _connection = connection; }
@@ -51,7 +51,10 @@ public sealed class SqliteQualificationRepository : IRuCMQualificationRepository
     public Task Save(QualificationStore store, long expectedRevision, CancellationToken cancel = default) =>
         Task.Run(() => SaveCore(store, expectedRevision, cancel), cancel);
 
-    private QualificationStore? LoadCore(CancellationToken cancel)
+    // CMU14 method: schema initialization is once per repository; unchanged refreshes don't read JSON.
+    private QualificationStore? LoadCore(CancellationToken cancel) => LoadVersion(null, cancel);
+    /*
+    private QualificationStore? LoadCore(CancellationToken cancel) // CMU14: replaced by revision-aware loading.
     {
         cancel.ThrowIfCancellationRequested();
         using var connection = new SqliteConnection(_connection);
@@ -75,6 +78,7 @@ public sealed class SqliteQualificationRepository : IRuCMQualificationRepository
         transaction.Commit();
         return store;
     }
+    */
 
     private void SaveCore(QualificationStore store, long expectedRevision, CancellationToken cancel)
     {

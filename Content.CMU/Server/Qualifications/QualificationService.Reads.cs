@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Threading;
 using Content.Shared._RuCM.Qualifications;
 
@@ -19,4 +20,30 @@ public sealed partial class QualificationService
 
     public bool IsActiveInstructor(Guid player) =>
         Volatile.Read(ref _cache).Instructors.TryGetValue(player, out var instructor) && instructor.Active;
+
+    public bool IsJobAllowed(Guid player, string job)
+    {
+        var cache = Volatile.Read(ref _cache);
+        cache.Players.TryGetValue(player, out var state);
+        cache.Instructors.TryGetValue(player, out var instructor);
+        cache.Roles.TryGetValue(job, out var requirement);
+        // Old stores may omit instructor roles. The mandatory rank/accreditation gate still applies.
+        if (requirement == null && QualificationRules.IsDrillInstructor(job))
+            return QualificationRules.EffectiveLevel(state) >= MilitaryLevel.Sergeant && instructor is { Active: true };
+        return QualificationRules.IsJobAllowed(state, requirement, instructor);
+    }
+
+    public string? GetDefinitionName(string id) =>
+        Volatile.Read(ref _cache).Definitions.TryGetValue(id, out var definition) ? definition.Name : null;
+
+    public Guid? GetSuspensionInitiator(Guid id) =>
+        Volatile.Read(ref _cache).Suspensions.SingleOrDefault(s => s.Id == id)?.Initiator.Actor;
+
+    public PlayerTrainingState? PlayerSnapshot(Guid id)
+    {
+        var cache = Volatile.Read(ref _cache);
+        if (!cache.Players.TryGetValue(id, out var player))
+            return null;
+        return ClonePlayer(player);
+    }
 }

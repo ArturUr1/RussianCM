@@ -188,7 +188,7 @@ public sealed record GovforParticipation(Guid Player, string Job, DateTimeOffset
 public sealed record JobEligibility(bool Allowed, string[] Missing);
 
 /// <summary>Pure domain rules. The caller supplies server-resolved identity and authority.</summary>
-public static class QualificationRules
+public static partial class QualificationRules // CMU14: allocation-free admission checks.
 {
     public static readonly string[] Levels = { "enlisted", "sergeant", "officer" };
 
@@ -213,10 +213,13 @@ public static class QualificationRules
     public static bool IsDrillInstructor(string job) => job is
         "AU14JobGOVFORadvisor" or "AU14JobGOVFORadvisorRMC" or "AU14JobGOVFORadvisorUPP";
 
+    // CMU14 method: reuse the boolean rule before building explanatory missing requirements.
     public static JobEligibility CanTakeJob(PlayerTrainingState? player, RoleRequirement? role,
         InstructorAccreditation? accreditation = null)
     {
-        if (role == null || role.Synthetic) return new(true, Array.Empty<string>());
+        if (IsJobAllowed(player, role, accreditation)) return new(true, Array.Empty<string>());
+        // A denied role is non-null and non-synthetic.
+        if (role == null) return new(true, Array.Empty<string>());
         var instructor = IsDrillInstructor(role.JobId);
         if (!role.Enabled && !instructor) return new(true, Array.Empty<string>());
         var missing = new List<string>();
