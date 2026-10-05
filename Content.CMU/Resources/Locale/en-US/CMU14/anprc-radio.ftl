@@ -104,7 +104,7 @@ anprc-fixed-net-bearing = DF { $net }: speaker bearing { $bearing }, about { $di
 anprc-chat-label = 117G
 anprc-chat-intercept-label = INT
 anprc-chat-intercept-verb = on
-anprc-chat-intercept-line = [color={ $color }]\[INT\] [bold]{ $sender }[/bold] on { $net }, { chat-manager-speech-double-quote-begin }{ $message }{ chat-manager-speech-double-quote-end }[/color]
+anprc-chat-intercept-line = [color={ $color }]\[INT\] { chat-manager-speech-double-quote-begin }{ $message }{ chat-manager-speech-double-quote-end }[/color]
 
 # key analysis (ANPRCCryptoSystem.Analysis)
 anprc-key-untrained = You do not know how to break a key. This requires radio-operator training.
