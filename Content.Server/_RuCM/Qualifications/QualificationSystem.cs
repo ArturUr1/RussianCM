@@ -48,6 +48,7 @@ public sealed partial class QualificationSystem : EntitySystem
     private readonly Queue<Action> _queue = new();
     private readonly Dictionary<Guid, DateTimeOffset> _lastRequest = new();
     private readonly Dictionary<Guid, (string Token, MigrationPlan Plan)> _previews = new();
+    private CMUHistoricalQualificationScanner? _historicalScanner; // CMU14: same-game-DB read-only scan
     private readonly List<QualificationEui> _open = new();
     private readonly Dictionary<EntityUid, Guid> _boundTargets = new();
     private readonly System.Collections.Concurrent.ConcurrentQueue<QualificationMutationEvent> _events = new();
@@ -127,6 +128,7 @@ public sealed partial class QualificationSystem : EntitySystem
         SubscribeLocalEvent<QualificationUiComponent, QualificationBoundRequest>(OnBoundRequest);
         SubscribeLocalEvent<QualificationUiComponent, BoundUserInterfaceMessageAttempt>(OnBoundAttempt);
         var repository = QualificationRepositoryFactory.Create(_cfg, _resources.UserData.RootDir);
+        _historicalScanner = CMUHistoricalQualificationScanner.Create(_cfg, _resources.UserData.RootDir); // CMU14
         _refreshStorage = repository != null;
         _waitForGameStorage = repository is SqliteQualificationRepository;
         Service = new(repository ?? new PostgresQualificationRepository(""));
@@ -354,7 +356,7 @@ public sealed partial class QualificationSystem : EntitySystem
             result.Store.Audit = s.Audit.Where(a => a.Target == target || a.Target == null).TakeLast(100).ToList();
             result.Store.Participation.Clear();
             if (_previews.TryGetValue(player.UserId, out var preview))
-            { result.PreviewToken = preview.Token; result.Preview = new() { Counts = preview.Plan.Grants.Values.SelectMany(x => x).GroupBy(x => x).ToDictionary(g => g.Key, g => g.Count()), Records = preview.Plan.Grants.Sum(x => x.Value.Count) }; }
+            { result.PreviewToken = preview.Token; result.Preview = new() { Counts = preview.Plan.Grants.Values.SelectMany(x => x).GroupBy(x => x).ToDictionary(g => g.Key, g => g.Count()), Records = preview.Plan.Grants.Sum(x => x.Value.Count), AccountsScanned = preview.Plan.AccountsScanned, PlayersReceiving = preview.Plan.Grants.Count, Completed = s.Migrations.Contains(QualificationService.MigrationKey) }; }
         }
         else
         {
@@ -420,7 +422,7 @@ public sealed partial class QualificationSystem : EntitySystem
                     QualificationAction.SaveManagement => JsonSerializer.Serialize(config.Management),
                     QualificationAction.SaveCommandJobs => JsonSerializer.Serialize(new CommandJobs(config.OfficerJobs!, config.CommandingOfficerJobs!)),
                     QualificationAction.SaveMigrationSettings => JsonSerializer.Serialize(new QualificationMigrationSettings(config.MigrationGroups!, config.TrackerAliases!)),
-                    QualificationAction.MigrationPreview => JsonSerializer.Serialize(config.Roster),
+                    QualificationAction.MigrationPreview => config.ScanAllHistorical ? "all" : JsonSerializer.Serialize(config.Roster), // CMU14
                     _ => payload
                 };
             }
@@ -536,15 +538,26 @@ public sealed partial class QualificationSystem : EntitySystem
                     if (operation == QualificationAction.MigrationPreview)
                     {
                         if (!Service.IsManagement(actor)) throw new QualificationPermissionException();
-                        var roster = JsonSerializer.Deserialize<HashSet<Guid>>(request.Payload) ?? throw new QualificationValidationException("roster");
-                        if (roster.Count > 10000) throw new QualificationValidationException("roster");
-                        var candidates = new List<MigrationCandidate>();
-                        foreach (var id in roster)
+                        // CMU14: full scan is the default UI path; explicit rosters remain available.
+                        _previews.Remove(player.UserId);
+                        List<MigrationCandidate> candidates;
+                        if (request.Payload == "all")
                         {
-                            var times = await _db.GetPlayTimes(id);
-                            candidates.Add(new(id, times.GroupBy(t => t.Tracker).ToDictionary(g => g.Key, g => g.Sum(t => t.TimeSpent.TotalHours))));
+                            if (_historicalScanner == null) throw new QualificationValidationException("storage");
+                            candidates = await _historicalScanner.Scan();
                         }
-                        var plan = Service.MigrationDryRun(candidates, actor.Context.At);
+                        else
+                        {
+                            var roster = JsonSerializer.Deserialize<HashSet<Guid>>(request.Payload) ?? throw new QualificationValidationException("roster");
+                            if (roster.Count > 10000) throw new QualificationValidationException("roster");
+                            candidates = new();
+                            foreach (var id in roster)
+                            {
+                                var times = await _db.GetPlayTimes(id);
+                                candidates.Add(new(id, times.GroupBy(t => t.Tracker).ToDictionary(g => g.Key, g => g.Sum(t => t.TimeSpent.TotalHours))));
+                            }
+                        }
+                        var plan = await Task.Run(() => Service.MigrationDryRun(candidates, DateTimeOffset.UtcNow)); // CMU14: preview TTL starts after scanning
                         _previews[player.UserId] = (Guid.NewGuid().ToString("N"), plan);
                     }
                     else if (operation == QualificationAction.MigrationExecute)

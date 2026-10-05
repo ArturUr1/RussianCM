@@ -71,15 +71,13 @@ These functions were deliberately not patched:
    Minimal upstream hook: a cancellable `(session/user, requestedJob, reason)` event immediately
    before every authoritative assignment/spawn mutation. Do not use post-spawn deletion or undo as a substitute.
 
-3. **Historical 14-day GOVFOR participation before installation.**
-   Upstream `Round.Players` stores participation without job identity; `PlayTime` stores cumulative
-   tracker totals without per-job activity dates. `PlayerRecord.LastSeenTime` is an account login,
-   not proof of GOVFOR play. No public API yields the required historical evidence.
-   Minimal hook/source: persisted `(user, job, round, server, timestamp)` assignment history and a
-   public read API. This implementation records that evidence from installation onward. It never
-   fabricates historical Enlisted grants from last-seen. Hours-based Sergeant/Officer/professional
-   migration works independently. Operators must resolve this evidence gap before claiming the
-   full initial 14-day migration has completed.
+3. **Historical participation dates are unavailable; migration uses cumulative hours.**
+   Upstream role timers have no per-job activity dates. Initial migration therefore uses the
+   approved human GOVFOR total **> 3 h**, Sergeant **≥ 5 h**, Officer **≥ 10 h**, and professional
+   groups **≥ 5 h**. The read-only PostgreSQL/SQLite scanner covers all historical accounts,
+   including accounts without timers and timer-only history. Dry Run never writes grants or
+   markers; management must explicitly Execute the preview. Synthetic service and unknown
+   trackers cannot prove human qualification. The existing one-time marker is preserved.
 
 ## Actual roles
 

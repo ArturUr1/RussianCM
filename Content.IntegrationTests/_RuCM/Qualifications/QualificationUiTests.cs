@@ -161,6 +161,41 @@ public sealed class QualificationUiTests : GameTest
         });
     }
 
+    // CMU14: historical preview must reach the server without a roster; execution stays explicit.
+    [Test]
+    public async Task FullHistoricalPreviewNeedsNoRosterAndExecuteRequiresConfirmation()
+    {
+        await Client.WaitAssertion(() =>
+        {
+            var view = QualificationPreviewCommand.CreateView(Client.ResolveDependency<IPrototypeManager>());
+            view.Preview = null; view.PreviewToken = "";
+            var sent = new List<(QualificationAction Action, QualificationRequest Request)>();
+            using var window = new QualificationWindow((a, r) => sent.Add((a, r)));
+            window.Open(); window.Update(view); Layout(window);
+            Click(Descendants(window).OfType<Button>().Single(b => b.Name == "nav-migration")); Layout(window);
+            Assert.That(Descendants(window).OfType<Button>().Single(b => b.Name == "execute-migration").Disabled, Is.True);
+            Click(Descendants(window).OfType<Button>().Single(b => b.Name == "scan-historical"));
+            Assert.That(sent.Single().Action, Is.EqualTo(QualificationAction.MigrationPreview));
+            Assert.That(sent.Single().Request.Configuration.ScanAllHistorical, Is.True);
+            Assert.That(sent.Single().Request.Configuration.Roster, Is.Null);
+            view.ResponseId = sent.Last().Request.RequestId;
+            view.Preview = new() { AccountsScanned = 10003, PlayersReceiving = 2, Records = 3, Counts = new() { ["enlisted"] = 2, ["medical"] = 1 } };
+            view.PreviewToken = "verified-token";
+            window.Update(view); Layout(window);
+            var execute = Descendants(window).OfType<Button>().Single(b => b.Name == "execute-migration");
+            Assert.That(execute.Disabled, Is.True);
+            Descendants(window).OfType<LineEdit>().Single(e => e.Name == "action-reason").SetText("Verified historical Dry Run", true);
+            Click(Descendants(window).OfType<CheckBox>().Single(c => c.Name == "action-confirm"));
+            Assert.That(execute.Disabled, Is.False);
+            Click(execute);
+            Assert.That(sent.Last().Action, Is.EqualTo(QualificationAction.MigrationExecute));
+            Assert.That(sent.Last().Request.PreviewToken, Is.EqualTo("verified-token"));
+            view.ResponseId = sent.Last().Request.RequestId; view.Preview.Completed = true;
+            window.Update(view); Layout(window);
+            Assert.That(Descendants(window).OfType<Button>().Single(b => b.Name == "execute-migration").Disabled, Is.True);
+        });
+    }
+
     private static void Layout(QualificationWindow window)
     {
         var size = new Vector2(1080, 740);

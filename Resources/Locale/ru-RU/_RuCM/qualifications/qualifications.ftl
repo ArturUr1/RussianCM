@@ -52,7 +52,8 @@ rucm-qualifications-officer-jobs = Офицерские должности (ид
 rucm-qualifications-co-jobs = Должности командующего (идентификаторы через запятую)
 rucm-qualifications-save-command-jobs = Сохранить полномочия должностей
 rucm-qualifications-migration = Однократный перенос существующих допусков
-rucm-qualifications-migration-evidence = Часы берутся из серверных таймеров. Допуск за последние 14 дней учитывает только зарегистрированные системой назначения GOVFOR; прежняя история требует отдельного подтверждённого источника.
+# CMU14: historical human service thresholds
+rucm-qualifications-migration-evidence = Enlisted: > 3 ч. суммарно на человеческих GOVFOR-ролях; Sergeant: ≥ 5 ч.; Officer: ≥ 10 ч.; профессии: ≥ 5 ч. в соответствующей группе. CO не переносится. Часы синтетиков исключены.
 rucm-qualifications-migration-roster = Аккаунты для переноса (идентификаторы через запятую)
 rucm-qualifications-dry-run = Предпросмотр без записи
 rucm-qualifications-execute-migration = Выполнить подтверждённый перенос
@@ -278,7 +279,8 @@ rucm-qualifications-account-list = Аккаунты руководства
 rucm-qualifications-uuid-list-help = Полные идентификаторы аккаунтов через запятую. Неверный формат блокирует действие; пустой список очищает настройку.
 rucm-qualifications-command-recognition = КОМАНДНЫЕ ДОЛЖНОСТИ
 rucm-qualifications-command-jobs-help = Точные идентификаторы профессий через запятую. По ним система проверяет текущую должность офицера и CO при принятии решения.
-rucm-qualifications-migration-steps = 1. Укажите аккаунты. 2. Получите предпросмотр. 3. Проверьте числа, укажите причину и подтвердите выполнение. Предпросмотр ничего не записывает.
+# CMU14: full scan before explicit execution
+rucm-qualifications-migration-steps = 1. Сканируйте всех исторических игроков. 2. Проверьте итоги Dry Run. 3. Подтвердите и выполните перенос один раз. Dry Run не записывает данные.
 rucm-qualifications-preview-results = РЕЗУЛЬТАТ ПРЕДПРОСМОТРА
 rucm-qualifications-preview-help = Количество допусков, которые будут созданы. Выполнение допустимо только для этого подтверждённого предпросмотра и актуальных данных.
 rucm-qualifications-preview-empty = Результата пока нет. Выполнение станет доступно после предпросмотра.
@@ -384,3 +386,10 @@ rucm-qualifications-instructor-accreditation = Действующая аккре
 rucm-qualifications-synthetic-excluded = Синтетик — отдельный допуск
 rucm-qualifications-synthetic-excluded-help = Синтетики допускаются по отдельному whitelist. Военные уровни и учебные зачёты людей к ним не применяются.
 rucm-qualifications-error-synthetic_excluded = Синтетики исключены из системы военной подготовки людей.
+
+# CMU14: full historical scan
+rucm-qualifications-scan-all-historical = Сканировать всех исторических игроков (Dry Run)
+rucm-qualifications-selected-migration = Дополнительно: выбранные аккаунты
+rucm-qualifications-accounts-scanned = Проверено аккаунтов
+rucm-qualifications-players-receiving = Игроков получат квалификации
+rucm-qualifications-migration-completed = Этот одноразовый перенос уже выполнен.
