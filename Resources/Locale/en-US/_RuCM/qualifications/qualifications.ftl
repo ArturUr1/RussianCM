@@ -52,7 +52,8 @@ rucm-qualifications-officer-jobs = Officer jobs (comma-separated identifiers)
 rucm-qualifications-co-jobs = Commanding officer jobs (comma-separated identifiers)
 rucm-qualifications-save-command-jobs = Save command authorities
 rucm-qualifications-migration = One-time qualification migration
-rucm-qualifications-migration-evidence = Hours come from server role timers. The 14-day rule uses GOVFOR assignments recorded by this system; earlier history needs a separate verified source.
+# CMU14: historical human service thresholds
+rucm-qualifications-migration-evidence = Enlisted: > 3 h total on human GOVFOR roles; Sergeant: ≥ 5 h; Officer: ≥ 10 h; professions: ≥ 5 h in the matching group. CO is not migrated. Synthetic timers are excluded.
 rucm-qualifications-migration-roster = Migration accounts (comma-separated identifiers)
 rucm-qualifications-dry-run = Preview without writing
 rucm-qualifications-execute-migration = Execute confirmed migration
@@ -278,7 +279,8 @@ rucm-qualifications-account-list = Management accounts
 rucm-qualifications-uuid-list-help = Full account identifiers separated by commas. Invalid format disables the action; an empty list clears the setting.
 rucm-qualifications-command-recognition = COMMAND ROLE RECOGNITION
 rucm-qualifications-command-jobs-help = Exact job identifiers separated by commas. The system uses these to check an officer's or CO's current role when deciding.
-rucm-qualifications-migration-steps = 1. Enter accounts. 2. Preview. 3. Check totals, enter a reason and confirm execution. Preview does not write anything.
+# CMU14: full scan before explicit execution
+rucm-qualifications-migration-steps = 1. Scan all historical players. 2. Review Dry Run totals. 3. Confirm and execute once. Dry Run does not write data.
 rucm-qualifications-preview-results = PREVIEW RESULTS
 rucm-qualifications-preview-help = Clearances that would be created. Execution requires this verified preview and unchanged data.
 rucm-qualifications-preview-empty = No preview yet. Execution becomes available after previewing.
@@ -384,3 +386,10 @@ rucm-qualifications-instructor-accreditation = Active Instructor Accreditation
 rucm-qualifications-synthetic-excluded = Synthetic — separate admission
 rucm-qualifications-synthetic-excluded-help = Synthetics use their separate whitelist. Human military levels and training checklists do not apply.
 rucm-qualifications-error-synthetic_excluded = Synthetics cannot receive human military training.
+
+# CMU14: full historical scan
+rucm-qualifications-scan-all-historical = Scan all historical players (Dry Run)
+rucm-qualifications-selected-migration = Advanced: selected accounts
+rucm-qualifications-accounts-scanned = Accounts scanned
+rucm-qualifications-players-receiving = Players receiving qualifications
+rucm-qualifications-migration-completed = This one-time migration has already been executed.

@@ -52,7 +52,7 @@ public sealed class QualificationSqliteTests
         foreach (var id in QualificationRules.Levels.Concat(new[] { "medical" }))
             seed.Definitions[id] = new() { Id = id, Name = id, Items = new() { new() { Id = "practice" } } };
         seed.Roles["medical_job"] = new() { JobId = "medical_job", Govfor = true, MinimumLevel = MilitaryLevel.Enlisted, Professional = new() { "medical" }, Tracker = "medical_tracker" };
-        seed.Roles["officer_job"] = new() { JobId = "officer_job", MinimumLevel = MilitaryLevel.Officer, Tracker = "officer_tracker" };
+        seed.Roles["officer_job"] = new() { JobId = "officer_job", Govfor = true, MinimumLevel = MilitaryLevel.Officer, Tracker = "officer_tracker" };
         return seed;
     }
 
@@ -78,6 +78,9 @@ public sealed class QualificationSqliteTests
         game.Preference.Add(new() { UserId = _student, SelectedCharacterSlot = 0, AdminOOCColor = "#123456" });
         game.PlayTime.Add(new() { PlayerId = _student, Tracker = "medical_tracker", TimeSpent = TimeSpan.FromHours(7) });
         await game.SaveChangesAsync();
+        // CMU14: real EF SQLite UUID/TimeSpan encoding must round-trip through the read-only full scanner.
+        var candidates = await new CMUHistoricalQualificationScanner(_gameConnection, true).Scan();
+        Assert.That(candidates.Single(c => c.Player == _student).TrackerHours["medical_tracker"], Is.EqualTo(7));
         var before = await GameSchemaFingerprint();
         var service = new QualificationService(new SqliteQualificationRepository(_qualificationConnection));
         await service.Initialize(Seed()); Assert.That(service.Available, Is.True);

@@ -92,7 +92,7 @@ Their old whitelist returns when the gate is disabled or outside Insurgency. A o
 their default role requirements in existing stores unless management has explicitly edited that role.
 Holding the role allows browsing; certification still requires explicit instructor accreditation.
 Every loaded job with `isSynthetic=true` is excluded from human qualification admission, participation,
-recent-participation Enlisted migration and all hours-based migration groups. Prototype facts override
+historical-hours Enlisted migration and all hours-based migration groups. Prototype facts override
 old stored classification and management edits. Synthetic tracker hours are excluded before alias folding;
 ambiguous shared trackers are excluded conservatively. Historical synthetic participation is retained
 as history but cannot grant Enlisted. This does not revoke previously migrated account grants.
@@ -159,19 +159,38 @@ delete a player. Training requires the target online for instructors; management
 
 ## Migration
 
-Management first edits the groups, then enters an explicit comma-separated GUID roster. No upstream
-public API enumerates all historical accounts through the qualification repository; supply the approved
-roster. Dry-run reads existing role-timer totals through the public DB API and writes nothing.
-It displays per-qualification counts and records. Execute requires the server-issued, account-bound preview
-token, an unchanged revision and a preview less than ten minutes old. The atomic transaction stores
-`govfor-training-v1`; repeat execute does nothing. Existing suspended/revoked records are never restored.
-Trackers shared by faction variants are deduplicated; persisted aliases normalize inspected legacy timers.
-CO roles and independent CO admission are excluded from hours-based migration.
+Management opens **Clearance import** and selects **Scan all historical players (Dry Run)**.
+A read-only scanner uses the configured game PostgreSQL database or SQLite file, reads all
+`player.user_id` records plus timer-only historical accounts, and reads their `play_time` in
+one consistent SQL statement. Accounts without timers are counted too. No manual roster or
+10,000-account limit applies to the full scan. SQLite work and plan calculation run off the
+simulation thread. No upstream schema, EF model or database interface is changed.
 
-**Historical limitation:** only job-specific GOVFOR activity recorded by this addon can establish the
-14-day Enlisted rule. Old account login dates or unrelated round participation are not substituted.
-See AUDIT.md for the missing upstream history API. Do not mark that acceptance item complete without
-a verified historical job-activity source.
+Dry Run reports scanned accounts, players receiving anything, totals for each qualification
+and total grants. It changes neither game data nor qualification data. Advanced selected-account
+preview remains available for deliberate partial imports; Execute consumes the same global
+one-time marker, so use the full scan for the initial server migration.
+
+- Enlisted: strictly **> 3 h** summed across all real human GOVFOR role trackers, including
+  roles without an enabled qualification gate. Exactly 3:00:00 does not qualify.
+- Sergeant: **≥ 5 h** in the Sergeant group; includes Enlisted.
+- Officer: **≥ 10 h** in the Officer group; includes Sergeant and Enlisted.
+- Professional: **≥ 5 h** in the corresponding role group; no military rank is awarded by
+  professional certification itself (the independent total-human-hours rule still applies).
+- Commanding Officer qualification is never migrated. CO service counts toward human
+  Enlisted hours, but CO jobs do not contribute to rank/professional migration groups.
+- Synthetic jobs, their trackers, aliases and ambiguous shared trackers are excluded.
+  Non-GOVFOR, unknown, negative and non-finite timers cannot prove service.
+
+Aliases fold legacy timers to verified canonical trackers; each canonical tracker is counted
+once per group. Participation dates and account last-seen are not migration evidence.
+Existing active, suspended and revoked grants are retained; migration never restores them.
+
+Execute requires management authority, the actor's preview token, unchanged qualification
+revision, and a preview younger than ten minutes (measured after the scan completes). It writes
+only qualification tables and audit, atomically records `govfor-training-v1`, and publishes cache
+changes after commit. Repeated execution and restart cannot issue grants again. A previous
+completed migration remains completed; this update never resets its marker or runs at startup.
 
 ## Persistence and audit
 

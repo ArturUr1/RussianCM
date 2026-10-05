@@ -1,3 +1,4 @@
+// CMU14: historical full-database qualification migration.
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,35 +9,39 @@ using Content.Shared._RuCM.Qualifications;
 namespace Content.Server._RuCM.Qualifications;
 
 public sealed record MigrationCandidate(Guid Player, Dictionary<string, double> TrackerHours);
-public sealed record MigrationPlan(string Key, long Revision, DateTimeOffset At, Dictionary<Guid, HashSet<string>> Grants);
+public sealed record MigrationPlan(string Key, long Revision, DateTimeOffset At, Dictionary<Guid, HashSet<string>> Grants, int AccountsScanned = 0);
 public sealed record QualificationMigrationSettings(Dictionary<string, HashSet<string>> Groups, Dictionary<string, string> Aliases);
 
 public sealed partial class QualificationService
 {
     public const string MigrationKey = "govfor-training-v1";
 
-    /// <summary>No writes. Recent GOVFOR evidence is job-specific, never inferred from account last-seen.</summary>
+    /// <summary>No writes. One-time eligibility comes only from historical human GOVFOR role timers.</summary>
     public MigrationPlan MigrationDryRun(IEnumerable<MigrationCandidate> candidates, DateTimeOffset at)
     {
+        if (!_loaded) throw new QualificationValidationException("storage");
         var s = VolatileSnapshot();
         var grants = new Dictionary<Guid, HashSet<string>>();
-        if (s.Migrations.Contains(MigrationKey)) return new(MigrationKey, s.Revision, at, grants);
-        var roles = s.Roles.Values.Where(r => r.Enabled && !r.Synthetic && !s.CommandingOfficerJobs.Contains(r.JobId)).ToArray();
+        var accounts = candidates.Where(c => c.Player != Guid.Empty).GroupBy(c => c.Player).Select(g => g.First()).ToArray();
+        var scanned = accounts.Length;
+        if (s.Migrations.Contains(MigrationKey)) return new(MigrationKey, s.Revision, at, grants, scanned);
+        var roles = s.Roles.Values.Where(r => r.Govfor && !r.Synthetic).ToArray();
         // Reject synthetic evidence before alias folding, including aliases to human trackers.
         // Trackers shared by human and synthetic jobs cannot prove human service.
         var syntheticTrackers = s.Roles.Values.Where(r => r.Synthetic).Select(r => r.Tracker).Where(t => t.Length > 0).ToHashSet();
         var syntheticCanonical = syntheticTrackers.Select(t => s.TrackerAliases.GetValueOrDefault(t, t)).ToHashSet();
-        foreach (var candidate in candidates.GroupBy(c => c.Player).Select(g => g.First()))
+        foreach (var candidate in accounts)
         {
             var earned = new HashSet<string>();
             var canonicalHours = candidate.TrackerHours.Where(t => !syntheticTrackers.Contains(t.Key) &&
-                !syntheticCanonical.Contains(s.TrackerAliases.GetValueOrDefault(t.Key, t.Key))).GroupBy(t => s.TrackerAliases.GetValueOrDefault(t.Key, t.Key)).ToDictionary(g => g.Key, g => g.Sum(t => Math.Max(0, t.Value)));
+                !syntheticCanonical.Contains(s.TrackerAliases.GetValueOrDefault(t.Key, t.Key))).GroupBy(t => s.TrackerAliases.GetValueOrDefault(t.Key, t.Key)).ToDictionary(g => g.Key, g => g.Sum(t => double.IsFinite(t.Value) ? Math.Max(0, t.Value) : 0));
             double Hours(string groupId, IEnumerable<RoleRequirement> fallback)
             {
-                var group = s.MigrationGroups.TryGetValue(groupId, out var jobs) ? s.Roles.Values.Where(r => jobs.Contains(r.JobId) && !r.Synthetic && !s.CommandingOfficerJobs.Contains(r.JobId)) : fallback;
-                return group.Select(r => r.Tracker).Where(t => t.Length > 0).Distinct().Sum(t => canonicalHours.GetValueOrDefault(t));
+                var group = s.MigrationGroups.TryGetValue(groupId, out var jobs) ? s.Roles.Values.Where(r => jobs.Contains(r.JobId) && r.Govfor && !r.Synthetic && !s.CommandingOfficerJobs.Contains(r.JobId)) : fallback;
+                return group.Where(r => !s.CommandingOfficerJobs.Contains(r.JobId)).Select(r => s.TrackerAliases.GetValueOrDefault(r.Tracker, r.Tracker)).Where(t => t.Length > 0).Distinct().Sum(t => canonicalHours.GetValueOrDefault(t));
             }
-            if (s.Participation.Any(p => p.Player == candidate.Player && p.At >= at.AddDays(-14) && p.At <= at && s.Roles.TryGetValue(p.Job, out var participated) && participated.Govfor && !participated.Synthetic)) earned.Add("enlisted");
+            var humanHours = roles.Select(r => s.TrackerAliases.GetValueOrDefault(r.Tracker, r.Tracker)).Where(t => t.Length > 0).Distinct().Sum(t => canonicalHours.GetValueOrDefault(t));
+            if (humanHours > 3) earned.Add("enlisted");
             if (Hours("sergeant", roles.Where(r => r.MinimumLevel == MilitaryLevel.Sergeant)) >= 5) earned.UnionWith(new[] { "enlisted", "sergeant" });
             if (Hours("officer", roles.Where(r => r.MinimumLevel == MilitaryLevel.Officer)) >= 10) earned.UnionWith(QualificationRules.Levels);
             foreach (var definition in s.Definitions.Values.Where(d => d.Enabled && !QualificationRules.Levels.Contains(d.Id) && d.Id != "commanding_officer"))
@@ -45,7 +50,7 @@ public sealed partial class QualificationService
             if (s.Players.TryGetValue(candidate.Player, out var player)) earned.ExceptWith(player.Grants.Keys);
             if (candidate.Player != Guid.Empty && earned.Count > 0) grants[candidate.Player] = earned;
         }
-        return new(MigrationKey, s.Revision, at, grants);
+        return new(MigrationKey, s.Revision, at, grants, scanned);
     }
     private QualificationStore VolatileSnapshot() => System.Threading.Volatile.Read(ref _cache);
 
@@ -70,7 +75,7 @@ public sealed partial class QualificationService
                     if (player.Grants.ContainsKey(qualification)) continue;
                     Award(next, player, qualification, actor.Context, MigrationKey);
                     next.Audit.Add(new(Guid.NewGuid(), "MigrationGrant", actor.Context.Actor, id, actor.Context.At,
-                        actor.Context.Round, actor.Context.Server, "", qualification, MigrationKey, JsonSerializer.Serialize(plan)));
+                        actor.Context.Round, actor.Context.Server, "", qualification, MigrationKey, JsonSerializer.Serialize(new { plan.Key, plan.Revision, plan.At, plan.AccountsScanned })));
                     granted.Add(new("Grant", id, qualification, actor.Context.Actor));
                 }
             }

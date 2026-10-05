@@ -718,25 +718,31 @@ public sealed partial class QualificationWindow : DefaultWindow
     {
         var migration = Card(_content, L("migration"), L("migration-evidence"), true);
         Text(migration, L("migration-steps"));
-        Text(migration, L("named-accounts-help"));
-        var roster = AccountChecks(migration, "migration-roster", new());
-        var import = Column(); import.Visible = false; migration.AddChild(import);
-        Button(migration, L("technical-roster"), () => import.Visible = !import.Visible);
+        // CMU14: scan every historical account without a manually supplied roster.
+        Button(migration, L("scan-all-historical"), () => { var req = Request(); req.Configuration = new() { ScanAllHistorical = true }; Send(QualificationAction.MigrationPreview, req); }, () => Ready, name: "scan-historical");
+        var selected = Card(_content, L("selected-migration"), L("named-accounts-help"));
+        var roster = AccountChecks(selected, "migration-roster", new());
+        var import = Column(); import.Visible = false; selected.AddChild(import);
+        Button(selected, L("technical-roster"), () => import.Visible = !import.Visible);
         var ids = Field(import, "migration-ids", L("migration-roster"), help: L("uuid-list-help"));
         HashSet<Guid>? Roster()
         { var result = ParseIds(ids.Text); if (result == null) return null; result.UnionWith(roster.Where(p => p.Value.Pressed).Select(p => p.Key)); return result; }
-        Button(migration, L("dry-run"), () => { var req = Request(); req.Configuration = new() { Roster = Roster() }; Send(QualificationAction.MigrationPreview, req); },
+        Button(selected, L("dry-run"), () => { var req = Request(); req.Configuration = new() { Roster = Roster() }; Send(QualificationAction.MigrationPreview, req); },
             () => Ready && Roster() is { Count: > 0 });
         if (_view.Preview is { } preview)
         {
             var results = Card(_content, L("preview-results"), L("preview-help"));
+            // CMU14: separate scanned accounts, recipients and grants.
+            Text(results, L("accounts-scanned") + ": " + preview.AccountsScanned);
+            Text(results, L("players-receiving") + ": " + preview.PlayersReceiving);
+            if (preview.Completed) Text(results, L("migration-completed"));
             foreach (var (id, count) in preview.Counts) Text(results, DefinitionName(id) + ": " + count);
             Heading(results, L("migration-records") + ": " + preview.Records);
         }
         else Text(migration, L("preview-empty"));
         ManagementGuard();
         Button(_content, L("execute-migration"), () => { var req = Request(); req.PreviewToken = _view.PreviewToken; Send(QualificationAction.MigrationExecute, req); },
-            () => Confirmed && _view.PreviewToken.Length > 0, true);
+            () => Confirmed && _view.PreviewToken.Length > 0 && _view.Preview is { Completed: false }, true, "execute-migration");
         var settings = Card(_content, L("migration-settings"), L("migration-settings-help"));
         var settingsBody = Column(); settingsBody.Visible = false; settings.AddChild(settingsBody);
         Button(settings, L("show-migration-settings"), () => settingsBody.Visible = !settingsBody.Visible);

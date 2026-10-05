@@ -75,6 +75,7 @@ public sealed class QualificationConfiguration
     public Dictionary<string, HashSet<string>>? MigrationGroups { get; set; }
     public Dictionary<string, string>? TrackerAliases { get; set; }
     public HashSet<Guid>? Roster { get; set; }
+    public bool ScanAllHistorical { get; set; } // CMU14
 }
 
 [Serializable, NetSerializable]
@@ -82,6 +83,10 @@ public sealed class QualificationMigrationPreview
 {
     public Dictionary<string, int> Counts { get; set; } = new();
     public int Records { get; set; }
+    // CMU14: report full scan scope without transferring historical account lists.
+    public int AccountsScanned { get; set; }
+    public int PlayersReceiving { get; set; }
+    public bool Completed { get; set; }
 }
 
 [Serializable, NetSerializable]

@@ -37,13 +37,16 @@ public sealed class QualificationPostgresTests
         game.Preference.Add(new Preference { UserId = gameAccount, AdminOOCColor = "#123456", SelectedCharacterSlot = 0 });
         game.PlayTime.Add(new PlayTime { PlayerId = gameAccount, Tracker = "qualification_coexistence_test", TimeSpent = TimeSpan.FromHours(7) });
         await game.SaveChangesAsync();
+        // CMU14: read the actual game UUID and interval types without a roster or qualification writes.
+        var candidates = await new CMUHistoricalQualificationScanner(connectionString, false).Scan();
+        Assert.That(candidates.Single(c => c.Player == gameAccount).TrackerHours["qualification_coexistence_test"], Is.EqualTo(7));
         var gameSchema = await GameSchemaFingerprint(guard);
         try
         {
         var repository = new PostgresQualificationRepository(connectionString);
         var seed = new QualificationStore();
         foreach (var id in QualificationRules.Levels.Concat(new[] { "medical" })) seed.Definitions[id] = new() { Id = id, Name = id, Items = new() { new() { Id = "practice" } } };
-        seed.Roles["test_officer"] = new() { JobId = "test_officer", MinimumLevel = MilitaryLevel.Officer, Tracker = "test_officer_tracker" };
+        seed.Roles["test_officer"] = new() { JobId = "test_officer", Govfor = true, MinimumLevel = MilitaryLevel.Officer, Tracker = "test_officer_tracker" };
         var s = new QualificationService(repository); await s.Initialize(seed);
         Assert.That(s.Available, Is.True);
         var actorId = Guid.NewGuid(); var target = Guid.NewGuid();

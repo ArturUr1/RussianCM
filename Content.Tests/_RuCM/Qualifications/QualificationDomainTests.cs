@@ -1,3 +1,4 @@
+// CMU14: migration fixtures classify their human GOVFOR roles.
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,9 +21,9 @@ public sealed class QualificationDomainTests
         var s = new QualificationStore();
         foreach (var id in QualificationRules.Levels.Concat(new[] { "medical", "aviation" }))
             s.Definitions[id] = new() { Id = id, Name = id, Items = new() { new() { Id = "required" }, new() { Id = "optional", Required = false }, new() { Id = "disabled", Enabled = false } } };
-        s.Roles["medical_job"] = new() { JobId = "medical_job", MinimumLevel = MilitaryLevel.Enlisted, Professional = new() { "medical" }, Tracker = "medical_tracker" };
-        s.Roles["sergeant_job"] = new() { JobId = "sergeant_job", MinimumLevel = MilitaryLevel.Sergeant, Tracker = "sergeant_tracker" };
-        s.Roles["officer_job"] = new() { JobId = "officer_job", MinimumLevel = MilitaryLevel.Officer, Tracker = "officer_tracker" };
+        s.Roles["medical_job"] = new() { JobId = "medical_job", Govfor = true, MinimumLevel = MilitaryLevel.Enlisted, Professional = new() { "medical" }, Tracker = "medical_tracker" };
+        s.Roles["sergeant_job"] = new() { JobId = "sergeant_job", Govfor = true, MinimumLevel = MilitaryLevel.Sergeant, Tracker = "sergeant_tracker" };
+        s.Roles["officer_job"] = new() { JobId = "officer_job", Govfor = true, MinimumLevel = MilitaryLevel.Officer, Tracker = "officer_tracker" };
         return s;
     }
     private async Task<QualificationService> Service(IRuCMQualificationRepository repository = null)
@@ -186,7 +187,7 @@ public sealed class QualificationDomainTests
     }
 
     [Test]
-    public async Task MigrationRecentParticipationIsJobSpecificAndNeverRestoresSuspensions()
+    public async Task MigrationRequiresHistoricalHoursAndNeverRestoresSuspensions()
     {
         var seed = Seed(); seed.Roles["medical_job"].Govfor = true;
         var now = DateTimeOffset.UtcNow;
@@ -195,7 +196,7 @@ public sealed class QualificationDomainTests
         var outsider = Guid.NewGuid(); seed.Participation.Add(new(outsider, "sergeant_job", now, 3, "test"));
         var s = new QualificationService(new MemoryQualificationRepository()); await s.Initialize(seed);
         var plan = s.MigrationDryRun(new[] { new MigrationCandidate(_student, new()), new(old, new()), new(outsider, new()) }, now);
-        Assert.That(plan.Grants[_student], Does.Contain("enlisted")); Assert.That(plan.Grants.ContainsKey(old), Is.False); Assert.That(plan.Grants.ContainsKey(outsider), Is.False);
+        Assert.That(plan.Grants, Is.Empty, "Participation alone cannot prove the historical hours threshold");
         await Grant(s, "medical"); await s.Apply(Manager, QualificationAction.Suspend, Request("medical"));
         var migration = s.MigrationDryRun(new[] { new MigrationCandidate(_student, new() { ["medical_tracker"] = 5 }) }, now);
         Assert.That(migration.Grants.GetValueOrDefault(_student) ?? new(), Does.Not.Contain("medical"));
