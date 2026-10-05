@@ -1,5 +1,10 @@
 using System.Linq;
+using System.Text.RegularExpressions;
 using Content.Shared._RMC14.Armor;
+using Content.Shared._RMC14.Inventory;
+using Content.Shared._RMC14.UniformAccessories;
+using Content.Shared._RMC14.Webbing;
+using Content.Shared.Containers.ItemSlots;
 using Content.Shared.Clothing.Components;
 using Content.Shared.Inventory;
 using Content.Shared.Preferences.Loadouts.Effects;
@@ -48,27 +53,64 @@ public static class CustomClothingRules
         "Jetpack", "AntiGravityClothing", "NinjaSuit", "NinjaGloves", "Thieving", 
         "ClothingGrantComponents", "ClothingGrantTag", "ActionGrant", "ItemActionGrant", "ToggleableClothing",
         "ToggleClothing", "ComponentToggler", "SelectableComponentAdder", "IntegratedVisors", "CycleableVisor",
-        "ChameleonClothing", "VoiceMask", "FixedIdentity", "AgentIDCard", "Storage", "StorageFill", "Reflect",
+        "ChameleonClothing", "VoiceMask", "FixedIdentity", "AgentIDCard", "StorageFill", "ContainerFill",
+        "EntityTableContainerFill", "Reflect",
         "Gun", "MeleeWeapon", "ExtraHandsEquipment", "SelfUnremovableClothing", "Unremoveable", "CursedMask",
         "BindItemOnEquip", "ChangelingFleshClothing", "FleetingClothing", "WizardClothes", "YautjaTechItem",
         "YautjaMask", "PilotedClothing", "FactionClothing", "RMCUnstrippable", "RMCSynthItemRestriction",
         "PointLight", "HandheldLight", "RMCSuitLight", "ItemTogglePointLight", "UnpoweredFlashlight", "Blindfold",
         "ClothingBlockBackpack", "ClothingBlockWebbing", "Access", "Battery", "PowerCellSlot",
         "Respirator", "SmartGun", "TargetingLaser", "RMCItemToggleClothingVisuals",
-        "BlockMovement", "EmoteBlocker", "Explosive", "ExplodeOnTrigger", "TimerTrigger", "Sticky", "Defibrillator",
+        "Whistle", "RMCWhistle", "RMCMegaphone", "Clock", "RMCClock", "Instrument", "Stethoscope", "RMCStethoscope", "Smokable",
+        "Cigar", "SmokingPipe", "EmitSoundOnUse", "ActiveListener", "PDTBracelet", "BlockMovement", "EmoteBlocker", "Explosive", "ExplodeOnTrigger", "TimerTrigger", "Sticky", "Defibrillator",
         "RequiresSkill", "Scope", "CursorOffsetRequiresWield", "Handcuff", "RMCDefibrillatorBlocked",
     };
 
-    // Items whose id contains one of these words are test, admin or donor items.
-    private static readonly string[] ForbiddenIdFragments = { "Debug", "Test", "Admin", "StripMerge", "MergeBlocking", "Donor" };
+    // Items whose id contains one of these words are test, admin, donor, ambrosia, synthetic, Working Joe, gadget, armor, spacesuit, Yautja, xenomorph, Syndicate or PMC items.
+    private static readonly string[] ForbiddenIdFragments = { "Debug", "Test", "Admin", "StripMerge", "MergeBlocking", "Donor", "Ambrosia", "Synth", "AU14Joe", "WorkingJoe",
+        "Whistle", "Watch", "Cigar", "SmokingPipe", "Dogtag", "Harmonica", "TennisBall", "ToyNuke", "Armor", "CatEars", "DogEars", "Commando", "ERT",
+        "Hardsuit", "Spacesuit", "SpaceSuit", "Softsuit", "SuitEmergency", "HelmetEmergency", "SuitEVA", "HelmetEVA", "CBRN", "Hazmat",
+        "PlagueSuit", "Towel", "Bedsheet", "Blanket", "LACNGloves", "Yautja", "BadBlood", "Xeno", "Parasite", "Facehugger",
+        "Syndicate", "Syndie", "Cybersun", "Operative", "VestWebElite", "Nuke", "PMC", "Merc", "AU14WY", "WYSec" };
 
-    // Items that are always hidden (head cloaks and a few special items).
+    // Commander, captain and leader gear is recognised by its id.
+    private static readonly Regex CommandItemPattern =
+        new(@"Command(?!o)|Captain|Leader|Teamlead|Lead$|(Coat|Beret|Cap|Jumpsuit)CO(?![a-z])", RegexOptions.Compiled);
+
+    // Uniforms with a rig, webbing, bandolier or drop pouch are recognised by their id.
+    private static readonly Regex RigUniformPattern = new(@"(?<!No)Webbing|Bandolier|Pouch|Harness|Holster|Chestrig|Rig$", RegexOptions.Compiled);
+
+    // Vanilla (Clothing...) department, head of department and Centcom gear is recognised by its id.
+    private static readonly Regex VanillaDepartmentPattern = new(
+        @"Captain|CapFormal|MantleCap|Command|Centcom|Nanotrasen|DeathSquad|Atmos|Bartender|Brigmedic|Cargo|Chaplain|Nun|Monastic|Chef|Apron|Chemi|Clown|Curator|" +
+        @"Detective|Det(?![a-z])|Forensic|Engineer|Repairman|Recruit|Genetics|Hydroponics|Botan|Janitor|Janimaid|Journalist|Reporter|Press|Lawyer|Judge|Librarian|" +
+        @"Medic|Paramedic|Doctor|Surgcap|Nurse|Sterile|Latex|Nitrile|Senior|Mime|Musician|Performer|Psychologist|Roboticist|Salvage|Sci|Security|Secsoft|" +
+        @"Sec(?![a-z])|Swat|MAA|SyndieCap|Warden|Virology|TramDriver|Prisoner|CMO|Cmo|HoP|HOP|Hop|HoS|HOS|Hos|QM|ResearchDirector|RD(?![a-z])|RND|CE(?![a-z])|Merge|Spawner",
+        RegexOptions.Compiled);
+
+    // Vanilla (Clothing...) cloaks, mantles, maid costumes, colored gloves and power gloves are recognised by their id.
+    private static readonly Regex VanillaCloakPattern = new(@"Cloak|Mantle|Maid(?!en)|GlovesColor|Powerglove", RegexOptions.Compiled);
+
+    // Dress and parade uniforms, service jackets and peaked officer caps are recognised by their id.
+    private static readonly Regex DressUniformPattern = new(
+        @"DressBlues|UniformDress|Parade|Peaked|CoatCO(?![A-Za-z])|CoatCOFormal|CoatXOFormal|CoatService|HandsWhiteDress|" +
+        @"HeadCapOfficer|CapOfficer|OfficerCap|CommandingOfficerCap|HeadCapGeneral|HeadCapCMO|SPPPol|ParaCOJacket",
+        RegexOptions.Compiled);
+
+    // Police, security, military police and marshal gear is recognised by its id.
+    private static readonly Regex LawEnforcementPattern = new(
+        @"Security|Secsoft|Sec(?![a-z])|Police|Provost|Warden|Marshal|Riot|Detective|Brig|Sheriff|CMB|Bureau|PolKom|SWAT|Swat|Deputy|MP(?![a-z])",
+        RegexOptions.Compiled);
+
+    // Items that are always hidden (head cloaks, generals' gear and a few special items).
     private static readonly HashSet<string> ForbiddenIds = new()
     {
         "ClothingNeckCloakCap", "ClothingNeckCloakCapFormal", "ClothingNeckCloakPirateCap", "ClothingNeckCloakCe",
         "ClothingCloakCmo", "ClothingNeckCloakHop", "ClothingNeckCloakHos",
         "ClothingNeckCloakQm", "ClothingNeckCloakRd", "ClothingNeckCloakCentcom", "ClothingNeckCloakNanotrasen",
-        "RMCGeneralFormalCloak", "CMU14ClothingHeadWalkerMarker", "Binoculars", "C4",
+        "RMCGeneralFormalCloak", "CMU14ClothingHeadWalkerMarker", "Binoculars", "C4", "RMCHeadMilitiaBucket",
+        "CMJumpsuitGeneral", "CMCoatDressBluesGeneral", "RMCCoatJacketGeneral", "RMCCoatJacketGeneralFilled", "RMCHeadBeretGeneral",
+        "RMCHeadCapGeneral", "RMCMarineUniformDressGeneral", "RMCArmorM3General", "CMArmorHelmetM11CGeneral",
     };
 
     public static bool TryGetFlags(string slot, out SlotFlags flags)
@@ -88,23 +130,68 @@ public static class CustomClothingRules
                 return false;
         }
 
+        if (CommandItemPattern.IsMatch(proto.ID))
+            return false;
+
+        if (DressUniformPattern.IsMatch(proto.ID))
+            return false;
+
+        if (proto.ID.StartsWith("Clothing", StringComparison.Ordinal) &&
+            (VanillaDepartmentPattern.IsMatch(proto.ID) || VanillaCloakPattern.IsMatch(proto.ID)))
+        {
+            return false;
+        }
+
         if (!TryGetFlags(slot, out var flags))
             return false;
 
         if (!proto.TryGetComponent<ClothingComponent>(out var clothing, factory) || (clothing.Slots & flags) == 0)
             return false;
 
-        if (proto.TryGetComponent<CMArmorComponent>(out var armor, factory) &&
-            Math.Max(Math.Max(armor.Melee, armor.Bullet), Math.Max(Math.Max(armor.Bio, armor.ExplosionArmor), armor.XenoArmor)) > MaxToleratedArmor)
+        if (proto.TryGetComponent<CMArmorComponent>(out var armor, factory))
+        {
+            var strongest = Math.Max(Math.Max(armor.Melee, armor.Bullet), Math.Max(Math.Max(armor.Bio, armor.ExplosionArmor), armor.XenoArmor));
+
+            // Law enforcement gear is only allowed without any armor at all.
+            var limit = LawEnforcementPattern.IsMatch(proto.ID) ? 0 : MaxToleratedArmor;
+            if (strongest > limit)
+                return false;
+        }
+
+        // Storage is fine, but clothing that comes with something inside (filled pockets, loaded holsters) is not offered.
+        if (proto.TryGetComponent<ItemSlotsComponent>(out var itemSlots, factory) &&
+            itemSlots.Slots.Values.Any(itemSlot => itemSlot.StartingItem != null))
         {
             return false;
         }
 
+        // Uniforms that come with patches, emblems or pouches already attached are not offered.
+        if (proto.TryGetComponent<UniformAccessoryHolderComponent>(out var accessories, factory) &&
+            accessories.StartingAccessories is { Count: > 0 })
+        {
+            return false;
+        }
+
+        // Uniforms sold with a rig, webbing, bandolier or pouch are not offered.
+        if (slot == "jumpsuit" && RigUniformPattern.IsMatch(proto.ID))
+            return false;
+
+        // Anything else that comes with webbing already attached is not offered either.
+        if (proto.TryGetComponent<WebbingClothingComponent>(out var webbing, factory) && webbing.StartingWebbing != null)
+            return false;
+
+        if (proto.TryGetComponent<CMItemSlotsComponent>(out var cmSlots, factory) &&
+            (cmSlots.StartingItem != null || cmSlots.StartingItems is { Count: > 0 }))
+        {
+            return false;
+        }
+
+        // Anything built on a Yautja or xenomorph component is that species' gear.
+        if (proto.Components.Keys.Any(name => name.StartsWith("Yautja", StringComparison.Ordinal) || name.StartsWith("Xeno", StringComparison.Ordinal)))
+            return false;
+
         foreach (var name in ForbiddenComponents)
         {
-            if (slot == "outerClothing" && name is "Storage" or "StorageFill")
-                continue;
-
             if (proto.Components.ContainsKey(name))
                 return false;
         }
@@ -131,6 +218,11 @@ public static class CustomClothingRules
         return effect != null;
     }
 
+    public static bool IsPaintable(LoadoutPrototype proto)
+    {
+        return proto.Effects.OfType<PaintableLoadoutEffect>().Any();
+    }
+
     // Checks and cleans the custom data of a loadout. False means it must be dropped.
     public static bool Validate(Loadout loadout, LoadoutPrototype proto, IDependencyCollection collection)
     {
@@ -138,7 +230,7 @@ public static class CustomClothingRules
         {
             loadout.CustomEntity = null;
             loadout.CustomName = null;
-            loadout.CustomColor = null;
+            loadout.CustomColor = IsPaintable(proto) ? loadout.CustomColor?.WithAlpha(1f) : null;
             return true;
         }
 

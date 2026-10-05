@@ -156,6 +156,7 @@ public sealed partial class HumanoidProfileEditor
         {
             roleLoadout.AddLoadout(loadoutGroup, loadoutProto, _prototypeManager);
             Profile = Profile!.WithLoadout(concreteKey, roleLoadout);
+            DropUnavailableSpecialLoadout(specialLoadout, specialLoadoutProto, session, collection);
             _colonistSkillWindow.RefreshLoadouts(Profile, roleLoadout, specialLoadout, session, collection);
             ReloadPreview();
             SetDirty();
@@ -165,6 +166,7 @@ public sealed partial class HumanoidProfileEditor
         {
             roleLoadout.RemoveLoadout(loadoutGroup, loadoutProto, _prototypeManager);
             Profile = Profile!.WithLoadout(concreteKey, roleLoadout);
+            DropUnavailableSpecialLoadout(specialLoadout, specialLoadoutProto, session, collection);
             _colonistSkillWindow.RefreshLoadouts(Profile, roleLoadout, specialLoadout, session, collection);
             ReloadPreview();
             SetDirty();
@@ -188,9 +190,21 @@ public sealed partial class HumanoidProfileEditor
             SetDirty();
         };
 
-        _colonistSkillWindow.OnClothingEditorRequested += () => OpenColonistClothingEditor(specialLoadout, specialLoadoutProto, collection);
+        _colonistSkillWindow.OnSpecialLoadoutColorChanged += (loadoutGroup, loadoutProto, color) =>
+        {
+            if (!specialLoadout.SelectedLoadouts.TryGetValue(loadoutGroup, out var picks) ||
+                picks.All(pick => pick.Prototype != loadoutProto))
+            {
+                return;
+            }
 
-        _colonistSkillWindow.ApplyVanillaDefaultsIfUntouched(roleLoadout);
+            specialLoadout.SetCustomLoadout(loadoutGroup, new Loadout { Prototype = loadoutProto, CustomColor = color }, _prototypeManager);
+            Profile = Profile!.WithLoadout(specialLoadoutProto.ID, specialLoadout);
+            _colonistSkillWindow.RefreshLoadouts(Profile, roleLoadout, specialLoadout, session, collection);
+            SetDirty();
+        };
+
+        _colonistSkillWindow.OnClothingEditorRequested += () => OpenColonistClothingEditor(specialLoadout, specialLoadoutProto, collection);
 
         ReloadPreview();
         _colonistSkillWindow.OnClose += () =>
@@ -201,6 +215,13 @@ public sealed partial class HumanoidProfileEditor
         };
 
         UpdateJobPriorities();
+    }
+
+    // Removes special loadout items whose skill requirements are no longer met after the skills changed.
+    private void DropUnavailableSpecialLoadout(RoleLoadout specialLoadout, RoleLoadoutPrototype specialLoadoutProto, Robust.Shared.Player.ICommonSession session, IDependencyCollection collection)
+    {
+        specialLoadout.EnsureValid(Profile!, session, collection);
+        Profile = Profile!.WithLoadout(specialLoadoutProto.ID, specialLoadout);
     }
 
     // Opens the custom clothing window for the special loadout.

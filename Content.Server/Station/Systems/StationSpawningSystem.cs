@@ -13,6 +13,7 @@ using Content.Server.Station.Components;
 using Content.Server.CMU14.Yautja;
 using System.Diagnostics.CodeAnalysis;
 using Content.Shared.CMU14.Clothing;
+using Content.Shared.CMU14.Logistics;
 using Content.Shared.CMU14.Roles;
 using Content.Shared._RMC14.Marines;
 using Content.Shared.CMU14.Yautja;
@@ -41,6 +42,7 @@ using Content.Shared.CMU14.Round.Roles;
 using Content.Shared.Traits;
 using JetBrains.Annotations;
 using Robust.Shared.Configuration;
+using Robust.Shared.Containers;
 using Robust.Shared.Map;
 using Robust.Shared.Player;
 using Robust.Shared.Prototypes;
@@ -75,6 +77,7 @@ public sealed partial class StationSpawningSystem : SharedStationSpawningSystem
     [Dependency] private PdaSystem _pdaSystem = default!;
     [Dependency] private IPrototypeManager _prototypeManager = default!;
     [Dependency] private IComponentFactory _componentFactory = default!;
+    [Dependency] private SharedContainerSystem _containers = default!;
     [Dependency] private PlatoonSpawnRuleSystem _platoonSpawnRuleSystem = default!;
     [Dependency] private SquadSystem _squadSystem = default!;
     [Dependency] private NpcFactionSystem _npcFaction = default!;
@@ -888,7 +891,7 @@ public sealed partial class StationSpawningSystem : SharedStationSpawningSystem
                 if (CustomClothingRules.TryGetEffect(loadoutProto, out var clothing))
                     GiveCustomClothing(entity, clothing.Slot, selected);
                 else
-                    GiveSpecialLoadoutEntry(entity, loadoutProto);
+                    GiveSpecialLoadoutEntry(entity, loadoutProto, selected);
             }
         }
     }
@@ -904,6 +907,17 @@ public sealed partial class StationSpawningSystem : SharedStationSpawningSystem
         }
 
         var item = Spawn(proto.ID, Transform(entity).Coordinates);
+
+        // Chosen clothing must start empty, even if the prototype put something inside.
+        var containers = new List<BaseContainer>();
+        if (HasComp<ContainerManagerComponent>(item))
+        {
+            foreach (var container in _containers.GetAllContainers(item))
+                containers.Add(container);
+        }
+
+        foreach (var container in containers)
+            _containers.CleanContainer(container);
 
         if (CustomClothingRules.SanitizeName(selected.CustomName) is { } name)
             _metaSystem.SetEntityName(item, name);
@@ -953,9 +967,10 @@ public sealed partial class StationSpawningSystem : SharedStationSpawningSystem
     }
 
     // Spawns the items of one loadout entry and equips or holds them.
-    private void GiveSpecialLoadoutEntry(EntityUid entity, LoadoutPrototype loadout)
+    private void GiveSpecialLoadoutEntry(EntityUid entity, LoadoutPrototype loadout, Loadout selected)
     {
         var coordinates = Transform(entity).Coordinates;
+        var paint = CustomClothingRules.IsPaintable(loadout) ? selected.CustomColor?.WithAlpha(1f) : null;
 
         foreach (var (slot, protoId) in loadout.Equipment)
         {
@@ -965,7 +980,14 @@ public sealed partial class StationSpawningSystem : SharedStationSpawningSystem
         }
 
         foreach (var protoId in loadout.Inhand)
-            PickUpOrLeave(entity, Spawn(protoId, coordinates));
+        {
+            var item = Spawn(protoId, coordinates);
+
+            if (paint != null && TryComp<AU14DeployBoxComponent>(item, out var box))
+                box.Paint = paint;
+
+            PickUpOrLeave(entity, item);
+        }
     }
 
     // Equips into the slot (pockets use either one). Other slots keep what is already worn unless they may be replaced.
