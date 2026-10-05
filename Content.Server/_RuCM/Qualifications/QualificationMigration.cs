@@ -54,7 +54,11 @@ public sealed partial class QualificationService
     }
     private QualificationStore VolatileSnapshot() => System.Threading.Volatile.Read(ref _cache);
 
-    public async Task ExecuteMigration(QualificationAuthority actor, MigrationPlan plan)
+    // CMU14: the initial deep copy must also run off the simulation thread.
+    public Task ExecuteMigration(QualificationAuthority actor, MigrationPlan plan) =>
+        Task.Run(() => ExecuteMigrationCore(actor, plan));
+
+    private async Task ExecuteMigrationCore(QualificationAuthority actor, MigrationPlan plan)
     {
         var granted = new List<QualificationMutationEvent>();
         await _mutations.WaitAsync();
@@ -66,7 +70,7 @@ public sealed partial class QualificationService
             if (current.Migrations.Contains(plan.Key)) return;
             if (plan.Key != MigrationKey || plan.Revision != current.Revision || actor.Context.At - plan.At > TimeSpan.FromMinutes(10))
                 throw new QualificationConflictException();
-            var next = current.Clone();
+            var next = CloneForMutation(current); // CMU14: only migrated histories need an independent copy.
             foreach (var (id, qualifications) in plan.Grants)
             {
                 var player = Player(next, id, actor.Context.At);
@@ -83,7 +87,7 @@ public sealed partial class QualificationService
             next.Audit.Add(new(Guid.NewGuid(), "MigrationExecute", actor.Context.Actor, null, actor.Context.At,
                 actor.Context.Round, actor.Context.Server, "", JsonSerializer.Serialize(plan.Grants), MigrationKey, plan.Key));
             next.Revision = current.Revision + 1;
-            await _repository.Save(next, current.Revision);
+            await PersistChanges(next, current); // CMU14: only owned player projections and appended history.
             System.Threading.Volatile.Write(ref _cache, next);
             Available = true;
         }
@@ -93,7 +97,11 @@ public sealed partial class QualificationService
         foreach (var grant in granted) Changed?.Invoke(grant);
     }
 
-    public async Task RecordParticipation(GovforParticipation participation)
+    // CMU14: joins must not copy/serialize the historical store during the game tick.
+    public Task RecordParticipation(GovforParticipation participation) =>
+        Task.Run(() => RecordParticipationCore(participation));
+
+    private async Task RecordParticipationCore(GovforParticipation participation)
     {
         await _mutations.WaitAsync();
         try
@@ -101,11 +109,11 @@ public sealed partial class QualificationService
             if (!_loaded) return;
             var current = VolatileSnapshot();
             if (!current.Roles.TryGetValue(participation.Job, out var role) || !role.Govfor || role.Synthetic || current.Participation.Any(p => p.Player == participation.Player && p.Round == participation.Round && p.Server == participation.Server && p.Job == participation.Job)) return;
-            var next = current.Clone();
+            var next = CloneForMutation(current); // CMU14: joining doesn't copy all historical histories.
             next.Participation.Add(participation);
             Player(next, participation.Player, participation.At);
             next.Revision++;
-            await _repository.Save(next, current.Revision);
+            await PersistChanges(next, current); // CMU14: only owned player projections and appended history.
             System.Threading.Volatile.Write(ref _cache, next);
             Available = true;
         }
