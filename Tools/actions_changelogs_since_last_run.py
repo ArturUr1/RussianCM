@@ -24,6 +24,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent / "_CMU14" / "Changelog")
 
 from changelog_discord_state import FileStateStore, GitHubStateStore, empty_state
 from changelog_translation import RussianTranslator, POLICY_FILE
+from changelog_translation_cache import load_translation_cache, save_translation_cache
 from update_changelog import load_yaml, entry_key
 from update_changelog_parts import parse_time
 
@@ -269,6 +270,8 @@ def main():
     parser.add_argument("--start-date", default=os.environ.get("CHANGELOG_START_DATE") or None)
     parser.add_argument("--dry-run", action="store_true")
     parser.add_argument("--output", default="discord-preview.md")
+    parser.add_argument("--translation-cache", default=os.environ.get("CHANGELOG_TRANSLATION_CACHE"),
+                        help="Reusable validated translations; preview may write this cache, never delivery state")
     parser.add_argument("--state-file", help="Local journal for tests/preview; production uses GitHub")
     parser.add_argument("--translation-policy", default=str(POLICY_FILE))
     parser.add_argument("--resolve-ambiguous", choices=["retry", "delivered"],
@@ -306,13 +309,25 @@ def main():
         if args.dry_run:
             write_preview(args.output, [])
         return
-    translator = RussianTranslator(state["translations"], args.translation_policy)
+    if args.translation_cache:
+        reusable = load_translation_cache(args.translation_cache)
+        reusable.update(state["translations"])
+        state["translations"] = reusable
+
+    def checkpoint_translation():
+        if args.translation_cache:
+            save_translation_cache(args.translation_cache, state["translations"])
+        if not args.dry_run:
+            store.save(state)
+
+    translator = RussianTranslator(state["translations"], args.translation_policy, checkpoint=checkpoint_translation)
     try:
         pending = prepare_delivery(selected, translator)
     except Exception:
         if not args.dry_run:
             store.save(state)
         raise
+    checkpoint_translation()
     if args.dry_run:
         write_preview(args.output, pending["chunks"])
         print(f"Preview written to {args.output}; no Discord or journal writes")
