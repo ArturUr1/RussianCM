@@ -26,6 +26,15 @@ public sealed partial class QualificationWindow : DefaultWindow
     private readonly BoxContainer _root = Column();
     private readonly BoxContainer _content = Column();
     private readonly BoxContainer _navigation = Column();
+    // CMU14: retain scrollbar ranges and animation targets across authoritative view updates.
+    private readonly ScrollContainer _pageScroll = new()
+    {
+        HScrollEnabled = false, HorizontalExpand = true, VerticalExpand = true, Name = "page-scroll",
+    };
+    private readonly ScrollContainer _navigationScroll = new()
+    {
+        HScrollEnabled = false, VerticalExpand = true, Name = "navigation-scroll",
+    };
     private readonly RichTextLabel _feedback = new() { HorizontalExpand = true };
     private readonly Dictionary<string, string> _drafts = new();
     private readonly Dictionary<string, bool> _checks = new();
@@ -35,6 +44,7 @@ public sealed partial class QualificationWindow : DefaultWindow
     private string _selectedDefinition = "enlisted";
     private string _selectedJob = "";
     private string _scope = "";
+    private string _scrollScope = ""; // CMU14: independent of per-role and per-definition draft scopes.
     private bool _confirmed;
     private bool _pending;
     private readonly bool _preview;
@@ -261,10 +271,20 @@ public sealed partial class QualificationWindow : DefaultWindow
 
     private void Render()
     {
+        _pageScroll.Orphan(); _navigationScroll.Orphan(); // CMU14: keep the same scroll controls when rebuilding their contents.
         _feedback.Orphan(); _navigation.Orphan(); _content.Orphan();
         _root.RemoveAllChildren(); _navigation.RemoveAllChildren(); _content.RemoveAllChildren(); _actions.Clear();
         if (!Pages().Any(p => p.Id == _page)) _page = "dossier";
-        _scope = _view.Target + "/" + _page;
+        // CMU14: another page/account starts at the top; refreshing the same dossier stays put.
+        var scope = _view.Target + "/" + _page;
+        if (_scrollScope != scope)
+        {
+            _pageScroll.SetScrollValue(Vector2.Zero);
+            _pageScroll.HScrollTarget = 0;
+            _pageScroll.VScrollTarget = 0;
+        }
+        _scrollScope = scope;
+        _scope = scope;
 
         if (_preview) Text(_root, L("local-preview"), StyleNano.CrtWarning);
         var header = Row(); _root.AddChild(header);
@@ -290,8 +310,8 @@ public sealed partial class QualificationWindow : DefaultWindow
         var body = Row(); body.VerticalExpand = true; _root.AddChild(body);
         var navPanel = new PanelContainer { MinWidth = 220, MaxWidth = 250, HorizontalExpand = false,
             StyleClasses = { StyleNano.StyleClassCrtInsetPanel } };
-        var navScroll = new ScrollContainer { HScrollEnabled = false, VerticalExpand = true };
-        _navigation.Margin = new Thickness(8); navScroll.AddChild(_navigation); navPanel.AddChild(navScroll); body.AddChild(navPanel);
+        // CMU14: navigation must retain its own scroll position too.
+        _navigation.Margin = new Thickness(8); _navigationScroll.AddChild(_navigation); navPanel.AddChild(_navigationScroll); body.AddChild(navPanel);
         foreach (var page in Pages())
         {
             var id = page.Id;
@@ -306,8 +326,7 @@ public sealed partial class QualificationWindow : DefaultWindow
             Text(caption, L("nav-" + id), id == _page ? StyleNano.CrtGreen : StyleNano.CrtGreenSoft);
             nav.AddChild(caption);
         }
-        var scroll = new ScrollContainer { HScrollEnabled = false, HorizontalExpand = true, VerticalExpand = true, Name = "page-scroll" };
-        _content.Margin = new Thickness(2, 0, 10, 6); scroll.AddChild(_content); body.AddChild(scroll);
+        _content.Margin = new Thickness(2, 0, 10, 6); _pageScroll.AddChild(_content); body.AddChild(_pageScroll); // CMU14
         PageHeading(L("nav-" + _page), L("help-" + _page));
         switch (_page)
         {
