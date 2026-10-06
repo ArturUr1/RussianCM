@@ -293,6 +293,8 @@ public sealed partial class HumanoidProfileEditor
                 foreach (var (target, gamemode, sectionKey, sectionTitle) in
                          GetJobSections(department, job, departmentName))
                 {
+                    if (!job.IsAvailableInCharacterSetup(gamemode)) // CMU14: hide training roles outside their preset.
+                        continue;
                     AddJobSelector(
                         target,
                         gamemode,

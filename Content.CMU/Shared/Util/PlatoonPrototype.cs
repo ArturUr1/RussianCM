@@ -71,6 +71,14 @@ public sealed partial class PlatoonPrototype : IPrototype
     [DataField]
     public ProtoId<PlatoonVendorSetPrototype>? VendorSet { get; private set; }
 
+    /// <summary>Unarmed training uniform for this platoon's recruits.</summary>
+    [DataField]
+    public ProtoId<StartingGearPrototype>? RecruitGear { get; private set; }
+
+    /// <summary>Duty uniform for instructors, applied before their native platoon chevron.</summary>
+    [DataField]
+    public ProtoId<StartingGearPrototype>? InstructorGear { get; private set; }
+
     [DataField]
     public Dictionary<PlatoonMarkerClass, EntProtoId> VendorOverrides { get; private set; } = new();
 

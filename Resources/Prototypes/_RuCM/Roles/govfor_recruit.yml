@@ -7,8 +7,10 @@
   spawnMenuRoleName: rucm-recruit-job-name
   supervisors: rucm-recruit-supervisors
   icon: AU14JobIconGovRifleman
+  hasIcon: false # CMU14: native recruit insignia, without a combat role icon.
   hidden: false
   setPreference: true
+  characterSetupPresets: [Insurgency] # CMU14: keep the entry in its actual CMU mode.
   canBeAntag: false
   hasSquad: false
   roundRole: Recruit
@@ -20,12 +22,20 @@
   basePlaytimeTracker: true
   displayWeight: -2
   requirements: []
+  ranks: # CMU14: E0 is common to training recruits of every selected platoon.
+    RMCRankRecruit: []
+  chevrons:
+    RMCRankRecruit:
+      entity: CMUChevronRecruit
+      requirements: []
   access:
   - AU14AccessGovfor
   accessGroups: []
   extendedAccess: []
   extendedAccessGroups: []
   roundComponents:
+  - type: Rank # CMU14: E0 is present immediately, even before account timers arrive.
+    rank: RMCRankRecruit
   - type: RegulationAppearance
   - type: SpawnHungryThirsty
   - type: Skills
