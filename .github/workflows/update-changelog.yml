@@ -114,6 +114,16 @@ jobs:
         id: resolve-ref
         run: echo "commit_hash=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
 
+      # Translation work is disposable/reusable; it is separate from delivery state.
+      - name: Restore Russian translation progress
+        id: translation-cache
+        uses: actions/cache/restore@v5
+        with:
+          path: .tmp/changelog-translation-cache.json
+          key: changelog-ru-v1-${{ github.repository_id }}-${{ hashFiles('Tools/_CMU14/Changelog/changelog-russian.yml') }}-${{ github.run_id }}-${{ github.run_attempt }}
+          restore-keys: |
+            changelog-ru-v1-${{ github.repository_id }}-${{ hashFiles('Tools/_CMU14/Changelog/changelog-russian.yml') }}-
+
       # Always inspect the journal, including when assembly changed nothing.
       # This picks up upstream YAML already committed by a merge and resumes failures.
       - name: Translate and deliver or preview
@@ -137,6 +147,16 @@ jobs:
           MISTRAL_API_KEY: ${{ secrets.MISTRAL_API_KEY }}
           CHANGELOG_TRANSLATION_MODEL: ${{ vars.CHANGELOG_TRANSLATION_MODEL || 'mistral-small-latest' }}
           DELIVERY_RESOLUTION: ${{ inputs.delivery_resolution || 'none' }}
+          CHANGELOG_TRANSLATION_CACHE: .tmp/changelog-translation-cache.json
+          CHANGELOG_TRANSLATION_INTERVAL_SECONDS: ${{ vars.CHANGELOG_TRANSLATION_INTERVAL_SECONDS || '15' }}
+          PYTHONUNBUFFERED: '1'
+
+      - name: Save Russian translation progress even after failure
+        if: always() && hashFiles('.tmp/changelog-translation-cache.json') != ''
+        uses: actions/cache/save@v5
+        with:
+          path: .tmp/changelog-translation-cache.json
+          key: ${{ steps.translation-cache.outputs.cache-primary-key }}
 
       - name: Upload preview
         if: inputs.dry_run == true || github.ref_name != github.event.repository.default_branch

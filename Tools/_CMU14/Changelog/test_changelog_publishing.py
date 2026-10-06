@@ -16,7 +16,8 @@ import actions_changelogs_since_last_run as discord
 import update_changelog as assembler
 import update_changelog_parts as parts
 from changelog_discord_state import FileStateStore, GitHubStateStore, empty_state
-from changelog_translation import RussianTranslator, TranslationError, protect, restore
+from changelog_translation import RussianTranslator, TranslationError, TranslationRateLimitError, protect, restore, retry_after_seconds
+from changelog_translation_cache import load_translation_cache, save_translation_cache
 
 
 def entry(number=1, source="CMU", timestamp="2026-10-01T12:00:00Z", message="Исправлены ошибки."):
@@ -255,6 +256,144 @@ class TranslationTests(unittest.TestCase):
         with patch.dict(os.environ, {"MISTRAL_API_KEY": "test"}), patch("changelog_translation.requests.post", return_value=response):
             self.assertEqual(RussianTranslator({}).translate(["Fixed radio.", "Added a map."]),
                              ["Связь исправлена.", "Добавлена карта."])
+
+
+class FakeClock:
+    def __init__(self):
+        self.now = 0.0
+        self.sleeps = []
+
+    def monotonic(self):
+        return self.now
+
+    def sleep(self, seconds):
+        self.sleeps.append(seconds)
+        self.now += seconds
+
+
+def service_response(status=200, translations=None, headers=None, error=None):
+    response = Mock(status_code=status, headers=headers or {})
+    if status == 200:
+        response.json.return_value = {"choices": [{"finish_reason": "stop", "message": {"content": json.dumps(
+            {"messages": [{"id": i, "text": value} for i, value in enumerate(translations or ["Связь исправлена."])]})}}]}
+    else:
+        response.json.return_value = error or {"message": "Rate limit exceeded"}
+    return response
+
+
+class TranslationRetryTests(unittest.TestCase):
+    def setUp(self):
+        self.clock = FakeClock()
+        self.addCleanup(patch.stopall)
+        patch.dict(os.environ, {"MISTRAL_API_KEY": "test", "CHANGELOG_TRANSLATION_INTERVAL_SECONDS": "15"}).start()
+        patch("changelog_translation.time.monotonic", side_effect=self.clock.monotonic).start()
+        patch("changelog_translation.time.sleep", side_effect=self.clock.sleep).start()
+
+    def test_429_without_header_waits_for_minute_then_recovers(self):
+        with patch("changelog_translation.requests.post", side_effect=[service_response(429), service_response()]) as post:
+            self.assertEqual(RussianTranslator({}).translate(["Fixed radio."]), ["Связь исправлена."])
+        self.assertEqual(post.call_count, 2)
+        self.assertEqual(self.clock.sleeps, [60])
+
+    def test_retry_after_seconds_is_respected(self):
+        with patch("changelog_translation.requests.post", side_effect=[
+                service_response(429, headers={"Retry-After": "75"}), service_response()]):
+            RussianTranslator({}).translate(["Fixed radio."])
+        self.assertEqual(self.clock.sleeps, [75])
+
+    def test_retry_after_http_date_and_invalid_values(self):
+        now = dt.datetime(2026, 10, 6, 0, 0, 0, tzinfo=dt.timezone.utc)
+        self.assertEqual(retry_after_seconds("Tue, 06 Oct 2026 00:01:30 GMT", now), 90)
+        self.assertEqual(retry_after_seconds("-1", now), 0)
+        for value in [None, "bad", "NaN", "inf"]:
+            self.assertIsNone(retry_after_seconds(value, now))
+
+    def test_server_wait_larger_than_budget_is_not_shortened(self):
+        with patch("changelog_translation.requests.post", return_value=service_response(429, headers={"Retry-After": "7200"})) as post:
+            with self.assertRaisesRegex(TranslationRateLimitError, "retry_after=7200"):
+                RussianTranslator({}).translate(["Fixed radio."])
+        post.assert_called_once()
+        self.assertEqual(self.clock.sleeps, [])
+
+    def test_persistent_429_has_bounded_wait_and_clear_diagnostic(self):
+        with patch("changelog_translation.requests.post", return_value=service_response(429)) as post:
+            with self.assertRaisesRegex(TranslationRateLimitError, "API/Limits"):
+                RussianTranslator({}).translate(["Fixed radio."])
+        self.assertLessEqual(post.call_count, 6)
+        self.assertLessEqual(sum(self.clock.sleeps), 600)
+        self.assertGreaterEqual(sum(self.clock.sleeps), 60)
+
+    def test_explicit_monthly_quota_does_not_retry_or_echo_service_body(self):
+        response = service_response(429, error={"message": "Monthly spending limit reached SECRET"})
+        with patch("changelog_translation.requests.post", return_value=response) as post:
+            with self.assertRaisesRegex(TranslationRateLimitError, "monthly quota") as caught:
+                RussianTranslator({}).translate(["Fixed radio."])
+        self.assertNotIn("SECRET", str(caught.exception))
+        post.assert_called_once()
+        self.assertEqual(self.clock.sleeps, [])
+
+    def test_batches_are_paced_and_max_tokens_is_bounded(self):
+        first = service_response(translations=["Связь исправлена __KEEP_0__."] * 6)
+        second = service_response(translations=["Связь исправлена __KEEP_0__."])
+        with patch("changelog_translation.requests.post", side_effect=[first, second]) as post:
+            translated = RussianTranslator({}).translate([f"Fixed radio {i}." for i in range(7)])
+        self.assertEqual(len(translated), 7)
+        self.assertEqual(self.clock.sleeps, [15])
+        self.assertTrue(all(256 <= call.kwargs["json"]["max_tokens"] <= 4096 for call in post.call_args_list))
+
+    def test_long_notes_are_split_by_text_size_not_only_count(self):
+        counts = []
+        def request(messages):
+            counts.append(len(messages))
+            return ["Связь исправлена __KEEP_0__." for _ in messages]
+        originals = [f"Fixed radio {i}. " + "Some description. " * 60 for i in range(3)]
+        self.assertEqual(len(RussianTranslator({}, request=request).translate(originals)), 3)
+        self.assertEqual(counts, [1, 1, 1])
+
+    def test_progress_is_saved_before_next_batch_failure_and_resumed(self):
+        with tempfile.TemporaryDirectory() as directory:
+            target = Path(directory) / "translations.json"
+            cache = {}
+            originals = [f"Fixed radio {i}." for i in range(7)]
+            request = Mock(side_effect=[["Связь исправлена __KEEP_0__."] * 6, TranslationRateLimitError("429")])
+            translator = RussianTranslator(cache, request=request, checkpoint=lambda: save_translation_cache(target, cache))
+            with self.assertRaises(TranslationRateLimitError):
+                translator.translate(originals)
+            recovered = load_translation_cache(target)
+            self.assertEqual(len(recovered), 6)
+            request = Mock(return_value=["Связь исправлена __KEEP_0__."])
+            translated = RussianTranslator(recovered, request=request).translate(originals)
+            self.assertEqual(len(translated), 7)
+            request.assert_called_once()
+            self.assertEqual(len(request.call_args.args[0]), 1)
+            self.assertEqual(set(json.loads(target.read_text(encoding="utf-8"))), {"version", "translations"})
+
+    def test_preview_failure_saves_translations_but_never_changes_delivery_state(self):
+        with tempfile.TemporaryDirectory() as directory:
+            journal_path = Path(directory) / "journal.json"
+            cache_path = Path(directory) / "translations.json"
+            store = FileStateStore(journal_path)
+            store.save(empty_state())
+            before = journal_path.read_bytes()
+            selected = [entry(i + 1, message=f"Fixed radio {i}.") for i in range(7)]
+            request = Mock(side_effect=[["Связь исправлена __KEEP_0__."] * 6, TranslationRateLimitError("429")])
+            with patch.object(sys, "argv", ["publisher", "--dry-run", "--state-file", str(journal_path),
+                    "--translation-cache", str(cache_path)]), \
+                    patch.object(discord, "load_entries", return_value=selected), \
+                    patch.object(RussianTranslator, "request_mistral", request), \
+                    patch.object(discord, "send_discord_webhook", side_effect=AssertionError("No Discord sends")):
+                with self.assertRaises(TranslationRateLimitError):
+                    discord.main()
+            self.assertEqual(journal_path.read_bytes(), before)
+            self.assertEqual(len(load_translation_cache(cache_path)), 6)
+
+    def test_invalid_cache_is_not_delivery_reset(self):
+        with tempfile.TemporaryDirectory() as directory:
+            target = Path(directory) / "bad.json"
+            target.write_text('{"version":1,"delivered":{}}', encoding="utf-8")
+            with self.assertRaisesRegex(ValueError, "delivery journal"):
+                load_translation_cache(target)
+
 
 
 class DeliveryTests(unittest.TestCase):
