@@ -142,7 +142,7 @@ public sealed class GOVFORRecruitSystem : EntitySystem
                 xform.GridUid is { } govforGrid && govforShipGrids.Contains(govforGrid);
             if (planet.GovforInShip ? !onGovforShip : onShip || station != planetStation) continue;
 
-            var priority = Priority(point);
+            var priority = Priority(point, onGovforShip); // CMU14: ordinary arrivals are safe only on the owned carrier.
             if (priority < 0) continue;
             if (!result.TryGetValue(station, out var current) || priority < current.Priority)
                 result[station] = new(xform.Coordinates, priority);
@@ -150,9 +150,11 @@ public sealed class GOVFORRecruitSystem : EntitySystem
         return result;
     }
 
-    private static int Priority(SpawnPointComponent point)
+    private static int Priority(SpawnPointComponent point, bool onGovforShip) // CMU14
     {
         if (point.SpawnType == SpawnPointType.LateJoinGovfor) return 3;
+        // CMU14: Bush uses ordinary arrivals; colony arrivals on a planet are not training anchors.
+        if (onGovforShip && point.SpawnType == SpawnPointType.LateJoin) return 4;
         if (point.SpawnType is not (SpawnPointType.Job or SpawnPointType.Unset)) return -1;
         var job = point.Job?.Id;
         if (job == GOVFORRecruitJob.Id) return 0;
@@ -208,8 +210,8 @@ public sealed class GOVFORRecruitSystem : EntitySystem
     private void OnSpawnComplete(PlayerSpawnCompleteEvent ev)
     {
         if (ev.JobId != GOVFORRecruitJob.Id) return;
-        // The public spawn helper normally assigns unknown military roles to a combat squad.
-        // Recruits remain in the training group; an instructor may arrange their RP supervision.
+        // CMU14: native spawning excludes Recruit; keep alternative spawn paths out of combat squads too.
+        // An instructor may arrange the recruit's RP supervision.
         _squads.RemoveSquad(ev.Mob, new ProtoId<JobPrototype>(GOVFORRecruitJob.Id));
         _squads.MarineSetTitle(ev.Mob, Loc.GetString("rucm-recruit-job-name"));
         _chat.DispatchServerMessage(ev.Player, Loc.GetString("rucm-recruit-arrival"));

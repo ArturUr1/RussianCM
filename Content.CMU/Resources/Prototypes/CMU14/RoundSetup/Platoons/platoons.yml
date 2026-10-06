@@ -1,5 +1,7 @@
 - type: platoon
   id: USCM
+  recruitGear: CMUGearRecruitUSCM
+  instructorGear: CMUGearInstructorUSCM
   vehicleSupplyCatalog:
   - CMUFighterGround
   - VehicleTank
@@ -32,6 +34,8 @@
 
 - type: platoon
   id: LACN
+  recruitGear: CMUGearRecruitLACN
+  instructorGear: CMUGearInstructorLACN
   vehicleSupplyCatalog:
   - CMUFighterGround
   - VehicleTank
@@ -360,6 +364,8 @@
 
 - type: platoon
   id: UPP
+  recruitGear: CMUGearRecruitUPP
+  instructorGear: CMUGearInstructorUPP
   vehicleSupplyCatalog:
   - CMUFighterGround
   - VehicleSPPTank
@@ -695,6 +701,8 @@
 
 - type: platoon
   id: WEYU
+  recruitGear: CMUGearRecruitWEYU
+  instructorGear: CMUGearInstructorWEYU
   vehicleSupplyCatalog:
   - CMUFighterGround
   - VehicleTankPMC
@@ -1024,6 +1032,8 @@
 
 - type: platoon
   id: CMBCIU
+  recruitGear: CMUGearRecruitCMBCIU
+  instructorGear: CMUGearInstructorCMBCIU
   vehicleSupplyCatalog:
   - CMUFighterGround
   - AU14VehicleCivHSVan
@@ -1254,6 +1264,8 @@
 
 - type: platoon
   id: HAZOPS
+  recruitGear: CMUGearRecruitHAZOPS
+  instructorGear: CMUGearInstructorHAZOPS
   vehicleSupplyCatalog:
   - VehicleTank
   - CMUFighterGround
@@ -1284,6 +1296,8 @@
 
 - type: platoon
   id: ProdigySF
+  recruitGear: CMUGearRecruitProdigySF
+  instructorGear: CMUGearInstructorProdigySF
   vehicleSupplyCatalog:
   - CMUFighterGround
   - VehicleTank
@@ -1574,6 +1588,8 @@
 
 - type: platoon
   id: VAIPO
+  recruitGear: CMUGearRecruitVAIPO
+  instructorGear: CMUGearInstructorVAIPO
   vehicleSupplyCatalog:
   - CMUFighterGround
   - VehicleTank
@@ -1766,6 +1782,8 @@
 
 - type: platoon
   id: RMC
+  recruitGear: CMUGearRecruitRMC
+  instructorGear: CMUGearInstructorRMC
   vehicleSupplyCatalog:
   - CMUFighterGround
   - VehicleTankTWE

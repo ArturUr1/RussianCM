@@ -101,6 +101,7 @@ public sealed partial class StationSpawningSystem : SharedStationSpawningSystem
 
     private static readonly HashSet<string> NoSquadRoundRoles = new(StringComparer.OrdinalIgnoreCase)
     {
+        "Recruit", // CMU14: trainees must never be assigned to a combat squad during spawning.
         "Advisor",
         "DropshipCrewChief",
         "DropshipPilot",
