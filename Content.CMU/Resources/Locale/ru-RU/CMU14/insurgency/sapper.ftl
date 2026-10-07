@@ -76,3 +76,5 @@ insfor-sapper-snare-caught = Петля резко затягивается во
 insfor-sapper-snare-struggled-free = Вы с усилием освобождаетесь из петли.
 insfor-sapper-snare-cutting = Вы начинаете разрезать петлю, освобождая попавшего в неё.
 insfor-sapper-snare-cut-free = Петля перерезана, и вы падаете на землю.
+insfor-sapper-atm-message-title = Устройство для выкачивания средств
+insfor-sapper-atm-message-prompt = Оставьте сообщение на экране банкомата до завершения его самовосстановления (необязательно, до {$max} символов)

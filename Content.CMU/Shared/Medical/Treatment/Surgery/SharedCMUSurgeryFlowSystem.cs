@@ -280,6 +280,8 @@ public abstract partial class SharedCMUSurgeryFlowSystem : EntitySystem
             CMUSurgeryStepMetadataEntry? stepMetadata = null;
             metadataByStep?.TryGetValue(stepId, out stepMetadata);
             var label = stepMetadata?.Label ?? stepPrototype.Name;
+            if (Loc.TryGetString(label, out var localizedLabel))
+                label = localizedLabel;
             var toolCategory = stepMetadata is null
                 ? ResolveLegacyStepToolCategory(step)
                 : stepMetadata.ToolCategory;
@@ -310,12 +312,16 @@ public abstract partial class SharedCMUSurgeryFlowSystem : EntitySystem
         var validParts = metadata?.ValidParts.ToFrozenSet() ?? FrozenSet<BodyPartType>.Empty;
         var selfSurgeryValidParts = metadata?.SelfSurgeryValidParts.ToFrozenSet() ?? FrozenSet<BodyPartType>.Empty;
 
+        var displayName = metadata?.DisplayName ?? surgeryPrototype.Name;
+        if (Loc.TryGetString(displayName, out var localizedName))
+            displayName = localizedName;
+
         return new CMUSurgeryDefinition(
             surgeryId,
             surgeryPrototype,
             surgery.Priority,
             requirement,
-            metadata?.DisplayName ?? surgeryPrototype.Name,
+            displayName,
             metadata?.Category ?? string.Empty,
             metadata?.MinSkill ?? 0,
             metadata?.AllowSelfSurgery ?? false,
