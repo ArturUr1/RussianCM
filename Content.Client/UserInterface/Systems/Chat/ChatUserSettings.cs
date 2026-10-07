@@ -7,7 +7,7 @@ using Content.Client.CMU14.Interface;
 using Content.Client.Stylesheets;
 using Content.Shared.Chat;
 using Content.Shared.Radio;
-using Robust.Shared.Localization; 
+using Robust.Shared.Localization;
 using Robust.Shared.Maths;
 
 namespace Content.Client.UserInterface.Systems.Chat;
