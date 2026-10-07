@@ -1,22 +1,22 @@
 <Document>
-  # Colonial Liberation Front
+  # Фронт освобождения колоний
 
   <CMUGuideImage Path="/Textures/CMU14/Interface/Paper/CLFHeader.png" MaxHeight="128"/>
 
-The [bold]Colonial Liberation Front[/bold] (CLF) is the name most commonly used for the largest and most active collection of militant movements fighting for colonial independence. It is concentrated primarily in the [bold]Neroid Sector[/bold] of [textlink="Three World Empire" link="CMUGuideLoreTWE"] space.
+[bold]Фронт освобождения колоний[/bold] (CLF) — наиболее распространённое название крупнейшего и самого активного объединения боевых движений за независимость колоний. Сосредоточен преимущественно в [bold]секторе Нероид[/bold] на территории [textlink="Империи трёх миров" link="CMUGuideLoreTWE"].
 
-The movement traces its origins to the [bold]Slaughter of Xibou[/bold] in 2164, when Colonial Marines massacred thousands of colonists in an incident that was subsequently covered up. The event became a rallying point for anti-government and anti-corporate sentiment throughout the region. Since the withdrawal of United Americas forces from much of the Neroid Sector, armed resistance movements operating under the CLF label have grown significantly in both strength and influence.
+Истоки движения — [bold]резня в Сибу[/bold] 2164 года, когда морпехи убили тысячи колонистов, а случившееся скрыли. Это объединило антиправительственные и антикорпоративные настроения региона. После ухода войск UA из большей части сектора Нероид движения под именем CLF значительно усилились.
 
-The United Americas and the Three World Empire both classify the CLF as a terrorist organization, and membership, material support, or open collaboration with it is treated as a serious criminal offense. Its fighters are typically drawn from local colonial populations and often operate through clandestine cells led by individual cell leaders, allowing members to hide in plain sight among civilian communities. To the governments of the region they are terrorists; to many colonists, they are freedom fighters.
+UA и TWE считают CLF террористической организацией; членство, материальная поддержка и открытое сотрудничество — серьёзные преступления. Бойцы обычно происходят из местного населения и действуют в тайных ячейках со своими лидерами, скрываясь среди гражданских. Для правительств они террористы, для многих колонистов — борцы за свободу.
 
-In reality, however, the CLF is far less unified than government propaganda often suggests. There is no single organization, ideology, or command structure linking every group identified as CLF. One cell may consist of little more than a handful of anarchists meeting in a basement, while another may resemble a religious cult, organized insurgency, or even a planetwide military backed by naval forces and a functioning government.
+На деле CLF гораздо менее един, чем утверждает пропаганда. Нет общей организации, идеологии или командования для всех групп. Одна ячейка — несколько анархистов в подвале, другая — религиозный культ, организованное восстание или даже планетарная армия с флотом и действующим правительством.
 
-As a result, the term [bold]"CLF"[/bold] is itself somewhat misleading. Rather than describing one coherent organization, it has increasingly become a broad political label applied by the United Americas to separatist, insurgent, and anti-corporate movements throughout the Neroid Sector.
+Поэтому термин [bold]«CLF»[/bold] несколько обманчив. Вместо единой организации он всё чаще служит широким политическим ярлыком UA для сепаратистских, повстанческих и антикорпоративных движений сектора Нероид.
 
   <Box>
-    <CMUGuideOutfitEmbed Gear="AU14GearCLFMachineGunner" Caption="Insurgent"/>
-    <CMUGuideOutfitEmbed Gear="CMUGearCLFEngineer" Caption="Engineer"/>
-    <CMUGuideOutfitEmbed Gear="CMUGearCLFSpecialist" Caption="Specialist"/>
-    <CMUGuideOutfitEmbed Gear="CMU14GearCLFCommandoOperator" Caption="Commando"/>
+    <CMUGuideOutfitEmbed Gear="AU14GearCLFMachineGunner" Caption="Повстанец"/>
+    <CMUGuideOutfitEmbed Gear="CMUGearCLFEngineer" Caption="Инженер"/>
+    <CMUGuideOutfitEmbed Gear="CMUGearCLFSpecialist" Caption="Специалист"/>
+    <CMUGuideOutfitEmbed Gear="CMU14GearCLFCommandoOperator" Caption="Коммандос"/>
   </Box>
 </Document>

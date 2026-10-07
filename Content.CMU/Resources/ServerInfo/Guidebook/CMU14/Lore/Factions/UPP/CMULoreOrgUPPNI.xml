@@ -1,16 +1,16 @@
 <Document>
-  # UPP Naval Infantry
+  # Морская пехота UPP
 
   <Box>
-    <CMUGuideOutfitEmbed Gear="CMUGearUPPLineRifleman" Caption="Rifleman"/>
-    <CMUGuideOutfitEmbed Gear="CMUGearUPPLineMedic" Caption="Medic"/>
-    <CMUGuideOutfitEmbed Gear="CMUGearUPPLineLeader" Caption="Leader"/>
+    <CMUGuideOutfitEmbed Gear="CMUGearUPPLineRifleman" Caption="Стрелок"/>
+    <CMUGuideOutfitEmbed Gear="CMUGearUPPLineMedic" Caption="Медик"/>
+    <CMUGuideOutfitEmbed Gear="CMUGearUPPLineLeader" Caption="Командир"/>
   </Box>
-  The [bold]Naval Infantry[/bold] are the [textlink="Union of Progressive Peoples" link="CMUGuideLoreUPP"]' shock troops, its equivalent of the Colonial Marines. They are carried to war by the UPP's fleets and fight planetside wherever the Union expands.
+  [bold]Морская пехота[/bold] — ударные войска [textlink="Союза прогрессивных народов" link="CMUGuideLoreUPP"], аналог колониальных морпехов. Флоты UPP доставляют их на войну, и они сражаются на планетах везде, где расширяется Союз.
 
-  ## Under Construction
-  This page is still being written.
+  ## В разработке
+  Эта страница ещё пишется.
 
-  ## Playable Units
-  - [textlink="UPP 'North Stars'" link="CMUGuideLorePlatoonUPP"]
+  ## Доступные подразделения
+  - [textlink="UPP «Северные звёзды»" link="CMUGuideLorePlatoonUPP"]
 </Document>

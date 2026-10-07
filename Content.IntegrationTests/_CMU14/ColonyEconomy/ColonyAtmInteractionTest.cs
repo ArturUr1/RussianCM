@@ -6,6 +6,7 @@ using Content.Shared.CMU14.Insurgency.Sapper;
 using Content.Shared.Access.Components;
 using Content.Shared.CMU14.ColonyEconomy;
 using Robust.Shared.GameObjects;
+using Robust.Shared.Localization;
 
 namespace Content.IntegrationTests.CMU14.ColonyEconomy;
 
@@ -97,7 +98,7 @@ public sealed class ColonyAtmInteractionTest : ColonyAtmTestBase
         await Enter();                               // back to the menu
         await Type("1", enter: false);              // 1) WITHDRAW again
         await Type("50");
-        Assert.That(AtmComp.StatusMessage, Does.Contain("take your cash"), "More cash came out over cash still waiting");
+        Assert.That(AtmComp.StatusMessage, Is.EqualTo(Loc.GetString("cmu-atm-take-cash-first")), "More cash came out over cash still waiting");
 
         await RunSeconds(11);
         Assert.Multiple(() =>
@@ -161,7 +162,8 @@ public sealed class ColonyAtmInteractionTest : ColonyAtmTestBase
         var wrong = (pin == 1111 ? 2222 : 1111).ToString();
 
         await Type(wrong);
-        Assert.That(AtmComp.StatusMessage, Does.Contain("Incorrect PIN. Attempt 1/3"));
+        Assert.That(AtmComp.StatusMessage, Is.EqualTo(Loc.GetString("cmu-atm-incorrect-pin", ("attempt", 1), ("maximum", 3))));
+        Assert.That(ClientAtmState().StatusIsError, Is.True, "The client must receive the error flag independently of the translated text");
         await Type(wrong);
         await Type(wrong);
         Assert.That(AtmComp.Screen, Is.EqualTo(AtmScreen.PinLocked));

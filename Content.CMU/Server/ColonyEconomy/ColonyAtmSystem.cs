@@ -96,7 +96,7 @@ public sealed partial class ColonyAtmSystem : EntitySystem
     {
         if (comp.CurrentUser is { } current && current != user && _ui.IsUiOpen(uid, ColonyAtmUi.Key, current))
         {
-            _popup.PopupEntity("Someone else is using this ATM.", uid, user);
+            _popup.PopupEntity(Loc.GetString("cmu-atm-busy"), uid, user);
             return false;
         }
 
@@ -115,7 +115,7 @@ public sealed partial class ColonyAtmSystem : EntitySystem
     {
         comp.PinAuthenticated = false;
         comp.KeypadBuffer = string.Empty;
-        comp.StatusMessage = string.Empty;
+        SetStatusMessage(comp, string.Empty);
         comp.Screen = GetCard(uid) != null ? AtmScreen.PinEntry : AtmScreen.Welcome;
         comp.PendingAmount = 0;
         comp.PendingTransferTarget = 0;
@@ -331,9 +331,9 @@ public sealed partial class ColonyAtmSystem : EntitySystem
         {
             args.Handled = true;
             if (HasComp<ColonyAtmTamperedComponent>(uid))
-                _popup.PopupEntity("Warning: This device shows signs of electronic tampering.", uid, args.User);
+                _popup.PopupEntity(Loc.GetString("cmu-atm-tampered"), uid, args.User);
             else
-                _popup.PopupEntity("The ATM appears to be functioning normally.", uid, args.User);
+                _popup.PopupEntity(Loc.GetString("cmu-atm-normal"), uid, args.User);
             return;
         }
 
@@ -444,7 +444,7 @@ public sealed partial class ColonyAtmSystem : EntitySystem
         }
 
         comp.KeypadBuffer = string.Empty;
-        comp.StatusMessage = string.Empty;
+        SetStatusMessage(comp, string.Empty);
         comp.PendingAmount = 0;
         comp.PendingTransferTarget = 0;
         comp.RemoteDepositTarget = 0;
@@ -477,7 +477,7 @@ public sealed partial class ColonyAtmSystem : EntitySystem
             case AtmScreen.Result:
                 comp.Screen = TryGetSessionCard(uid, comp, out _, out _)
                     ? AtmScreen.MainMenu : AtmScreen.Welcome;
-                comp.StatusMessage = string.Empty;
+                SetStatusMessage(comp, string.Empty);
                 comp.KeypadBuffer = string.Empty;
                 RefreshUi(uid, comp);
                 break;
@@ -506,7 +506,7 @@ public sealed partial class ColonyAtmSystem : EntitySystem
         {
             comp.Screen = AtmScreen.RemoteDeposit;
             comp.KeypadBuffer = string.Empty;
-            comp.StatusMessage = string.Empty;
+            SetStatusMessage(comp, string.Empty);
         }
         RefreshUi(uid, comp);
     }
@@ -520,7 +520,7 @@ public sealed partial class ColonyAtmSystem : EntitySystem
         }
 
         comp.KeypadBuffer = string.Empty;
-        comp.StatusMessage = string.Empty;
+        SetStatusMessage(comp, string.Empty);
         switch (digit)
         {
             case "1": comp.Screen = AtmScreen.Withdraw; break;
@@ -536,7 +536,7 @@ public sealed partial class ColonyAtmSystem : EntitySystem
     /// <summary>Steps back one screen (ENTER on the history), ejecting if at the top level.</summary>
     private void GoBack(EntityUid uid, ColonyAtmComponent comp)
     {
-        comp.StatusMessage = string.Empty;
+        SetStatusMessage(comp, string.Empty);
         switch (comp.Screen)
         {
             case AtmScreen.Withdraw:
@@ -624,7 +624,7 @@ public sealed partial class ColonyAtmSystem : EntitySystem
 
         if (comp.KeypadBuffer.Length != PinLength || !int.TryParse(comp.KeypadBuffer, out var entered))
         {
-            comp.StatusMessage = $"Invalid PIN. Enter all {PinLength} digits.";
+            SetStatusMessage(comp, Loc.GetString("cmu-atm-invalid-pin", ("digits", PinLength)), true);
             comp.KeypadBuffer = string.Empty;
             RefreshUi(uid, comp);
             return;
@@ -636,7 +636,7 @@ public sealed partial class ColonyAtmSystem : EntitySystem
         {
             comp.PinAuthenticated = true;
             comp.Screen = AtmScreen.MainMenu;
-            comp.StatusMessage = string.Empty;
+            SetStatusMessage(comp, string.Empty);
 
             RecordLogin(comp, card);
         }
@@ -646,7 +646,7 @@ public sealed partial class ColonyAtmSystem : EntitySystem
         }
         else
         {
-            comp.StatusMessage = $"Incorrect PIN. Attempt {card.PinAttempts}/{ColonyBankSystem.MaxPinAttempts}.";
+            SetStatusMessage(comp, Loc.GetString("cmu-atm-incorrect-pin", ("attempt", card.PinAttempts), ("maximum", ColonyBankSystem.MaxPinAttempts)), true);
         }
 
         RefreshUi(uid, comp);
@@ -655,13 +655,13 @@ public sealed partial class ColonyAtmSystem : EntitySystem
     /// <summary>
     ///     Caches the login so a siphon rig clamped onto this ATM can leak it later.
     /// </summary>
-    private static void RecordLogin(ColonyAtmComponent comp, IdCardComponent card)
+    private void RecordLogin(ColonyAtmComponent comp, IdCardComponent card)
     {
         comp.RecentLogins.RemoveAll(a => a.AccountNumber == card.AccountNumber);
         comp.RecentLogins.Add(new SkimmedAccount
         {
             AccountNumber = card.AccountNumber,
-            Name = card.FullName ?? "Unknown",
+            Name = card.FullName ?? Loc.GetString("cmu-atm-unknown"),
             Pin = card.AtmPin,
         });
 
@@ -675,7 +675,7 @@ public sealed partial class ColonyAtmSystem : EntitySystem
     {
         if (!ParsePositiveInt(comp.KeypadBuffer, out var amount))
         {
-            comp.StatusMessage = "Enter a valid amount.";
+            SetStatusMessage(comp, Loc.GetString("cmu-atm-invalid-amount"), true);
             comp.KeypadBuffer = string.Empty;
             RefreshUi(uid, comp); return;
         }
@@ -683,20 +683,20 @@ public sealed partial class ColonyAtmSystem : EntitySystem
         { Eject(uid, comp, comp.CurrentUser); return; }
         if (CashInTray(uid) > 0)
         {
-            comp.StatusMessage = TakeCashFirst;
+            SetStatusMessage(comp, TakeCashFirst);
             comp.KeypadBuffer = string.Empty;
             RefreshUi(uid, comp); return;
         }
         if (amount > card.AccountBalance)
         {
-            comp.StatusMessage = "Insufficient funds.";
+            SetStatusMessage(comp, Loc.GetString("cmu-atm-insufficient-funds"), true);
             comp.KeypadBuffer = string.Empty;
             RefreshUi(uid, comp); return;
         }
         var net = amount - (int)Math.Floor(amount * _adminConsole.GetIncomeTax());
         comp.PendingAmount = amount;
         comp.Screen = AtmScreen.WithdrawConfirm;
-        comp.StatusMessage = $"Withdraw ${amount}? You receive ${net} after tax.";
+        SetStatusMessage(comp, Loc.GetString("cmu-atm-withdraw-confirm", ("amount", amount), ("net", net)));
         comp.KeypadBuffer = string.Empty;
         RefreshUi(uid, comp);
     }
@@ -708,7 +708,7 @@ public sealed partial class ColonyAtmSystem : EntitySystem
 
         var amount = comp.PendingAmount;
         if (amount <= 0 || amount > card.AccountBalance)
-        { ShowResult(uid, comp, "Insufficient funds."); return; }
+        { ShowResult(uid, comp, Loc.GetString("cmu-atm-insufficient-funds"), true); return; }
         if (CashInTray(uid) > 0)
         { ShowResult(uid, comp, TakeCashFirst); return; }
 
@@ -735,7 +735,7 @@ public sealed partial class ColonyAtmSystem : EntitySystem
         }
         if (taxAmount > 0) _colonyBudget.AddToBudget(taxAmount);
 
-        ShowResult(uid, comp, $"Dispensed ${netAmount}. Balance: ${card.AccountBalance}.");
+        ShowResult(uid, comp, Loc.GetString("cmu-atm-dispensed", ("amount", netAmount), ("balance", card.AccountBalance)));
     }
 
     // ─── Deposit ───────────────────────────────────────────────────────────
@@ -744,7 +744,7 @@ public sealed partial class ColonyAtmSystem : EntitySystem
     {
         if (!ParsePositiveInt(comp.KeypadBuffer, out var amount))
         {
-            comp.StatusMessage = "Enter a valid amount.";
+            SetStatusMessage(comp, Loc.GetString("cmu-atm-invalid-amount"), true);
             comp.KeypadBuffer = string.Empty;
             RefreshUi(uid, comp); return;
         }
@@ -752,7 +752,7 @@ public sealed partial class ColonyAtmSystem : EntitySystem
         { Eject(uid, comp, comp.CurrentUser); return; }
         if (comp.CurrentUser == null || !HasEnoughCash(comp.CurrentUser.Value, amount))
         {
-            comp.StatusMessage = "Insufficient cash in hand.";
+            SetStatusMessage(comp, Loc.GetString("cmu-atm-insufficient-hand"), true);
             comp.KeypadBuffer = string.Empty;
             RefreshUi(uid, comp); return;
         }
@@ -761,7 +761,7 @@ public sealed partial class ColonyAtmSystem : EntitySystem
         card.AccountBalance += amount;
         Dirty(cardUid, card);
         _bank.RecordTransaction(cardUid, AtmHistoryKind.Deposit, amount);
-        ShowResult(uid, comp, $"Deposited ${amount}. Balance: ${card.AccountBalance}.");
+        ShowResult(uid, comp, Loc.GetString("cmu-atm-deposited", ("amount", amount), ("balance", card.AccountBalance)));
     }
 
     // ─── Remote Deposit ────────────────────────────────────────────────────
@@ -770,20 +770,20 @@ public sealed partial class ColonyAtmSystem : EntitySystem
     {
         if (!ParsePositiveInt(comp.KeypadBuffer, out var acct) || acct < 10000 || acct > 99999)
         {
-            comp.StatusMessage = "Enter a valid 5-digit account number.";
+            SetStatusMessage(comp, Loc.GetString("cmu-atm-invalid-account"), true);
             comp.KeypadBuffer = string.Empty;
             RefreshUi(uid, comp); return;
         }
         var found = _bank.FindAccount(acct);
         if (found == null)
         {
-            comp.StatusMessage = "Account not found.";
+            SetStatusMessage(comp, Loc.GetString("cmu-atm-account-missing"), true);
             comp.KeypadBuffer = string.Empty;
             RefreshUi(uid, comp); return;
         }
         comp.RemoteDepositTarget = acct;
         comp.Screen = AtmScreen.RemoteDepositAmount;
-        comp.StatusMessage = $"To: {found.Value.card.FullName ?? "Unknown"}. Enter amount:";
+        SetStatusMessage(comp, Loc.GetString("cmu-atm-recipient", ("name", found.Value.card.FullName ?? Loc.GetString("cmu-atm-unknown"))));
         comp.KeypadBuffer = string.Empty;
         RefreshUi(uid, comp);
     }
@@ -792,19 +792,19 @@ public sealed partial class ColonyAtmSystem : EntitySystem
     {
         if (!ParsePositiveInt(comp.KeypadBuffer, out var amount))
         {
-            comp.StatusMessage = "Enter a valid amount.";
+            SetStatusMessage(comp, Loc.GetString("cmu-atm-invalid-amount"), true);
             comp.KeypadBuffer = string.Empty;
             RefreshUi(uid, comp); return;
         }
         if (comp.CurrentUser == null || !HasEnoughCash(comp.CurrentUser.Value, amount))
         {
-            comp.StatusMessage = "Insufficient cash in hand.";
+            SetStatusMessage(comp, Loc.GetString("cmu-atm-insufficient-hand"), true);
             comp.KeypadBuffer = string.Empty;
             RefreshUi(uid, comp); return;
         }
         comp.PendingAmount = amount;
         comp.Screen = AtmScreen.RemoteDepositConfirm;
-        comp.StatusMessage = $"Deposit ${amount} to account #{comp.RemoteDepositTarget}?";
+        SetStatusMessage(comp, Loc.GetString("cmu-atm-remote-confirm", ("amount", amount), ("account", comp.RemoteDepositTarget)));
         comp.KeypadBuffer = string.Empty;
         RefreshUi(uid, comp);
     }
@@ -812,17 +812,17 @@ public sealed partial class ColonyAtmSystem : EntitySystem
     private void ExecuteRemoteDeposit(EntityUid uid, ColonyAtmComponent comp)
     {
         var found = _bank.FindAccount(comp.RemoteDepositTarget);
-        if (found == null) { ShowResult(uid, comp, "Account not found."); return; }
+        if (found == null) { ShowResult(uid, comp, Loc.GetString("cmu-atm-account-missing"), true); return; }
 
         var amount = comp.PendingAmount;
         if (comp.CurrentUser == null || !HasEnoughCash(comp.CurrentUser.Value, amount))
-        { ShowResult(uid, comp, "Insufficient cash."); return; }
+        { ShowResult(uid, comp, Loc.GetString("cmu-atm-insufficient-cash"), true); return; }
 
         ConsumeCash(uid, comp, comp.CurrentUser.Value, amount);
         found.Value.card.AccountBalance += amount;
         Dirty(found.Value.uid, found.Value.card);
         _bank.RecordTransaction(found.Value.uid, AtmHistoryKind.CashDeposit, amount);
-        ShowResult(uid, comp, $"Deposited ${amount} to #{comp.RemoteDepositTarget}.");
+        ShowResult(uid, comp, Loc.GetString("cmu-atm-remote-done", ("amount", amount), ("account", comp.RemoteDepositTarget)));
     }
 
     // ─── Transfer ──────────────────────────────────────────────────────────
@@ -831,7 +831,7 @@ public sealed partial class ColonyAtmSystem : EntitySystem
     {
         if (!ParsePositiveInt(comp.KeypadBuffer, out var acct) || acct < 10000 || acct > 99999)
         {
-            comp.StatusMessage = "Enter a valid 5-digit account number.";
+            SetStatusMessage(comp, Loc.GetString("cmu-atm-invalid-account"), true);
             comp.KeypadBuffer = string.Empty;
             RefreshUi(uid, comp); return;
         }
@@ -839,20 +839,20 @@ public sealed partial class ColonyAtmSystem : EntitySystem
         { Eject(uid, comp, comp.CurrentUser); return; }
         if (self.AccountNumber == acct)
         {
-            comp.StatusMessage = "Cannot transfer to own account.";
+            SetStatusMessage(comp, Loc.GetString("cmu-atm-own-account"), true);
             comp.KeypadBuffer = string.Empty;
             RefreshUi(uid, comp); return;
         }
         var found = _bank.FindAccount(acct);
         if (found == null)
         {
-            comp.StatusMessage = "Account not found.";
+            SetStatusMessage(comp, Loc.GetString("cmu-atm-account-missing"), true);
             comp.KeypadBuffer = string.Empty;
             RefreshUi(uid, comp); return;
         }
         comp.PendingTransferTarget = acct;
         comp.Screen = AtmScreen.TransferAmount;
-        comp.StatusMessage = $"To: {found.Value.card.FullName ?? "Unknown"}. Enter amount:";
+        SetStatusMessage(comp, Loc.GetString("cmu-atm-recipient", ("name", found.Value.card.FullName ?? Loc.GetString("cmu-atm-unknown"))));
         comp.KeypadBuffer = string.Empty;
         RefreshUi(uid, comp);
     }
@@ -861,7 +861,7 @@ public sealed partial class ColonyAtmSystem : EntitySystem
     {
         if (!ParsePositiveInt(comp.KeypadBuffer, out var amount))
         {
-            comp.StatusMessage = "Enter a valid amount.";
+            SetStatusMessage(comp, Loc.GetString("cmu-atm-invalid-amount"), true);
             comp.KeypadBuffer = string.Empty;
             RefreshUi(uid, comp); return;
         }
@@ -869,13 +869,13 @@ public sealed partial class ColonyAtmSystem : EntitySystem
         { Eject(uid, comp, comp.CurrentUser); return; }
         if (amount > card.AccountBalance)
         {
-            comp.StatusMessage = "Insufficient funds.";
+            SetStatusMessage(comp, Loc.GetString("cmu-atm-insufficient-funds"), true);
             comp.KeypadBuffer = string.Empty;
             RefreshUi(uid, comp); return;
         }
         comp.PendingAmount = amount;
         comp.Screen = AtmScreen.TransferConfirm;
-        comp.StatusMessage = $"Transfer ${amount} to #{comp.PendingTransferTarget}?";
+        SetStatusMessage(comp, Loc.GetString("cmu-atm-transfer-confirm", ("amount", amount), ("account", comp.PendingTransferTarget)));
         comp.KeypadBuffer = string.Empty;
         RefreshUi(uid, comp);
     }
@@ -886,12 +886,12 @@ public sealed partial class ColonyAtmSystem : EntitySystem
         { Eject(uid, comp, comp.CurrentUser); return; }
 
         var target = _bank.FindAccount(comp.PendingTransferTarget);
-        if (target == null) { ShowResult(uid, comp, "Account not found."); return; }
-        if (target.Value.uid == senderUid) { ShowResult(uid, comp, "Cannot transfer to own account."); return; }
+        if (target == null) { ShowResult(uid, comp, Loc.GetString("cmu-atm-account-missing"), true); return; }
+        if (target.Value.uid == senderUid) { ShowResult(uid, comp, Loc.GetString("cmu-atm-own-account"), true); return; }
 
         var amount = comp.PendingAmount;
         if (amount <= 0 || amount > sender.AccountBalance)
-        { ShowResult(uid, comp, "Insufficient funds."); return; }
+        { ShowResult(uid, comp, Loc.GetString("cmu-atm-insufficient-funds"), true); return; }
 
         sender.AccountBalance -= amount;
         Dirty(senderUid, sender);
@@ -900,7 +900,7 @@ public sealed partial class ColonyAtmSystem : EntitySystem
         _bank.RecordTransaction(senderUid, AtmHistoryKind.TransferOut, amount, target.Value.card.AccountNumber);
         _bank.RecordTransaction(target.Value.uid, AtmHistoryKind.TransferIn, amount, sender.AccountNumber);
 
-        ShowResult(uid, comp, $"Transferred ${amount}. Balance: ${sender.AccountBalance}.");
+        ShowResult(uid, comp, Loc.GetString("cmu-atm-transfer-done", ("amount", amount), ("balance", sender.AccountBalance)));
     }
 
     // ─── UI building ───────────────────────────────────────────────────────
@@ -959,16 +959,23 @@ public sealed partial class ColonyAtmSystem : EntitySystem
             hacked != null,
             comp.CashAmount,
             CashInTray(uid),
-            hacked?.Message
+            hacked?.Message,
+            statusIsError: comp.StatusIsError
         );
 
         _ui.SetUiState(uid, ColonyAtmUi.Key, state);
     }
 
-    private void ShowResult(EntityUid uid, ColonyAtmComponent comp, string msg)
+    private static void SetStatusMessage(ColonyAtmComponent comp, string message, bool error = false)
+    {
+        comp.StatusMessage = message;
+        comp.StatusIsError = error;
+    }
+
+    private void ShowResult(EntityUid uid, ColonyAtmComponent comp, string msg, bool error = false)
     {
         comp.Screen = AtmScreen.Result;
-        comp.StatusMessage = msg;
+        SetStatusMessage(comp, msg, error);
         comp.KeypadBuffer = string.Empty;
         RefreshUi(uid, comp);
     }
@@ -996,7 +1003,7 @@ public sealed partial class ColonyAtmSystem : EntitySystem
             if (comp.PinAuthenticated && now - comp.LastActivity >= comp.IdleSignOut)
             {
                 ResetSession(uid, comp);
-                comp.StatusMessage = "Session timed out.";
+                SetStatusMessage(comp, Loc.GetString("cmu-atm-timeout"));
                 RefreshUi(uid, comp);
             }
         }
@@ -1004,7 +1011,7 @@ public sealed partial class ColonyAtmSystem : EntitySystem
 
     // ─── Cash tray ─────────────────────────────────────────────────────────
 
-    private const string TakeCashFirst = "Please take your cash first.";
+    private string TakeCashFirst => Loc.GetString("cmu-atm-take-cash-first");
 
     /// <summary>Dollars waiting in the cash tray.</summary>
     private int CashInTray(EntityUid uid)

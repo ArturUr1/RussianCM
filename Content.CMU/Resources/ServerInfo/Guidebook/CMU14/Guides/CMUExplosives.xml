@@ -1,131 +1,131 @@
 <Document>
-  # Explosives
+  # Взрывчатка
 
-  Explosives give you firepower around corners, over cover and into places you don't want to walk into. This guide covers grenades, mines and the other explosives a soldier is likely to carry. For mortars, see [textlink="Mortar" link="CMUGuideMortar"].
+  Взрывчатка позволяет поражать цели за углами, укрытиями и в местах, куда не хочется заходить. Здесь описаны гранаты, мины и другие взрывные устройства, которые может носить солдат. О миномётах читайте в разделе [textlink="Миномёт" link="CMUGuideMortar"].
 
-  # Grenades
-  Most grenades are [bold]hand grenades[/bold] that you can also fire from a grenade launcher. A few are [bold]launcher-only rounds[/bold] that you can't prime by hand at all.
+  # Гранаты
+  Большинство гранат — [bold]ручные[/bold], но ими можно стрелять и из гранатомёта. Некоторые предназначены [bold]только для гранатомётов[/bold] и вообще не взводятся вручную.
 
-  ## Using a Hand Grenade
-  - Hold the grenade and use it in your hand [color=#FFA500][keybind="ActivateItemInHand"][/color] to pull the pin. You'll hear it arm and the grenade starts flashing.
-  - Throw it [color=#FFA500][keybind="ThrowItemInHand"][/color] before the fuse runs out. Once it's armed you can't put the pin back.
-  - Most grenades have a [bold]4 second[/bold] fuse. Smoke has 2.5 seconds and white phosphorus only 2.
-  - Grenades bounce and slide. Throw a little short in tight corridors, and never prime one while a friend is standing between you and the target.
+  ## Применение ручной гранаты
+  - Возьмите гранату и активируйте её в руке [color=#FFA500][keybind="ActivateItemInHand"][/color], чтобы выдернуть чеку. Вы услышите звук взведения, а граната начнёт мигать.
+  - Бросьте её [color=#FFA500][keybind="ThrowItemInHand"][/color] до срабатывания запала. После взведения вернуть чеку нельзя.
+  - У большинства гранат задержка составляет [bold]4 секунды[/bold]. У дымовых — 2.5 секунды, у белого фосфора — всего 2.
+  - Гранаты отскакивают и скользят. В тесных коридорах бросайте чуть ближе цели и никогда не взводите гранату, если между вами и целью стоит товарищ.
 
-  ## Firing From a Launcher
-  - Any grenade marked for launcher use can be loaded into a grenade launcher.
-  - The launcher arms the grenade when it fires it. Most grenades go off about a second after leaving the barrel.
-  - [bold]Dual-purpose[/bold] grenades, the [bold]M40 HEDP[/bold] and [bold]M47 HSDP[/bold], also have an [bold]impact fuse[/bold] and go off the moment they reach the spot you aimed at.
-  - Fragmentation grenades like the [bold]HEFA[/bold] and [bold]M15[/bold] have no impact fuse, so they rely on the launcher's own timer.
+  ## Стрельба из гранатомёта
+  - Любую гранату с пометкой о совместимости можно зарядить в гранатомёт.
+  - Гранатомёт взводит гранату при выстреле. Большинство гранат взрывается примерно через секунду после выхода из ствола.
+  - Гранаты [bold]двойного назначения[/bold], [bold]M40 HEDP[/bold] и [bold]M47 HSDP[/bold], также имеют [bold]контактный взрыватель[/bold] и срабатывают при достижении точки прицеливания.
+  - У осколочных гранат вроде [bold]HEFA[/bold] и [bold]M15[/bold] контактного взрывателя нет: они используют таймер гранатомёта.
 
-  ## Hand Grenades
+  ## Ручные гранаты
   <Box>
     <GuideEntityEmbed Entity="CMGrenadeHighExplosive" Caption="M40 HEDP"/>
     <GuideEntityEmbed Entity="CMGrenadeFrag" Caption="HEFA"/>
     <GuideEntityEmbed Entity="CMGrenadeFragOld" Caption="M15"/>
     <GuideEntityEmbed Entity="CMUGrenadeBFAB" Caption="M51A BFAB"/>
-    <GuideEntityEmbed Entity="AU14GrenadeHighExplosiveUPP" Caption="Type 6"/>
+    <GuideEntityEmbed Entity="AU14GrenadeHighExplosiveUPP" Caption="Тип 6"/>
   </Box>
-  - [bold]M40 HEDP[/bold]: the standard blast grenade. Dual-purpose, so it detonates on impact when fired from a launcher.
-  - [bold]HEFA[/bold]: a fragmentation grenade that throws out a large cloud of shrapnel. Deadly in the open, dangerous to anyone nearby.
-  - [bold]M15[/bold]: an older fragmentation grenade with plenty of shrapnel. It's being phased out for the safer 30mm-series grenades.
-  - [bold]Type 6[/bold]: a fragmentation grenade.
-  - [bold]M51A BFAB[/bold]: a bounding grenade. Once it lands, armed, it hops up into the air and bursts into shrapnel from above. Good against troops behind low cover. Throw it primed, or fire it from a launcher to bound where it lands.
+  - [bold]M40 HEDP[/bold]: стандартная фугасная граната. Двойное назначение позволяет ей взрываться при попадании после выстрела из гранатомёта.
+  - [bold]HEFA[/bold]: осколочная граната, разбрасывающая большое облако осколков. Смертоносна на открытом месте и опасна для всех поблизости.
+  - [bold]M15[/bold]: старая осколочная граната с большим количеством осколков. Её постепенно заменяют более безопасными гранатами серии 30 мм.
+  - [bold]Тип 6[/bold]: осколочная граната.
+  - [bold]M51A BFAB[/bold]: выпрыгивающая граната. После приземления взведённая граната подскакивает и разбрасывает осколки сверху. Эффективна против солдат за низкими укрытиями. Бросьте взведённую гранату или выстрелите из гранатомёта, чтобы она подскочила в месте приземления.
 
   <Box>
     <GuideEntityEmbed Entity="RMCGrenadeIncendiary" Caption="M77 HIAM"/>
-    <GuideEntityEmbed Entity="AU14GrenadeIncendiaryUPP" Caption="Type 8"/>
+    <GuideEntityEmbed Entity="AU14GrenadeIncendiaryUPP" Caption="Тип 8"/>
     <GuideEntityEmbed Entity="RMCGrenadeWhitePhosphorusCompound" Caption="M60 WPSI"/>
     <GuideEntityEmbed Entity="RMCGrenadeMFHS" Caption="M42 MFHS"/>
   </Box>
-  - [bold]M77 HIAM[/bold]: an incendiary grenade that spreads fire across an area. Good for denying ground and blocking an advance.
-  - [bold]Type 8[/bold]: another incendiary grenade that sets the area alight.
-  - [bold]M60 WPSI[/bold]: white phosphorus. Throws up a smoke screen and sets things alight. Short 2 second fuse.
-  - [bold]M42 MFHS[/bold]: releases liquid metal that hardens into temporary walls. Useful to seal a breach or block a corridor, but the foam is easy to break.
+  - [bold]M77 HIAM[/bold]: зажигательная граната, распространяющая огонь по площади. Подходит для блокирования территории и наступления.
+  - [bold]Тип 8[/bold]: ещё одна зажигательная граната, поджигающая местность.
+  - [bold]M60 WPSI[/bold]: белый фосфор. Создаёт дымовую завесу и поджигает предметы. Короткая задержка — 2 секунды.
+  - [bold]M42 MFHS[/bold]: выпускает жидкий металл, который затвердевает во временные стены. Подходит для заделки пробоин и перекрытия коридоров, но пену легко разрушить.
 
-  ## Smoke
+  ## Дым
   <Box>
     <GuideEntityEmbed Entity="CMGrenadeSmoke" Caption="M47 HSDP"/>
     <GuideEntityEmbed Entity="CMUGrenadeSmokeGreen" Caption="M47-G"/>
     <GuideEntityEmbed Entity="CMUGrenadeSmokeRed" Caption="M47-R"/>
     <GuideEntityEmbed Entity="AU14GrenadeSmokeUPP" Caption="RDG-17"/>
   </Box>
-  Smoke grenades fill the area with a cloud that blocks sight for about [bold]35 seconds[/bold].
-  - [bold]M47 HSDP[/bold]: a thick smoke screen to cover a crossing or a casualty pickup. Dual-purpose, so it also bursts on impact from a launcher.
-  - [bold]RDG-17[/bold]: a smoke screen grenade, much like the M47.
-  - [bold]M47-G / M47-R[/bold]: green and red signal smoke, used to mark landing zones, targets or rally points. Agree on what each colour means before you use them.
+  Дымовые гранаты заполняют область облаком, закрывающим обзор примерно на [bold]35 секунд[/bold].
+  - [bold]M47 HSDP[/bold]: плотная дымовая завеса для прикрытия перехода или эвакуации раненого. Благодаря двойному назначению также срабатывает при попадании из гранатомёта.
+  - [bold]RDG-17[/bold]: дымовая граната, похожая на M47.
+  - [bold]M47-G / M47-R[/bold]: зелёный и красный сигнальный дым для обозначения посадочных площадок, целей и мест сбора. Заранее договоритесь о значении каждого цвета.
 
-  ## Launcher-Only Rounds
-  These have a yellow band on the hull and no pin. You [bold]cannot[/bold] throw them armed; load them into a grenade launcher.
+  ## Боеприпасы только для гранатомёта
+  На их корпусе есть жёлтая полоса, а чеки нет. Их [bold]нельзя[/bold] бросить взведёнными: заряжайте в гранатомёт.
 
   <Box>
     <GuideEntityEmbed Entity="CMUGrenadeHEAP" Caption="M38 HEAP"/>
-    <GuideEntityEmbed Entity="CMUGrenadeCanister" Caption="M108 canister"/>
+    <GuideEntityEmbed Entity="CMUGrenadeCanister" Caption="Картечный M108"/>
   </Box>
-  - [bold]M38 HEAP[/bold]: armour-piercing round that detonates on impact. A slightly smaller blast than the M40, but it hits vehicles far harder. Land it just in front of a wall rather than straight into it.
-  - [bold]M108 canister[/bold]: turns the launcher into a giant shotgun. Fires a spread of buckshot straight out of the barrel. Best at close range.
+  - [bold]M38 HEAP[/bold]: бронебойный боеприпас, взрывающийся при попадании. Взрыв немного слабее M40, но техника получает гораздо больший урон. Цельтесь перед стеной, а не прямо в неё.
+  - [bold]Картечный M108[/bold]: превращает гранатомёт в огромный дробовик. Выпускает из ствола сноп картечи. Лучше всего подходит для ближнего боя.
 
-  ## G2 Electroshock Grenade
+  ## Электрошоковая граната G2
   <Box>
-    <GuideEntityEmbed Entity="CMUGrenadeElectroshock" Caption="G2 Electroshock"/>
+    <GuideEntityEmbed Entity="CMUGrenadeElectroshock" Caption="Электрошоковая G2"/>
   </Box>
-  - Releases an electric pulse after a [bold]3 second[/bold] fuse. Fired from a launcher, it flies straight instead of arcing and goes off the moment it hits someone or something. Walls block the pulse, and it weakens with distance.
-  - Humans take burns and lose a lot of stamina.
-  - Synthetics take extra damage and are knocked out for [bold]25 seconds[/bold].
-  - Xenonids take burns and are slowed. Up close they're slowed heavily.
-  - [bold]Landmine mode[/bold]: click the tile you're standing on with the grenade to bury it. This takes 5 seconds and you have to stand still. Anyone not on your side who steps on it pops a live grenade out of the ground that goes off one second later, and that pulse spares your own side.
-  - A buried grenade can be disarmed with a [bold]multitool[/bold], which gives you the grenade back.
+  - Выпускает электрический импульс после [bold]3 секунд[/bold]. Из гранатомёта летит прямо, а не по дуге, и срабатывает при столкновении с человеком или предметом. Стены блокируют импульс, а с расстоянием он ослабевает.
+  - Люди получают ожоги и теряют много выносливости.
+  - Синтетики получают дополнительный урон и отключаются на [bold]25 секунд[/bold].
+  - Ксенониды получают ожоги и замедляются. Вблизи замедление особенно сильное.
+  - [bold]Режим мины[/bold]: нажмите гранатой на плитку под собой, чтобы закопать её. Это занимает 5 секунд и требует неподвижности. При наступании противника из земли выскакивает взведённая граната и через секунду взрывается; импульс не задевает вашу сторону.
+  - Закопанную гранату можно обезвредить [bold]мультитулом[/bold], вернув её себе.
 
-  ## Packets and Boxes
-  - [bold]Packets[/bold] hold three grenades and fit in your bag or webbing.
-  - [bold]Grenade boxes[/bold] hold 25 grenades of one type, or 12 for the smaller boxes. Click the floor with a box to set it down and open the lid, then click it with an empty hand to see what's inside. Drag it onto yourself to pick it back up.
-  - A box only takes back its own type of grenade, and never an armed one.
+  ## Упаковки и ящики
+  - [bold]Упаковки[/bold] содержат три гранаты и помещаются в сумку или разгрузку.
+  - [bold]Ящики гранат[/bold] содержат 25 гранат одного типа, а маленькие — 12. Нажмите ящиком на пол, чтобы поставить его и открыть крышку, затем нажмите пустой рукой для просмотра содержимого. Чтобы поднять ящик, перетащите его на себя.
+  - Ящик принимает только гранаты своего типа и никогда не принимает взведённые.
 
   <Box>
-    <GuideEntityEmbed Entity="CMUBoxGrenadeHEDP" Caption="M40 HEDP box"/>
-    <GuideEntityEmbed Entity="CMUBoxGrenadeSmoke" Caption="M47 HSDP box"/>
-    <GuideEntityEmbed Entity="CMUBoxGrenadeElectroshock" Caption="G2 box"/>
+    <GuideEntityEmbed Entity="CMUBoxGrenadeHEDP" Caption="Ящик M40 HEDP"/>
+    <GuideEntityEmbed Entity="CMUBoxGrenadeSmoke" Caption="Ящик M47 HSDP"/>
+    <GuideEntityEmbed Entity="CMUBoxGrenadeElectroshock" Caption="Ящик G2"/>
   </Box>
 
-  [color=#FF0000][bold]Keep boxes away from fire.[/bold][/color] A box with most of its grenades still inside will catch fire if flames reach it. The grenades then cook off a few seconds later in one big explosion. Once a box starts burning you can't take anything out of it, so get clear.
+  [color=#FF0000][bold]Держите ящики подальше от огня.[/bold][/color] Ящик с большей частью гранат внутри загорается при попадании в пламя. Через несколько секунд гранаты детонируют одним мощным взрывом. Из горящего ящика нельзя ничего достать, поэтому отойдите.
 
-  # Mines
-  ## M20 Claymore
+  # Мины
+  ## M20 «Клеймор»
   <Box>
-    <GuideEntityEmbed Entity="RMCExplosiveClaymoreMine" Caption="M20 Claymore"/>
-    <GuideEntityEmbed Entity="AU14ExplosiveClaymoreMineIncendiary" Caption="M20 incendiary"/>
+    <GuideEntityEmbed Entity="RMCExplosiveClaymoreMine" Caption="M20 «Клеймор»"/>
+    <GuideEntityEmbed Entity="AU14ExplosiveClaymoreMineIncendiary" Caption="Зажигательная M20"/>
   </Box>
-  The claymore is a [bold]directional[/bold] mine. When something walks into the space in front of it, it sprays shrapnel forward in a wide cone.
-  - Face the way you want it to point, then use it in your hand [color=#FFA500][keybind="ActivateItemInHand"][/color]. Planting takes a few seconds and you have to stand still. It goes on the tile you're standing on, facing the same way you are.
-  - Only one mine fits on a tile.
-  - It knows your side. Anyone sharing your IFF can walk past it safely; anyone else sets it off.
-  - Xenonid spit can set it off, and enough damage will too, so don't bury it in the middle of a firefight.
-  - The [bold]incendiary[/bold] version sprays less shrapnel but leaves the area burning.
-  - To take one back, use a [bold]multitool[/bold] on it. Disarming takes a few seconds and returns the mine to your hand.
-  - [bold]FRONT TOWARD ENEMY.[/bold] Everything behind and beside it is safe; everything in front of it isn't, including you if you walk the wrong way.
+  «Клеймор» — мина [bold]направленного действия[/bold]. Когда кто-нибудь входит в пространство перед ней, она разбрасывает осколки вперёд широким конусом.
+  - Повернитесь в нужную сторону и активируйте мину в руке [color=#FFA500][keybind="ActivateItemInHand"][/color]. Установка занимает несколько секунд и требует неподвижности. Мина ставится на плитку под вами и смотрит в ту же сторону.
+  - На одной плитке помещается только одна мина.
+  - Она распознаёт вашу сторону. Любой с вашим IFF проходит безопасно; остальные вызывают взрыв.
+  - Плевок ксенонида или достаточный урон могут вызвать срабатывание, поэтому не устанавливайте её посреди перестрелки.
+  - [bold]Зажигательная[/bold] версия разбрасывает меньше осколков, но поджигает область.
+  - Используйте [bold]мультитул[/bold], чтобы забрать мину. Обезвреживание занимает несколько секунд и возвращает мину в руку.
+  - [bold]ЛИЦЕВОЙ СТОРОНОЙ К ПРОТИВНИКУ.[/bold] Сзади и сбоку безопасно; спереди опасно для всех, включая вас, если вы пойдёте не туда.
 
-  The G2 electroshock grenade can also be planted as a mine; see above.
+  Электрошоковую гранату G2 также можно установить как мину; см. выше.
 
-  # Charges
+  # Заряды
   <Box>
-    <GuideEntityEmbed Entity="RMCExplosiveBreachingCharge" Caption="Breaching charge"/>
+    <GuideEntityEmbed Entity="RMCExplosiveBreachingCharge" Caption="Заряд для взлома"/>
     <GuideEntityEmbed Entity="RMCExplosivePlastic" Caption="C4"/>
   </Box>
-  - [bold]Breaching charges[/bold] stick to a wall and blow it open three seconds later. The blast is tiny on your side, and it sprays shrapnel into the room beyond.
-  - [bold]C4[/bold] takes longer to place and beeps for ten seconds before a large explosion that hurts anyone nearby on either side.
-  - Both need engineering training. See [textlink="Breaching and Demolition" link="CMUGuideEngBreach"] for the full details, the Bangalore and the M6H-BRUTE.
+  - [bold]Заряды для взлома[/bold] крепятся к стене и пробивают её через три секунды. С вашей стороны взрыв слабый, но в помещение за стеной летят осколки.
+  - [bold]C4[/bold] устанавливается дольше и пищит десять секунд перед мощным взрывом, поражающим всех поблизости по обе стороны.
+  - Оба требуют инженерной подготовки. Подробности, а также сведения о «Бангалоре» и M6H-BRUTE, смотрите в разделе [textlink="Взлом и подрыв" link="CMUGuideEngBreach"].
 
-  # Improvised Explosives
+  # Самодельные взрывные устройства
   <Box>
-    <GuideEntityEmbed Entity="AU14IED" Caption="IED"/>
-    <GuideEntityEmbed Entity="AU14IEDLarge" Caption="Large IED"/>
+    <GuideEntityEmbed Entity="AU14IED" Caption="СВУ"/>
+    <GuideEntityEmbed Entity="AU14IEDLarge" Caption="Большое СВУ"/>
   </Box>
-  Insurgents build and use [bold]IEDs[/bold]: large, unstable bombs packed with shrapnel. They're set off remotely by a linked signaller or phone, and can wreck both troops and light vehicles. Watch for odd objects on roads and in doorways, and don't touch one you can't identify.
+  Повстанцы изготавливают и используют [bold]СВУ[/bold]: большие нестабильные бомбы с осколками. Они подрываются дистанционно связанным сигнализатором или телефоном и могут уничтожать пехоту и лёгкую технику. Следите за подозрительными предметами на дорогах и в дверных проёмах; не трогайте то, что не можете опознать.
 
-  ## Tips
-  - Call out "frag out" or similar before you throw, so your squad knows to stay back.
-  - Fire spreads and smoke drifts. Don't throw incendiaries or smoke where your own side needs to move or see.
-  - Tell your squad where you've laid mines.
-  - Keep ammunition out of fires. A mortar shell left burning explodes after about 5 seconds, and an ammo box that's at least half full goes up a few seconds later. Neither can be picked up once it's burning.
-  - Grenades and mines are ordered through Requisitions, either in packets or in full boxes.
+  ## Советы
+  - Перед броском крикните «Граната!» или другое предупреждение, чтобы отряд держался подальше.
+  - Огонь распространяется, а дым перемещается. Не бросайте зажигательные и дымовые гранаты там, где вашим нужно двигаться или видеть.
+  - Сообщайте отряду, где установлены мины.
+  - Держите боеприпасы подальше от огня. Горящий миномётный снаряд взрывается примерно через 5 секунд, а заполненный хотя бы наполовину ящик патронов — ещё через несколько секунд. Горящие боеприпасы нельзя поднять.
+  - Гранаты и мины заказывают через снабжение, в упаковках или целых ящиках.
 </Document>

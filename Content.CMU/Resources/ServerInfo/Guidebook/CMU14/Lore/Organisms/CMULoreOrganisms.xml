@@ -1,12 +1,12 @@
 <Document>
-  # Organisms
+  # Организмы
 
-  Humanity is not alone among the stars, and little of what it has found is friendly. The existence of most of these creatures are not known to the common man. 
+  Человечество не одиноко среди звёзд, и мало что из найденного дружелюбно. Большинство этих существ неизвестно обычному человеку.
 
-  - [textlink="Yautja" link="CMUGuideLoreHunters"]: the ancient warrior species that stalks the galaxy for sport.
-  - [textlink="Xenomorphs" link="CMUGuideLoreAliens"]: acid-blooded parasites.
-  - [textlink="Pathogen" link="CMUGuideLorePathogen"]: an unknown fungal infestation.
-  - [textlink="Biomorphs" link="CMUGuideLoreBiomorphs"]: twisted flesh that wears the faces of its victims.
-  - [textlink="Apes" link="CMUGuideLoreApes"]: hungry, powerful megafauna of the frontier wilds.
-  - [textlink="Tribals" link="CMUGuideLoreTribals"]: a stone-age people who defend their homeworlds from invaders.
+  - [textlink="Яутжа" link="CMUGuideLoreHunters"]: древний воинственный вид, охотящийся по галактике ради развлечения.
+  - [textlink="Ксеноморфы" link="CMUGuideLoreAliens"]: паразиты с кислотной кровью.
+  - [textlink="Патоген" link="CMUGuideLorePathogen"]: неизвестная грибковая зараза.
+  - [textlink="Биоморфы" link="CMUGuideLoreBiomorphs"]: искривлённая плоть с лицами жертв.
+  - [textlink="Обезьяны" link="CMUGuideLoreApes"]: голодная мощная мегафауна фронтира.
+  - [textlink="Племена" link="CMUGuideLoreTribals"]: народ каменного века, защищающий родные миры от захватчиков.
 </Document>

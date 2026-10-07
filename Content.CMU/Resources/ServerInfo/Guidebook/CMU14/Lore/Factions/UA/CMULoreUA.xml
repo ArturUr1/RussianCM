@@ -1,38 +1,38 @@
 <Document>
-  # United Americas
+  # Объединённые Америки
 
   <CMUGuideImage Path="/Textures/CMU14/Interface/Paper/UAHeader.png" MaxHeight="128"/>
 
-  The [bold]United Americas[/bold] (UA) is a superpower formed in 2104 by the nations of North, Central and South America, in answer to the rise of the [textlink="Three World Empire" link="CMUGuideLoreTWE"]. It fields one of the most formidable militaries in human space and the strongest industrial base on the frontier.
+  [bold]Объединённые Америки[/bold] (UA) — сверхдержава, созданная в 2104 году странами Северной, Центральной и Южной Америки в ответ на рост [textlink="Империи трёх миров" link="CMUGuideLoreTWE"]. Имеет одну из сильнейших армий человеческого космоса и мощнейшую промышленную базу фронтира.
 
-  ## Government
-  - In practice an extension of the United States government, run by a President, Vice President and a Congress representing every member nation.
-  - Most UA colonies lie in the [bold]American Arm[/bold] of the Outer Rim, with more strung along the frontier.
+  ## Правительство
+  - Фактически продолжение правительства США: президент, вице-президент и Конгресс с представителями всех стран-участниц.
+  - Большинство колоний лежит в [bold]Американском рукаве[/bold] Внешнего Рубежа, остальные разбросаны по фронтиру.
 
-  ## Relations
-  - [textlink="Three World Empire" link="CMUGuideLoreTWE"]: allies bound by treaties, but the UA keeps a close eye on the TWE's expansion.
-  - [textlink="Union of Progressive Peoples" link="CMUGuideLoreUPP"]: a long cold war that has turned into more and more border clashes over disputed worlds.
-  - [textlink="Weyland-Yutani" link="CMUGuideLoreWY"]: deep business ties, but growing distrust after the Corporate mishandling of many UA worlds.
+  ## Отношения
+  - [textlink="Империя трёх миров" link="CMUGuideLoreTWE"]: союзники по договорам, но UA внимательно следят за её расширением.
+  - [textlink="Союз прогрессивных народов" link="CMUGuideLoreUPP"]: долгая холодная война, переходящая во всё более частые столкновения за спорные миры.
+  - [textlink="Вейланд-Ютани" link="CMUGuideLoreWY"]: тесные деловые связи, но растущее недоверие после корпоративного провала управления многими мирами UA.
 
-  ## Civil Organizations
+  ## Гражданские организации
   <Box>
     <CMUGuideOutfitEmbed Gear="AU14GearCivilianCMBMarshal" Caption="CMB"/>
   </Box>
-  - [bold]Colonial Administration[/bold], an civilian organization formed to protect the rights of American off-world colonists and manage the UA's Colonies.
-  - [textlink="Colonial Marshal Bureau" link="CMUGuideLoreCMB"] (CMB): the civilian law enforcement arm of Colonial Administration, with offices across the colonies. Its [bold]Crisis Intervention Unit[/bold] handles hostage situations, strikes, terrorism and any crisis beyond local police.
-  - [bold]Federal agencies[/bold], such as the Federal Bureau of Investigation (FBI), the Drug Enforcement Administration (DEA) and the Bureau of Alcohol, Tobacco, Firearms and Explosives (ATF), still operate across UA space, often working alongside the CMB on cases that cross colony lines.
+  - [bold]Колониальная администрация[/bold] — гражданская организация для защиты прав американских внеземных колонистов и управления колониями UA.
+  - [textlink="Бюро колониальных маршалов" link="CMUGuideLoreCMB"] (CMB): гражданское правоохранительное подразделение администрации с офисами в колониях. [bold]Группа кризисного реагирования[/bold] занимается заложниками, забастовками, терроризмом и кризисами сверх возможностей полиции.
+  - [bold]Федеральные агентства[/bold], например ФБР, Управление по борьбе с наркотиками (DEA) и Бюро алкоголя, табака, оружия и взрывчатки (ATF), продолжают работу в пространстве UA, часто совместно с CMB по межколониальным делам.
 
-  ## Military Forces
+  ## Вооружённые силы
   <Box>
     <CMUGuideOutfitEmbed Gear="AU14GearGOVFORRiflemanDummy" Caption="USCM"/>
     <CMUGuideOutfitEmbed Gear="CMUGearGuideLACN" Caption="LACN"/>
     <CMUGuideOutfitEmbed Gear="CMUGearGuideCCAF" Caption="CCAF"/>
-    <CMUGuideOutfitEmbed Gear="AU14GearUSArmyTrooper" Caption="Army"/>
+    <CMUGuideOutfitEmbed Gear="AU14GearUSArmyTrooper" Caption="Армия"/>
   </Box>
-  The [bold]United Americas Allied Command[/bold] directs the militaries of every member nation.
-  - [textlink="United States Colonial Marines" link="CMUGuideLoreUSCM"] (USCM): founded in 2101, before the UA itself, and the spearhead of every UA campaign. Split into the Sol, Eridani and Herculis branches, with reserves on Earth.
-  - [textlink="Latin American Colonial Navy" link="CMUGuideLoreOrgLACN"] (LACN): its Landing Forces specialize in rapid deployment and shock tactics for planetary assault and occupation.
-  - Other UA military forces include: the [bold]Canadian Colonial Armed Forces[/bold], the [bold]US Aerospace Force[/bold], the [bold]UA Colonial Guard[/bold], the [bold]US Colonial Coast Guard[/bold], the [bold]Outer Rim Defense Fleet[/bold] and the [bold]US Army[/bold].
+  [bold]Союзное командование Объединённых Америк[/bold] руководит армиями всех стран-участниц.
+  - [textlink="Колониальная морская пехота США" link="CMUGuideLoreUSCM"] (USCM): основана в 2101 году, до UA, и служит остриём каждой кампании. Разделена на силы Сол, Эридан и Геркулес, с резервами на Земле.
+  - [textlink="Латиноамериканский колониальный флот" link="CMUGuideLoreOrgLACN"] (LACN): десантные силы обучены быстрому развёртыванию и ударной тактике планетарного штурма и оккупации.
+  - Другие войска: [bold]Канадские колониальные вооружённые силы[/bold], [bold]Аэрокосмические силы США[/bold], [bold]Колониальная гвардия UA[/bold], [bold]Колониальная береговая охрана США[/bold], [bold]Флот обороны Внешнего Рубежа[/bold] и [bold]Армия США[/bold].
 
-  The UA's militaries are divided between three rival political factions. See [textlink="Politics" link="CMUGuideLoreUAPolitics"].
+  Армии UA разделены между тремя соперничающими политическими фракциями. См. [textlink="Политика" link="CMUGuideLoreUAPolitics"].
 </Document>

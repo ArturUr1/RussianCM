@@ -100,6 +100,8 @@ public sealed partial class ColonyAtmComponent : Component
     /// </summary>
     public string StatusMessage = string.Empty;
 
+    public bool StatusIsError;
+
     /// <summary>
     ///     For Transfer flow: target account number entered by user.
     /// </summary>

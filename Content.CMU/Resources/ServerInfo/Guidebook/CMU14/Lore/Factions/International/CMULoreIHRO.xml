@@ -1,17 +1,17 @@
 <Document>
-  # Interstellar Human Rights Organization
+  # Межзвёздная организация по правам человека
 
   <CMUGuideImage Path="/Textures/CMU14/Interface/Paper/IHROHeader.png" MaxHeight="256"/>
 
-  The [bold]Interstellar Human Rights Organization[/bold] (IHRO) is an independent watchdog that works under the umbrella of the [textlink="United Nations" link="CMUGuideLoreUN"] (UN). Its mission is to document abuses of human rights across human space, and to make sure the people responsible can't simply bury them out on the frontier.
+  [bold]Межзвёздная организация по правам человека[/bold] (IHRO) — независимый наблюдатель под эгидой [textlink="Организации Объединённых Наций" link="CMUGuideLoreUN"] (ООН). Документирует нарушения прав человека по всему человеческому космосу и не даёт виновным просто скрыть их на фронтире.
 
-  ## Observers
-  - The IHRO's [bold]Interstellar Human Rights Observers[/bold] travel to the frontier to document and record any atrocities that may be taking place in its darker corners.
-  - Observers usually travel alongside others for protection, such as [textlink="Colonial Marshal Bureau" link="CMUGuideLoreCMB"] (CMB) patrols or [textlink="UNISC" link="CMUGuideLoreUNISC"] peacekeepers.
-  - Their reports are used to hold governments, militaries and corporations to the standards of the [textlink="Geneva Conventions of 12th August 2106" link="AU14UCMJGENCON"].
-  - Many call the program a PR stunt, but the work is important, and on the frontier an observer may be the only independent witness to what happens.
+  ## Наблюдатели
+  - [bold]Межзвёздные наблюдатели за правами человека[/bold] отправляются на фронтир, чтобы фиксировать зверства в его тёмных уголках.
+  - Обычно путешествуют под защитой других сил, например патрулей [textlink="Бюро колониальных маршалов" link="CMUGuideLoreCMB"] (CMB) или миротворцев [textlink="UNISC" link="CMUGuideLoreUNISC"].
+  - Их отчёты помогают требовать от правительств, армий и корпораций соблюдения [textlink="Женевских конвенций от 12 августа 2106 года" link="AU14UCMJGENCON"].
+  - Многие называют программу пиаром, но работа важна: на фронтире наблюдатель может оказаться единственным независимым свидетелем.
 
   <Box>
-    <CMUGuideOutfitEmbed Gear="AU14GearCMBInvestigationRightsObserver" Caption="Observer"/>
+    <CMUGuideOutfitEmbed Gear="AU14GearCMBInvestigationRightsObserver" Caption="Наблюдатель"/>
   </Box>
 </Document>

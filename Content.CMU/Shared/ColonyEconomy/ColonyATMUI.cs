@@ -26,6 +26,7 @@ public sealed class ColonyAtmBuiState : BoundUserInterfaceState
     public float IncomeTaxPercent { get; }
     public TimeSpan? LockExpiry { get; }
     public string StatusMessage { get; }
+    public bool StatusIsError { get; }
     public string KeypadBuffer { get; }
 
     /// <summary>Left side button labels (indices 0-2 = L1, L2, L3). Empty string hides the button.</summary>
@@ -101,7 +102,8 @@ public sealed class ColonyAtmBuiState : BoundUserInterfaceState
         bool outOfService = false,
         int cashAmount = 0,
         int cashWaiting = 0,
-        string? outOfServiceMessage = null)
+        string? outOfServiceMessage = null,
+        bool statusIsError = false)
     {
         Screen = screen;
         Balance = balance;
@@ -110,6 +112,7 @@ public sealed class ColonyAtmBuiState : BoundUserInterfaceState
         IncomeTaxPercent = incomeTaxPercent;
         LockExpiry = lockExpiry;
         StatusMessage = statusMessage;
+        StatusIsError = statusIsError;
         KeypadBuffer = keypadBuffer;
         LeftLabels = leftLabels;
         RightLabels = rightLabels;

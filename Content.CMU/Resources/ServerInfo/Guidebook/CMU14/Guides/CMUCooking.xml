@@ -1,101 +1,101 @@
 <Document>
-  # Cooking
+  # Кулинария
 
-  A good meal goes a long way on a long deployment. This guide covers the kitchen equipment, the basic ingredients you make yourself, and every microwave recipe.
+  Хорошая еда очень помогает во время долгой службы. Здесь описаны кухонное оборудование, базовые ингредиенты, которые вы готовите сами, и все рецепты для микроволновки.
 
-  ## Equipment
+  ## Оборудование
   <Box>
-    <GuideEntityEmbed Entity="CMMicrowave" Caption="Microwave"/>
-    <GuideEntityEmbed Entity="RMCKitchenReagentGrinder" Caption="All-In-One Grinder"/>
-    <GuideEntityEmbed Entity="KitchenSpike" Caption="Meat spike"/>
+    <GuideEntityEmbed Entity="CMMicrowave" Caption="Микроволновка"/>
+    <GuideEntityEmbed Entity="RMCKitchenReagentGrinder" Caption="Универсальный измельчитель"/>
+    <GuideEntityEmbed Entity="KitchenSpike" Caption="Мясной крюк"/>
   </Box>
   <Box>
-    <GuideEntityEmbed Entity="RMCKitchenKnifeChef" Caption="Kitchen knife"/>
-    <GuideEntityEmbed Entity="RMCKitchenKnifeButcher" Caption="Butcher's cleaver"/>
-    <GuideEntityEmbed Entity="CMLockerFridge" Caption="Fridge"/>
+    <GuideEntityEmbed Entity="RMCKitchenKnifeChef" Caption="Кухонный нож"/>
+    <GuideEntityEmbed Entity="RMCKitchenKnifeButcher" Caption="Мясницкий тесак"/>
+    <GuideEntityEmbed Entity="CMLockerFridge" Caption="Холодильник"/>
   </Box>
-  - [bold]Microwave[/bold]: where nearly all cooking happens. Put the solid ingredients in, pour in any liquids, then start it. If the contents don't match a recipe, you get burnt mess instead. Never put metal in it.
-  - [bold]All-In-One Grinder[/bold]: [bold]grind[/bold] food into its reagents (wheat into flour, for example) or [bold]juice[/bold] fruit and vegetables. Load the items, attach a beaker, then pick grind or juice.
-  - [bold]Meat spike[/bold]: hang a dead animal on it to butcher it into meat.
-  - [bold]Knives[/bold]: use a knife on food to slice it, such as cutting meat into cutlets or dough into slices. A rolling pin flattens dough.
-  - [bold]Fridge[/bold]: stores ingredients and finished meals.
+  - [bold]Микроволновка[/bold]: здесь готовится почти вся еда. Положите твёрдые ингредиенты, влейте жидкости и включите её. Если содержимое не соответствует рецепту, получится горелая масса. Никогда не кладите внутрь металл.
+  - [bold]Универсальный измельчитель[/bold]: [bold]измельчает[/bold] продукты в реагенты (например, пшеницу в муку) или [bold]выжимает сок[/bold] из фруктов и овощей. Загрузите продукты, присоедините мензурку и выберите измельчение или отжим.
+  - [bold]Мясной крюк[/bold]: повесьте на него мёртвое животное, чтобы разделать его на мясо.
+  - [bold]Ножи[/bold]: режьте продукты ножом — например, мясо на котлеты, а тесто на кусочки. Скалка раскатывает тесто.
+  - [bold]Холодильник[/bold]: хранит ингредиенты и готовые блюда.
 
-  ## Basic Ingredients
-  Many recipes start from ingredients you mix in a beaker or bowl rather than cook.
-  - [bold]Dough[/bold]: 45u flour and 15u water.
-  - [bold]Pie dough[/bold]: 40u flour, 10u butter and 5u water.
-  - [bold]Cornmeal dough[/bold]: 15u cornmeal and 6u egg.
-  - [bold]Tortilla dough[/bold]: 15u cornmeal and 10u water.
-  - [bold]Cake batter[/bold]: 20u flour, 10u butter, 6u egg and 10u milk; or 15u flour and 15u soy milk.
-  - [bold]Butter[/bold]: 30u cream and 1u salt.
-  - [bold]Cheese[/bold]: 40u milk and 5u enzyme.
-  - [bold]Tofu[/bold]: 55u soy milk and 5u enzyme.
-  - [bold]Meatball[/bold]: 5u raw animal protein, 5u flour and 6u egg.
-  - [bold]Chocolate bar[/bold]: 4u cocoa powder and 2u milk.
+  ## Базовые ингредиенты
+  Многие рецепты начинаются с ингредиентов, которые смешивают в мензурке или миске, а не готовят нагреванием.
+  - [bold]Тесто[/bold]: 45 ед. муки и 15 ед. воды.
+  - [bold]Тесто для пирога[/bold]: 40 ед. муки, 10 ед. сливочного масла и 5 ед. воды.
+  - [bold]Кукурузное тесто[/bold]: 15 ед. кукурузной муки и 6 ед. яйца.
+  - [bold]Тесто для тортильи[/bold]: 15 ед. кукурузной муки и 10 ед. воды.
+  - [bold]Тесто для торта[/bold]: 20 ед. муки, 10 ед. сливочного масла, 6 ед. яйца и 10 ед. молока; либо 15 ед. муки и 15 ед. соевого молока.
+  - [bold]Сливочное масло[/bold]: 30 ед. сливок и 1 ед. соли.
+  - [bold]Сыр[/bold]: 40 ед. молока и 5 ед. фермента.
+  - [bold]Тофу[/bold]: 55 ед. соевого молока и 5 ед. фермента.
+  - [bold]Фрикаделька[/bold]: 5 ед. сырого животного белка, 5 ед. муки и 6 ед. яйца.
+  - [bold]Шоколадная плитка[/bold]: 4 ед. какао-порошка и 2 ед. молока.
 
-  ## Sauces
-  - [bold]Ketchup[/bold]: tomato juice.
-  - [bold]Mayonnaise[/bold]: 5u oil, 6u egg and 5u vinegar or lemon juice.
-  - [bold]BBQ sauce[/bold]: ketchup and vinegar.
-  - [bold]Ketchunaise[/bold]: ketchup and mayonnaise.
-  - [bold]Hot sauce[/bold]: tomato juice, salt and capsaicin oil.
-  - [bold]Soy sauce[/bold]: 2u soy milk and 1u sulfuric acid.
-  - [bold]Vinegar[/bold]: ethanol and oxygen.
-  - [bold]Vinaigrette[/bold]: vinegar, olive oil and black pepper.
+  ## Соусы
+  - [bold]Кетчуп[/bold]: томатный сок.
+  - [bold]Майонез[/bold]: 5 ед. масла, 6 ед. яйца и 5 ед. уксуса или лимонного сока.
+  - [bold]Соус барбекю[/bold]: кетчуп и уксус.
+  - [bold]Кетчунез[/bold]: кетчуп и майонез.
+  - [bold]Острый соус[/bold]: томатный сок, соль и капсаициновое масло.
+  - [bold]Соевый соус[/bold]: 2 ед. соевого молока и 1 ед. серной кислоты.
+  - [bold]Уксус[/bold]: этанол и кислород.
+  - [bold]Винегретная заправка[/bold]: уксус, оливковое масло и чёрный перец.
 
-  ## Microwave Recipes
-  ### Pizza Pies
+  ## Рецепты для микроволновки
+  ### Пиццы
   <GuideMicrowaveGroupEmbed Group="Pizza"/>
   <GuideMicrowaveEmbed Recipe="RecipeRMCPizzaSupreme"/>
   <GuideMicrowaveEmbed Recipe="RecipeRMCPizzaCalabresa"/>
 
-  ### Savory Cooking
+  ### Несладкие блюда
   <GuideMicrowaveGroupEmbed Group="Savory"/>
 
-  ### Meat
+  ### Мясо
   <GuideMicrowaveGroupEmbed Group="Meat"/>
 
-  ### Breads
+  ### Хлеб
   <GuideMicrowaveGroupEmbed Group="Breads"/>
 
-  ### Breakfast Foods
+  ### Завтраки
   <GuideMicrowaveGroupEmbed Group="Breakfast"/>
 
-  ### Moth Foods
+  ### Еда для мотыльков
   <GuideMicrowaveGroupEmbed Group="Moth"/>
 
-  ### Pastas & Noodles
+  ### Макароны и лапша
   <GuideMicrowaveGroupEmbed Group="Pasta"/>
 
-  ### Pastries & Desserts
+  ### Выпечка и десерты
   <GuideMicrowaveGroupEmbed Group="Dessert"/>
 
-  ### Soups & Stews
+  ### Супы и рагу
   <GuideMicrowaveGroupEmbed Group="Soup"/>
 
-  ### Pies & Tarts
+  ### Пироги и тарты
   <GuideMicrowaveGroupEmbed Group="Pie"/>
 
-  ### Bars & Cookies
+  ### Батончики и печенье
   <GuideMicrowaveGroupEmbed Group="BarsAndCookies"/>
 
-  ### Cakes
+  ### Торты
   <GuideMicrowaveGroupEmbed Group="Cake"/>
   <GuideMicrowaveEmbed Recipe="RecipeCakeBlackForest"/>
   <GuideMicrowaveEmbed Recipe="RecipeRMCSuppermatter"/>
 
-  ### Salads
+  ### Салаты
   <GuideMicrowaveGroupEmbed Group="Salad"/>
 
-  ### Medicinal
+  ### Лечебные блюда
   <GuideMicrowaveGroupEmbed Group="Medicinal"/>
 
-  ### Other
+  ### Прочее
   <GuideMicrowaveGroupEmbed Group="Other"/>
 
-  ### Secret
+  ### Секретные рецепты
   <GuideMicrowaveGroupEmbed Group="Secret"/>
 
-  ## Drinks
-  See [textlink="Drink Recipes" link="RMCGuideDrinks"] for every drink and how to mix it.
+  ## Напитки
+  Все напитки и способы их смешивания описаны в разделе [textlink="Рецепты напитков" link="RMCGuideDrinks"].
 </Document>

@@ -1,19 +1,19 @@
 <Document>
-  # Independent Core System Colonies
+  # Независимые колонии центральных систем
 
   <CMUGuideImage Path="/Textures/CMU14/Interface/Paper/ICSCHeader.png" MaxHeight="128"/>
 
-  The [bold]Independent Core System Colonies[/bold] (ICSC) are a loose union of self-governing human worlds, most of them in the [bold]New Eden Sector[/bold] of the Core Systems, with scattered holdings out in the Outer Veil and the frontier. Every ICSC world runs its own government, and many of those governments are overseen by corporations.
+  [bold]Независимые колонии центральных систем[/bold] (ICSC) — свободный союз самоуправляемых человеческих миров, преимущественно в [bold]секторе Новый Эдем[/bold] центральных систем, с отдельными владениями во Внешней Завесе и на фронтире. Каждый мир имеет собственное правительство, часто под контролем корпораций.
 
-  ## History
-  - The ICSC began as the [bold]Central Space Consortium[/bold], a network of corporate colonies under the [textlink="Three World Empire" link="CMUGuideLoreTWE"].
-  - In [bold]2148[/bold] the Consortium declared independence. Colonial Marines and Royal Marine Commandos were sent against its colonies and the fighting lasted until 2150.
-  - The [bold]'51 New Deal[/bold], signed in 2151, handed many Colonies back to the TWE but recognized the rest of the Consortium as the self-governing ICSC.
+  ## История
+  - Начинались как [bold]Консорциум центрального космоса[/bold], сеть корпоративных колоний [textlink="Империи трёх миров" link="CMUGuideLoreTWE"].
+  - В [bold]2148[/bold] году объявили независимость. Против колоний отправили колониальную и королевскую морскую пехоту; бои продолжались до 2150 года.
+  - [bold]Новый договор '51[/bold], подписанный в 2151 году, вернул многие колонии TWE, признав остальные самоуправляемыми ICSC.
 
-  ## Government
-  - The ICSC is ruled by a [bold]Board of Ministries[/bold] and keeps its own military, the [bold]ICSC Defense Force[/bold].
-  - Its [bold]EntaCOMM Network[/bold] lets its worlds (and anyone who pays them a pretty penny) communicate instantly across most of colonized space.
-  - The ICSC holds very little influence on Earth, holding only small enclaves such as Persia, France, Korea, Turkey and Pakistan.
-  - Most of human space doesn't accept the ICSC as a real government. To the superpowers, its members are secessionists, plain and simple.
-  - Its neutrality between the great powers makes it the main source of [textlink="UNISC" link="CMUGuideLoreUNISC"] peacekeepers.
+  ## Правительство
+  - Управляется [bold]Советом министерств[/bold] и содержит собственные [bold]Силы обороны ICSC[/bold].
+  - [bold]Сеть EntaCOMM[/bold] обеспечивает мгновенную связь между мирами и платящими клиентами почти во всём освоенном космосе.
+  - Влияние на Земле невелико: лишь небольшие анклавы, например Персия, Франция, Корея, Турция и Пакистан.
+  - Большинство человеческого космоса не признаёт ICSC настоящим правительством. Для сверхдержав его участники — просто сепаратисты.
+  - Благодаря нейтралитету это главный источник миротворцев [textlink="UNISC" link="CMUGuideLoreUNISC"].
 </Document>

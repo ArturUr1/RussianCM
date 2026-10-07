@@ -333,7 +333,7 @@ public sealed partial class ColonyAtmWindow
             return;
         }
 
-        var fault = s.Screen == AtmScreen.PinLocked || ColonyAtmBui.IsErrorMessage(s.StatusMessage);
+        var fault = s.Screen == AtmScreen.PinLocked || s.StatusIsError;
         _ledActivity.Show(_boot == BootPhase.PowerOn ? "off"
             : booting ? "amber_busy"
             : fault ? "red_blink"

@@ -1,30 +1,30 @@
 <Document>
-  # Union of Progressive Peoples
+  # Союз прогрессивных народов
 
   <CMUGuideImage Path="/Textures/CMU14/Interface/Paper/UPPHeader.png" MaxHeight="128"/>
 
-  The [bold]Union of Progressive Peoples[/bold] (UPP) is a socialist superpower formed in 2108 by Russia, China, Germany and Spain, later joined by Vietnam and other Asian and Eastern European nations, to stand against the [textlink="Three World Empire" link="CMUGuideLoreTWE"] and the [textlink="United Americas" link="CMUGuideLoreUA"]. It is the only great power free of corporate influence, and scorns its rivals as "corporatists".
+  [bold]Союз прогрессивных народов[/bold] (UPP) — социалистическая сверхдержава, созданная в 2108 году Россией, Китаем, Германией и Испанией; позднее присоединились Вьетнам и другие азиатские и восточноевропейские страны. Противостоит [textlink="Империи трёх миров" link="CMUGuideLoreTWE"] и [textlink="Объединённым Америкам" link="CMUGuideLoreUA"]. Единственная великая держава без корпоративного влияния, презирающая соперников как «корпоратистов».
 
-  ## The Union
-  - Ruled from Earth by a President, with a Premier leading the state council. Its frontier is run by a Governor-General backed by a naval task force, and each colony has its own mayor.
-  - The UPP fields the largest army on the frontier, but its territory is poor in resources. Colonies ration food, and its naturally habitable worlds are badly overcrowded.
-  - Lagging behind in the space and arms race, it reverse-engineers much of its technology from Weyland-Yutani and other corporations.
-  - The UPP is secretive and fiercely territorial, and outsiders know little of how it works.
+  ## Союз
+  - Управляется с Земли президентом; премьер возглавляет Государственный совет. Фронтиром управляет генерал-губернатор с поддержкой флотской группы, у каждой колонии свой мэр.
+  - Крупнейшая армия фронтира, но бедная ресурсами территория. Еда нормируется, естественно пригодные миры перенаселены.
+  - Отстаёт в космической и оружейной гонке, копирует многие технологии Вейланд-Ютани и других корпораций.
+  - Скрытен и ревностно защищает территории; чужаки мало знают об устройстве Союза.
 
-  ## Relations
-  - [textlink="United Americas" link="CMUGuideLoreUA"]: a cold war ever since [bold]Operation Canton[/bold], which the UPP sees as a UA attempt to seize its territory. In the early 2180s, overcrowding has pushed the UPP deeper into the frontier, and standoffs with the Colonial Marines are growing common.
-  - [textlink="Three World Empire" link="CMUGuideLoreTWE"]: a tense cold war over the Outer Rim. Some TWE colonies have defected to the UPP.
-  - [textlink="Weyland-Yutani" link="CMUGuideLoreWY"]: everything the UPP despises.
+  ## Отношения
+  - [textlink="Объединённые Америки" link="CMUGuideLoreUA"]: холодная война после [bold]операции «Кантон»[/bold], которую UPP считает попыткой захвата территорий. В начале 2180-х перенаселение толкает UPP глубже во фронтир; противостояния с морпехами становятся обычными.
+  - [textlink="Империя трёх миров" link="CMUGuideLoreTWE"]: напряжённая холодная война за Внешний Рубеж. Некоторые колонии TWE перешли к UPP.
+  - [textlink="Вейланд-Ютани" link="CMUGuideLoreWY"]: воплощение всего, что UPP презирает.
 
-  ## Forces
+  ## Силы
   <Box>
     <CMUGuideOutfitEmbed Gear="CMUGearUPPLineRifleman" Caption="UPPNI"/>
     <CMUGuideOutfitEmbed Gear="AU14GearUPPTerritorialDefenseRifleman" Caption="TG"/>
     <CMUGuideOutfitEmbed Gear="AU14GearCivilianPaPOfficer" Caption="PaP"/>
   </Box>
-  - [bold]Space Operating Forces[/bold]: the UPP's elite special forces commandos.
-  - [textlink="Naval Infantry" link="CMUGuideLoreOrgUPPNI"]: UPP shocktroops equivalent to the US Colonial Marines.
-  - [bold]Territorial Guard[/bold] (TG): each UPP colony has a complement of UPP Territorial Guard personnel, usually composed of poorly trained part-time 'weekend' soldiers drawn from the colony’s workforce.
-  - [bold]People's Armed Police[/bold] (PaP): internal security and police on UPP colonies.
-  - [bold]Ministry of Space Security[/bold]: the UPP's intelligence agency and secret police, with spies on UPP and UA worlds alike and inside the great corporations.
+  - [bold]Силы космических операций[/bold]: элитные коммандос UPP.
+  - [textlink="Морская пехота" link="CMUGuideLoreOrgUPPNI"]: ударные войска UPP, аналог колониальной морской пехоты США.
+  - [bold]Территориальная гвардия[/bold] (TG): есть в каждой колонии UPP; обычно состоит из плохо обученных работников колонии, служащих по выходным.
+  - [bold]Народная вооружённая полиция[/bold] (PaP): внутренняя безопасность и полиция колоний UPP.
+  - [bold]Министерство космической безопасности[/bold]: разведка и тайная полиция со шпионами на мирах UPP и UA и внутри крупнейших корпораций.
 </Document>

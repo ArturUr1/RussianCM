@@ -1,3 +1,4 @@
+using Robust.Shared.Localization;
 using Content.Client.CMU14.ColonyEconomy;
 using Content.Server.CMU14.ColonyEconomy;
 using Content.Shared.Access.Components;
@@ -64,7 +65,7 @@ public sealed class ColonyAtmTransactionTest : ColonyAtmTestBase
 
         Assert.Multiple(() =>
         {
-            Assert.That(AtmComp.StatusMessage, Does.Contain("Insufficient funds"));
+            Assert.That(AtmComp.StatusMessage, Is.EqualTo(Loc.GetString("cmu-atm-insufficient-funds")));
             Assert.That(AtmComp.Screen, Is.EqualTo(AtmScreen.Withdraw), "The ATM moved on to confirm an overdraft");
             Assert.That(Comp<IdCardComponent>(card).AccountBalance, Is.EqualTo(50));
             Assert.That(CashOnFloor(), Is.Zero);
@@ -84,7 +85,7 @@ public sealed class ColonyAtmTransactionTest : ColonyAtmTestBase
 
         Assert.Multiple(() =>
         {
-            Assert.That(AtmComp.StatusMessage, Does.Contain("Insufficient cash"));
+            Assert.That(AtmComp.StatusMessage, Is.EqualTo(Loc.GetString("cmu-atm-insufficient-hand")));
             Assert.That(Comp<IdCardComponent>(card).AccountBalance, Is.EqualTo(100));
             Assert.That(CashInHand(), Is.EqualTo(20), "Cash was taken for a refused deposit");
         });
@@ -109,11 +110,11 @@ public sealed class ColonyAtmTransactionTest : ColonyAtmTestBase
         await Type("3", enter: false);              // 3) TRANSFER
 
         await Type(account.ToString());
-        Assert.That(AtmComp.StatusMessage, Does.Contain("Cannot transfer to own account"));
+        Assert.That(AtmComp.StatusMessage, Is.EqualTo(Loc.GetString("cmu-atm-own-account")));
         Assert.That(AtmComp.Screen, Is.EqualTo(AtmScreen.Transfer));
 
         await Type(unknownAccount.ToString());
-        Assert.That(AtmComp.StatusMessage, Does.Contain("Account not found"));
+        Assert.That(AtmComp.StatusMessage, Is.EqualTo(Loc.GetString("cmu-atm-account-missing")));
         Assert.That(AtmComp.Screen, Is.EqualTo(AtmScreen.Transfer));
 
         await Type(otherAccount.ToString());
@@ -122,7 +123,7 @@ public sealed class ColonyAtmTransactionTest : ColonyAtmTestBase
 
         Assert.Multiple(() =>
         {
-            Assert.That(AtmComp.StatusMessage, Does.Contain("Insufficient funds"));
+            Assert.That(AtmComp.StatusMessage, Is.EqualTo(Loc.GetString("cmu-atm-insufficient-funds")));
             Assert.That(AtmComp.Screen, Is.EqualTo(AtmScreen.TransferAmount));
             Assert.That(Comp<IdCardComponent>(card).AccountBalance, Is.EqualTo(100));
             Assert.That(other.AccountBalance, Is.EqualTo(10));
@@ -149,7 +150,7 @@ public sealed class ColonyAtmTransactionTest : ColonyAtmTestBase
 
         Assert.Multiple(() =>
         {
-            Assert.That(AtmComp.StatusMessage, Does.Contain("Account not found"));
+            Assert.That(AtmComp.StatusMessage, Is.EqualTo(Loc.GetString("cmu-atm-account-missing")));
             Assert.That(AtmComp.Screen, Is.EqualTo(AtmScreen.RemoteDeposit));
             Assert.That(CashInHand(), Is.EqualTo(30));
         });

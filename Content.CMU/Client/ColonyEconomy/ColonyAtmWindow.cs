@@ -593,17 +593,17 @@ public sealed partial class ColonyAtmWindow : BaseWindow
     {
         return s.Screen switch
         {
-            AtmScreen.Welcome => "COLONY FINANCIAL TERMINAL\nv2.7  UN TREASURY\n\n1) REMOTE DEPOSIT\n\nInsert ID card for account access.",
-            AtmScreen.PinEntry => Combine("ENTER PIN:", s.StatusMessage),
-            AtmScreen.PinLocked => "** CARD LOCKED **\nToo many incorrect attempts. Please try again later.",
-            AtmScreen.MainMenu => $"Welcome, {s.OwnerName}.\n\n1) WITHDRAW\n2) DEPOSIT\n3) TRANSFER\n4) REMOTE DEPOSIT\n5) HISTORY\n6) EXIT",
-            AtmScreen.Withdraw => Combine("WITHDRAW\nEnter amount:", s.StatusMessage),
+            AtmScreen.Welcome => Loc.GetString("cmu-atm-welcome"),
+            AtmScreen.PinEntry => Combine(Loc.GetString("cmu-atm-pin-prompt"), s.StatusMessage),
+            AtmScreen.PinLocked => Loc.GetString("cmu-atm-locked"),
+            AtmScreen.MainMenu => Loc.GetString("cmu-atm-main-menu", ("name", s.OwnerName)),
+            AtmScreen.Withdraw => Combine(Loc.GetString("cmu-atm-withdraw-prompt"), s.StatusMessage),
             AtmScreen.WithdrawConfirm => $"{s.StatusMessage}\n\n{Loc.GetString("cmu-atm-hint-confirm")}",
-            AtmScreen.Deposit => Combine("DEPOSIT\nEnter amount:", s.StatusMessage),
-            AtmScreen.RemoteDeposit => Combine("REMOTE DEPOSIT\nRecipient account #:", s.StatusMessage),
+            AtmScreen.Deposit => Combine(Loc.GetString("cmu-atm-deposit-prompt"), s.StatusMessage),
+            AtmScreen.RemoteDeposit => Combine(Loc.GetString("cmu-atm-remote-prompt"), s.StatusMessage),
             AtmScreen.RemoteDepositAmount => s.StatusMessage,
             AtmScreen.RemoteDepositConfirm => $"{s.StatusMessage}\n\n{Loc.GetString("cmu-atm-hint-confirm")}",
-            AtmScreen.Transfer => Combine("TRANSFER\nRecipient account #:", s.StatusMessage),
+            AtmScreen.Transfer => Combine(Loc.GetString("cmu-atm-transfer-prompt"), s.StatusMessage),
             AtmScreen.TransferAmount => s.StatusMessage,
             AtmScreen.TransferConfirm => $"{s.StatusMessage}\n\n{Loc.GetString("cmu-atm-hint-confirm")}",
             AtmScreen.Result => $"{s.StatusMessage}\n\n{Loc.GetString("cmu-atm-hint-continue")}",
@@ -615,9 +615,9 @@ public sealed partial class ColonyAtmWindow : BaseWindow
     // One page, newest first, one line each, e.g. "01:42 -$100 WITHDRAWAL".
     private static string BuildHistory(ColonyAtmBuiState s)
     {
-        var sb = new StringBuilder("ACCOUNT HISTORY");
+        var sb = new StringBuilder(Loc.GetString("cmu-atm-history-title"));
         if (s.History.Length == 0)
-            sb.Append("\nNo transactions yet.");
+            sb.Append('\n').Append(Loc.GetString("cmu-atm-history-empty"));
         else if (s.HistoryTotal > s.History.Length)
             sb.Append($" {s.HistoryOffset + 1}-{s.HistoryOffset + s.History.Length}/{s.HistoryTotal}");
 
@@ -626,18 +626,18 @@ public sealed partial class ColonyAtmWindow : BaseWindow
             var time = $"{(int) entry.Time.TotalHours:00}:{entry.Time.Minutes:00}";
             var line = entry.Kind switch
             {
-                AtmHistoryKind.Withdrawal => $"-${entry.Amount} WITHDRAWAL",
-                AtmHistoryKind.Deposit => $"+${entry.Amount} DEPOSIT",
-                AtmHistoryKind.CashDeposit => $"+${entry.Amount} CASH DEPOSIT",
-                AtmHistoryKind.TransferOut => $"-${entry.Amount} TO #{entry.OtherAccount}",
-                AtmHistoryKind.TransferIn => $"+${entry.Amount} FROM #{entry.OtherAccount}",
-                AtmHistoryKind.Retracted => $"+${entry.Amount} CASH RETURNED",
+                AtmHistoryKind.Withdrawal => Loc.GetString("cmu-atm-history-withdrawal", ("amount", entry.Amount)),
+                AtmHistoryKind.Deposit => Loc.GetString("cmu-atm-history-deposit", ("amount", entry.Amount)),
+                AtmHistoryKind.CashDeposit => Loc.GetString("cmu-atm-history-cash", ("amount", entry.Amount)),
+                AtmHistoryKind.TransferOut => Loc.GetString("cmu-atm-history-out", ("amount", entry.Amount), ("account", entry.OtherAccount)),
+                AtmHistoryKind.TransferIn => Loc.GetString("cmu-atm-history-in", ("amount", entry.Amount), ("account", entry.OtherAccount)),
+                AtmHistoryKind.Retracted => Loc.GetString("cmu-atm-history-returned", ("amount", entry.Amount)),
                 _ => $"{entry.Amount}",
             };
             sb.Append('\n').Append(time).Append(' ').Append(line);
         }
 
-        sb.Append("\nENTER = back");
+        sb.Append('\n').Append(Loc.GetString("cmu-atm-history-back"));
         return sb.ToString();
     }
 

@@ -290,13 +290,13 @@
 - type: cmuSurgeryStepMetadata
   id: CMUSurgeryStepMetaCloseStump
   surgery: CMUSurgeryCloseStump
-  displayName: Close Stump
+  displayName: cmu-medical-surgery-close-stump
   validParts: [Torso, Arm, Leg]
   category: stump
   steps:
   - stepId: CMUSurgeryStepClampStumpArtery
-    label: Clamp Stump Artery
+    label: cmu-medical-step-clamp-stump-artery
     toolCategory: hemostat
   - stepId: CMUSurgeryStepCauterizeStump
-    label: Cauterize Stump
+    label: cmu-medical-step-cauterize-stump
     toolCategory: cautery

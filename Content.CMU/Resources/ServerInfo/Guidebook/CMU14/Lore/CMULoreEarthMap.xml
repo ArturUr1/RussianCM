@@ -1,17 +1,17 @@
 <Document>
-  # Earth Map
+  # Карта Земли
 
-  Who holds what on humanity's homeworld.
+  Кому что принадлежит на родной планете человечества.
 
   <CMUGuideImage Path="/ServerInfo/Guidebook/CMU14/Lore/earthmap.png"/>
 
-  ## Legend
-  - [color=#4a90e2][bold]Blue[/bold][/color]: [textlink="United Americas" link="CMUGuideLoreUA"]
-  - [color=#e24a4a][bold]Red[/bold][/color]: [textlink="Union of Progressive Peoples" link="CMUGuideLoreUPP"]
-  - [color=#a05ad6][bold]Purple[/bold][/color]: [textlink="Three World Empire" link="CMUGuideLoreTWE"]
-  - [color=#4ac24a][bold]Green[/bold][/color]: [textlink="Central Confederation of Africa" link="CMUGuideLoreCCA"]
-  - [color=#e2d84a][bold]Yellow[/bold][/color]: insurgencies
-  - [color=#ffffff][bold]White[/bold][/color]: nations affiliated with the [textlink="Independent Core System Colonies" link="CMUGuideLoreICSC"]
-  - [color=#e2944a][bold]Orange[/bold][/color]: corporate territory
-  - [color=#8c8c8c][bold]Grey[/bold][/color] or blacked out: the "Indies", countries with no relevant space economy
+  ## Условные обозначения
+  - [color=#4a90e2][bold]Синий[/bold][/color]: [textlink="Объединённые Америки" link="CMUGuideLoreUA"]
+  - [color=#e24a4a][bold]Красный[/bold][/color]: [textlink="Союз прогрессивных народов" link="CMUGuideLoreUPP"]
+  - [color=#a05ad6][bold]Фиолетовый[/bold][/color]: [textlink="Империя трёх миров" link="CMUGuideLoreTWE"]
+  - [color=#4ac24a][bold]Зелёный[/bold][/color]: [textlink="Центральная Африканская Конфедерация" link="CMUGuideLoreCCA"]
+  - [color=#e2d84a][bold]Жёлтый[/bold][/color]: восстания
+  - [color=#ffffff][bold]Белый[/bold][/color]: страны, связанные с [textlink="Независимыми колониями центральных систем" link="CMUGuideLoreICSC"]
+  - [color=#e2944a][bold]Оранжевый[/bold][/color]: корпоративные территории
+  - [color=#8c8c8c][bold]Серый[/bold][/color] или затемнённый: «инди», страны без значимой космической экономики
 </Document>

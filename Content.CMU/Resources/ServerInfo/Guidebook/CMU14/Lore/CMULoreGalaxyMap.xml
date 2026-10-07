@@ -1,9 +1,9 @@
 <Document>
-  # Galaxy Map
+  # Карта галактики
 
-  The settled stars of the middle heavens as of 2182.
+  Освоенные звёзды срединного космоса по состоянию на 2182 год.
 
-  [italic]Scroll over the map to zoom, drag to pan, and right-click to reset.[/italic]
+  [italic]Прокручивайте колёсико над картой для масштабирования, перетаскивайте её для перемещения и нажмите правой кнопкой мыши для сброса.[/italic]
 
   <CMUGuideZoomImage Path="/ServerInfo/Guidebook/CMU14/Lore/galaxymap.png"/>
 </Document>

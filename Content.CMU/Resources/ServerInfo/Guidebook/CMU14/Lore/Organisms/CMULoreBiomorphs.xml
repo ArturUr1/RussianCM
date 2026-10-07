@@ -1,30 +1,30 @@
 <Document>
-  # Biomorphs
+  # Биоморфы
 
   <Box>
-    <GuideEntityEmbed Entity="AU14BiomorphSpider" Caption="Spider"/>
-    <GuideEntityEmbed Entity="AU14BiomorphSkitter" Caption="Skitter"/>
-    <GuideEntityEmbed Entity="AU14BiomorphGrunt" Caption="Grunt"/>
-    <GuideEntityEmbed Entity="AU14BiomorphMimic" Caption="Mimic"/>
+    <GuideEntityEmbed Entity="AU14BiomorphSpider" Caption="Паук"/>
+    <GuideEntityEmbed Entity="AU14BiomorphSkitter" Caption="Скиттер"/>
+    <GuideEntityEmbed Entity="AU14BiomorphGrunt" Caption="Громила"/>
+    <GuideEntityEmbed Entity="AU14BiomorphMimic" Caption="Мимик"/>
   </Box>
 
-  [bold]Biomorphs[/bold] are twisted masses of flesh, sinew and bone, built from the bodies of their victims and driven by a hunger for more.
+  [bold]Биоморфы[/bold] — искривлённые массы плоти, сухожилий и костей из тел жертв, движимые голодом по новым.
 
-  ## The Infestation
-  - Biomorphs move as one, sharing a single hive and speaking without sound.
-  - They grow their territory out of flesh: carpets of sobbing, pulsing sinew, twitching walls of fused bone, and throbbing [bold]flesh nests[/bold] that birth new horrors at irregular intervals.
-  - Fleshy sacs and rotting biomass release clouds of toxic, infectious spores.
-  - They come in many twisted shapes, from skittering severed heads to lumbering brutes with fists the size of a man's torso.
+  ## Заражение
+  - Действуют как единое целое с общим ульем и беззвучной речью.
+  - Выращивают территорию из плоти: ковры рыдающих пульсирующих сухожилий, дёргающиеся стены сросшихся костей и [bold]плотяные гнёзда[/bold], периодически рождающие новые ужасы.
+  - Плотяные мешки и гниющая биомасса выпускают ядовитые заразные споры.
+  - Формы разнообразны: от бегающих оторванных голов до громил с кулаками размером с человеческий торс.
 
-  ## Infection
-  - Biomorphs spread through a dark, clotting [bold]venom[/bold] wrung from rotted flesh, and through their spores. Anyone who takes it into their body risks infection.
-  - The infection is said to feel like a crawling heat under the skin.
-  - It can be stopped. Cutting off the infected limb kills whatever is growing there, and a covertly produced [bold]experimental counteragent[/bold] of [textlink="Weyland-Yutani" link="CMUGuideLoreWY"] origin purges it outright, at a price.
+  ## Инфекция
+  - Распространяются через тёмный свёртывающийся [bold]яд[/bold] из гнилой плоти и споры. Попадание в тело грозит инфекцией.
+  - Заражение описывают как ползущий жар под кожей.
+  - Его можно остановить: ампутация убивает растущее в конечности, а тайно произведённый [bold]экспериментальный противоядный агент[/bold] [textlink="Вейланд-Ютани" link="CMUGuideLoreWY"] полностью очищает организм — за свою цену.
 
-  ## Mimics
-  The most feared biomorphs can [bold]assimilate[/bold] the helpless, absorbing them and stealing their shape. A mimic can walk back into a colony wearing a victim's face, and no one would know until it is too late.
+  ## Мимики
+  Самые страшные биоморфы [bold]ассимилируют[/bold] беспомощных, поглощая их и крадя облик. Мимик возвращается в колонию с лицом жертвы, и никто не узнает до слишком позднего момента.
 
-  ## On the Frontier
-  - Like the other horrors out there, biomorphs are not common knowledge.
-  - Weyland-Yutani is known to keep samples of biomorph venom in its experiment crates. What the Company wants with it, it isn't saying.
+  ## На фронтире
+  - Как и другие ужасы, биоморфы не общеизвестны.
+  - Известно, что Вейланд-Ютани держит их яд в экспериментальных ящиках. Зачем — Компания не говорит.
 </Document>

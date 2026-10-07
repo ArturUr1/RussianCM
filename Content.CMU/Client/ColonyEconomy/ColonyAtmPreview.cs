@@ -1,3 +1,4 @@
+using Robust.Shared.Localization;
 using System;
 using Content.Shared.CMU14.ColonyEconomy;
 using Robust.Client.Graphics;
@@ -64,23 +65,23 @@ public sealed class ColonyAtmPreview
             ("boot", 6f, () => State(AtmScreen.Welcome, card: false)),
             ("card-insert", 3.5f, () => State(AtmScreen.PinEntry, cardAt: Now)),
             ("pin-typed", 3.5f, () => State(AtmScreen.PinEntry, buffer: "***")),
-            ("pin-wrong", 3.5f, () => State(AtmScreen.PinEntry, status: "Incorrect PIN. Attempt 1/3.")),
+            ("pin-wrong", 3.5f, () => State(AtmScreen.PinEntry, status: Loc.GetString("cmu-atm-incorrect-pin", ("attempt", 1), ("maximum", 3)), error: true)),
             ("main-menu", 3.5f, () => State(AtmScreen.MainMenu, authed: true)),
             ("withdraw-amount", 3.5f, () => State(AtmScreen.Withdraw, authed: true, buffer: "300")),
             ("withdraw-confirm", 3.5f, () => State(AtmScreen.WithdrawConfirm, authed: true,
-                status: "Withdraw $300? You receive $270 after tax.")),
+                status: Loc.GetString("cmu-atm-withdraw-confirm", ("amount", 300), ("net", 270)))),
             // $270 comes out as a stack of four notes, $120 goes in as three.
             ("cash-dispense", 3.5f, () => State(AtmScreen.Result, authed: true, balance: 950,
-                status: "Dispensed $270. Balance: $950.", dispensedAt: Now, cash: 270, waiting: 270)),
+                status: Loc.GetString("cmu-atm-dispensed", ("amount", 270), ("balance", 950)), dispensedAt: Now, cash: 270, waiting: 270)),
             ("cash-deposit", 3.5f, () => State(AtmScreen.Result, authed: true, balance: 1070,
-                status: "Deposited $120. Balance: $1070.", depositedAt: Now, cash: 120)),
+                status: Loc.GetString("cmu-atm-deposited", ("amount", 120), ("balance", 1070)), depositedAt: Now, cash: 120)),
             ("history", 3.5f, () => State(AtmScreen.History, authed: true, balance: 1070)),
             ("locked", 3.5f, () => State(AtmScreen.PinLocked)),
             ("card-eject", 3.5f, () => State(AtmScreen.Welcome, card: false)),
             ("tampered", 3.5f, () => State(AtmScreen.Welcome, card: false, tampered: true)),
             // Knocked out by a siphon rig, with the line its sapper left on the screen.
             ("out-of-order", 6f, () => State(AtmScreen.Welcome, card: false, tampered: true, outOfOrder: true,
-                message: "Sorry for the inconvenience :)")),
+                message: Loc.GetString("cmu-atm-out-of-order-sorry"))),
         };
     }
 
@@ -144,7 +145,8 @@ public sealed class ColonyAtmPreview
         TimeSpan? depositedAt = null,
         int? cash = null,
         int waiting = 0,
-        string? message = null)
+        string? message = null,
+        bool error = false)
     {
         _cardAt = card ? cardAt ?? _cardAt : null;
         _dispensedAt = dispensedAt ?? _dispensedAt;
@@ -174,6 +176,7 @@ public sealed class ColonyAtmPreview
             outOfOrder,
             _cashAmount,
             waiting,
-            message);
+            message,
+            statusIsError: error);
     }
 }

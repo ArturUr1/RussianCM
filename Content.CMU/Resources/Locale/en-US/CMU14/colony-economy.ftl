@@ -103,3 +103,80 @@ cmu-atm-nav-pin = Your card #{ $account } - PIN { $pin }
 cmu-atm-nav-no-card = You have no card of your own
 cmu-atm-nav-pin-unknown = Reading your card...
 cmu-atm-nav-pop-out = Pop Out
+
+# ATM screens and transaction messages
+cmu-atm-busy = Someone else is using this ATM.
+cmu-atm-tampered = Warning: This device shows signs of electronic tampering.
+cmu-atm-normal = The ATM appears to be functioning normally.
+cmu-atm-unknown = Unknown
+cmu-atm-invalid-amount = Enter a valid amount.
+cmu-atm-insufficient-funds = Insufficient funds.
+cmu-atm-insufficient-hand = Insufficient cash in hand.
+cmu-atm-invalid-account = Enter a valid 5-digit account number.
+cmu-atm-account-missing = Account not found.
+cmu-atm-insufficient-cash = Insufficient cash.
+cmu-atm-own-account = Cannot transfer to own account.
+cmu-atm-timeout = Session timed out.
+cmu-atm-take-cash-first = Please take your cash first.
+cmu-atm-invalid-pin = Invalid PIN. Enter all { $digits } digits.
+cmu-atm-incorrect-pin = Incorrect PIN. Attempt { $attempt }/{ $maximum }.
+cmu-atm-withdraw-confirm = Withdraw ${ $amount }? You receive ${ $net } after tax.
+cmu-atm-dispensed = Dispensed ${ $amount }. Balance: ${ $balance }.
+cmu-atm-deposited = Deposited ${ $amount }. Balance: ${ $balance }.
+cmu-atm-recipient = To: { $name }. Enter amount:
+cmu-atm-remote-confirm = Deposit ${ $amount } to account #{ $account }?
+cmu-atm-remote-done = Deposited ${ $amount } to #{ $account }.
+cmu-atm-transfer-confirm = Transfer ${ $amount } to #{ $account }?
+cmu-atm-transfer-done = Transferred ${ $amount }. Balance: ${ $balance }.
+cmu-atm-welcome =
+    COLONY FINANCIAL TERMINAL
+    v2.7  UN TREASURY
+    { "" }
+    1) REMOTE DEPOSIT
+    { "" }
+    Insert ID card for account access.
+cmu-atm-pin-prompt = ENTER PIN:
+cmu-atm-locked =
+    { "** CARD LOCKED **" }
+    Too many incorrect attempts. Please try again later.
+cmu-atm-main-menu =
+    Welcome, { $name }.
+    { "" }
+    1) WITHDRAW
+    2) DEPOSIT
+    3) TRANSFER
+    4) REMOTE DEPOSIT
+    5) HISTORY
+    6) EXIT
+cmu-atm-withdraw-prompt =
+    WITHDRAW
+    Enter amount:
+cmu-atm-deposit-prompt =
+    DEPOSIT
+    Enter amount:
+cmu-atm-remote-prompt =
+    REMOTE DEPOSIT
+    Recipient account #:
+cmu-atm-transfer-prompt =
+    TRANSFER
+    Recipient account #:
+cmu-atm-history-title = ACCOUNT HISTORY
+cmu-atm-history-empty = No transactions yet.
+cmu-atm-history-back = OK = back
+cmu-atm-history-withdrawal = -${ $amount } WITHDRAWAL
+cmu-atm-history-deposit = +${ $amount } DEPOSIT
+cmu-atm-history-cash = +${ $amount } CASH DEPOSIT
+cmu-atm-history-out = -${ $amount } TO #{ $account }
+cmu-atm-history-in = +${ $amount } FROM #{ $account }
+cmu-atm-history-returned = +${ $amount } CASH RETURNED
+cmu-atm-fault-fatal = FATAL { $byte }: LEDGER CRC MISMATCH
+cmu-atm-fault-segv = SEGV AT { $address } IN TXN_CORE
+cmu-atm-fault-halted = TXN_CORE HALTED
+cmu-atm-fault-watchdog = WATCHDOG RESET ... FAILED
+cmu-atm-fault-uplink = UPLINK LOST, RETRY { $attempt }/3
+cmu-atm-fault-dispenser = DISPENSER BUS ERROR { $byte }
+cmu-atm-fault-auth = AUTH TABLE CORRUPT AT { $address }
+cmu-atm-fault-kernel = KERNEL PANIC: NOT SYNCING
+cmu-atm-fault-stack = STACK SMASHED, ABORTING
+cmu-atm-fault-trap = UNHANDLED TRAP { $byte } AT { $address }
+cmu-atm-fault-garbled = ?? ???? ?????? ??? ??

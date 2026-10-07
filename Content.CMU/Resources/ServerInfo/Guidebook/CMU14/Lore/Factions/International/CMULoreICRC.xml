@@ -1,26 +1,26 @@
 <Document>
-  # International Committee of the Red Cross
+  # Международный комитет Красного Креста
 
   <Box>
-    <CMUGuideOutfitEmbed Gear="AU14GearICRCDoctor" Caption="Doctor"/>
-    <CMUGuideOutfitEmbed Gear="AU14GearICRCNurse" Caption="Nurse"/>
+    <CMUGuideOutfitEmbed Gear="AU14GearICRCDoctor" Caption="Врач"/>
+    <CMUGuideOutfitEmbed Gear="AU14GearICRCNurse" Caption="Медсестра"/>
   </Box>
 
-  The [bold]International Committee of the Red Cross[/bold] (ICRC) is the oldest and largest humanitarian organization in human space. Independent and strictly neutral, it brings medical aid, vaccines and relief to anyone in need, whatever their nation, allegiance or side in a conflict.
+  [bold]Международный комитет Красного Креста[/bold] (ICRC) — старейшая и крупнейшая гуманитарная организация человеческого космоса. Независимая и строго нейтральная, она оказывает медицинскую помощь, поставляет вакцины и гуманитарные грузы всем нуждающимся независимо от страны, принадлежности и стороны конфликта.
 
-  ## The Organization
-  - The ICRC is backed by the [textlink="United Nations" link="CMUGuideLoreUN"], which funds much of its work, grants it access to member territory and gives it a voice in the UN's humanitarian efforts.
-  - It has offices, hospitals and supply depots on Earth and in the Core Systems, and relief ships that carry its staff out to the frontier.
-  - Most of its people are doctors, nurses and aid workers. It keeps no army of its own, and relies on its neutrality, its emblem and the Conventions for protection.
-  - Its [bold]relief missions[/bold] travel from colony to colony, vaccinating colonists, treating the sick and wounded, and bringing aid to settlements too small or too remote for anyone else to bother with.
-  - In war zones it cares for the wounded on all sides, visits prisoners of war, helps trace missing people and works alongside [textlink="UNISC" link="CMUGuideLoreUNISC"] peacekeepers to shelter civilians caught up in the fighting.
+  ## Организация
+  - Поддерживается [textlink="Организацией Объединённых Наций" link="CMUGuideLoreUN"], которая финансирует значительную часть работы, даёт доступ к территориям членов и участие в гуманитарной деятельности ООН.
+  - Имеет офисы, больницы и склады на Земле и в центральных системах, а также суда помощи, доставляющие сотрудников на фронтир.
+  - Большинство сотрудников — врачи, медсёстры и гуманитарные работники. Собственной армии нет; защиту обеспечивают нейтралитет, эмблема и конвенции.
+  - [bold]Миссии помощи[/bold] посещают колонии, вакцинируют жителей, лечат больных и раненых, помогают поселениям, слишком маленьким или удалённым для остальных.
+  - В зонах войны лечит раненых всех сторон, посещает военнопленных, помогает искать пропавших и совместно с миротворцами [textlink="UNISC" link="CMUGuideLoreUNISC"] укрывает мирных жителей.
 
-  ## The Red Cross
-  - The ICRC's emblem, the [bold]red cross[/bold], is the protective emblem of the [textlink="Geneva Conventions of 12th August 2106" link="AU14UCMJGENCON"]. It can be worn as an armband, on a vest or painted on a vehicle or ship.
-  - Under the Conventions, medical personnel marked with the cross are non-combatants and must not be attacked, unless they take part in fighting beyond self-defense or abuse the cross for hostile ends.
-  - Misusing the emblem to infiltrate, deceive or launch false flag attacks is a grave breach of the Conventions.
+  ## Красный крест
+  - Эмблема ICRC, [bold]красный крест[/bold], — защитный знак [textlink="Женевских конвенций от 12 августа 2106 года" link="AU14UCMJGENCON"]. Его носят на повязке или жилете, рисуют на технике и кораблях.
+  - По конвенциям медперсонал с крестом — некомбатанты, которых нельзя атаковать, если они не участвуют в боях сверх самообороны и не используют знак во враждебных целях.
+  - Использование эмблемы для проникновения, обмана или атак под чужим флагом — тяжкое нарушение конвенций.
 
-  ## On the Frontier
-  - Most colonists welcome the ICRC, and on some isolated worlds a relief mission is the only real medical care they will see for years.
-  - Not everyone trusts it. Governments and corporations sometimes accuse it of meddling, and in the worst conflicts even the red cross is no guarantee of safety.
+  ## На фронтире
+  - Большинство колонистов приветствует ICRC; на некоторых изолированных мирах такая миссия — единственная настоящая медицинская помощь за годы.
+  - Доверяют не все. Правительства и корпорации иногда обвиняют комитет во вмешательстве, а в самых жестоких конфликтах даже красный крест не гарантирует безопасности.
 </Document>

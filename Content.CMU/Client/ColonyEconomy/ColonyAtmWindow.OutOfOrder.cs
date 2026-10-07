@@ -35,20 +35,21 @@ public sealed partial class ColonyAtmWindow
         private const int MaxLines = 24;
         private const string GlitchChars = "#%&@$*?!<>/\\|=+~^0123456789ABCDEF";
 
-        // What the console throws up between its memory dumps: {0} a byte, {1} an address, {2} a try.
+        // Localized faults between memory dumps, with a byte, an address, or a retry count.
         private static readonly string[] Errors =
         {
-            "FATAL {0:X2}: LEDGER CRC MISMATCH",
-            "SEGV AT {1:X8} IN TXN_CORE",
-            "TXN_CORE HALTED",
-            "WATCHDOG RESET ... FAILED",
-            "UPLINK LOST, RETRY {2}/3",
-            "DISPENSER BUS ERROR {0:X2}",
-            "AUTH TABLE CORRUPT AT {1:X8}",
-            "KERNEL PANIC: NOT SYNCING",
-            "STACK SMASHED, ABORTING",
-            "UNHANDLED TRAP {0:X2} AT {1:X8}",
-            "?? ???? ?????? ??? ??",
+            "cmu-atm-fault-fatal",
+            "cmu-atm-fault-segv",
+            "cmu-atm-fault-halted",
+            "cmu-atm-fault-watchdog",
+            "cmu-atm-fault-uplink",
+            "cmu-atm-fault-dispenser",
+            "cmu-atm-fault-auth",
+            "cmu-atm-fault-kernel",
+            "cmu-atm-fault-stack",
+            "cmu-atm-fault-trap",
+            "cmu-atm-fault-garbled",
+
         };
 
         private readonly Font _font;
@@ -124,7 +125,10 @@ public sealed partial class ColonyAtmWindow
             {
                 _address = _random.Next(0x1000, 0xF000) & ~0xF;
                 var error = Errors[_random.Next(Errors.Length)];
-                return string.Format(error, _random.Next(256), _random.Next(), _random.Next(1, 4));
+                return Loc.GetString(error,
+                    ("byte", _random.Next(256).ToString("X2")),
+                    ("address", _random.Next().ToString("X8")),
+                    ("attempt", _random.Next(1, 4)));
             }
 
             var bytes = new byte[6];

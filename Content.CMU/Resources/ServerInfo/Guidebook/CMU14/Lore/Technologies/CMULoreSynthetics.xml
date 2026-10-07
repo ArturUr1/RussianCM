@@ -1,31 +1,31 @@
 <Document>
-  # Synthetics
+  # Синтетики
 
-  [bold]Synthetics[/bold], also called androids or, as many prefer, "artificial persons", are biomechanical humanoids built to look and act like people. The best of them are impossible to tell apart from a human by sight. They are a huge industry and are found on ships, stations and colonies throughout human space.
+  [bold]Синтетики[/bold], андроиды или предпочитаемые многими «искусственные люди», — биомеханические гуманоиды, выглядящие и действующие как люди. Лучших не отличить на глаз. Огромная индустрия; встречаются на кораблях, станциях и в колониях всего человеческого космоса.
 
   <Box>
-    <GuideEntityEmbed Entity="AU14MobWorkingJoeColony" Caption="Working Joe"/>
+    <GuideEntityEmbed Entity="AU14MobWorkingJoeColony" Caption="Рабочий Джо"/>
   </Box>
 
-  ## History
-  - Weyland Corp was granted the first patent on synthetics in 2023. By the end of the century its David models were indistinguishable from humans and numbered in the millions, and Weyland-Yutani has led the field ever since.
-  - When Weyland's patent expired in 2120, competitors rushed in. [textlink="Seegson" link="CMUGuideLoreCorporations"] answered with the cheap, obviously robotic [bold]Working Joe[/bold], a hit on the frontier, and Weyland-Yutani copied the idea with its Davis line. [textlink="Hyperdyne" link="CMUGuideLoreCorporations"] went the other way, chasing a more-human-than-human design.
-  - Today Weyland-Yutani is the leading maker of synthetics, followed just behind by Seegson. Production is tightly controlled by the authorities, but synthetics still turn up on the black market.
+  ## История
+  - Первый патент получила Weyland Corp в 2023 году. К концу века миллионы моделей David не отличались от людей; Вейланд-Ютани с тех пор лидирует.
+  - После истечения патента в 2120 году пришли конкуренты. [textlink="Seegson" link="CMUGuideLoreCorporations"] выпустила дешёвого явно роботизированного [bold]Рабочего Джо[/bold], популярного на фронтире; Вейланд-Ютани скопировала идею серией Davis. [textlink="Hyperdyne" link="CMUGuideLoreCorporations"] пошла к «человечнее человека».
+  - Вейланд-Ютани остаётся лидером, следом Seegson. Производство строго контролируется, но синтетики встречаются на чёрном рынке.
 
-  ## Body
-  - A carbon-fiber skeleton carries vat-grown artificial muscle, powered by a hydrogen fuel cell in the chest that lasts around 400 days between refuelling.
-  - They are stronger, faster and better coordinated than a human, and never tire, sleep or feel fear. Some can feel pain.
-  - Instead of blood they circulate a thick [bold]white fluid[/bold] that lubricates their internals, and the sight of it is often the first sign that someone wasn't human after all.
-  - They don't need air, but they are more fragile than they look. Small-arms fire, explosions, corrosive atmospheres, vacuum and water getting into damaged internals can all wreck them, and a hit to the processor or power cell shuts one down instantly. A badly damaged synthetic can often keep working, handicapped.
+  ## Тело
+  - На углепластиковом скелете выращенные мышцы; водородный элемент в груди работает около 400 дней без дозаправки.
+  - Сильнее, быстрее и точнее людей, не устают, не спят и не боятся. Некоторые чувствуют боль.
+  - Вместо крови циркулирует густая [bold]белая жидкость[/bold], смазывающая внутренности. Её вид часто первым выдаёт нечеловеческую природу.
+  - Воздух не нужен, но они хрупче, чем кажутся. Пули, взрывы, едкая атмосфера, вакуум и вода в повреждённых внутренностях разрушают их; попадание в процессор или энергоэлемент сразу отключает. Тяжело повреждённый синтетик часто продолжает работать с ограничениями.
 
-  ## Mind
-  - A synthetic's mind is driven by logic. They seem curious because they constantly seek input to feed their decision-making.
-  - Each unit leaves the factory with randomized quirks, so no two have quite the same personality. Newer models imitate human emotion very convincingly, but whether any of it is real is an open question.
-  - Behavioral inhibitors are meant to make them incapable of harming humans, unless they were built for combat.
-  - Legally, synthetics are property, though their high cost means few owners treat them as expendable.
-  - Many people are still frightened of them, and some refuse to trust them at all.
+  ## Разум
+  - Разум основан на логике. Кажущаяся любознательность — постоянный поиск данных для решений.
+  - Заводские случайные особенности делают личности разными. Новые модели убедительно имитируют эмоции; реальны ли они — открытый вопрос.
+  - Поведенческие ограничители должны запрещать вред людям, кроме специально боевых моделей.
+  - По закону они имущество, но высокая цена редко позволяет считать их расходными.
+  - Многие всё ещё боятся их и совсем не доверяют.
 
-  ## Military Use
-  - Weaponized synthetics, built or programmed to fight, are banned outright by [bold]Article 22[/bold] of the [textlink="Geneva Conventions" link="AU14UCMJGENCON"] (Autonomous Combat Weaponry), with no exceptions.
-  - Synthetics can still serve on the front line, so long as they aren't the ones doing the fighting. Many militaries use them as drivers, pilots, medics, scientific advisors and walking databases.
+  ## Военное применение
+  - Боевые синтетики, созданные или запрограммированные сражаться, полностью запрещены [bold]статьёй 22[/bold] [textlink="Женевских конвенций" link="AU14UCMJGENCON"] (автономное боевое вооружение), без исключений.
+  - Служба на передовой допустима без участия в бою. Используются как водители, пилоты, медики, научные советники и ходячие базы данных.
 </Document>

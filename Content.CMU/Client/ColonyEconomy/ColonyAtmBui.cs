@@ -111,7 +111,7 @@ public sealed partial class ColonyAtmBui(EntityUid owner, Enum uiKey) : BoundUse
         {
             if (s.Screen == AtmScreen.PinLocked && _prevScreen != AtmScreen.PinLocked)
                 Play(LockedSound, 2f);
-            else if (s.StatusMessage != _prevStatus && IsErrorMessage(s.StatusMessage))
+            else if (s.StatusMessage != _prevStatus && s.StatusIsError)
                 Play(ErrorSound, -5f);
         }
 
@@ -170,19 +170,5 @@ public sealed partial class ColonyAtmBui(EntityUid owner, Enum uiKey) : BoundUse
     private void Play(SoundSpecifier sound, float volume, float pitch = 1f)
         => _audio.PlayGlobal(sound, Filter.Local(), false, AudioParams.Default.WithVolume(volume).WithPitchScale(pitch));
 
-    /// <summary>Whether the server's status line is reporting a failure (the screen says so in words only).</summary>
-    internal static bool IsErrorMessage(string msg)
-    {
-        if (string.IsNullOrEmpty(msg))
-            return false;
-
-        return msg.Contains("Incorrect", StringComparison.OrdinalIgnoreCase)
-            || msg.Contains("Invalid", StringComparison.OrdinalIgnoreCase)
-            || msg.Contains("Insufficient", StringComparison.OrdinalIgnoreCase)
-            || msg.Contains("not found", StringComparison.OrdinalIgnoreCase)
-            || msg.Contains("Cannot", StringComparison.OrdinalIgnoreCase)
-            || msg.Contains("Error", StringComparison.OrdinalIgnoreCase)
-            || msg.Contains("valid amount", StringComparison.OrdinalIgnoreCase);
-    }
 }
 
