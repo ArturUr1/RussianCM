@@ -92,7 +92,9 @@ public sealed partial class QualificationWindow : DefaultWindow
     private bool CanSuspend => _view.Officer || _view.CommandingOfficer || _view.Administrator;
     private bool Ready => _view.Available && !_pending && !_preview;
     private bool Confirmed => Ready && _confirmed && !string.IsNullOrWhiteSpace(_reason);
-    private bool TrainingTargetReady => !_view.TargetSynthetic && _view.Target != _view.Viewer && (_view.Management || _view.InstructorOnDuty && _view.TargetOnline);
+    private bool TrainingTargetReady => !_view.TargetSynthetic && _view.Target != _view.Viewer &&
+        (_view.Management || _view.InstructorOnDuty && _view.TargetOnline &&
+            !_view.TrainingRecruits.Any(r => r.Recruit == _view.Target && r.Instructor != _view.Viewer)); // CMU14
     private static BoxContainer Column() => new() { Orientation = BoxContainer.LayoutOrientation.Vertical,
         HorizontalExpand = true, SeparationOverride = 8 };
     private static BoxContainer Row() => new() { HorizontalExpand = true, SeparationOverride = 10 };
@@ -349,7 +351,7 @@ public sealed partial class QualificationWindow : DefaultWindow
         if (_pending) Feedback(L("sending"));
         else if (!_view.Available) Feedback(L("storage-unavailable"), true);
         else if (_view.Error == "saved") Feedback(L("saved"));
-        else if (_view.Error.Length > 0) Feedback(Loc.GetString("rucm-qualifications-error", ("error", Name("rucm-qualifications-error-" + _view.Error))), true);
+        else if (_view.Error.Length > 0) Feedback(Loc.GetString("rucm-qualifications-error", ("error", Name(_view.Error.StartsWith("cmu-training-") ? _view.Error : "rucm-qualifications-error-" + _view.Error))), true); // CMU14: training errors share the existing feedback surface.
         else Feedback(L("footer-hint"));
         CrtLobbyTheme.ApplyWindow(this, useCrtTypography: false);
         RefreshActions();
@@ -418,6 +420,7 @@ public sealed partial class QualificationWindow : DefaultWindow
 
     private void RenderDossier()
     {
+        RenderCMURecruitStatus(); // CMU14: round-only teacher and lesson status.
         var summary = Card(_content, L("service-record"));
         if (_view.TargetSynthetic)
         {
@@ -512,6 +515,7 @@ public sealed partial class QualificationWindow : DefaultWindow
 
     private void RenderTraining()
     {
+        RenderCMUTrainingAssignments(); // CMU14: explicit single-recruit assignment and teaching controls.
         var action = Card(_content, L("instructor-workflow"));
         if (_view.TargetSynthetic) { Text(action, L("synthetic-excluded-help")); return; }
         Text(action, L("training-steps"));
