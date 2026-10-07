@@ -369,6 +369,7 @@ public sealed partial class QualificationSystem : EntitySystem
         if (manager || instructor || actor.CurrentOfficer || actor.CurrentCo)
             foreach (var online in _players.Sessions.Where(Online)) result.OnlinePlayers[online.UserId] = online.Name;
         AddAccountNames(result);
+        _training.Decorate(result, player); // CMU14: permission-filtered, nonpersistent training roster.
         return result;
     }
 
@@ -425,7 +426,7 @@ public sealed partial class QualificationSystem : EntitySystem
             // Snapshot requests before queueing, retaining the existing size/rate/permission checks.
             json = JsonSerializer.Serialize(new QualificationRequest
             {
-                RequestId = request.RequestId, Target = request.Target, TargetName = request.TargetName, Qualification = request.Qualification, Item = request.Item, Reason = request.Reason,
+                RequestId = request.RequestId, Target = request.Target, Instructor = request.Instructor, TargetName = request.TargetName, Qualification = request.Qualification, Item = request.Item, Reason = request.Reason, // CMU14
                 Suspension = request.Suspension, Revision = request.Revision, Payload = payload, PreviewToken = request.PreviewToken
             });
         }
@@ -450,6 +451,14 @@ public sealed partial class QualificationSystem : EntitySystem
                 if (request.TargetName is null || request.TargetName.Length > 128 || request.Qualification is null || request.Item is null || request.Reason is null || request.Payload is null || request.PreviewToken is null || request.Qualification.Length > 64 || request.Item.Length > 64 || request.Reason.Length > 2000)
                     throw new QualificationValidationException("request");
                 var authority = Authority(player);
+                // CMU14 Training Begin: use the existing authoritative, rate-limited queue.
+                if (action is QualificationAction.TrainingAssign or QualificationAction.TrainingRelease or
+                    QualificationAction.TrainingStart or QualificationAction.TrainingFinish or QualificationAction.TrainingTrack)
+                {
+                    done(_training.Apply(player, action, request));
+                    return;
+                }
+                // CMU14 End
                 if (action == QualificationAction.View)
                 {
                     Guid? resolvedTarget = null;
@@ -509,6 +518,16 @@ public sealed partial class QualificationSystem : EntitySystem
                     if (IsSynthetic(request.Target)) throw new QualificationValidationException("synthetic_excluded");
                 if (action == QualificationAction.Complete || action == QualificationAction.Certify || action == QualificationAction.Note)
                 {
+                    // CMU14: checklist progress cannot retain gameplay access or train another instructor's recruit.
+                    if (_players.TryGetSessionById(new NetUserId(request.Target), out var recruitSession) &&
+                        recruitSession.AttachedEntity is { } recruit && _training.IsRecruit(recruit))
+                    {
+                        if (!Service.IsManagement(authority) &&
+                            (player.AttachedEntity is not { } teacher || !_training.Owns(teacher, recruit)))
+                            throw new QualificationPermissionException();
+                        if (action == QualificationAction.Complete)
+                            _training.Finish(request.Target, "checklist step completed");
+                    }
                     if (!Service.IsManagement(authority))
                     {
                         if (!authority.CurrentParticipant || !Service.IsActiveInstructor(player.UserId)) throw new QualificationPermissionException();

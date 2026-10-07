@@ -10,7 +10,8 @@ public enum QualificationAction
 {
     View, Complete, Certify, Note, Suspend, ConfirmSuspension, Restore, Revoke, Grant,
     SaveRole, SaveDefinition, SaveInstructor, SaveManagement, SaveCommandJobs, CorrectProgress,
-    MigrationPreview, MigrationExecute, SaveMigrationSettings, ResetRecruit
+    MigrationPreview, MigrationExecute, SaveMigrationSettings, ResetRecruit,
+    TrainingAssign, TrainingRelease, TrainingStart, TrainingFinish, TrainingTrack // CMU14
 }
 
 [Serializable, NetSerializable]
@@ -52,6 +53,7 @@ public sealed class QualificationRequest
 {
     public Guid RequestId { get; set; }
     public Guid Target { get; set; }
+    public Guid Instructor { get; set; } // CMU14: explicit single-account reassignment.
     public string TargetName { get; set; } = "";
     public string Qualification { get; set; } = "";
     public string Item { get; set; } = "";
@@ -97,6 +99,12 @@ public sealed class QualificationView
     public Guid Viewer { get; set; }
     public Guid Target { get; set; }
     public bool Management { get; set; }
+    // CMU14 Training Begin: round-only roster, never part of QualificationStore.
+    public bool TrainingInstructor { get; set; }
+    public List<Content.Shared.CMU14.Qualifications.Training.CMUTrainingRosterEntry> TrainingRecruits { get; set; } = new();
+    public List<Content.Shared.CMU14.Qualifications.Training.CMUTrainingTopicView> TrainingTopics { get; set; } = new();
+    public Dictionary<Guid, string> TrainingInstructors { get; set; } = new();
+    // CMU14 End
     public bool Instructor { get; set; }
     public bool InstructorOnDuty { get; set; }
     public bool TargetOnline { get; set; }

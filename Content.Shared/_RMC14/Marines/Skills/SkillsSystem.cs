@@ -408,10 +408,9 @@ public sealed partial class SkillsSystem : EntitySystem
             DebugTools.Assert(msg);
         }
 
-        if (!_skillsQuery.Resolve(ent, ref ent.Comp, false))
-            return 0;
-
-        return ent.Comp.Skills.GetValueOrDefault(skill);
+        // CMU14: keep role skills immutable; every gameplay query sees the session overlay.
+        var normal = _skillsQuery.Resolve(ent, ref ent.Comp, false) ? ent.Comp.Skills.GetValueOrDefault(skill) : 0;
+        return CMUTrainingLevel(ent.Owner, skill, normal);
     }
 
     public bool HasSkills(Entity<SkillsComponent?> ent, SkillWhitelist whitelist)
@@ -430,11 +429,7 @@ public sealed partial class SkillsSystem : EntitySystem
             if (requiredLevel <= 0)
                 continue;
 
-            if (ent.Comp == null)
-                return false;
-
-            if (!ent.Comp.Skills.TryGetValue(requiredSkill, out var level) ||
-                level < requiredLevel)
+            if (GetSkill(ent, requiredSkill) < requiredLevel) // CMU14
             {
                 return false;
             }
@@ -456,11 +451,7 @@ public sealed partial class SkillsSystem : EntitySystem
             if (required.Level <= 0)
                 continue;
 
-            if (ent.Comp == null)
-                return false;
-
-            if (!ent.Comp.Skills.TryGetValue(required.Type, out var level) ||
-                level < required.Level)
+            if (GetSkill(ent, required.Type) < required.Level) // CMU14
             {
                 return false;
             }
@@ -480,9 +471,7 @@ public sealed partial class SkillsSystem : EntitySystem
             if (requiredLevel <= 0)
                 continue;
 
-            if (ent.Comp != null &&
-                ent.Comp.Skills.TryGetValue(requiredSkill, out var level) &&
-                level >= requiredLevel)
+            if (GetSkill(ent, requiredSkill) >= requiredLevel) // CMU14
             {
                 return true;
             }
@@ -504,9 +493,7 @@ public sealed partial class SkillsSystem : EntitySystem
             if (required.Level <= 0)
                 continue;
 
-            if (ent.Comp != null &&
-                ent.Comp.Skills.TryGetValue(required.Type, out var level) &&
-                level >= required.Level)
+            if (GetSkill(ent, required.Type) >= required.Level) // CMU14
             {
                 return false;
             }
@@ -523,9 +510,7 @@ public sealed partial class SkillsSystem : EntitySystem
         if (required <= 0)
             return true;
 
-        return _skillsQuery.Resolve(ent, ref ent.Comp, false) &&
-               ent.Comp.Skills.TryGetValue(skill, out var level) &&
-               level >= required;
+        return GetSkill(ent, skill) >= required; // CMU14: authoritative temporary training access.
     }
 
     public void IncrementSkill(Entity<SkillsComponent?> ent, EntProtoId<SkillDefinitionComponent> skill, int by = 1)
