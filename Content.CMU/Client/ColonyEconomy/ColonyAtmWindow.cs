@@ -632,6 +632,7 @@ public sealed partial class ColonyAtmWindow : BaseWindow
                 AtmHistoryKind.TransferOut => Loc.GetString("cmu-atm-history-out", ("amount", entry.Amount), ("account", entry.OtherAccount)),
                 AtmHistoryKind.TransferIn => Loc.GetString("cmu-atm-history-in", ("amount", entry.Amount), ("account", entry.OtherAccount)),
                 AtmHistoryKind.Retracted => Loc.GetString("cmu-atm-history-returned", ("amount", entry.Amount)),
+                AtmHistoryKind.Purchase => Loc.GetString("cmu-atm-history-purchase", ("amount", entry.Amount)),
                 _ => $"{entry.Amount}",
             };
             sb.Append('\n').Append(time).Append(' ').Append(line);
