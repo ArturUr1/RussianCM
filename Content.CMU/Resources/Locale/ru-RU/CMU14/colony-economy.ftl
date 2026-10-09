@@ -88,6 +88,7 @@ cmu-atm-history-cash = +${ $amount } НАЛИЧНЫЕ
 cmu-atm-history-out = -${ $amount } НА №{ $account }
 cmu-atm-history-in = +${ $amount } ОТ №{ $account }
 cmu-atm-history-returned = +${ $amount } ВОЗВРАТ
+cmu-atm-history-purchase = -${ $amount } ПОКУПКА
 cmu-atm-fault-fatal = СБОЙ { $byte }: ОШИБКА CRC РЕЕСТРА
 cmu-atm-fault-segv = SEGV ПО АДРЕСУ { $address } В TXN_CORE
 cmu-atm-fault-halted = TXN_CORE ОСТАНОВЛЕНО

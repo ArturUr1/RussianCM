@@ -27,7 +27,7 @@
 
   <Box>
     <GuideEntityEmbed Entity="AU14HemostaticGauzePacket" Caption="Пакет гемостатической марли"/>
-    <GuideEntityEmbed Entity="AU14Tourniquet" Caption="Жгут CAT"/>
+    <GuideEntityEmbed Entity="AU14Tourniquet" Caption="Жгут"/>
   </Box>
 
   ## Кровотечение
