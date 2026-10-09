@@ -1,4 +1,4 @@
-﻿Entries:
+Entries:
 - author: potatoed6
   changes:
   - message: M41A Mk1 recon
@@ -460,7 +460,7 @@
   - message: Fixed crushers charge dealing lower damage than intended to walls and
       Rwalls, it now deals the correct 750 structural damage.
     type: Fix
-  - message: "Fixed crushers knockback not matching parity (1\xBD -> 3 tiles)"
+  - message: Fixed crushers knockback not matching parity (1½ -> 3 tiles)
     type: Fix
   - message: Fixed crusher charge not being targetable, causing it to always travel
       the full length, regardless of targeting.
@@ -1103,8 +1103,8 @@
   - message: Crusher charge now bowls flung marines through other marines in the path,
       damaging and knocking down each one
     type: Add
-  - message: "Crusher stomp is now a targeted 90\xB0 cone aimed at your mouse with\
-      \ a preview overlay"
+  - message: Crusher stomp is now a targeted 90° cone aimed at your mouse with a preview
+      overlay
     type: Add
   - message: Crusher defensive shield now reflects enemy projectiles (40% front, 30%
       sides, 25% back)
@@ -1118,7 +1118,7 @@
     type: Tweak
   - message: 'Crusher armor is now directional: 45 front, 30 sides, 25 back'
     type: Tweak
-  - message: "Crusher wide swing restored: 60\xB0 arc, 2 max targets"
+  - message: 'Crusher wide swing restored: 60° arc, 2 max targets'
     type: Tweak
   - message: 'Crusher charge: faster wind-up, 90 damage, distance-scaled knockback
       (5-10 tiles)'
@@ -1808,7 +1808,7 @@
   changes:
   - message: Heatshield Vomit Bile now spews fire in 3 tiles infront of it
     type: Add
-  - message: "Added a flamer burst sound to Heatshield\u2019s burning Vomit Bile spray."
+  - message: Added a flamer burst sound to Heatshield’s burning Vomit Bile spray.
     type: Add
   - message: Increased Heatshield Vomit Bile targeting range by 20%, from 1.5 to 1.8.
     type: Tweak
@@ -1846,8 +1846,8 @@
   - message: Xeno hives now get a shared 200-use instant-build pool for the first
       30 minutes of the round.
     type: Add
-  - message: "Secrete structure actions show the hive\u2019s remaining instant builds\
-      \ in the lower-right while available."
+  - message: Secrete structure actions show the hive’s remaining instant builds in
+      the lower-right while available.
     type: Tweak
   - message: Hive instant builds no longer consume plasma and refund their charge
       if placement fails.
@@ -3167,8 +3167,8 @@
     type: Tweak
   - message: Disabled the silly automatic-fire for semi-automatic and burst modes
     type: Remove
-  - message: "Melee weapons can no longer be throw-spammed to chop down trees (new\
-      \ meta: \U0001F525)"
+  - message: 'Melee weapons can no longer be throw-spammed to chop down trees (new
+      meta: 🔥)'
     type: Remove
   - message: Machete does x3 damage against trees (chops 1250HP down in 9 hits) &
       Pickaxe damage nerf (10sl./33bl.), but multiplied so that fragile-rock remains
@@ -3245,9 +3245,9 @@
   - message: 'Wound size thresholds did not change from the previous wound profile:
       small below 15 damage, deep at 15+, gaping at 35+, and massive at 60+.'
     type: Tweak
-  - message: "Wound treatment changed from \u201Cauto-find and patch wounds\u201D\
-      \ to \u201Ctreat the selected body part.\u201D If you target the chest, treatment\
-      \ stays on the chest unless a radial selection is needed."
+  - message: Wound treatment changed from “auto-find and patch wounds” to “treat the
+      selected body part.” If you target the chest, treatment stays on the chest unless
+      a radial selection is needed.
     type: Tweak
   - message: Repeated wound treatment now chains with a 0.2 second repeat delay instead
       of blasting every remaining use instantly.
@@ -3262,9 +3262,9 @@
       and burn recovery defaults to 0.375 per second, with stronger tools able to
       raise the recovery rate based on treatment amount.
     type: Tweak
-  - message: "Surgical line and synth graft no longer behave like simple \u201Cbetter\
-      \ gauze/ointment.\u201D They now repair up to 10 damage, capped by both the\
-      \ wound damage and half the current region damage."
+  - message: Surgical line and synth graft no longer behave like simple “better gauze/ointment.”
+      They now repair up to 10 damage, capped by both the wound damage and half the
+      current region damage.
     type: Tweak
   - message: Gauze and trauma kits now focus on brute wounds and external bleeding
       on the selected part, rather than globally cleaning up eligible wounds.
@@ -3513,8 +3513,8 @@
     type: Remove
   - message: Removed old condition-driven surgery UI/flow as the active surgery system.
     type: Remove
-  - message: "Fixed surgery steps completing the do-after and then saying \u201Csurgery\
-      \ is no longer available.\u201D"
+  - message: Fixed surgery steps completing the do-after and then saying “surgery
+      is no longer available.”
     type: Fix
   - message: Fixed surgery mode toggling multiple times from one press.
     type: Fix
@@ -3887,7 +3887,7 @@
     type: Tweak
   - message: Increased UZI RoF to 7.5
     type: Tweak
-  - message: "Improved UZI accuracy slightly \U0001F90F"
+  - message: Improved UZI accuracy slightly 🤏
     type: Tweak
   - message: Added SpikeBootsComponent, a marker component that sits on the boots
       item and does nothing exciting on its own
@@ -5359,7 +5359,7 @@
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1549
 - author: murdocstarsim
   changes:
-  - message: "SOP rewrite for real this time. \U0001F91E"
+  - message: SOP rewrite for real this time. 🤞
     type: Add
   id: 370
   time: '2026-07-07T10:17:46.0000000+00:00'
@@ -5442,8 +5442,7 @@
     type: Add
   - message: Added staged insanity curse progression from cursed zombie attacks.
     type: Add
-  - message: "Added halt, attack, follow, and cheese \u2019em commands for summoned\
-      \ cursed."
+  - message: Added halt, attack, follow, and cheese ’em commands for summoned cursed.
     type: Add
   - message: Cursed zombies now use melee weapons, scream on death, and have randomized
       civilian or faction-matched military clothing.
@@ -5467,8 +5466,8 @@
   - message: Summoned cursed now disappear with their weapons on death and have a
       reduced delimb chance.
     type: Tweak
-  - message: "Cheese \u2019em now orders cursed to pathfind to and attack the pointed\
-      \ target regardless of line of sight."
+  - message: Cheese ’em now orders cursed to pathfind to and attack the pointed target
+      regardless of line of sight.
     type: Tweak
   - message: Spawned cursed are no longer available as ghost roles.
     type: Fix
@@ -6706,9 +6705,9 @@
   - message: CLF Leader can now pick which INSFOR faction they want. It is dependent
       on the GOVFOR faction in the round.
     type: Add
-  - message: "New Role! \U0001F527\U0001F9F0 CLF Sapper. Able to lay down traps, craft\
-      \ them from the sapper's workbench, and gunsmith-lite. Equipment include: [Tripwire,\
-      \ Audio, Buried *#&, Snare, Spy Camera, \U0001F4B5 Siphon Rig \U0001F4B5 ]"
+  - message: 'New Role! 🔧🧰 CLF Sapper. Able to lay down traps, craft them from the
+      sapper''s workbench, and gunsmith-lite. Equipment include: [Tripwire, Audio,
+      Buried *#&, Snare, Spy Camera, 💵 Siphon Rig 💵 ]'
     type: Add
   - message: Siphon Rig, able to siphon from colony budget console, ASRS consoles,
       and ATMs. ATM siphon is based on how many ATMs are in the round(i.e 10 ATMs
@@ -6852,9 +6851,9 @@
   - message: CLF Leader can now pick which INSFOR faction they want. It is dependent
       on the GOVFOR faction in the round.
     type: Add
-  - message: "New Role! \U0001F527\U0001F9F0 CLF Sapper. Able to lay down traps, craft\
-      \ them from the sapper's workbench, and gunsmith-lite. Equipment include: [Tripwire,\
-      \ Audio, Buried *#&, Snare, Spy Camera, \U0001F4B5 Siphon Rig \U0001F4B5 ]"
+  - message: 'New Role! 🔧🧰 CLF Sapper. Able to lay down traps, craft them from the
+      sapper''s workbench, and gunsmith-lite. Equipment include: [Tripwire, Audio,
+      Buried *#&, Snare, Spy Camera, 💵 Siphon Rig 💵 ]'
     type: Add
   - message: Siphon Rig, able to siphon from colony budget console, ASRS consoles,
       and ATMs. ATM siphon is based on how many ATMs are in the round(i.e 10 ATMs
@@ -7109,9 +7108,9 @@
     type: Add
   - message: Added your callsign to your headset's examine text.
     type: Add
-  - message: "Added per-operation frequency plans: faction net frequencies are randomized\
-      \ every round, and frequency cards print the current assignments \u2014 captured\
-      \ cards are now real intel."
+  - message: 'Added per-operation frequency plans: faction net frequencies are randomized
+      every round, and frequency cards print the current assignments — captured cards
+      are now real intel.'
     type: Add
   - message: Support synthetics are now radio trained and can operate the AN/PRC.
     type: Add
@@ -7524,8 +7523,8 @@
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1720
 - author: rokudara-sen
   changes:
-  - message: "CLF Radio Operators can splice antenna masts and communications arrays\
-      \ to carry the CLF radio nets at the mast\u2019s full range"
+  - message: CLF Radio Operators can splice antenna masts and communications arrays
+      to carry the CLF radio nets at the mast’s full range
     type: Add
   - message: Splicing uses a band search with a limited probe budget and a detection
       meter. Failed attempts fault the junction for 90 seconds
@@ -7533,8 +7532,8 @@
   - message: Successful splices leave a visible feeder tap that anyone can remove
       to recover a live CLF fill card
     type: Add
-  - message: "CLF relay sets can now be built at the sapper\u2019s workbench. Radio\
-      \ Operators receive one relay and one splice kit at round start"
+  - message: CLF relay sets can now be built at the sapper’s workbench. Radio Operators
+      receive one relay and one splice kit at round start
     type: Add
   - message: Tapped masts keep working normally for their owners. A splice only adds
       the CLF nets
@@ -9563,6 +9562,63 @@
   id: 631
   time: '2026-09-10T13:35:04.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1921
+- author: '- fix: Раунд с охотой загружает корабль яутжа без ошибки создания отсутствующих
+    сущностей.'
+  time: '2026-09-10T14:09:18Z'
+  changes:
+  - type: Fix
+    message: Вожди и совет яутжа используют дополнительные слоты, сохраняя обычные
+      места охотников.
+  - type: Fix
+    message: Молодые охотники появляются в спальнях корабля; вызов показывает фактический
+      диапазон численности.
+  - type: Fix
+    message: В персонализации яутжа снова доступны варианты плазмакастера, переведены
+      группы наручей и исправлены границы карточек.
+  - type: Fix
+    message: Цвет дредов применяется в игре, маска ронина располагается на лице, а
+      трофеи корректно крепятся к броне.
+  - type: Fix
+    message: Информация о фракции яутжа больше не подменяется описанием человеческих
+      сторон, а человеческие черты не применяются к охотникам.
+  - type: Fix
+    message: Метки раба и окровавления отправляют обязательное обоснование из окна
+      наручей.
+  - type: Fix
+    message: Модули наручей снова раскрываются после сворачивания или удаления разложенного
+      оружия; наручный щит не разрушается от ошибочного порога прочности.
+  - type: Fix
+    message: Наручи предоставляют обе кнопки самоуничтожения; большой режим использует
+      исправленную мощность взрыва.
+  - type: Fix
+    message: Основные платформы яутжа предлагают выбор точки колонии, а реле по умолчанию
+      ведёт только на корабли охотников и морпехов.
+  - type: Fix
+    message: Яутжа не гниют и могут выполнять самолечение Medicomp через броню; корабельные
+      меднаборы заполнены, а разделение трав сохраняет инопланетную медицину.
+  - type: Fix
+    message: Химия учитывает совместимость с организмом яутжа, а адские гончие знают
+      язык охотников.
+  - type: Tweak
+    message: Метание оружия яутжа учитывает скорость, броню, застревание в конечностях
+      и последствия извлечения по правилам CMSS13.
+  - type: Fix
+    message: Исправлены кровавый заряд оружия и возврат смарт-диска, включая броски
+      в невесомости.
+  - type: Fix
+    message: Оружие яутжа использует правильные спрайты хвата и ношения на спине;
+      лук отображает загруженную стрелу.
+  - type: Map
+    message: На Redux Stable Garrison доступны три точки высадки охотников; граничные
+      скалы поверхности и пещер пустынной луны защищают малые угодья от выхода в космос.
+  id: 752
+  url: https://github.com/flex5hybrid/RussianCM/pull/439
+  labels:
+  - 'Changes: UI'
+  - 'Changes: Sprites'
+  - 'Changes: Map'
+  - 'Changes: Translations'
+  - XL
 - author: OverusedMeme
   changes:
   - message: The M240 now has a wield delay of 1 second, the M240-T now has a wield
@@ -9591,6 +9647,48 @@
   time: '2026-09-12T00:24:09.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1933
 - author: flex5hybrid
+  time: '2026-09-12T16:14:16Z'
+  changes:
+  - type: Code
+    message: Вернули старую вайтлист-систему.
+  id: 754
+  url: https://github.com/flex5hybrid/RussianCM/pull/444
+  labels:
+  - 'Changes: Translations'
+  - M
+- author: flex5hybrid
+  time: '2026-09-12T17:35:18Z'
+  changes:
+  - type: Fix
+    message: Возврат логотипа RuCM
+  - type: Fix
+    message: Вкладка ТТС теперь работает исправно
+  id: 755
+  url: https://github.com/flex5hybrid/RussianCM/pull/445
+  labels:
+  - M
+- author: '- fix: Исправлена автоматическая обработка changelog RuCM: локальные PR
+    больше не теряются между запусками Publish.'
+  time: '2026-09-12T17:58:10Z'
+  changes:
+  - type: Fix
+    message: Publish теперь включает только что сгенерированный changelog в тот же
+      релиз.
+  - type: Fix
+    message: Индикатор новых обновлений больше не сломается после обрезки старых записей
+      changelog.
+  - type: Fix
+    message: Исправлено определение прочитанного changelog и выбор основной вкладки
+      на клиенте.
+  - type: Code
+    message: 'Changelog workflow получил дедупликацию PR, стабильные ID и более строгую
+      проверку :cl: блоков.'
+  id: 753
+  url: https://github.com/flex5hybrid/RussianCM/pull/441
+  labels:
+  - 'Changes: Translations'
+  - M
+- author: flex5hybrid
   changes:
   - message: Moved hardcoded CMU user-facing strings into Fluent localization.
     type: Code
@@ -9599,8 +9697,8 @@
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1938
 - author: Vencallium
   changes:
-  - message: "Fixed tactical hovering over empty +1 airspace during Distress Signal,\
-      \ excluding Hope\u2019s Retreat."
+  - message: Fixed tactical hovering over empty +1 airspace during Distress Signal,
+      excluding Hope’s Retreat.
     type: Fix
   - message: Added an empty upper z-level to Bosenmori Basho.
     type: Map
@@ -9764,6 +9862,25 @@
   id: 647
   time: '2026-09-14T07:32:26.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1954
+- author: ArturUr1
+  time: '2026-09-14T16:27:26Z'
+  changes:
+  - type: Tweak
+    message: Изменен СОП синтетиков. Убран пункт о запрете на высадку в случае пустого
+      медицинского отдела или отсутствия ВП. Взамен изменены правила развертывания.
+      Теперь перед развертыванием синтетики обязаны сообщить о своем намерении высадиться
+      действующему Командиру или заменяющему его. Командир вправе запретить развертывание
+      синтетика и направить его на восполнение ресурсов отделов корабля, если сочтет
+      это нужным.
+  - type: Tweak
+    message: Отредактированы правила игры на ролях с повышенным отыгрышем. Введено
+      уточнение, что для содержания цик'а нужны именно человеческие представители
+      командования.
+  id: 756
+  url: https://github.com/flex5hybrid/RussianCM/pull/454
+  labels:
+  - 'Changes: No C#'
+  - XS
 - author: ArturUr1
   changes:
   - message: Methamphetamine has been nerfed. Speed multiplier reduced from 1.4 to
@@ -9990,16 +10107,38 @@
   - message: CLF Commandos can now be called through the CLF intel console they are
       CLF aligned and should be fairly balanced
     type: Add
-  - message: "\U0001F1EC\U0001F1E7 Chaps, we've got a fresh supply of sniper kits\
-      \ from Sol. These pack a punch and comes with night vision visors for ye helmets\
-      \ happy hunting."
+  - message: 🇬🇧 Chaps, we've got a fresh supply of sniper kits from Sol. These pack
+      a punch and comes with night vision visors for ye helmets happy hunting.
     type: Add
-  - message: "\U0001F46E Armory got restocked recently, we got M16 Extended Magazines\
-      \ and Armor Piercing again. Them gun kits got one of each too."
+  - message: 👮 Armory got restocked recently, we got M16 Extended Magazines and Armor
+      Piercing again. Them gun kits got one of each too.
     type: Add
   id: 657
   time: '2026-09-20T20:43:00.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/1927
+- author: '- add: Добавлен пятипалубный Almayer в выбор корабля Govfor со снабжением
+    выбранного взвода.'
+  time: '2026-09-20T20:59:10Z'
+  changes:
+  - type: Add
+    message: Добавлены насосы, стадии хайджека, авария FTL, падение корабля и самоуничтожение
+      с катсценой.
+  - type: Fix
+    message: Шаттлы выбранного взвода прибывают в разные ангары Almayer на старте
+      раунда без дублирования и смещения за пределы корпуса.
+  - type: Fix
+    message: Исправлены привязки консолей Almayer к Govfor, вызов шаттлов между палубами
+      и доступ к журналам обслуживания.
+  - type: Fix
+    message: Shipwide announcement охватывает все палубы корабля.
+  - type: Fix
+    message: Исправлены межпалубные переходы, спасательные отсеки, доступ дверей,
+      контейнеры и слои объектов Almayer.
+  id: 757
+  url: https://github.com/flex5hybrid/RussianCM/pull/462
+  labels:
+  - 'Changes: Sprites'
+  - XL
 - author: TheHellFireo
   changes:
   - message: Adds the UD-6 Mohawk Dropships
@@ -10235,6 +10374,25 @@
   id: 673
   time: '2026-09-23T17:55:47.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/2004
+- author: ArturUr1
+  time: '2026-09-23T20:57:52Z'
+  changes:
+  - type: Tweak
+    message: Таймеры медалей, выдаваемых за время, возвращены к прошлым значениям.
+  id: 758
+  url: https://github.com/flex5hybrid/RussianCM/pull/463
+  labels:
+  - S
+- author: RomiGur
+  time: '2026-09-23T20:58:00Z'
+  changes:
+  - type: Add
+    message: Добавлена локализация статуса раунда в Discord
+  id: 759
+  url: https://github.com/flex5hybrid/RussianCM/pull/464
+  labels:
+  - 'Changes: Translations'
+  - M
 - author: TheHellFireo
   changes:
   - message: Fixed hospital shuttles getting stuck on landing pads reserved by deleted
@@ -10494,6 +10652,21 @@
   id: 683
   time: '2026-09-25T21:43:40.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/2020
+- author: '- tweak: Радиопозывные переведены на русский словесно-цифровой формат;
+    обновлены справочник, шаблоны радиостанций и руководство по радиообмену.'
+  time: '2026-09-25T23:12:05Z'
+  changes:
+  - type: Fix
+    message: Номера станций сохраняются при переводе, если свободны; повторные назначения
+      и переименование подразделений не создают одинаковые автоматические позывные.
+  - type: Fix
+    message: Исправлена сборка серверной системы появления взвода и повторное создание
+      корабельного снабжения.
+  id: 760
+  url: https://github.com/flex5hybrid/RussianCM/pull/470
+  labels:
+  - 'Changes: UI'
+  - L
 - author: TheHellFireo
   changes:
   - message: Added pie throws, banana slips, and confetti cannons that interact with
@@ -10651,6 +10824,19 @@
   id: 689
   time: '2026-09-26T18:22:01.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/2029
+- author: '- tweak: Правила RuCMU полностью сверены с оригинальными правилами CMU
+    и переведены на русский язык.'
+  time: '2026-09-26T18:35:11Z'
+  changes:
+  - type: Fix
+    message: Восстановлены пропущенные и неточно переведённые положения правил.
+  - type: Fix
+    message: Исправлены переходы к правилам режимов «Сигнал бедствия» и «Падение колонии».
+  id: 761
+  url: https://github.com/flex5hybrid/RussianCM/pull/471
+  labels:
+  - 'Changes: No C#'
+  - M
 - author: TheHellFireo
   changes:
   - message: Choose whether to join your faction's hijack or return to defend your
@@ -10778,10 +10964,10 @@
       Hallway, Shoot House, Gym, Atmospherics Control, Auxiliary Flight Deck, and
       Telecommunications.
     type: Map
-  - message: "Updated Shiva\u2019s Snowball and added two additional upper Z-levels."
+  - message: Updated Shiva’s Snowball and added two additional upper Z-levels.
     type: Map
-  - message: "Added Shiva\u2019s Snowball roof area definitions for Central Habitation,\
-      \ Med-Sec-Eng, and the Aerodrome."
+  - message: Added Shiva’s Snowball roof area definitions for Central Habitation,
+      Med-Sec-Eng, and the Aerodrome.
     type: Map
   - message: Added colorable Alpha, Bravo, and Charlie squad floor markings.
     type: Add
@@ -10797,7 +10983,7 @@
     type: Add
   - message: Added a box containing seven no-skill pill bottles.
     type: Add
-  - message: "Added ten no-skill pill-bottle boxes to the medical vendor\u2019s stock."
+  - message: Added ten no-skill pill-bottle boxes to the medical vendor’s stock.
     type: Add
   - message: Added individual vial fabrication to the medilathe, costing 125 glass
       and 25 plastic with a four-second fabrication time.
@@ -10992,24 +11178,24 @@
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/2017
 - author: Vencallium
   changes:
-  - message: "Added ship research terminal markers that select the owning faction\u2019\
-      s research network."
+  - message: Added ship research terminal markers that select the owning faction’s
+      research network.
     type: Add
   - message: Identical ships used by opposing factions now receive the correct research
       and hospital terminals.
     type: Fix
-  - message: "Matched the research cooldown purchase button to the terminal\u2019\
-      s amber styling and changed its label to \u201C-60s 1CR\u201D."
+  - message: Matched the research cooldown purchase button to the terminal’s amber
+      styling and changed its label to “-60s 1CR”.
     type: Tweak
   - message: All gas miners can now be unwrenched, moved, and reanchored.
     type: Tweak
-  - message: "Removed misleading \u201CPermanent\u201D labels from portable and administrator\
-      \ gas miners."
+  - message: Removed misleading “Permanent” labels from portable and administrator
+      gas miners.
     type: Tweak
   - message: Added Colony, GOVFOR, and OPFOR hospital emergency computer variants.
     type: Add
-  - message: "Restricted hospital computer variants to their faction\u2019s medical\
-      \ and command access."
+  - message: Restricted hospital computer variants to their faction’s medical and
+      command access.
     type: Fix
   - message: Added ship and fixed-faction hospital computer markers, including colony
       markers.
@@ -11020,13 +11206,13 @@
   - message: Replaced USS Bush research terminals and its hospital computer with ship
       faction markers.
     type: Map
-  - message: "Replaced Stable Garrison\u2019s hospital computer with a colony marker."
+  - message: Replaced Stable Garrison’s hospital computer with a colony marker.
     type: Map
   - message: Hospital computers can now locate landing zones on other decks of their
       own ship.
     type: Fix
-  - message: "Hospital shuttle delivery, pickup, and recovery now use the landing\
-      \ zone\u2019s deck as the hospital destination."
+  - message: Hospital shuttle delivery, pickup, and recovery now use the landing zone’s
+      deck as the hospital destination.
     type: Fix
   - message: Granted room attention to advisors, engineering/intelligence/logistics/medical
       officers, vehicle commanders, section and squad sergeants, fireteam leaders,
@@ -11182,6 +11368,17 @@
   id: 708
   time: '2026-09-29T17:24:34.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/2049
+- author: ArturUr1
+  time: '2026-09-29T22:07:45Z'
+  changes:
+  - type: Fix
+    message: Исправлено отображение правил и некоторых руководств во внутриигровом
+      гайдбуке.
+  id: 762
+  url: https://github.com/flex5hybrid/RussianCM/pull/473
+  labels:
+  - 'Changes: No C#'
+  - S
 - author: troytroy400
   changes:
   - message: Added a full Medical guide, covering every single medical mechanic in
@@ -11572,6 +11769,37 @@
   id: 726
   time: '2026-10-03T13:38:44.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/2071
+- author: ArturUr1
+  time: '2026-10-03T14:13:45Z'
+  changes:
+  - type: Fix
+    message: Система языков снова адекватно работает с кириллицей
+  id: 765
+  url: https://github.com/flex5hybrid/RussianCM/pull/477
+  labels:
+  - XS
+- author: ArturUr1
+  time: '2026-10-03T14:13:57Z'
+  changes:
+  - type: Tweak
+    message: Обязательное чередование режимов отключено. Теперь снова можно несколько
+      раз подряд выбирать один режим.
+  id: 764
+  url: https://github.com/flex5hybrid/RussianCM/pull/475
+  labels:
+  - XS
+- author: ArturUr1
+  time: '2026-10-03T14:14:16Z'
+  changes:
+  - type: Add
+    message: Переведен СОП отделов военных
+  - type: Fix
+    message: Исправлено отображение СОП командования
+  id: 763
+  url: https://github.com/flex5hybrid/RussianCM/pull/474
+  labels:
+  - 'Changes: No C#'
+  - M
 - author: TheHellFireo
   changes:
   - message: Fixed incorrect and repeated combat hits, including lunges affecting
@@ -11601,6 +11829,135 @@
   id: 728
   time: '2026-10-03T17:50:34.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/2073
+- author: '- add: В Восстании добавлена кроссраундовая подготовка GOVFOR с квалификациями,
+    чеклистами и инструкторскими допусками.'
+  time: '2026-10-04T19:52:31Z'
+  changes:
+  - type: Add
+    message: Личные дела доступны из лобби, кадровое управление — из Esc и через ПКМ
+      по рекруту; интерфейс показывает никнеймы и пояснения.
+  - type: Add
+    message: В руководства GOVFOR добавлены Строевой устав, наставления по связи и
+      командованию и Положение о подготовке; действующие СОП/ЕКВЮ сохранены.
+  - type: Add
+    message: Добавлен Курс молодого бойца из 11 глав; все девять пунктов рядового
+      чек-листа открывают соответствующие учебные материалы.
+  - type: Tweak
+    message: Platoon Advisor отображается как Drill Instructor / Сержант-инструктор;
+      в остальных режимах сохранены прежние таймеры должностей.
+  - type: Admin
+    message: Добавлены аккредитация, учебные заметки, приостановление и возврат в
+      рекруты с проверкой полномочий и аудитом.
+  - type: Code
+    message: Добавлены собственные таблицы в существующей PostgreSQL/SQLite, миграции,
+      кеш, метрики и проверки безопасности без изменений upstream.
+  id: 766
+  url: https://github.com/flex5hybrid/RussianCM/pull/480
+  labels:
+  - 'Changes: Translations'
+  - XL
+- author: '- fix: Сержант-инструктор GOVFOR требует действующую аккредитацию и Sergeant
+    без дополнительного старого whitelist.'
+  time: '2026-10-04T21:08:36Z'
+  changes:
+  - type: Fix
+    message: GOVFOR-синтетики исключены из человеческих военных квалификаций, миграции
+      активности и учебных зачётов.
+  - type: Fix
+    message: Добавлены недостающие миграции настроек снаряжения, устраняющие остановку
+      PostgreSQL и SQLite при запуске.
+  id: 767
+  url: https://github.com/flex5hybrid/RussianCM/pull/482
+  labels:
+  - 'Changes: Translations'
+  - M
+- author: paraffin-ss14
+  time: '2026-10-05T21:17:46Z'
+  changes:
+  - type: Fix
+    message: Хотфикс навыков
+  id: 768
+  url: https://github.com/flex5hybrid/RussianCM/pull/484
+  labels:
+  - 'Changes: Sprites'
+  - L
+- author: '- tweak: Радиосообщения больше не содержат автоматически добавленные имена,
+    позывные и глаголы речи.'
+  time: '2026-10-05T22:20:41Z'
+  changes:
+  - type: Fix
+    message: Исправлено дублирование названия канала в сообщениях чата.
+  id: 769
+  url: https://github.com/flex5hybrid/RussianCM/pull/488
+  labels:
+  - 'Changes: UI'
+  - 'Changes: Translations'
+  - M
+- author: '- add: Рекрутам всех фракций GOVFOR назначено звание E0 «Рекрут» и знак
+    различия.'
+  time: '2026-10-06T01:17:48Z'
+  changes:
+  - type: Tweak
+    message: Форма рекрутов и инструкторов соответствует выбранной фракции CMU.
+  - type: Fix
+    message: Рекруты доступны на USS Bush и USS Bush Redux.
+  - type: Fix
+    message: Рекруты не попадают в боевой отряд и отображаются только в режиме Восстание.
+  - type: Fix
+    message: Звания корректно обновляются при креплении знаков различия и смене формы.
+  id: 770
+  url: https://github.com/flex5hybrid/RussianCM/pull/489
+  labels:
+  - M
+- author: '- remove: Из подготовки колонистов убраны ветеран боевых действий, инженер
+    и маэстро.'
+  time: '2026-10-06T01:43:54Z'
+  changes:
+  - type: Tweak
+    message: Подготовка врача теперь стоит 15 очков, Glock 77 с резиновыми пулями
+      — 10 очков.
+  - type: Remove
+    message: Из снаряжения колонистов убрано огнестрельное оружие, кроме Glock 77
+      с резиновыми пулями, и хирургические подсумки.
+  - type: Remove
+    message: Из кастомизации одежды колонистов убрана ванильная одежда и отдельный
+      вариант кимоно.
+  id: 771
+  url: https://github.com/flex5hybrid/RussianCM/pull/490
+  labels:
+  - M
+- author: '- fix: Случайные персонажи и гостроли получают разнообразные голоса TTS
+    с учётом пола.'
+  time: '2026-10-06T02:14:49Z'
+  changes:
+  - type: Fix
+    message: Выбор стандартных голосов в редакторе персонажа учитывает его пол; исправлена
+      фильтрация категорий.
+  - type: Add
+    message: В редакторе персонажа появился выбор случайного голоса.
+  - type: Tweak
+    message: Реплики TTS воспроизводятся по порядку, устаревшая речь пропускается,
+      а радио звучит мягче.
+  - type: Fix
+    message: Голосовая маска теперь изменяет и голос TTS по радио.
+  id: 772
+  url: https://github.com/flex5hybrid/RussianCM/pull/492
+  labels:
+  - 'Changes: UI'
+  - 'Changes: Translations'
+  - L
+- author: '- fix: Исправлены пропуски обновлений при публикации чейнджлогов, в том
+    числе после слияний апстрима.'
+  time: '2026-10-06T02:16:23Z'
+  changes:
+  - type: Add
+    message: Чейнджлоги всех разделов для Discord теперь переводятся на русский; добавлены
+      предпросмотр и восстановление пропущенных сообщений.
+  id: 773
+  url: https://github.com/flex5hybrid/RussianCM/pull/493
+  labels:
+  - 'Changes: No C#'
+  - L
 - author: troytroy400
   changes:
   - message: Health scanners now show the patient's overall external bleeding tier
@@ -11898,6 +12255,38 @@
   id: 732
   time: '2026-10-07T03:13:34.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/2086
+- author: '- add: Рекрутов GOVFOR можно персонально назначать инструкторам на текущий
+    раунд.'
+  time: '2026-10-07T05:05:23Z'
+  changes:
+  - type: Add
+    message: Добавлены индивидуальные занятия с временными навыками, которые снимаются
+      после окончания обучения.
+  - type: Add
+    message: Рекруты могут отслеживать своего инструктора, а инструкторы — выбранного
+      рекрута через HUD.
+  - type: Admin
+    message: Добавлены переназначение рекрутов, лимит назначений и логи учебных сессий.
+  id: 774
+  url: https://github.com/flex5hybrid/RussianCM/pull/497
+  labels:
+  - L
+- author: '- add: Добавлены последние обновления CMU: новый банкомат, гранаты, детонация
+    нагретых боеприпасов и новые разделы справочника.'
+  time: '2026-10-07T05:17:41Z'
+  changes:
+  - type: Tweak
+    message: Локализованы новые тексты лора, медицины, предметов и интерфейсов.
+  - type: Fix
+    message: Ошибки банкомата корректно включают звук и индикатор при русской локализации.
+  id: 775
+  url: https://github.com/flex5hybrid/RussianCM/pull/498
+  labels:
+  - 'Changes: UI'
+  - 'Changes: Sprites'
+  - 'Changes: Audio'
+  - 'Changes: Translations'
+  - XL
 - author: troytroy400
   changes:
   - message: On Force v Force and Distress Signal GOVFOR/OPFOR req now get a free
@@ -12273,5 +12662,16 @@
   id: 751
   time: '2026-10-09T02:54:14.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/2085
+- author: '- code: Обновлён CMU upstream до ba37f13b226.'
+  time: '2026-10-09T04:24:45Z'
+  changes:
+  - type: Fix
+    message: Сохранён русский перевод конфликтующих руководств и добавлена локализация
+      покупок в истории банкомата.
+  id: 776
+  url: https://github.com/flex5hybrid/RussianCM/pull/502
+  labels:
+  - 'Changes: UI'
+  - XL
 Name: CMU
 Order: -1
