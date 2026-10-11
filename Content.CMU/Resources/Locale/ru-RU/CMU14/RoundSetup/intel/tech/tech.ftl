@@ -19,11 +19,11 @@ cmu-tech-tier-three = Разблокировать уровень 3
 cmu-tech-tier-four = Разблокировать уровень 4
 cmu-tech-tier-unlock-desc = Переводит древо на следующий уровень.
 
-## Авторы анонсов
+## Авторы объявлений
 cmu-tech-author-intel-operations = РАЗВЕДОВАТЕЛЬНОЕ УПРАВЛЕНИЕ
 cmu-tech-author-special-assets = РАЗРЕШЕНИЕ СПЕЦИАЛЬНЫХ АКТИВОВ
 cmu-tech-author-govfor-high-command = ВЫСШЕЕ КОМАНДОВАНИЕ ГОВФОР
-cmu-tech-author-aegis-rnd = АЕГИС НАУЧНАЯ ДИВИЗИЯ
+cmu-tech-author-aegis-rnd = НАУЧНАЯ ДИВИЗИЯ АЕГИС
 
 ## GOVFOR
 cmu-tech-govfor-req-budget = Увеличение бюджета снабжения
@@ -81,10 +81,10 @@ cmu-tech-govfor-kraken-announce = AEG-538-KRA санкционирован к п
 cmu-tech-opfor-req-budget = Увеличение бюджета снабжения
 cmu-tech-opfor-req-budget-desc = Выделяет ресурсы снабжения для закупок.
 
-## Анонсы OPFOR
+## Объявления OPFOR
 cmu-tech-opfor-req-budget-announce = Для этой операции санкционирован дополнительный бюджет снабжения.
 
-## CLF
+## КОФ
 cmu-tech-clf-req-budget = Увеличение бюджета снабжения
 cmu-tech-clf-req-budget-desc = Выделяет ресурсы снабжения для закупок.
 cmu-tech-clf-reinforcements = Подкрепление повстанцев
@@ -98,10 +98,10 @@ cmu-tech-clf-commandos-desc = Отправляет разведданные вы
 cmu-tech-clf-prodigy-yankee = Запрос вооружённой ремонтной бригады "Янки" Продиджи
 cmu-tech-clf-prodigy-yankee-desc = Запросите команду ЧВК из Продиджи, в частности отряд «Янки». Они не враждуют с CLF, но их помощь не требуется.
 
-## Анонсы CLF
+## Объявления КОФ
 cmu-tech-clf-prodigy-yankee-announce = Отряд вооружённой ремонтной бригады Продиджи направлен на помощь в операции.
 
-## UA
+## ОА
 cmu-tech-ua-req-budget = Увеличение бюджета снабжения
 cmu-tech-ua-req-budget-desc = Выделяет ресурсы снабжения для закупок.
 cmu-tech-ua-us-army-armored = Подкрепление 32-й бронетанковой дивизии Армии ОА
@@ -109,7 +109,7 @@ cmu-tech-ua-us-army-armored-desc = Вызвать отряд из 32-й брон
 cmu-tech-ua-prodigy-yankee = Запрос вооружённой ремонтной бригады "Янки" Продиджи
 cmu-tech-ua-prodigy-yankee-desc = Вызвать группу ЧВК из PART, а именно отряд «Yankee».
 
-## Анонсы UA
+## Объявления ОА
 cmu-tech-ua-req-budget-announce = Для этой операции санкционирован дополнительный бюджет снабжения.
 cmu-tech-ua-us-army-armored-announce = Отряд из 32-й бронетанковой дивизии Армии ОА направлен на помощь в операции.
 cmu-tech-ua-prodigy-yankee-announce = Отряд Запрос вооружённой ремонтной бригады Продиджи направлен на помощь в операции.
