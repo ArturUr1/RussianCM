@@ -92,7 +92,7 @@ public sealed class VehicleSupplyBui : BoundUserInterface
 
         _availableVehicleIds.Clear();
         _availableCounts.Clear();
-        _window.AvailableRows.DisposeAllChildren();
+        _window.AvailableRows.ReleaseChildren();
         _selectButtons.Clear();
         _copyToggleButtons.Clear();
         _copyContainers.Clear();
@@ -255,7 +255,7 @@ public sealed class VehicleSupplyBui : BoundUserInterface
         if (_window == null)
             return;
 
-        _window.LoadoutColumns.DisposeAllChildren();
+        _window.LoadoutColumns.ReleaseChildren();
         _window.LoadoutPanel.Visible = state.Loadouts.Count > 0;
 
         if (state.Loadouts.Count == 0)

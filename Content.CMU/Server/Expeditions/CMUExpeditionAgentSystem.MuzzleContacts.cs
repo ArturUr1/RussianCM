@@ -15,16 +15,23 @@ public sealed partial class CMUExpeditionAgentSystem
 
     private void InitializeVision()
     {
-        SubscribeLocalEvent<GunComponent, ComponentStartup>(OnObservedGunStartup);
         SubscribeLocalEvent<CMUExpeditionShotObserverComponent, GunShotEvent>(OnObservedMuzzleFlash);
     }
 
-    private void OnObservedGunStartup(Entity<GunComponent> ent, ref ComponentStartup args) =>
-        EnsureComp<CMUExpeditionShotObserverComponent>(ent.Owner);
+    private void OnObservedGunTakeAmmo(Entity<GunComponent> ent, ref TakeAmmoEvent args)
+    {
+        // Native shooting requests ammo before raising GunShotEvent, including the first
+        // shot. Install only on use, so uninitialized map prototypes stay unchanged.
+        if (args.User != null)
+            EnsureComp<CMUExpeditionShotObserverComponent>(ent.Owner);
+    }
 
     private void OnObservedMuzzleFlash(Entity<CMUExpeditionShotObserverComponent> ent, ref GunShotEvent args)
     {
         if (!_npcs.Enabled || !TryComp<GunComponent>(ent, out var gun))
+            return;
+        // every gun anyone fires lands here, nothing to hear or see it without an agent around
+        if (!EntityQueryEnumerator<CMUExpeditionAgentComponent>().MoveNext(out _, out _))
             return;
         // Use the same suppression hook as the real effect (including attached silencers).
         var flash = new GunMuzzleFlashAttemptEvent();
