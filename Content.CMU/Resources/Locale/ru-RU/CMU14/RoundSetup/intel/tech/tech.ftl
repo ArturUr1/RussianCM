@@ -1,14 +1,14 @@
 ## Локализация консолей
-ent-RMCTechTreeConsoleGovfor = консоль древа технологий GOVFOR
-    .desc = Консоль технологий GOVFOR для изучения технологий фракции GOVFOR.
-ent-RMCTechTreeConsoleOpfor = консоль древа технологий OPFOR
-    .desc = Консоль технологий OPFOR для изучений технологий фракции OpFor.
+ent-RMCTechTreeConsoleGovfor = консоль древа технологий ГОВФОР
+    .desc = Консоль технологий ГОВФОР для изучения технологий фракции ГОВФОР.
+ent-RMCTechTreeConsoleOpfor = консоль древа технологий ОПФОР
+    .desc = Консоль технологий ОПФОР для изучений технологий фракции ОПФОР.
 ent-RMCTechTreeConsoleCLF = консоль древа технологий КОФ
     .desc = Консоль технологий КОФ для изучения технологий фракции КОФ.
 
 ## Локализация intel-деревьев
-ent-CMUIntelTechTree_GOVFOR = древо разведданных (GOVFOR)
-ent-CMUIntelTechTree_OPFOR = древо разведданных (OPFOR)
+ent-CMUIntelTechTree_GOVFOR = древо разведданных (ГОВФОР)
+ent-CMUIntelTechTree_OPFOR = древо разведданных (ОПФОР)
 ent-CMUIntelTechTree_CLF = древо разведданных (КОФ)
 ent-CMUIntelTechTree_UA = древо разведданных (ОА)
 
