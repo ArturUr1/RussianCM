@@ -2,8 +2,8 @@
 - type: entity
   parent: RMCCommunicationsConsoleBase
   id: RMCTechTreeConsoleGovfor
-  name: консоль древа технологий ГОВФОР
-  description: Техническая консоль ГОВФОР, используемая для совершения технических закупок для ГОВФОР.
+  name: govfor tech tree console
+  description: A GovFor tech console used to make tech purchases for GovFor.
   components:
   - type: Sprite
     sprite: _RMC14/Structures/Machines/computer.rsi
@@ -26,8 +26,8 @@
 - type: entity
   parent: RMCCommunicationsConsoleBase
   id: RMCTechTreeConsoleOpfor
-  name: консоль древа технологий ОПФОР
-  description: Техническая консоль ОПФОР, используемая для совершения технических закупок для ОПФОР.
+  name: opfor tech tree console
+  description: An OpFor tech console used to make tech purchases for OpFor.
   components:
   - type: Sprite
     sprite: _RMC14/Structures/Machines/computer.rsi
@@ -50,8 +50,8 @@
 - type: entity
   parent: RMCCommunicationsConsoleBase
   id: RMCTechTreeConsoleCLF
-  name: консоль древа технологий КОФ
-  description: Техническая консоль КОФ, используемая для совершения технических закупок для КОФ.
+  name: CLF tech tree console
+  description: A CLF tech console used to make tech purchases for CLF.
   components:
   - type: Sprite
     sprite: _RMC14/Structures/Machines/computer.rsi

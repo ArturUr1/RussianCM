@@ -75,9 +75,9 @@ cmu-fighter-console-sight-help = WASD · сдвиг камеры
 cmu-fighter-console-flight-help = W/S · скорость
     A/D · коррекция в пределах прохода
 cmu-fighter-pilot-controls = ПИЛОТ
-cmu-fighter-observer-controls = ОФИЦЕР СИСТЕМ ВООРУЖЕНИЯ
+cmu-fighter-observer-controls = ОПЕРАТОР СИСТЕМ ВООРУЖЕНИЯ
 cmu-fighter-spectating-pilot = НАБЛЮДЕНИЕ ЗА ПИЛОТОМ
-cmu-fighter-spectating-wso = НАБЛЮДЕНИЕ ЗА ОФИЦЕРОМ СИСТЕМ ВООРУЖЕНИЯ
+cmu-fighter-spectating-wso = НАБЛЮДЕНИЕ ЗА ОПЕРАТОРОМ СИСТЕМ ВООРУЖЕНИЯ
 cmu-fighter-spectating-help = Обзор экипажа, только просмотр
     Проложить маршрут / Наведение · переключить экран
 cmu-fighter-spectating-exit-help = Обзор экипажа, только просмотр
