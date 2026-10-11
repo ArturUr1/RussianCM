@@ -1,4 +1,6 @@
 using Content.IntegrationTests.Fixtures;
+using Content.Shared.CMU14.CCVar;
+using Content.Shared.CMU14.Callsigns;
 using Content.Server.Station.Components;
 using Content.Server.Station.Systems;
 using Content.Shared.Corvax.CCCVars;
@@ -24,6 +26,7 @@ public sealed class GovforSpawnCrashRegressionTest : GameTest
         await Server.WaitAssertion(() =>
         {
             Server.ResolveDependency<IConfigurationManager>().SetCVar(CCCVars.TTSEnabled, ttsEnabled);
+            Server.ResolveDependency<IConfigurationManager>().SetCVar(AU14CCVars.NewCommsSystem, true);
             var profile = HumanoidCharacterProfile.DefaultWithSpecies().WithTTSVoice(CMUTTSVoiceSelection.RandomVoice);
             var station = Server.System<StationSystem>().InitializeNewStation(
                 new StationConfig { StationPrototype = "StandardUNMCWarship", StationComponentOverrides = new() },
@@ -34,6 +37,10 @@ public sealed class GovforSpawnCrashRegressionTest : GameTest
             var completed = new PlayerSpawnCompleteEvent(mob, ServerSession!, "AU14JobGOVFORSquadRifleman", true, true, 1, station, profile);
             SEntMan.EventBus.RaiseEvent(EventSource.Local, completed);
             Assert.That(SEntMan.GetComponent<SquadMemberComponent>(mob).Squad, Is.Not.Null);
+            var callsign = SEntMan.GetComponent<AU14CallsignComponent>(mob);
+            Assert.That(callsign.Faction, Is.EqualTo("govfor"));
+            Assert.That(callsign.Callsign, Is.Not.Empty);
+            Assert.That(callsign.Suffix, Is.Not.Empty);
             Assert.That(SEntMan.GetComponent<TTSComponent>(mob).VoicePrototypeId, Is.Not.EqualTo(CMUTTSVoiceSelection.RandomVoice));
         });
         await Pair.RunTicksSync(5);
