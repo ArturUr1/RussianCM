@@ -120,7 +120,7 @@ public sealed partial class CMURoundExtrasSystem : EntitySystem
             _greetingDone = true;
             _marineAnnounce.AnnounceARESStaging(
                 null,
-                "АРЕС работает в штатном режиме. Переход в режим ожидания с низким энергопотреблением завершен. Экипаж пробужден от транзитного криосна. Доброе утро.",
+                "APOLLO Nominal. Low-power standby concluded. Crew awakening from transit cryosleep. Good morning.",
                 GreetingAudio,
                 "rmc-announcement-ares-online");
         }
