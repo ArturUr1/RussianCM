@@ -1,7 +1,7 @@
 {
   "version": 1,
   "license": "CC-BY-SA-4.0",
-  "copyright": "'hubaruba' from Discord",
+  "copyright": "Sprites by github noctyrnal, wielded-inhand-left.png and wielded-inhand-right.png edited by CatAndHats (github)",
   "size": {
     "x": 32,
     "y": 32
@@ -24,6 +24,12 @@
     },
     {
       "name": "mag-0"
+    },
+    {
+      "name": "mag-1"
+    },
+    {
+      "name": "mag-2"
     },
     {
       "name": "wielded-inhand-left",
