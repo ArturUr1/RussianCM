@@ -1,118 +1,115 @@
-## Console Localization
-ent-RMCTechTreeConsoleGovfor = govfor tech tree console
-    .desc = A GovFor tech console used to make tech purchases for GovFor.
-ent-RMCTechTreeConsoleOpfor = opfor tech tree console
-    .desc = An OpFor tech console used to make tech purchases for OpFor.
-ent-RMCTechTreeConsoleCLF = CLF tech tree console
-    .desc = A CLF tech console used to make tech purchases for CLF.
+## Локализация консолей
+ent-RMCTechTreeConsoleGovfor = консоль древа технологий GOVFOR
+    .desc = Консоль технологий GOVFOR для изучения технологий фракции GOVFOR.
+ent-RMCTechTreeConsoleOpfor = консоль древа технологий OPFOR
+    .desc = Консоль технологий OPFOR для изучений технологий фракции OpFor.
+ent-RMCTechTreeConsoleCLF = консоль древа технологий КОФ
+    .desc = Консоль технологий КОФ для изучения технологий фракции КОФ.
 
-## Intel tree Localization
-ent-CMUIntelTechTree_GOVFOR = intel tech tree (GovFor)
-ent-CMUIntelTechTree_OPFOR = intel tech tree (OpFor)
-ent-CMUIntelTechTree_CLF = intel tech tree (CLF)
-ent-CMUIntelTechTree_UA = intel tech tree (UA)
+## Локализация intel-деревьев
+ent-CMUIntelTechTree_GOVFOR = древо разведданных (GOVFOR)
+ent-CMUIntelTechTree_OPFOR = древо разведданных (OPFOR)
+ent-CMUIntelTechTree_CLF = древо разведданных (КОФ)
+ent-CMUIntelTechTree_UA = древо разведданных (ОА)
 
-## Tech tiers
-cmu-tech-tier-one = Unlock Tier 1
-cmu-tech-tier-two = Unlock Tier 2
-cmu-tech-tier-three = Unlock Tier 3
-cmu-tech-tier-four = Unlock Tier 4
-cmu-tech-tier-unlock-desc = Transitions the tree to another tier.
+## Уровни технологий
+cmu-tech-tier-one = Разблокировать уровень 1
+cmu-tech-tier-two = Разблокировать уровень 2
+cmu-tech-tier-three = Разблокировать уровень 3
+cmu-tech-tier-four = Разблокировать уровень 4
+cmu-tech-tier-unlock-desc = Переводит древо на следующий уровень.
 
-## Announcement authors
-cmu-tech-author-intel-operations = INTEL OPERATIONS
-cmu-tech-author-special-assets = SPECIAL ASSETS AUTHORIZED
-cmu-tech-author-govfor-high-command = GOVFOR HIGH COMMAND
-cmu-tech-author-aegis-rnd = AEGIS R&D DIVISION
+## Авторы анонсов
+cmu-tech-author-intel-operations = РАЗВЕДОВАТЕЛЬНОЕ УПРАВЛЕНИЕ
+cmu-tech-author-special-assets = РАЗРЕШЕНИЕ СПЕЦИАЛЬНЫХ АКТИВОВ
+cmu-tech-author-govfor-high-command = ВЫСШЕЕ КОМАНДОВАНИЕ ГОВФОР
+cmu-tech-author-aegis-rnd = АЕГИС НАУЧНАЯ ДИВИЗИЯ
 
 ## GOVFOR
-cmu-tech-govfor-req-budget = Requisition Budget Increase
-cmu-tech-govfor-req-budget-desc = Distributes resources to requisitions for spending.
-cmu-tech-govfor-cmb-investigation = CMB Investigation Party
-cmu-tech-govfor-cmb-investigation-desc = Summon a CMB investigation party to the area.
-cmu-tech-govfor-k9-team = S&R K9 Team
-cmu-tech-govfor-k9-team-desc = Summon a search-and-rescue handler and their canine companion.
-cmu-tech-govfor-icrc-relief = ICRC Relief Party
-cmu-tech-govfor-icrc-relief-desc = Summon a Red Cross relief party. Neutral medics for everyone.
+cmu-tech-govfor-req-budget = Увеличение бюджета снабжения
+cmu-tech-govfor-req-budget-desc = Выделяет средства в снабжение для закупок.
+cmu-tech-govfor-cmb-investigation = Следственная группа БКМ
+cmu-tech-govfor-cmb-investigation-desc = Вызвать в район следственную группу БКМ.
+cmu-tech-govfor-k9-team = Поисково-спасательная группа K9
+cmu-tech-govfor-k9-team-desc = Вызвать поисково-спасательного кинолога с собакой.
+cmu-tech-govfor-icrc-relief = Группа помощи ICRC
+cmu-tech-govfor-icrc-relief-desc = Вызвать группу помощи Красного Креста. Нейтральные медики для всех.
 
-cmu-tech-govfor-cmb-parolee = CMB Parolee Transport
-cmu-tech-govfor-cmb-parolee-desc = Summon a CMB transport shuttle to take captured combatants off-world. Pairs with arrest objectives.
-cmu-tech-govfor-dropship-budget = Dropship Fabricator Budget
-cmu-tech-govfor-dropship-budget-desc = Distributes resources to the dropship part fabricator.
-cmu-tech-govfor-lacn-sniper = LACN Sniper Team
-cmu-tech-govfor-lacn-sniper-desc = Summon a LACN marksman team to provide overwatch.
+cmu-tech-govfor-cmb-parolee = Перевозка освобожденных по УДО
+cmu-tech-govfor-cmb-parolee-desc = Вызвать транспортный шаттл БКМ для вывоза захваченных комбатантов за пределы планеты. Работает в паре с целями на арест.
+cmu-tech-govfor-dropship-budget = Бюджет фабрикатора Дропшипа
+cmu-tech-govfor-dropship-budget-desc = Выделяет ресурсы фабрикатору деталей дропшипа.
+cmu-tech-govfor-lacn-sniper = Снайперская группа ЛАКН
+cmu-tech-govfor-lacn-sniper-desc = Вызвать группу снайперскую группу ЛАКН для прикрытия с дальней дистанции.
 
-cmu-tech-govfor-us-army-infantry = US Army Infantry Squad
-cmu-tech-govfor-us-army-infantry-desc = Summon a US Army infantry squad to reinforce the operation.
-cmu-tech-govfor-forecon = FORECON Kill Team
-cmu-tech-govfor-forecon-desc = Summon a FORECON kill team for direct action.
+cmu-tech-govfor-us-army-infantry = Пехотное отделение Армии ОА 
+cmu-tech-govfor-us-army-infantry-desc = Вызвать пехотное отделение Армии ОА для усиления операции.
+cmu-tech-govfor-forecon = Ударная группа ФОРЕКОН
+cmu-tech-govfor-forecon-desc = Вызвать ударную группу ФОРЕКОН для прямых действий.
 
-cmu-tech-govfor-prodigy-part = Prodigy Armed Repair Team Sierra
-cmu-tech-govfor-prodigy-part-desc = Summon a PART Sierra Squad to the area.
-cmu-tech-govfor-us-army-armored = US Army 32nd ArmDiv
-cmu-tech-govfor-us-army-armored-desc = Summon a squad from US Army 32nd Armored Division.
-cmu-tech-govfor-kraken = AEG-538-KRA "KRAKEN"
-cmu-tech-govfor-kraken-desc = AEGIS experimental phoron warhead, delivered to Requisitions via ASRS. Only purchasable 116 minutes into the operation.
+cmu-tech-govfor-prodigy-part = Вооружённая ремонтная команда Продиджи "Сьерра"
+cmu-tech-govfor-prodigy-part-desc = Вызвать отряд PART «Сьерра» в район операции.
+cmu-tech-govfor-us-army-armored = 32-я бронетанковая дивизия армии ОА
+cmu-tech-govfor-us-army-armored-desc = Вызвать отряд из 32-й бронетанковой дивизии Армии ОА.
+cmu-tech-govfor-kraken = AEG-538-KRA "КРАКЕН"
+cmu-tech-govfor-kraken-desc = Экспериментальная фороновая-боеголовка АЕГИС, доставляется в Поставки через ASRS. Доступна для покупки только через 116 минут после начала операции.
 
-## GOVFOR Announcements
-cmu-tech-govfor-req-budget-announce = Additional supply budget has been authorised for this operation.
-cmu-tech-govfor-cmb-investigation-announce = A CMB investigation party has been dispatched to investigate intel leads.
-cmu-tech-govfor-k9-team-announce = A search-and-rescue K9 team has been dispatched to aid with the operation.
-cmu-tech-govfor-icrc-relief-announce = An ICRC relief party has been dispatched to provide humanitarian aid.
+## Объявления GOVFOR
+cmu-tech-govfor-req-budget-announce = Для этой операции санкционирован дополнительный бюджет снабжения.
+cmu-tech-govfor-cmb-investigation-announce = Следственная группа БКм направлена для проверки разведданных.
+cmu-tech-govfor-k9-team-announce = Поисково-спасательная группа K9 направлена на помощь в операции.
+cmu-tech-govfor-icrc-relief-announce = Группа помощи ICRC направлена для оказания гуманитарной помощи.
 cmu-tech-govfor-tier-two-announce =
-    NOTICE: Effective immediately, readiness posture is LEVEL 2. Escalation authorisation has been approved. Section Two assets are cleared for deployment at commanding officer's discretion.
-    By order of GovFor High Command.
-
-cmu-tech-govfor-cmb-parolee-announce = A CMB parolee transport has been dispatched to process detainees.
-cmu-tech-govfor-dropship-budget-announce = Additional dropship part fabricator points have been authorised for this operation.
-cmu-tech-govfor-lacn-sniper-announce = A LACN sniper team has been dispatched to provide overwatch.
+    ВНИМАНИЕ: С этого момента уровень боевой готовности — УРОВЕНЬ 2. Санкционирована эскалация. Ресурсы второго эшелона готовы к развертыванию по усмотрению командира.
+    По приказу Высшего Командования ГОВФОР.
+cmu-tech-govfor-cmb-parolee-announce = Транспорт БКМ направлен для обработки задержанных.
+cmu-tech-govfor-dropship-budget-announce = Для этой операции санкционированы дополнительные очки фабрикатора деталей дропшипов.
+cmu-tech-govfor-lacn-sniper-announce = Снайперская группа ЛАКН направлена для прикрытия с дальней дистанции.
 cmu-tech-govfor-tier-three-announce =
-    GENERAL ORDER: Effective immediately, readiness posture is LEVEL 3. Theatre command has assessed hostile activity as a direct threat to the operational area. Additional forces have been committed. All units are to maintain discipline and hold assigned positions.
-    By order of Theatre Command.
-
-cmu-tech-govfor-us-army-infantry-announce = A US Army infantry squad has been dispatched to aid with the operation.
-cmu-tech-govfor-forecon-announce = A FORECON kill team has been dispatched to eliminate high-value targets.
+    ОБЩИЙ ПРИКАЗ: С этого момента уровень боеготовности — УРОВЕНЬ 3. Командование театра военных действий оценило действия противника как прямую угрозу району операции. Задействованы дополнительные силы. Всему личному составу соблюдать дисциплину и удерживать назначенные позиции.
+    По приказу командования театра военных действий.
+cmu-tech-govfor-us-army-infantry-announce = Пехотное взвод армии ОА направлен на помощь в операции.
+cmu-tech-govfor-forecon-announce = Ударная группа ФОРЕКОН направлена для ликвидации высокоприоритетных целей.
 cmu-tech-govfor-tier-four-announce =
-    PRIORITY NOTICE: READINESS POSTURE LEVEL 4. Theatre command has declared a critical situation in the operational area. All remaining assets are released. Weapons free. Evacuation may be authorised at the commanding officer's discretion.
-    By order of Theatre Command. God speed.
-
-cmu-tech-govfor-prodigy-part-announce = A Prodigy Armed Repair Team has been dispatched to aid with the operation.
-cmu-tech-govfor-us-army-armored-announce = A US Army 32nd Armored Division squad has been dispatched to aid with the operation.
-cmu-tech-govfor-kraken-announce = AEG-538-KRA has been authorised for deployment and will be delivered to the Requisitions Department, via ASRS. Handle with extreme care.
+    ПРИОРИТЕТНОЕ УВЕДОМЛЕНИЕ: УРОВЕНЬ БОЕГОТОВНОСТИ 4. Командование театра военных действий объявило в районе операции критическую ситуацию. Все оставшиеся средства высвобождены. Разрешено свободное применение оружия. Эвакуация может быть санкционирована по усмотрению командира.
+    По приказу командования театра военных действий. С Богом.
+cmu-tech-govfor-prodigy-part-announce = Вооруженный ремонтный отряд Продиджи направлен на помощь в операции.
+cmu-tech-govfor-us-army-armored-announce = Отряд из 32-й бронетанковой дивизии Армии ОА направлен на помощь в операции.
+cmu-tech-govfor-kraken-announce = AEG-538-KRA санкционирован к применению и будет доставлен в Снабжение через ASRS. Обращаться с предельной осторожностью.
 
 ## OPFOR
-cmu-tech-opfor-req-budget = Requisition Budget Increase
-cmu-tech-opfor-req-budget-desc = Distributes resources to requisitions for spending.
+cmu-tech-opfor-req-budget = Увеличение бюджета снабжения
+cmu-tech-opfor-req-budget-desc = Выделяет ресурсы снабжения для закупок.
 
-## OPFOR Announcements
-cmu-tech-opfor-req-budget-announce = Additional supply budget has been authorised for this operation.
+## Анонсы OPFOR
+cmu-tech-opfor-req-budget-announce = Для этой операции санкционирован дополнительный бюджет снабжения.
 
 ## CLF
-cmu-tech-clf-req-budget = Requisition Budget Increase
-cmu-tech-clf-req-budget-desc = Distributes resources to requisitions for spending.
-cmu-tech-clf-reinforcements = Insurgent Reinforcements
-cmu-tech-clf-reinforcements-desc = Summon reinforcements from a neighboring cell.
-cmu-tech-clf-machine-gunner = Machine Gunner
-cmu-tech-clf-machine-gunner-desc = Summon a machine gunner from a neighboring cell.
-cmu-tech-clf-vaiso = Call VAISO read on WY
-cmu-tech-clf-vaiso-desc = Send intel on local WY facility to VAISO, summoning them for a raid. They are not hostile to CLF but not required to help directly!
-cmu-tech-clf-commandos = Call CLF Commandos
-cmu-tech-clf-commandos-desc = Sends intel to CLF High command, summoning a team of CLF commandos to aid the cell
-cmu-tech-clf-prodigy-yankee = Call Prodigy Armed Repair Team Yankee
-cmu-tech-clf-prodigy-yankee-desc = Summon a PMC team from PART, specifically Yankee Squad, They are not hostile to CLF but not required to help directly!
+cmu-tech-clf-req-budget = Увеличение бюджета снабжения
+cmu-tech-clf-req-budget-desc = Выделяет ресурсы снабжения для закупок.
+cmu-tech-clf-reinforcements = Подкрепление повстанцев
+cmu-tech-clf-reinforcements-desc = Вызвать подкрепление из соседней ячейки.
+cmu-tech-clf-machine-gunner = Пулемётчик
+cmu-tech-clf-machine-gunner-desc = Вызвать пулемётчика из соседней ячейки.
+cmu-tech-clf-vaiso = Запросить рейд VAISO на Вейланд-Ютани
+cmu-tech-clf-vaiso-desc = Передать VAISO разведданные о местном объекте Вейланд-Ютани и вызвать их на рейд. Они не враждебны КОФу, но не обязаны помогать напрямую!
+cmu-tech-clf-commandos = Запросить коммандора КОФ
+cmu-tech-clf-commandos-desc = Отправляет разведданные высшему командованию КОФ, вызывая отряд спецназа КОФ на помощь ячейке.
+cmu-tech-clf-prodigy-yankee = Запрос вооружённой ремонтной бригады "Янки" Продиджи
+cmu-tech-clf-prodigy-yankee-desc = Запросите команду ЧВК из Продиджи, в частности отряд «Янки». Они не враждуют с CLF, но их помощь не требуется.
 
-## CLF Announcements
-cmu-tech-clf-prodigy-yankee-announce = A Prodigy Armed Repair Team has been dispatched to aid with the operation.
+## Анонсы CLF
+cmu-tech-clf-prodigy-yankee-announce = Отряд вооружённой ремонтной бригады Продиджи направлен на помощь в операции.
 
 ## UA
-cmu-tech-ua-req-budget = Requisition Budget Increase
-cmu-tech-ua-req-budget-desc = Distributes resources to requisitions for spending.
-cmu-tech-ua-us-army-armored = US Army 32nd ArmDiv reinforcements
-cmu-tech-ua-us-army-armored-desc = Summon a squad from US Army 32nd Armored Division.
-cmu-tech-ua-prodigy-yankee = Prodigy Armed Repair Team Yankee
-cmu-tech-ua-prodigy-yankee-desc = Summon a PMC team from PART, specifically Yankee Squad
+cmu-tech-ua-req-budget = Увеличение бюджета снабжения
+cmu-tech-ua-req-budget-desc = Выделяет ресурсы снабжения для закупок.
+cmu-tech-ua-us-army-armored = Подкрепление 32-й бронетанковой дивизии Армии ОА
+cmu-tech-ua-us-army-armored-desc = Вызвать отряд из 32-й бронетанковой дивизии Армии ОА.
+cmu-tech-ua-prodigy-yankee = Запрос вооружённой ремонтной бригады "Янки" Продиджи
+cmu-tech-ua-prodigy-yankee-desc = Вызвать группу ЧВК из PART, а именно отряд «Yankee».
 
-## UA Announcements
-cmu-tech-ua-req-budget-announce = Additional supply budget has been authorised for this operation.
-cmu-tech-ua-us-army-armored-announce = A US Army 32nd Armored Division squad has been dispatched to aid with the operation.
-cmu-tech-ua-prodigy-yankee-announce = A Prodigy Armed Repair Team has been dispatched to aid with the operation.
+## Анонсы UA
+cmu-tech-ua-req-budget-announce = Для этой операции санкционирован дополнительный бюджет снабжения.
+cmu-tech-ua-us-army-armored-announce = Отряд из 32-й бронетанковой дивизии Армии ОА направлен на помощь в операции.
+cmu-tech-ua-prodigy-yankee-announce = Отряд Запрос вооружённой ремонтной бригады Продиджи направлен на помощь в операции.
