@@ -12,6 +12,7 @@ ent-CMUPacketGrenadeElectroshock = упаковка электрошоковых
 
 ent-CMUPacketGrenadeElectroshockFilled = { ent-CMUPacketGrenadeElectroshock }
     .suffix = Заполнено
+    .desc = { ent-CMUPacketGrenadeElectroshock.desc }
 
 ent-CMUCrateGrenadesElectroshock = ящик электрошоковых гранат G2 (x6)
 
@@ -127,30 +128,35 @@ ent-CMUPacketGrenadeHEAP = упаковка гранат M38 HEAP
 
 ent-CMUPacketGrenadeHEAPFilled = { ent-CMUPacketGrenadeHEAP }
     .suffix = Заполнено
+    .desc = { ent-CMUPacketGrenadeHEAP.desc }
 
 ent-CMUPacketGrenadeBFAB = упаковка гранат M51A BFAB
     .desc = Содержит три гранаты M51A BFAB.
 
 ent-CMUPacketGrenadeBFABFilled = { ent-CMUPacketGrenadeBFAB }
     .suffix = Заполнено
+    .desc = { ent-CMUPacketGrenadeBFAB.desc }
 
 ent-CMUPacketGrenadeCanister = упаковка картечных гранат M108
     .desc = Содержит три картечные гранаты M108. Только для гранатомёта.
 
 ent-CMUPacketGrenadeCanisterFilled = { ent-CMUPacketGrenadeCanister }
     .suffix = Заполнено
+    .desc = { ent-CMUPacketGrenadeCanister.desc }
 
 ent-CMUPacketGrenadeSmokeGreen = упаковка гранат M47-G HSDP
     .desc = Содержит три зелёные сигнальные дымовые гранаты M47-G.
 
 ent-CMUPacketGrenadeSmokeGreenFilled = { ent-CMUPacketGrenadeSmokeGreen }
     .suffix = Заполнено
+    .desc = { ent-CMUPacketGrenadeSmokeGreen.desc }
 
 ent-CMUPacketGrenadeSmokeRed = упаковка гранат M47-R HSDP
     .desc = Содержит три красные сигнальные дымовые гранаты M47-R.
 
 ent-CMUPacketGrenadeSmokeRedFilled = { ent-CMUPacketGrenadeSmokeRed }
     .suffix = Заполнено
+    .desc = { ent-CMUPacketGrenadeSmokeRed.desc }
 
 ent-CMUCrateGrenadesBFAB = ящик гранат M51A BFAB (x6)
 
