@@ -12,6 +12,7 @@ using Content.Shared.CMU14.Threats.Mobs.CLF;
 using Content.Shared._RMC14.Deafness;
 using Content.Shared._RMC14.Marines;
 using Content.Shared._RMC14.Marines.Squads;
+using Content.Shared._RMC14.Tracker.SquadLeader;
 using Content.Shared.Chat;
 using Content.Shared.Examine;
 using Content.Shared.GameTicking;
@@ -275,11 +276,17 @@ public sealed partial class AU14CallsignSystem : EntitySystem
         }
         else
         {
-            callsign.Suffix = NextFreeNumber(callsign.Faction, squad, callsign.Group, callsign.Category, uid);
+            callsign.Suffix = NextFreeNumber(callsign.Faction, squad, callsign.Group, callsign.Category, FireteamNumber(uid), uid);
             callsign.RoleSuffix = false;
         }
 
         UpdateFullCallsign(uid, callsign);
+    }
+
+    // Fireteam indices are zero-based; members without a fireteam use the 1-N block.
+    private int FireteamNumber(EntityUid uid)
+    {
+        return CompOrNull<FireteamMemberComponent>(uid)?.Fireteam + 1 ?? 1;
     }
 
     private void UpdateFullCallsign(EntityUid uid, AU14CallsignComponent callsign)
