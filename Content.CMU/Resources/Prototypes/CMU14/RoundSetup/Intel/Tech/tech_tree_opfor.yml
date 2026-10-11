@@ -9,8 +9,8 @@
       options:
 # ├──[ Tier 0 ]──────────────────────────────────────────────────────┤
       -
-        - name: Unlock Tier 1
-          description: Transitions the tree to another tier.
+        - name: Разблокировать Уровень 1
+          description: Переходит к следующему уровню изучений.
           cost: 0
           events:
           - !type:TechUnlockTierEvent
@@ -20,8 +20,8 @@
             state: upgrade
 # ├──[ Tier 1: Requisition budget ]──────────────────────────────────┤
       -
-        - name: Requisition Budget Increase
-          description: Distributes resources to requisitions for spending.
+        - name: Увеличение бюджета на закупки
+          description: Распределяет ресурсы по заявкам на расходование.
           cost: 12
           increase: 3
           repurchasable: true
@@ -29,8 +29,8 @@
           - !type:TechRequisitionsBudgetEvent
             amount: 5000
           - !type:TechAnnounceEvent
-            author:  SPECIAL ASSETS AUTHORIZED
-            message: Additional supply budget has been authorised for this operation.
+            author:  СПЕЦИАЛЬНЫЕ РЕСУРСЫ УТВЕРЖДЕНЫ
+            message: Дополнительный бюджет на поставку был утверждён для этой операции.
           icon:
             sprite: _RMC14/Interface/tech_tree.rsi
             state: budget_req

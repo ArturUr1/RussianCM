@@ -1,7 +1,7 @@
 - type: entity
   parent: RMCIntelTechTree
   id: CMUIntelTechTree_CLF
-  name: intel tech tree (CLF)
+  name: разведовательное древо технологий (КОФ)
   categories: [ HideSpawnMenu ]
   components:
   - type: IntelTechTree
@@ -9,8 +9,8 @@
       options:
 # ├──[ Tier 0 ]──────────────────────────────────────────────────────┤
       -
-        - name: Unlock Tier 1
-          description: Transitions the tree to another tier.
+        - name: Разблокировать Уровень 1
+          description: Переходит к следующему уровню изучений.
           cost: 0
           events:
           - !type:TechUnlockTierEvent
@@ -20,8 +20,8 @@
             state: upgrade
 # ├──[ Tier 1: Cell support & reinforcements ]───────────────────────┤
       -
-        - name: Requisition Budget Increase
-          description: Distributes resources to requisitions for spending.
+        - name: Увеличение бюджета на закупки
+          description: Распределяет ресурсы для расходов на закупки.
           cost: 6
           increase: 2
           repurchasable: true
@@ -31,8 +31,8 @@
           icon:
             sprite: _RMC14/Interface/tech_tree.rsi
             state: budget_req
-        - name: Insurgent Reinforcements
-          description: Summon reinforcements from a neighboring cell.
+        - name: Подкрепление из числа повстанцев
+          description: Призывает подкрепление из соседней клетки.
           cost: 25
           increase: 6
           repurchasable: true
@@ -42,8 +42,8 @@
           icon:
             sprite: _RMC14/Interface/tech_tree.rsi
             state: beacon
-        - name: Machine Gunner
-          description: Summon a machine gunner from a neighboring cell.
+        - name: Подкрепление пулеметчиков
+          description: Призывает пулеметчика из соседней клетки.
           cost: 8
           repurchasable: false
           events:
@@ -52,8 +52,8 @@
           icon:
             sprite: _RMC14/Interface/tech_tree.rsi
             state: beacon
-        - name: Call VAISO read on WY
-          description: Send intel on local WY facility to VAISO, summoning them for a raid. They are not hostile to CLF but not required to help directly!
+        - name: Запросить рейд VAISO на Вейланд-Ютани
+          description: Отправить разведданные о Вейланд-Ютани, чтобы вызвать команду VAISO для осуществления рейда. Они не враждуют с КОФ, но не обязаны помогать напрямую!
           cost: 50
           repurchasable: false
           events:
@@ -62,8 +62,8 @@
           icon:
             sprite: _RMC14/Interface/tech_tree.rsi
             state: beacon
-        - name: Call CLF Commandos
-          description: Sends intel to CLF High command, summoning a team of CLF commandos to aid the cell
+        - name: Запросить Команндоров КОФ
+          description: Отправляет разведданные высшему командованию КОФ, вызывая отряд спецназа КОФ на помощь ячейке
           cost: 50
           repurchasable: false
           events:
@@ -72,16 +72,16 @@
           icon:
             sprite: _RMC14/Interface/tech_tree.rsi
             state: beacon
-        - name: Call Prodigy Armed Repair Team Yankee
-          description: Summon a PMC team from PART, specifically Yankee Squad, They are not hostile to CLF but not required to help directly!
+        - name: Запрос вооружённой ремонтной бригады "Янки" от Продиджи
+          description: Призовите команду ЧВК из Продиджи, в частности отряд «Янки». Они не враждуют с CLF, но их помощь не требуется.
           cost: 45
           repurchasable: false
           events:
           - !type:TechPartySpawnEvent
             thirdPartyId: ProdigyPARTY
           - !type:TechAnnounceEvent
-            author: INTEL OPERATIONS
-            message: A Prodigy Armed Repair Team has been dispatched to aid with the operation.
+            author: РАЗВЕДОВАТЕЛЬНОЕ УПРАВЛЕНИЕ
+            message: Бригада "Янки" от Продиджи была направлена для оказания помощи в операции.
           icon:
             sprite: _RMC14/Interface/tech_tree.rsi
             state: beacon
