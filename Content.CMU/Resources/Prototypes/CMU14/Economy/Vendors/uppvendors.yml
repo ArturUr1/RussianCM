@@ -537,9 +537,8 @@
     - name: Body Armor
       choices: { CMUPlatoonAirCrewVest: 1 }
       entries:
-      - id: AU14ArmorPilotFlakJacket
       - id: AU14ExternalWebbing
-      - id: RMCArmorVestSquad
+      - id: RuMCUPPArmorPilot
         amount: 2
     - name: Footwear
       choices: { CMUPlatoonAirCrewFootwear: 1 }

@@ -522,9 +522,8 @@
     - name: au14-vendor-section-body-armor
       choices: { CMUPlatoonAirCrewVest: 1 }
       entries:
-      - id: AU14ArmorPilotFlakJacket
+      - id: RuMCUPPArmorPilot
       - id: AU14ExternalWebbing
-      - id: RMCArmorVestSquad
         amount: 2
     - name: au14-vendor-section-footwear
       choices: { CMUPlatoonAirCrewFootwear: 1 }

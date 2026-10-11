@@ -45,31 +45,31 @@
 
 - type: entity
   parent: AU14UPPArmorMinimalistic
-  id: RuMCUPPArmorVDV_Pilot
-  name: VDV pilot armor vest
+  id: RuMCUPPArmorPilot
+  name: pilot armor vest
   description: Armor vest for airborne pilots and dropship crews. Reinforced against explosions and shrapnel, but lighter than standard infantry armor. Made for those who fly into the fire.
   components:
   - type: Sprite
     sprite: _RuMC14/Clothing/UPP/armor/armor_pilot.rsi
   - type: CMArmor
-    melee: 15
+    melee: 30
     bullet: 15
-    bio: 15
-    explosionArmor: 25
+    bio: 20
+    explosionArmor: 15
 
 - type: entity
-  parent: AU14UPPArmorMinimalistic
-  id: RuMCUPPArmorVDV_Crew
-  name: VDV crew armor vest
+  parent: AU14UPPArmor
+  id: RuMCUPPArmorCrew
+  name: crew armor vest
   description: Armor vest for airborne vehicle crews. Designed for tankers and drivers who need protection from explosions and shrapnel inside a vehicle. Light, practical, reliable.
   components:
   - type: Sprite
     sprite: _RuMC14/Clothing/UPP/armor/armor_crew.rsi
   - type: CMArmor
-    melee: 15
-    bullet: 15
-    bio: 15
-    explosionArmor: 25
+    melee: 25
+    bullet: 20
+    bio: 20
+    explosionArmor: 20
 
 - type: entity
   parent: AU14UPPArmor
