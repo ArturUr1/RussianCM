@@ -117,12 +117,23 @@
   name: SVAROG sniper rifle case
   description: Case for the sniper rifle SVAROG
   components:
-  - type: Item
-    size: Ginormous
   - type: Storage
     maxItemSize: Ginormous
     grid:
     - 0,0,13,7
+    whitelist:
+      tags:
+      - RMCVisorNightVision
+      - CMBackpackSniper
+      - RuMCSniperRifleSVAROG
+      - RuMCUPPNavalInfantryHeavyHelmet2
+      - RuMCUPPPouchMagazineLarge
+      - RuMcMagazineSniperRifleSVAROG
+      - RuMcMagazineSniperRifleSVAROGIncendiary
+      - RuMcMagazineSniperRifleSVAROGFlak
+      - AU14KitSpotter
+      - RMCVultureSpotterTripod
+      - RMCVultureSpotterScope
   - type: StorageFill
     contents:
     - id: RMCVisorNightVision
