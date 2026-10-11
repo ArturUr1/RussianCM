@@ -1,3 +1,4 @@
+using System.Globalization;
 using Content.Server.CMU14.Hearing;
 using Content.Server.CMU14.Radio;
 using Content.Server._RMC14.Marines.Roles.Ranks;
@@ -61,6 +62,11 @@ public sealed partial class AU14CallsignSystem : EntitySystem
     private readonly Dictionary<(string Faction, string Category), string> _categoryWords = new();
 
     private readonly List<(EntityUid Mob, LocId Prefix, LocId? Additional, GameTick Tick)> _prefixRestores = new();
+
+    // Scratch collections are rebuilt for every assignment, with no events raised
+    // between filling them and selecting a suffix.
+    private readonly HashSet<int> _takenNumbers = new();
+    private readonly HashSet<string> _takenSuffixes = new(StringComparer.OrdinalIgnoreCase);
 
     private bool _commsEnabled;
 
@@ -128,6 +134,8 @@ public sealed partial class AU14CallsignSystem : EntitySystem
         _groups.Clear();
         _categoryWords.Clear();
         _prefixRestores.Clear();
+        _takenNumbers.Clear();
+        _takenSuffixes.Clear();
     }
 
     private void OnCLFMemberStartup(Entity<CLFMemberComponent> ent, ref ComponentStartup args)
@@ -329,25 +337,94 @@ public sealed partial class AU14CallsignSystem : EntitySystem
         return Name(squad).ToUpperInvariant();
     }
 
-    private string NextFreeNumber(string faction, EntityUid? squad, string? group, string? category, EntityUid exclude)
+    internal string NextFreeNumber(string faction, EntityUid? squad, string? group, string? category, int fireteam, EntityUid exclude)
     {
-        // 01-09 are preferred job numbers in the game's radio data, not a military standard.
-        for (var n = 10;; n++)
+        _takenNumbers.Clear();
+        var prefix = $"{fireteam}-";
+        var query = EntityQueryEnumerator<AU14CallsignComponent>();
+        while (query.MoveNext(out var uid, out var callsign))
         {
-            var candidate = n.ToString("D2", System.Globalization.CultureInfo.InvariantCulture);
+            if (uid == exclude || !SharesElement(callsign, faction, squad, group, category)
+                || !callsign.Suffix.StartsWith(prefix, StringComparison.OrdinalIgnoreCase))
+            {
+                continue;
+            }
 
-            if (!SuffixTaken(faction, squad, group, category, candidate, exclude))
+            var number = callsign.Suffix.AsSpan(prefix.Length);
+            if (number.IsEmpty || number[0] < '1' || number[0] > '9')
+                continue;
+
+            // Parsing alone can accept trailing NULs. Only the exact decimal
+            // representation generated for a candidate occupies its number.
+            var asciiDigits = true;
+            for (var i = 1; i < number.Length; i++)
+            {
+                if (char.IsAsciiDigit(number[i]))
+                    continue;
+
+                asciiDigits = false;
+                break;
+            }
+
+            if (!asciiDigits || !int.TryParse(number, NumberStyles.None,
+                    CultureInfo.InvariantCulture, out var ordinal))
+            {
+                continue;
+            }
+
+            _takenNumbers.Add(ordinal);
+        }
+
+        for (var n = 1;; n++)
+        {
+            if (!_takenNumbers.Contains(n))
+                return $"{fireteam}-{n}";
+        }
+    }
+
+    internal string MakeUniqueSuffix(string faction, EntityUid? squad, string? group, string? category, string wanted, EntityUid exclude)
+    {
+        var taken = CollectTakenSuffixes(faction, squad, group, category, exclude);
+        if (!taken.Contains(wanted))
+            return wanted;
+
+        for (var n = 2;; n++)
+        {
+            var candidate = $"{wanted} {n}";
+
+            if (!taken.Contains(candidate))
                 return candidate;
         }
     }
 
-    private string MakeUniqueSuffix(string faction, EntityUid? squad, string? group, string? category, string wanted, EntityUid exclude)
+    private HashSet<string> CollectTakenSuffixes(string faction, EntityUid? squad, string? group, string? category, EntityUid exclude)
     {
-        if (AU14Callsigns.TryNormalizeNumber(wanted, out var number)
-            && !SuffixTaken(faction, squad, group, category, number, exclude))
-            return number;
+        _takenSuffixes.Clear();
+        var query = EntityQueryEnumerator<AU14CallsignComponent>();
+        while (query.MoveNext(out var uid, out var callsign))
+        {
+            if (uid != exclude && SharesElement(callsign, faction, squad, group, category))
+                _takenSuffixes.Add(callsign.Suffix);
+        }
 
-        return NextFreeNumber(faction, squad, group, category, exclude);
+        return _takenSuffixes;
+    }
+
+    private static bool SharesElement(AU14CallsignComponent other, string faction, EntityUid? squad, string? group, string? category)
+    {
+        if (other.Faction != faction ||
+            !string.Equals(other.Group, group, StringComparison.OrdinalIgnoreCase))
+        {
+            return false;
+        }
+
+        if (group == null &&
+            !string.Equals(other.Category, category, StringComparison.OrdinalIgnoreCase))
+        {
+            return false;
+        }
+
+        return group != null || category != null || other.Squad == squad;
     }
 
     // suffixes are unique within their element: a custom group when set, then the
@@ -361,19 +438,7 @@ public sealed partial class AU14CallsignSystem : EntitySystem
             if (uid == exclude)
                 continue;
 
-            if (other.Faction != faction ||
-                !string.Equals(other.Group, group, StringComparison.OrdinalIgnoreCase))
-            {
-                continue;
-            }
-
-            if (group == null &&
-                !string.Equals(other.Category, category, StringComparison.OrdinalIgnoreCase))
-            {
-                continue;
-            }
-
-            if (group == null && category == null && other.Squad != squad)
+            if (!SharesElement(other, faction, squad, group, category))
                 continue;
 
             if (string.Equals(other.Suffix, suffix, StringComparison.OrdinalIgnoreCase))
