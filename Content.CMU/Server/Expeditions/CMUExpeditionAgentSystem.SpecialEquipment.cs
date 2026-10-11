@@ -26,7 +26,7 @@ public sealed partial class CMUExpeditionAgentSystem
             agent.State is not (CMUExpeditionAgentState.Engage or CMUExpeditionAgentState.HoldAngle) ||
             _timing.CurTime - agent.LastHit < TimeSpan.FromSeconds(2) || agent.Target is not { } target ||
             !Visible(uid, target, agent.FireRange) || _transform.InRange(uid, target, 5) ||
-            !SafeShot(uid, agent, gun.Comp, Transform(target).Coordinates))
+            !SafeShot(uid, agent, gun, Transform(target).Coordinates))
             return;
         foreach (var slot in holder.Slots.Keys)
         {
@@ -39,7 +39,7 @@ public sealed partial class CMUExpeditionAgentSystem
             var deploy = new AttachableToggleStartedEvent(gun, uid, slot);
             RaiseLocalEvent(attachment, ref deploy);
             agent.BipodsDeployed++;
-            agent.WeaponDecision = "deploying-bipod";
+            agent.WeaponDecision = "bipod-deployment-requested";
         }
     }
 
