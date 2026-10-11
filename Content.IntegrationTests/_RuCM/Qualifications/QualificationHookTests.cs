@@ -191,10 +191,13 @@ public sealed class QualificationHookTests : GameTest
     }
 
     [Test]
+    // CMU14: await the actual async commit before asserting permission revocation.
     public async Task ManagementEuiEditsConfigurationAndRevokedAclImmediatelyRedactsPrivateView()
     {
         const string job = "AU14JobGOVFORSquadRifleman";
         Content.Server._RuCM.Qualifications.QualificationEui eui = null;
+        QualificationService service = null;
+        long committedRevision = 0;
         var selected = Guid.NewGuid(); var unrelated = Guid.NewGuid();
         await Server.WaitAssertion(() =>
         {
@@ -223,8 +226,10 @@ public sealed class QualificationHookTests : GameTest
             var system = Server.ResolveDependency<IEntityManager>().System<QualificationSystem>();
             var req = new QualificationRequest { Revision = system.Service.Snapshot().Revision, Reason = "test role requirement change",
                 Configuration = new() { Role = new RoleRequirement { JobId = job, MinimumLevel = MilitaryLevel.Enlisted } } };
+            service = system.Service; committedRevision = service.Revision + 1;
             eui.HandleMessage(new QualificationEuiRequest(QualificationAction.SaveRole, req));
         });
+        await PoolManager.WaitUntil(Server, () => service.Revision >= committedRevision);
         await Pair.RunTicksSync(10); await RunUntilSynced();
         await Server.WaitAssertion(() =>
         {
@@ -241,8 +246,10 @@ public sealed class QualificationHookTests : GameTest
         {
             var system = Server.ResolveDependency<IEntityManager>().System<QualificationSystem>();
             var req = new QualificationRequest { Revision = system.Service.Snapshot().Revision, Reason = "remove management ACL", Configuration = new() { Management = new() } };
+            committedRevision = service.Revision + 1;
             eui.HandleMessage(new QualificationEuiRequest(QualificationAction.SaveManagement, req));
         });
+        await PoolManager.WaitUntil(Server, () => service.Revision >= committedRevision);
         await Pair.RunTicksSync(10); await RunUntilSynced();
         await Server.WaitAssertion(() =>
         {

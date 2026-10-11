@@ -64,7 +64,7 @@ public sealed partial class QualificationSystem : EntitySystem
     private readonly Dictionary<Guid, Task> _nameLoads = new();
     private readonly System.Collections.Concurrent.ConcurrentQueue<(Guid Id, string Name)> _loadedNames = new();
     private readonly HashSet<Guid> _queriedNames = new();
-    private string _rosterSignature = "";
+    // private string _rosterSignature = ""; // CMU14: compare reusable roster entries.
     private float _rosterTimer;
 
     private static bool Online(ICommonSession session) => session.Status is SessionStatus.Connected or SessionStatus.InGame;
@@ -127,6 +127,9 @@ public sealed partial class QualificationSystem : EntitySystem
         SubscribeLocalEvent<PlayerSpawnCompleteEvent>(OnSpawnComplete);
         SubscribeLocalEvent<QualificationUiComponent, QualificationBoundRequest>(OnBoundRequest);
         SubscribeLocalEvent<QualificationUiComponent, BoundUserInterfaceMessageAttempt>(OnBoundAttempt);
+        // CMU14: closed/deleted record windows no longer trigger background view generation.
+        SubscribeLocalEvent<QualificationUiComponent, BoundUIClosedEvent>(OnQualificationUiClosed);
+        SubscribeLocalEvent<QualificationUiComponent, ComponentShutdown>(OnQualificationUiShutdown);
         var repository = QualificationRepositoryFactory.Create(_cfg, _resources.UserData.RootDir);
         _historicalScanner = CMUHistoricalQualificationScanner.Create(_cfg, _resources.UserData.RootDir); // CMU14
         _refreshStorage = repository != null;
@@ -168,15 +171,13 @@ public sealed partial class QualificationSystem : EntitySystem
         catch { _log.Fatal("RuCM qualifications seed/storage initialization failed. Existing jobs continue under configured failure policy."); }
     }
 
+    // CMU14 method: compare the roster without GUID strings/sorting and reuse completed-name buffers.
     public override void Update(float frameTime)
     {
         base.Update(frameTime);
         UpdateEntryPoints(frameTime);
         var namesChanged = false;
-        foreach (var (id, load) in _nameLoads.Where(p => p.Value.IsCompleted).ToArray())
-        {
-            _nameLoads.Remove(id);
-        }
+        RemoveCompletedNameLoads();
         while (_loadedNames.TryDequeue(out var loadedName))
         { _accountNames[loadedName.Id] = loadedName.Name; namesChanged = true; }
         _rosterTimer -= frameTime;
@@ -184,8 +185,7 @@ public sealed partial class QualificationSystem : EntitySystem
         if (_rosterTimer <= 0 && (_open.Count > 0 || _boundTargets.Count > 0))
         {
             _rosterTimer = 1;
-            var roster = string.Join("|", _players.Sessions.OrderBy(p => p.UserId.ToString()).Select(p => $"{p.UserId}:{p.Name}:{p.Status}:{p.AttachedEntity}"));
-            rosterChanged = roster != _rosterSignature; _rosterSignature = roster;
+            rosterChanged = ViewRosterChanged();
         }
         if (namesChanged || rosterChanged) RefreshOpenViews();
         if (_running is { IsCompleted: true })
@@ -214,6 +214,7 @@ public sealed partial class QualificationSystem : EntitySystem
         }
     }
 
+    // CMU14 method: admission polling doesn't allocate missing-requirement DTOs.
     public bool CanTakeJob(Guid player, string job)
     {
         // Initial training must remain reachable even when qualification storage is unavailable.
@@ -223,7 +224,7 @@ public sealed partial class QualificationSystem : EntitySystem
         if (Mode == QualificationMode.Disabled || !ProtoMan.TryIndex<JobPrototype>(job, out var prototype) || prototype.RoundSide != RoundJobSide.Govfor || prototype.IsSynthetic) return true;
         // Instructor admission requires positive rank/accreditation evidence, even in fail-open mode.
         if (Mode == QualificationMode.Enforce && QualificationRules.IsDrillInstructor(job))
-            return _ready && Service.CanTakeJob(player, job).Allowed;
+            return _ready && Service.IsJobAllowed(player, job);
         if (!_ready) return _cfg.GetCVar(QualificationCVars.FailOpen);
         if (!Service.IsRoleEnabled(job)) return true;
         if (Service.Available) _warnedUnavailable = false;
@@ -232,7 +233,7 @@ public sealed partial class QualificationSystem : EntitySystem
             if (!_warnedUnavailable) { _warnedUnavailable = true; _log.Fatal("RuCM qualification gate has no cached user data; following configured failure policy."); }
             return _cfg.GetCVar(QualificationCVars.FailOpen);
         }
-        return Mode != QualificationMode.Enforce || Service.CanTakeJob(player, job).Allowed;
+        return Mode != QualificationMode.Enforce || Service.IsJobAllowed(player, job);
     }
     private void OnCandidates(ref StationJobsGetCandidatesEvent ev)
     { SynchronizeRolePolicy(); var player = ev.Player; if (Mode == QualificationMode.Enforce) ev.Jobs.RemoveAll(j => !CanTakeJob(player.UserId, j.Id)); }
@@ -261,11 +262,12 @@ public sealed partial class QualificationSystem : EntitySystem
         Log.Warning($"RuCM qualifications job violation: player={ev.Player.UserId}, job={ev.JobId}, mode={Mode}");
         if (Mode == QualificationMode.Enforce) ev.JobId = null;
     }
+    // CMU14 method: reading a display name does not require a full historical snapshot.
     private string DisplayQualification(string id)
     {
-        var definition = Service.Snapshot().Definitions.GetValueOrDefault(id);
+        var definition = Service.GetDefinitionName(id);
         if (id == "instructor_accreditation") return Loc.GetString("rucm-qualifications-instructor-accreditation");
-        return definition == null ? id : Loc.TryGetString(definition.Name, out var name) ? name : definition.Name;
+        return definition == null ? id : Loc.TryGetString(definition, out var name) ? name : definition;
     }
     private void OnSpawnComplete(PlayerSpawnCompleteEvent ev)
     {
@@ -332,11 +334,12 @@ public sealed partial class QualificationSystem : EntitySystem
         });
     }
 
+    // CMU14 method: filter the selected record before copying editable data.
     public QualificationView View(ICommonSession player, Guid target, string error = "")
     {
         var actor = Authority(player);
         var manager = Service.IsManagement(actor);
-        var s = Service.Snapshot();
+        var s = Service.RecordSnapshot(actor, ref target);
         var accreditation = s.Instructors.GetValueOrDefault(player.UserId);
         var instructor = accreditation is { Active: true } || IsDrillInstructor(actor);
         if (!manager && !instructor && !actor.CurrentOfficer && !actor.CurrentCo) target = player.UserId;
@@ -348,12 +351,6 @@ public sealed partial class QualificationSystem : EntitySystem
         if (manager)
         {
             result.Store = s; result.Metrics = Service.Metrics();
-            // Send only the selected player's private history, not the entire player database.
-            result.Store.Players = s.Players.Where(p => p.Key == target).ToDictionary(p => p.Key, p => p.Value);
-            result.Store.Notes = s.Notes.Where(n => n.Target == target).ToList();
-            result.Store.Suspensions = s.Suspensions.Where(x => x.Target == target || x.Status == "pending").ToList();
-            result.Store.Audit = s.Audit.Where(a => a.Target == target || a.Target == null).TakeLast(100).ToList();
-            result.Store.Participation.Clear();
             if (_previews.TryGetValue(player.UserId, out var preview))
             { result.PreviewToken = preview.Token; result.Preview = new() { Counts = preview.Plan.Grants.Values.SelectMany(x => x).GroupBy(x => x).ToDictionary(g => g.Key, g => g.Count()), Records = preview.Plan.Grants.Sum(x => x.Value.Count), AccountsScanned = preview.Plan.AccountsScanned, PlayersReceiving = preview.Plan.Grants.Count, Completed = s.Migrations.Contains(QualificationService.MigrationKey) }; }
         }
@@ -372,6 +369,7 @@ public sealed partial class QualificationSystem : EntitySystem
         if (manager || instructor || actor.CurrentOfficer || actor.CurrentCo)
             foreach (var online in _players.Sessions.Where(Online)) result.OnlinePlayers[online.UserId] = online.Name;
         AddAccountNames(result);
+        _training.Decorate(result, player); // CMU14: permission-filtered, nonpersistent training roster.
         return result;
     }
 
@@ -428,7 +426,7 @@ public sealed partial class QualificationSystem : EntitySystem
             // Snapshot requests before queueing, retaining the existing size/rate/permission checks.
             json = JsonSerializer.Serialize(new QualificationRequest
             {
-                RequestId = request.RequestId, Target = request.Target, TargetName = request.TargetName, Qualification = request.Qualification, Item = request.Item, Reason = request.Reason,
+                RequestId = request.RequestId, Target = request.Target, Instructor = request.Instructor, TargetName = request.TargetName, Qualification = request.Qualification, Item = request.Item, Reason = request.Reason, // CMU14
                 Suspension = request.Suspension, Revision = request.Revision, Payload = payload, PreviewToken = request.PreviewToken
             });
         }
@@ -436,6 +434,7 @@ public sealed partial class QualificationSystem : EntitySystem
         Submit(player, action, json, done, selected);
     }
 
+    // CMU14 method: authorization reads only the relevant accreditation/suspension.
     public void Submit(ICommonSession player, QualificationAction action, string json, Action<string> done, Action<Guid>? selected = null)
     {
         var now = DateTimeOffset.UtcNow;
@@ -452,6 +451,14 @@ public sealed partial class QualificationSystem : EntitySystem
                 if (request.TargetName is null || request.TargetName.Length > 128 || request.Qualification is null || request.Item is null || request.Reason is null || request.Payload is null || request.PreviewToken is null || request.Qualification.Length > 64 || request.Item.Length > 64 || request.Reason.Length > 2000)
                     throw new QualificationValidationException("request");
                 var authority = Authority(player);
+                // CMU14 Training Begin: use the existing authoritative, rate-limited queue.
+                if (action is QualificationAction.TrainingAssign or QualificationAction.TrainingRelease or
+                    QualificationAction.TrainingStart or QualificationAction.TrainingFinish or QualificationAction.TrainingTrack)
+                {
+                    done(_training.Apply(player, action, request));
+                    return;
+                }
+                // CMU14 End
                 if (action == QualificationAction.View)
                 {
                     Guid? resolvedTarget = null;
@@ -462,7 +469,7 @@ public sealed partial class QualificationSystem : EntitySystem
                         {
                             var target = request.Target == Guid.Empty ? (Guid) player.UserId : request.Target;
                             var manager = Service.IsManagement(authority);
-                            var instructor = Service.Snapshot().Instructors.GetValueOrDefault(player.UserId) is { Active: true } || IsDrillInstructor(authority);
+                            var instructor = Service.IsActiveInstructor(player.UserId) || IsDrillInstructor(authority);
                             if (!manager && !instructor && !authority.CurrentOfficer && !authority.CurrentCo &&
                                 (target != player.UserId || request.TargetName.Length > 0)) throw new QualificationPermissionException();
                             if (request.TargetName.Trim() is { Length: > 0 } nickname)
@@ -511,17 +518,27 @@ public sealed partial class QualificationSystem : EntitySystem
                     if (IsSynthetic(request.Target)) throw new QualificationValidationException("synthetic_excluded");
                 if (action == QualificationAction.Complete || action == QualificationAction.Certify || action == QualificationAction.Note)
                 {
+                    // CMU14: checklist progress cannot retain gameplay access or train another instructor's recruit.
+                    if (_players.TryGetSessionById(new NetUserId(request.Target), out var recruitSession) &&
+                        recruitSession.AttachedEntity is { } recruit && _training.IsRecruit(recruit))
+                    {
+                        if (!Service.IsManagement(authority) &&
+                            (player.AttachedEntity is not { } teacher || !_training.Owns(teacher, recruit)))
+                            throw new QualificationPermissionException();
+                        if (action == QualificationAction.Complete)
+                            _training.Finish(request.Target, "checklist step completed");
+                    }
                     if (!Service.IsManagement(authority))
                     {
-                        if (!authority.CurrentParticipant || Service.Snapshot().Instructors.GetValueOrDefault(player.UserId) is not { Active: true }) throw new QualificationPermissionException();
+                        if (!authority.CurrentParticipant || !Service.IsActiveInstructor(player.UserId)) throw new QualificationPermissionException();
                         // Check live sessions immediately before the authoritative mutation, never trust UI flags.
                         if (!TargetOnline(request.Target)) throw new QualificationValidationException("target_offline");
                     }
                 }
                 if (action == QualificationAction.ConfirmSuspension)
                 {
-                    var pending = Service.Snapshot().Suspensions.SingleOrDefault(s => s.Id == request.Suspension);
-                    var initiator = _players.Sessions.FirstOrDefault(p => p.UserId == pending?.Initiator.Actor);
+                    var initiatorId = Service.GetSuspensionInitiator(request.Suspension);
+                    var initiator = _players.Sessions.FirstOrDefault(p => p.UserId == initiatorId);
                     if (initiator == null || !Authority(initiator).CurrentOfficer) throw new QualificationPermissionException();
                     authority = Authority(player, initiator.UserId);
                 }

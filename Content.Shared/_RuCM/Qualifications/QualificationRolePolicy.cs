@@ -26,7 +26,13 @@ public sealed partial class QualificationRolePolicy : EntitySystem
     public Dictionary<string, HashSet<JobRequirement>> BaseRequirements => _baseRequirements;
     public override void Initialize()
     { base.Initialize(); ProtoMan.PrototypesReloaded += OnReload; }
-    private void OnReload(PrototypesReloadedEventArgs _) { _renamed = false; _active = false; _signature = ""; }
+    public int PrototypeRevision { get; private set; } // CMU14: server cache invalidation.
+    // CMU14 method: replacing prototypes invalidates server policy caches.
+    private void OnReload(PrototypesReloadedEventArgs _)
+    {
+        _renamed = false; _active = false; _signature = "";
+        PrototypeRevision++;
+    }
     public override void Shutdown()
     { SetInstructorWhitelists(false); ProtoMan.PrototypesReloaded -= OnReload; base.Shutdown(); }
     private static readonly string[] InstructorJobs =

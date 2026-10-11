@@ -71,13 +71,21 @@ public sealed partial class QualificationService
         finally { _mutations.Release(); }
     }
 
+    // CMU14 method: poll only the revision until another process publishes a new store.
     public async Task Refresh()
     {
         if (!_loaded) { await Initialize(_seed); return; }
         await _mutations.WaitAsync();
         try
         {
-            var loaded = await _repository.Load() ?? throw new QualificationValidationException("storage");
+            QualificationStore? loaded;
+            if (_repository is ICMUQualificationRefreshRepository versioned)
+            {
+                loaded = await versioned.LoadIfChanged(Revision);
+                if (loaded == null) { Available = true; return; }
+            }
+            else
+                loaded = await _repository.Load() ?? throw new QualificationValidationException("storage");
             ApplyPrototypeFacts(loaded);
             Volatile.Write(ref _cache, loaded); Available = true;
         }
@@ -110,18 +118,21 @@ public sealed partial class QualificationService
     }
 
     public bool HasCachedPlayer(Guid player) => Volatile.Read(ref _cache).Players.ContainsKey(player);
-    public PlayerTrainingState? GetPlayerTrainingState(Guid player) => Snapshot().Players.GetValueOrDefault(player);
+    public PlayerTrainingState? GetPlayerTrainingState(Guid player) => PlayerSnapshot(player); // CMU14: copy one record.
 
     public bool IsManagement(QualificationAuthority actor, QualificationStore? store = null) =>
         actor.Administrator || actor.Management || (store ?? Volatile.Read(ref _cache)).Management.Contains(actor.Context.Actor);
     private bool CanTrain(QualificationAuthority actor, QualificationStore store, string id) => IsManagement(actor, store) ||
         actor.CurrentParticipant && QualificationRules.CanTrain(store.Instructors.GetValueOrDefault(actor.Context.Actor), id);
 
+    // CMU14 method: take ownership of an existing history before modifying the unpublished store.
     private static PlayerTrainingState Player(QualificationStore store, Guid target, DateTimeOffset at)
     {
         if (target == Guid.Empty) throw new QualificationValidationException("target");
         if (!store.Players.TryGetValue(target, out var player))
             store.Players.Add(target, player = new PlayerTrainingState { Player = target, FirstTrainingAt = at });
+        else
+            store.Players[target] = player = ClonePlayer(player);
         return player;
     }
     private static void Reason(string text)
@@ -129,7 +140,11 @@ public sealed partial class QualificationService
     private static void Id(string id)
     { if (!Regex.IsMatch(id, "^[a-z][a-z0-9_]{0,63}$")) throw new QualificationValidationException("id"); }
 
-    public async Task Apply(QualificationAuthority actor, QualificationAction action, QualificationRequest request)
+    // CMU14 methods: copy/serialize persistent state off the simulation thread, even with a warm DB connection.
+    public Task Apply(QualificationAuthority actor, QualificationAction action, QualificationRequest request) =>
+        Task.Run(() => ApplyCore(actor, action, request));
+
+    private async Task ApplyCore(QualificationAuthority actor, QualificationAction action, QualificationRequest request)
     {
         if (request.Qualification is null || request.Item is null || request.Reason is null || request.Payload is null)
             throw new QualificationValidationException("request");
@@ -139,7 +154,7 @@ public sealed partial class QualificationService
         {
             if (!_loaded) throw new QualificationValidationException("storage");
             var current = Volatile.Read(ref _cache);
-            var next = current.Clone();
+            var next = CloneForMutation(current); // CMU14: don't deep-copy untouched player histories.
             var context = actor.Context;
             var manager = IsManagement(actor, next);
             var training = CanTrain(actor, next, request.Qualification);
@@ -203,7 +218,9 @@ public sealed partial class QualificationService
                     if (!manager && !actor.CurrentCo && !actor.CurrentOfficer) throw new QualificationPermissionException();
                     if (request.Target == context.Actor) throw new QualificationPermissionException();
                     Reason(request.Reason);
-                    if (!next.Players.TryGetValue(request.Target, out var recruit)) throw new QualificationValidationException("target");
+                    // CMU14: reset must also own its target before revoking grants/clearing progress.
+                    if (!next.Players.ContainsKey(request.Target)) throw new QualificationValidationException("target");
+                    var recruit = Player(next, request.Target, context.At);
                     request.Qualification = "recruit";
                     if (manager || actor.CurrentCo)
                         ResetToRecruit(next, recruit, context, request.Reason);
@@ -286,7 +303,7 @@ public sealed partial class QualificationService
             next.Audit.Add(new(Guid.NewGuid(), action.ToString(), context.Actor, request.Target == Guid.Empty ? null : request.Target,
                 context.At, context.Round, context.Server, oldState, newState, request.Reason, metadata));
             next.Revision = current.Revision + 1;
-            await _repository.Save(next, current.Revision);
+            await PersistChanges(next, current); // CMU14: only owned player projections and appended history.
             Volatile.Write(ref _cache, next);
             Available = true;
             var eventAction = action == QualificationAction.Suspend && next.Suspensions.Last().Status == "pending" ? "SuspensionRequested" : action.ToString();
@@ -397,9 +414,11 @@ public sealed partial class QualificationService
         }
     }
 
-    public Dictionary<string, double> Metrics()
+    // CMU14 methods: calculate once per published store, return an independent dictionary to each view.
+    public Dictionary<string, double> Metrics() => CachedMetrics();
+
+    private static Dictionary<string, double> ComputeMetrics(QualificationStore s)
     {
-        var s = Volatile.Read(ref _cache);
         var result = new Dictionary<string, double>();
         foreach (var level in Enum.GetValues<MilitaryLevel>()) result["level_" + level] = s.Players.Values.Count(p => QualificationRules.EffectiveLevel(p) == level);
         foreach (var id in s.Definitions.Keys.Except(QualificationRules.Levels))
