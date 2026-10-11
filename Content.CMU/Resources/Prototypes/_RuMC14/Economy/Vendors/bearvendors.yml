@@ -1438,12 +1438,14 @@
         amount: 30
       - id: CMUFieldGasTankOxygenFilled
         amount: 15
-    - name: au14-vendor-section-headgear
+    - name: Garment
       entries:
       - id: RuMCUPPNavalInfantryHeavyHelmet
         amount: 2
       - id: RuMCUPPNavalInfantryHeavyHelmet2
         amount: 4
+      - id: RuMCUPPArmorCrew
+        amount: 10
     - name: Radio Equipment
       entries:
       - id: ANPRC117GRadio
