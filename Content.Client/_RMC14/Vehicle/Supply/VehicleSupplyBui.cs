@@ -382,6 +382,7 @@ public sealed class VehicleSupplyBui : BoundUserInterface
             VehicleSupplyLiftMode.Lowering => Loc.GetString("cmu-vehicle-supply-lift-lowering"),
             VehicleSupplyLiftMode.Raising => Loc.GetString("cmu-vehicle-supply-lift-raising"),
             VehicleSupplyLiftMode.Preparing => Loc.GetString("cmu-vehicle-supply-lift-preparing"),
+            _ => mode.Value.ToString(),
         };
     }
     // CMU14 End
