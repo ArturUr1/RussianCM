@@ -8,6 +8,8 @@ public sealed partial class CMUExpeditionAgentComponent
 {
     [DataField] public int Squad;
     [DataField] public bool PlanningEnabled = true;
+    [DataField] public TimeSpan MagazineReloadDuration = TimeSpan.FromSeconds(0.8);
+    [DataField] public TimeSpan ShellReloadDuration = TimeSpan.FromSeconds(0.3);
     public CMUTacticalGoal Goal;
     public Queue<CMUTacticalAction> Plan = new();
     public CMUTacticalAction? Action;
@@ -90,6 +92,10 @@ public sealed partial class CMUExpeditionAgentComponent
     public float LearnedFlankCost = 1;
     public float LearnedDangerCost = 1;
     public bool LearningLoaded;
+    public TimeSpan NextExperienceRefresh;
+    public string ExperienceGroup = "baseline";
+    public int ExperienceSamples;
+    public bool PeekOutcomeRecorded;
     public float ActionInitialDamage;
     public float PeekInitialDamage;
     public bool LastMoveFailed;

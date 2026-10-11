@@ -64,12 +64,12 @@ public sealed partial class HumanoidProfileEditor
 
     public void RefreshLoadouts()
     {
-        _loadoutWindow?.Dispose();
+        _loadoutWindow?.Release();
     }
 
     private void OpenLoadout(JobPrototype jobProto, RoleLoadout roleLoadout, RoleLoadoutPrototype roleLoadoutProto)
     {
-        _loadoutWindow?.Dispose();
+        _loadoutWindow?.Release();
         _loadoutWindow = null;
         var collection = IoCManager.Instance;
 
@@ -256,7 +256,7 @@ public sealed partial class HumanoidProfileEditor
     public void RefreshJobs()
     {
         foreach (var list in GetGamemodeJobLists())
-            list.DisposeAllChildren();
+            list.ReleaseChildren();
 
         _jobCategories.Clear();
         _jobPriorities.Clear();
@@ -741,9 +741,9 @@ public sealed partial class HumanoidProfileEditor
 
     public void RefreshAntags()
     {
-        InsurgencyAntagList.DisposeAllChildren();
-        ColonyAntagList.DisposeAllChildren();
-        DistressAntagList.DisposeAllChildren();
+        InsurgencyAntagList.ReleaseChildren();
+        ColonyAntagList.ReleaseChildren();
+        DistressAntagList.ReleaseChildren();
         _antagPreferences.Clear();
 
         PopulateAntagPreferences(InsurgencyAntagList, GamemodeInsurgency);
@@ -894,7 +894,7 @@ public sealed partial class HumanoidProfileEditor
 
             platoonOptions.Add(new PlatoonRankOptions(
                 platoon.ID,
-                platoon.Name,
+                Loc.GetString(platoon.Name), // CMU14: Hardcode localization
                 platoon.PlatoonPatch,
                 ranks));
         }
