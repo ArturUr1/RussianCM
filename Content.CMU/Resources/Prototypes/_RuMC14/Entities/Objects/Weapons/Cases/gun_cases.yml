@@ -127,7 +127,7 @@
     contents:
     - id: RMCVisorNightVision
     - id: CMBackpackSniper
-    - id: RuMcSniperRifleSVAROG
+    - id: RuMCSniperRifleSVAROG
     - id: RuMCUPPNavalInfantryHeavyHelmet2
     - id: RuMCUPPPouchMagazineLarge
       amount: 2
