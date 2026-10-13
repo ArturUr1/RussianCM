@@ -150,6 +150,18 @@
           icon:
             sprite: _RMC14/Interface/tech_tree.rsi
             state: marine
+        - name: cmu-tech-govfor-bear
+          description: cmu-tech-govfor-bear-desc  
+          cost: 27
+          events:
+          - !type:TechPartySpawnEvent
+            thirdPartyId: CHTORM_PMC_BEAR
+          - !type:TechAnnounceEvent
+            author: cmu-tech-author-intel-operations
+            message: cmu-tech-govfor-bear-announce
+          icon:
+            sprite: _RMC14/Interface/tech_tree.rsi
+            state: medic_qol
         - name: cmu-tech-govfor-forecon
           description: cmu-tech-govfor-forecon-desc
           cost: 30

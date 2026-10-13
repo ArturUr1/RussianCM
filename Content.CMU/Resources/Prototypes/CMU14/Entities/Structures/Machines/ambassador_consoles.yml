@@ -58,8 +58,8 @@
     replenishAmount: 10
     replenishInterval: 60
     callableParties:
-      UPPGROM: 7500
-      UPPGROMAlt: 6000
+      #UPPGROM: 7500
+      #UPPGROMAlt: 6000
       UPPGROMAlt2: 4500
       CHTORM_PMC_BEAR: 7500
       GROZA_PMC_BEAR: 6000

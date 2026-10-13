@@ -522,9 +522,8 @@
     - name: au14-vendor-section-body-armor
       choices: { CMUPlatoonAirCrewVest: 1 }
       entries:
-      - id: AU14ArmorPilotFlakJacket
+      - id: RuMCUPPArmorPilot
       - id: AU14ExternalWebbing
-      - id: RMCArmorVestSquad
         amount: 2
     - name: au14-vendor-section-footwear
       choices: { CMUPlatoonAirCrewFootwear: 1 }
@@ -729,10 +728,6 @@
         amount: 15
       - id: CMHeadCapSPPUshankaCivilian
         amount: 2
-    - name: au14-vendor-section-backpack
-      entries:
-      - id: RMCBackpackRTOSPP
-        amount: 5
     - name: au14-vendor-section-pouches
       entries:
       - id: AU14PouchCommandFill
@@ -1439,12 +1434,14 @@
         amount: 30
       - id: CMUFieldGasTankOxygenFilled
         amount: 15
-    - name: au14-vendor-section-headgear
+    - name: Garment
       entries:
       - id: RuMCUPPNavalInfantryHeavyHelmet
         amount: 2
       - id: RuMCUPPNavalInfantryHeavyHelmet2
         amount: 4
+      - id: RuMCUPPArmorCrew
+        amount: 10
     - name: Radio Equipment
       entries:
       - id: ANPRC117GRadio

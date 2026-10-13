@@ -46,6 +46,8 @@ cmu-tech-govfor-us-army-infantry = Пехотное отделение Арми�
 cmu-tech-govfor-us-army-infantry-desc = Вызвать пехотное отделение Армии США для усиления операции.
 cmu-tech-govfor-forecon = Ударная группа ФОРЕКОН
 cmu-tech-govfor-forecon-desc = Вызвать ударную группу ФОРЕКОН для прямых действий.
+cmu-tech-govfor-bear = ЧВК "BEAR"
+cmu-tech-govfor-bear-desc = Отряд ЧВК "BEAR" отправляется в самые горячие точки мира, готовые убивать за деньги!
 
 cmu-tech-govfor-prodigy-part = Вооружённая ремонтная команда Продиджи "Сьерра"
 cmu-tech-govfor-prodigy-part-desc = Вызвать отряд PART «Сьерра» в район операции.
@@ -76,6 +78,7 @@ cmu-tech-govfor-tier-four-announce =
 cmu-tech-govfor-prodigy-part-announce = Вооруженный ремонтный отряд Продиджи направлен на помощь в операции.
 cmu-tech-govfor-us-army-armored-announce = Отделение 32-й бронетанковой дивизии армии США направлено на помощь в операции. 
 cmu-tech-govfor-kraken-announce = AEG-538-KRA санкционирован к применению и будет доставлен в Снабжение через ASRS. Обращаться с предельной осторожностью.
+cmu-tech-govfor-bear-announce = Отряд наёмником "BEAR" скоро прибудет.
 
 ## OPFOR
 cmu-tech-opfor-req-budget = Увеличение бюджета снабжения
