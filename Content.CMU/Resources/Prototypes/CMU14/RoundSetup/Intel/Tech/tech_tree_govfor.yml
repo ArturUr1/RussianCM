@@ -154,6 +154,18 @@
           icon:
             sprite: _RMC14/Interface/tech_tree.rsi
             state: marine
+        - name: PMC BEAR
+          description: The PMC BEAR group is heading to the world’s hottest spots, ready to kill anyone for money!
+          cost: 27
+          events:
+          - !type:TechPartySpawnEvent
+            thirdPartyId: CHTORM_PMC_BEAR
+          - !type:TechAnnounceEvent
+            author: INTEL OPERATIONS
+            message: The BEAR mercenary unit will be arriving soon.
+          icon:
+            sprite: _RMC14/Interface/tech_tree.rsi
+            state: medic_qol
         - name: FORECON Kill Team
           description: Summon a FORECON kill team for direct action.
           cost: 30

@@ -364,6 +364,8 @@
 
 - type: platoon
   id: BEAR
+  recruitGear: CMUGearRecruitUPP
+  instructorGear: CMUGearInstructorUPP
   vehicleSupplyCatalog:
   - CMUFighterGround
   - VehicleSPPTank

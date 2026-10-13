@@ -537,9 +537,8 @@
     - name: Body Armor
       choices: { CMUPlatoonAirCrewVest: 1 }
       entries:
-      - id: AU14ArmorPilotFlakJacket
       - id: AU14ExternalWebbing
-      - id: RMCArmorVestSquad
+      - id: RuMCUPPArmorPilot
         amount: 2
     - name: Footwear
       choices: { CMUPlatoonAirCrewFootwear: 1 }
@@ -1520,12 +1519,14 @@
         amount: 5
       - id: RMCPouchShotgunLarge
         amount: 5
-    - name: Helmet
+    - name: Garment
       entries:
       - id: RuMCUPPNavalInfantryHeavyHelmet
         amount: 2
       - id: RuMCUPPNavalInfantryHeavyHelmet2
         amount: 4
+      - id: RuMCUPPArmorCrew
+        amount: 10
     - name: Devices
       entries:
       - id: AU14PowerCellSmartgunUPP
