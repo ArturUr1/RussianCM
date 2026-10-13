@@ -284,8 +284,8 @@
 
 - type: construction
   id: AU14Custom_RMCBucket__RuMC__FarmingRuMC
-  name: "ведро"
-  description: "Это ведро. Вмещает 120 единиц."
+  name: "bucket"
+  description: "This is a bucket. It holds 120 units."
   graph: AU14CustomGraph_RMCBucket__RuMC__FarmingRuMC
   startNode: start
   targetNode: target

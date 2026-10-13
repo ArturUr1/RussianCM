@@ -60,7 +60,7 @@
 
 - type: construction
   id: AU14Custom_CMSandbagEmpty10__RuMC__MaterialRuMC
-  name: "пустые мешки для песка"
+  name: "empty sandbags"
   description: "Some empty sandbags, best to fill them up if you want to use them."
   graph: AU14CustomGraph_CMSandbagEmpty10__RuMC__MaterialRuMC
   startNode: start
