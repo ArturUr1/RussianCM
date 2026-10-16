@@ -12662,6 +12662,17 @@ Entries:
   id: 751
   time: '2026-10-09T02:54:14.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/2085
+- author: '- code: Обновлён CMU upstream до ba37f13b226.'
+  time: '2026-10-09T04:24:45Z'
+  changes:
+  - type: Fix
+    message: Сохранён русский перевод конфликтующих руководств и добавлена локализация
+      покупок в истории банкомата.
+  id: 836
+  url: https://github.com/flex5hybrid/RussianCM/pull/502
+  labels:
+  - 'Changes: UI'
+  - XL
 - author: rokudara-sen
   changes:
   - message: Every platoon can get COMSEC fill cards and radios from ASRS and their
@@ -12696,7 +12707,7 @@ Entries:
     type: Fix
   - message: Yautja self-destruct has a hotkey
     type: Add
-  id: 752
+  id: 812
   time: '2026-10-09T09:40:26.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/2102
 - author: TheHellFireo
@@ -12729,7 +12740,7 @@ Entries:
   - message: Added expedition command autocomplete and expanded squad, traffic, combat
       and medical diagnostics.
     type: Admin
-  id: 753
+  id: 813
   time: '2026-10-09T11:02:52.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/2112
 - author: TheHellFireo
@@ -12757,7 +12768,7 @@ Entries:
   - message: Added guard facing completion and construction, scavenging, hazard and
       navigation diagnostics.
     type: Admin
-  id: 754
+  id: 814
   time: '2026-10-09T13:14:11.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/2118
 - author: rokudara-sen
@@ -12784,14 +12795,14 @@ Entries:
     type: Fix
   - message: The King's Destroy leap works on the USS Bush
     type: Fix
-  id: 755
+  id: 815
   time: '2026-10-09T13:14:55.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/2119
 - author: HubaBub
   changes:
   - message: GROM (GROM is now a proper squad, with body armor and intact clothing.)
     type: Tweak
-  id: 756
+  id: 816
   time: '2026-10-09T13:29:37.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/2074
 - author: TheHellFireo
@@ -12802,7 +12813,7 @@ Entries:
   - message: Added Redux 3D models for infrastructure, vehicles, vehicle interiors
       and xeno hive structures.
     type: Add
-  id: 757
+  id: 817
   time: '2026-10-09T13:54:55.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/2114
 - author: ILoveDespoiler
@@ -12812,14 +12823,14 @@ Entries:
       Count, Acid Chance, Plasma Cost, and Cooldown. Decreased Damage, Decreased Movement
       Speed while Charging.
     type: Tweak
-  id: 758
+  id: 818
   time: '2026-10-09T13:56:21.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/2052
 - author: KeiKiyomi
   changes:
   - message: Changed Burning Postman and Normal Postman damage, slope, and range
     type: Tweak
-  id: 759
+  id: 819
   time: '2026-10-09T14:04:22.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/2084
 - author: TheHellFireo
@@ -12832,7 +12843,7 @@ Entries:
     type: Tweak
   - message: Recurring hijack pipe explosions occur half as often.
     type: Tweak
-  id: 760
+  id: 820
   time: '2026-10-09T14:26:23.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/2121
 - author: TheHellFireo
@@ -12845,7 +12856,7 @@ Entries:
   - message: Expedition combatants seek shelter or create distance when their ammunition
       is exhausted.
     type: Fix
-  id: 761
+  id: 821
   time: '2026-10-09T15:59:45.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/2123
 - author: TheHellFireo
@@ -12857,7 +12868,7 @@ Entries:
   - message: Expedition gunfire observation no longer changes unused gun prototypes
       during map initialization.
     type: Fix
-  id: 762
+  id: 822
   time: '2026-10-09T16:25:00.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/2125
 - author: TheHellFireo
@@ -12878,35 +12889,35 @@ Entries:
     type: Fix
   - message: Stopped Yautja hunt teleporters warning ghosts.
     type: Fix
-  id: 763
+  id: 823
   time: '2026-10-09T17:19:28.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/2126
 - author: TheHellFireo
   changes:
   - message: Removed the six alien eggs from the Yautja ship.
     type: Map
-  id: 764
+  id: 824
   time: '2026-10-09T17:19:54.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/2127
 - author: TheHellFireo
   changes:
   - message: Fixed the box van interior's driver seat, exits and collision boundaries.
     type: Map
-  id: 765
+  id: 825
   time: '2026-10-09T17:20:06.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/2128
 - author: TheHellFireo
   changes:
   - message: Fixed the pizza van interior's driver seat, exits and collision boundaries.
     type: Map
-  id: 766
+  id: 826
   time: '2026-10-09T17:20:09.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/2129
 - author: TheHellFireo
   changes:
   - message: Fixed the van interior's driver seat, doors and collision boundaries.
     type: Map
-  id: 767
+  id: 827
   time: '2026-10-09T17:20:12.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/2130
 - author: rokudara-sen
@@ -12916,7 +12927,7 @@ Entries:
     type: Fix
   - message: Fixed the flaky 3D stair camera and stun merge tests
     type: Code
-  id: 768
+  id: 828
   time: '2026-10-09T17:32:36.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/2124
 - author: TheHellFireo
@@ -12934,7 +12945,7 @@ Entries:
     type: Fix
   - message: Reduced the cost of periodic client performance inventories.
     type: Admin
-  id: 769
+  id: 829
   time: '2026-10-09T18:47:25.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/2122
 - author: rokudara-sen
@@ -12947,7 +12958,7 @@ Entries:
   - message: Fixed the Ambassador console resending its screen to everyone nearby
       every tick
     type: Fix
-  id: 770
+  id: 830
   time: '2026-10-09T20:04:40.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/2131
 - author: troytroy400
@@ -13016,7 +13027,7 @@ Entries:
   - message: Auxiliary squads no longer add their squad name to your ID, don't use
       fireteams and their Squad Leader keeps their normal job icon.
     type: Tweak
-  id: 771
+  id: 831
   time: '2026-10-09T23:07:14.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/2116
 - author: PoltavskaPraca
@@ -13026,7 +13037,7 @@ Entries:
     type: Add
   - message: added belt subtypes for medical storage rig belts for larp purposes
     type: Add
-  id: 772
+  id: 832
   time: '2026-10-10T08:11:55.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/2094
 - author: rokudara-sen
@@ -13060,7 +13071,7 @@ Entries:
     type: Fix
   - message: Russian text on UPP items and the liquidator role is translated
     type: Fix
-  id: 773
+  id: 833
   time: '2026-10-10T08:43:12.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/2139
 - author: maertayn
@@ -13069,7 +13080,7 @@ Entries:
       for the combat-medic, the lifesaver still holds more capacity for the platoon
       medics.
     type: Add
-  id: 774
+  id: 834
   time: '2026-10-10T10:17:25.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/2137
 - author: HubaBub
@@ -13084,13 +13095,13 @@ Entries:
     type: Add
   - message: Corrected cargo UPP, new boxes with cartridges and magazines.
     type: Add
-  - message: "The Liquidators squad has been added (an anti\u2011biological group\
-      \ of flamethrower operators, summoned by the UPP ambassador)."
+  - message: The Liquidators squad has been added (an anti‑biological group of flamethrower
+      operators, summoned by the UPP ambassador).
     type: Add
   - message: A UPP migrant unit has been added (they are ordered through the UPP ambassador,
       they cannot speak English, and they have a variety of equipment and skills).
     type: Add
-  id: 775
+  id: 835
   time: '2026-10-10T10:26:21.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/2058
 - author: troytroy400
@@ -13241,6 +13252,35 @@ Entries:
   id: 783
   time: '2026-10-11T03:15:35.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/2146
+- author: '- code: Обновлён CMU upstream до b3cac1a18a6.'
+  time: '2026-10-11T08:27:10Z'
+  changes:
+  - type: Fix
+    message: Исправлена ошибка компиляции при назначении позывных после обновления
+      огневых групп.
+  id: 838
+  url: https://github.com/flex5hybrid/RussianCM/pull/508
+  labels:
+  - 'Changes: UI'
+  - 'Changes: Sprites'
+  - 'Changes: Map'
+  - 'Changes: Translations'
+  - XL
+- author: '- add: Майка корпорации SeegSon в кастомизацию маек в разделе нижнего белья
+    персонажа'
+  time: '2026-10-11T08:28:22Z'
+  changes:
+  - type: Add
+    message: Кепка SeegSon была добавлена всем рабочим Джо
+  - type: Add
+    message: Добавлен берет в лодаут корпоративного связного Ве-Ю за 150 часов игры
+      на связном
+  id: 837
+  url: https://github.com/flex5hybrid/RussianCM/pull/507
+  labels:
+  - 'Changes: No C#'
+  - 'Changes: Sprites'
+  - S
 - author: rokudara-sen
   changes:
   - message: Third-party dropships can launch at round start instead of waiting out
@@ -13466,6 +13506,65 @@ Entries:
   id: 799
   time: '2026-10-12T14:21:06.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/2165
+- author: PERed5
+  time: '2026-10-13T04:28:36Z'
+  changes:
+  - type: Fix
+    message: Исправлена локализация интерфейса ВТОЛа Файтера
+  id: 839
+  url: https://github.com/flex5hybrid/RussianCM/pull/514
+  labels:
+  - 'Changes: No C#'
+  - 'Changes: Translations'
+  - M
+- author: HubaBuba
+  time: '2026-10-13T04:29:17Z'
+  changes:
+  - type: Add
+    message: ВДВ (*4 варианта формы.*2 бронежилета.*1 автомат, 1 пулемёт, 1 пистолет.
+      (АК7074, ПКМ-МС, ГРАЧ)*3 различных головных убора.*1 бронешлем шлем.*2 патча
+      с символикой десантуры. (лучше чем раньше))
+  - type: Add
+    message: SOF:(4 различных бронежилета1 вариант формы.)
+  - type: Remove
+    message: Удалено что-то лишнее! TD Moget?
+  - type: Tweak
+    message: Изменены спрайты ушанок (офицерская и строевая)
+  - type: Fix
+    message: Исправлено отсутсвие BEAR на картах, теперь они везде!
+  - type: Add
+    message: 🐘 PMC BEAR теперь могут быть вызваны ГОФОР для поддержки. (единственное
+      подкрепление от UPP между прочим)
+  id: 840
+  url: https://github.com/flex5hybrid/RussianCM/pull/516
+  labels:
+  - 'Changes: No C#'
+  - 'Changes: Sprites'
+  - 'Changes: Map'
+  - L
+- author: RomiGur
+  time: '2026-10-13T04:30:09Z'
+  changes:
+  - type: Fix
+    message: Исправлен чёрный экран при дисконнекте после рестарта сервера; Исправлена
+      невозможность стрелять со смартгана "Свобода" без РПС
+  id: 841
+  url: https://github.com/flex5hybrid/RussianCM/pull/518
+  labels:
+  - 'Changes: UI'
+  - S
+- author: RomiGur
+  time: '2026-10-13T04:30:36Z'
+  changes:
+  - type: Tweak
+    message: Кол-во специалистов по оружию теперь зависит от онлайна; Кол-во партизан
+      КОФ увеличено на 3 в качестве теста; Барабан HEAP у стрелка SAS заменен на аналогичный
+      бронебойный.
+  id: 842
+  url: https://github.com/flex5hybrid/RussianCM/pull/519
+  labels:
+  - 'Changes: No C#'
+  - S
 - author: rokudara-sen
   changes:
   - message: You now shoot where you look across z-levels. Point at something through
@@ -13905,5 +14004,24 @@ Entries:
   id: 811
   time: '2026-10-15T13:10:06.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/2179
+- author: '- add: Перенесены новые возможности и исправления CMU по состоянию на 16
+    октября.'
+  time: '2026-10-16T06:28:56Z'
+  changes:
+  - type: Remove
+    message: Удалён радиоканал Mob Family.
+  - type: Fix
+    message: Сохранена совместимость локальных настроек TTS и русских медицинских
+      руководств с обновлениями CMU.
+  id: 843
+  url: https://github.com/flex5hybrid/RussianCM/pull/525
+  labels:
+  - 'Changes: UI'
+  - 'Changes: Sprites'
+  - 'Changes: Map'
+  - 'Changes: Audio'
+  - 'Changes: Translations'
+  - 'Changes: Shaders'
+  - XL
 Name: CMU
 Order: -1
