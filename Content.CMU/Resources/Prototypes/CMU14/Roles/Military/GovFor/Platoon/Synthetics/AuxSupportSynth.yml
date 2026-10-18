@@ -137,7 +137,7 @@
   equipment:
     ears: AU14HeadsetGovforCommand
     ears2: RMCM5CameraGear
-    shoes: CMBootsBlackFilled
+    shoes: CMBootsBlackFilled # RuMC edit
 
 - type: startingGear
   id: AU14GearGOVFORAuxSupportSynthDummy
