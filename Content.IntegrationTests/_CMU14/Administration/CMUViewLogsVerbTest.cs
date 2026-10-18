@@ -56,7 +56,7 @@ public sealed class CMUViewLogsVerbTest : GameTest
 
             Assert.Multiple(() =>
             {
-                Assert.That(viewLogs, Is.EqualTo("View Logs"));
+                Assert.That(loc.HasString("admin-verbs-admin-logs-player"));
                 Assert.That(selfVerbs, Does.Contain(viewLogs),
                     "An entity with an attached session but no mind history still offers View Logs.");
                 Assert.That(bystanderVerbs, Does.Not.Contain(viewLogs),
