@@ -29,7 +29,7 @@
   components:
   - type: Sprite
     sprite: CMU14/Clothing/UPP/jumpsuits/mp.rsi
-  
+
 - type: entity
   parent: [RMCMarineUniformBase, RMCAlternateFoldableUniformBase]
   name: UPP medic fatigues
@@ -102,6 +102,11 @@
     size: Small
   - type: Sprite
     sprite: CMU14/Clothing/UPP/jumpsuits/cbrn.rsi
+  - type: CMArmor
+    bullet: 10
+    melee: 10
+    bio: 100
+    explosionArmor: 10
 
 - type: entity
   parent: [RMCMarineUniformBase, RMCAlternateFoldableUniformBase]

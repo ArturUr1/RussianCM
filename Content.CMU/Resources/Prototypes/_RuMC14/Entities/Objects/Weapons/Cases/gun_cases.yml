@@ -117,17 +117,15 @@
   name: SVAROG sniper rifle case
   description: Case for the sniper rifle SVAROG
   components:
-  - type: Item
-    size: Ginormous
   - type: Storage
-    maxItemSize: Ginormous
+    maxItemSize: Colossal
     grid:
     - 0,0,13,7
   - type: StorageFill
     contents:
     - id: RMCVisorNightVision
     - id: CMBackpackSniper
-    - id: RuMcSniperRifleSVAROG
+    - id: RuMCSniperRifleSVAROG
     - id: RuMCUPPNavalInfantryHeavyHelmet2
     - id: RuMCUPPPouchMagazineLarge
       amount: 2

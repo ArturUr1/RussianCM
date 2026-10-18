@@ -6,6 +6,7 @@
   - CMUFighterGround
   - VehicleTank
   - VehicleAPC
+  - CMUVehicleAPCWolfpack
   - VehicleAPCMed
   - VehicleAPCCommand
   - VehicleAev
@@ -24,8 +25,8 @@
   languages:
     - English
   CompatibleDropships:
-  - /Maps/CMU14/Shuttles/alamo.yml
   - /Maps/CMU14/ShuttlesDropships/Mohawk/midway_deployment.yml
+  - /Maps/_RMC14/Shuttles/dynamic_gunship.yml
   compatibleFighters:
     - /Maps/CMU14/Vehicles/Dropships/ud_6.yml
   possibleships:
@@ -40,6 +41,7 @@
   - CMUFighterGround
   - VehicleTank
   - VehicleAPC
+  - CMUVehicleAPCWolfpack
   - VehicleAPCMed
   - VehicleHumvee
   - VehicleHumveeTransport
@@ -364,6 +366,8 @@
 
 - type: platoon
   id: BEAR
+  recruitGear: CMUGearRecruitUPP
+  instructorGear: CMUGearInstructorUPP
   vehicleSupplyCatalog:
   - CMUFighterGround
   - VehicleSPPTank
@@ -695,7 +699,7 @@
   #   DCC: AU14JobGOVFORDCCUPP
   #   SupportSynth: AU14JobGOVFORAuxSupportSynthUPP
   CompatibleDropships:
-  - /Maps/CMU14/Shuttles/alamo.yml
+  - /Maps/CMU14/ShuttlesDropships/Mohawk/midway_deployment.yml
   - /Maps/_RMC14/Shuttles/dynamic_gunship.yml
   techTree: CMUIntelTechTree_GOVFOR
 
@@ -1032,7 +1036,7 @@
   #   DCC: AU14JobGOVFORDCCUPP
   #   SupportSynth: AU14JobGOVFORAuxSupportSynthUPP
   CompatibleDropships:
-  - /Maps/CMU14/Shuttles/alamo.yml
+  - /Maps/CMU14/ShuttlesDropships/Mohawk/midway_deployment.yml
   - /Maps/_RMC14/Shuttles/dynamic_gunship.yml
   techTree: CMUIntelTechTree_GOVFOR
 
@@ -1358,7 +1362,7 @@
   #   DCC: AU14JobGOVFORDCCWYPMC
     # Synth
   CompatibleDropships:
-  - /Maps/CMU14/Shuttles/alamo.yml
+  - /Maps/CMU14/ShuttlesDropships/Mohawk/midway_deployment.yml
   - /Maps/_RMC14/Shuttles/dynamic_gunship.yml
   possibleships:
       - USSBushRedux
@@ -1379,6 +1383,7 @@
   - AU14VehicleCivEMSAmbulance
   - VehicleBlackfootTransport
   - VehicleAPC
+  - CMUVehicleAPCWolfpack
   - VehicleAPCMed
   - VehicleHumvee
   - VehicleHumveeTransport
@@ -1593,7 +1598,7 @@
   possibleships:
       - USSBushRedux
   CompatibleDropships:
-  - /Maps/CMU14/Shuttles/alamo.yml
+  - /Maps/CMU14/ShuttlesDropships/Mohawk/midway_deployment.yml
   - /Maps/_RMC14/Shuttles/dynamic_gunship.yml
   compatibleFighters:
     - /Maps/CMU14/Vehicles/Dropships/cmbsquadcar.yml
@@ -1608,6 +1613,7 @@
   - CMUFighterGround
   - VehicleAev
   - VehicleAPC
+  - CMUVehicleAPCWolfpack
   - VehicleAPCMed
   - VehicleHumvee
   - VehicleHumveeMedical
@@ -1914,7 +1920,7 @@
 
   #platoonflag:  uaflag
   CompatibleDropships:
-  - /Maps/CMU14/Shuttles/alamo.yml
+  - /Maps/CMU14/ShuttlesDropships/Mohawk/midway_deployment.yml
   - /Maps/_RMC14/Shuttles/dynamic_gunship.yml
   compatibleFighters:
     - /Maps/CMU14/Vehicles/Dropships/f84owl.yml
@@ -1931,6 +1937,7 @@
   - CMUFighterGround
   - VehicleTank
   - VehicleAPC
+  - CMUVehicleAPCWolfpack
   - VehicleHumvee
   - VehicleHumveeTransport
   - VehicleHumveeMedical
@@ -2108,7 +2115,7 @@
         requirements: []
 
   CompatibleDropships:
-  - /Maps/CMU14/Shuttles/alamo.yml
+  - /Maps/CMU14/ShuttlesDropships/Mohawk/midway_deployment.yml
   - /Maps/_RMC14/Shuttles/dynamic_gunship.yml
   compatibleFighters:
     - /Maps/CMU14/Vehicles/Dropships/f84owl.yml
@@ -2437,7 +2444,7 @@
   #   DCC: AU14JobGOVFORDCCRMC
   #   SupportSynth: AU14JobGOVFORAuxSupportSynthRMC
   CompatibleDropships:
-  - /Maps/CMU14/Shuttles/alamo.yml
+  - /Maps/CMU14/ShuttlesDropships/Mohawk/midway_deployment.yml
   - /Maps/_RMC14/Shuttles/dynamic_gunship.yml
   compatibleFighters: #TODO: RMC Fighters
     - /Maps/CMU14/Vehicles/Dropships/f84owl.yml

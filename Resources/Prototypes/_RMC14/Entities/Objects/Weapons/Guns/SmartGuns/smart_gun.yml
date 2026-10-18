@@ -134,6 +134,9 @@
   - type: GunToggleableAutoFire
   - type: ToggleableMotionDetector
   - type: IFFToggle
+  # cmu edit start: more damage and less falloff with IFF off
+  - type: CMUIFFOffBonus
+  # cmu edit end
   - type: MotionDetector
     handToggleable: false
     deactivateOnDrop: false
@@ -311,7 +314,7 @@
   description: The actual firearm in the 4-piece M56B Smartgun System. Essentially a heavy, mobile machinegun. This one has the CLF logo carved over the manufacturing stamp.
   components:
   - type: GunRequireEquipped
-    whitelist: { }
+    enabled: false # RuMC edit
 
 - type: entity
   parent: RMCSmartGunNoCamo
