@@ -12,7 +12,7 @@ using Robust.Shared.Utility;
 
 namespace Content.Shared._RuCM.Qualifications;
 
-// Public role_timer_override extension: preserve non-time requirements and bans; instructor accreditation replaces only their old whitelist.
+// Public role_timer_override extension: preserve non-time requirements and bans; instructor roles are gated by server accreditation, not a job whitelist.
 public sealed partial class QualificationRolePolicy : EntitySystem
 {
     public const string OverrideId = "RuCMInsurgencyQualifications";
@@ -34,20 +34,9 @@ public sealed partial class QualificationRolePolicy : EntitySystem
         PrototypeRevision++;
     }
     public override void Shutdown()
-    { SetInstructorWhitelists(false); ProtoMan.PrototypesReloaded -= OnReload; base.Shutdown(); }
-    private static readonly string[] InstructorJobs =
-        { "AU14JobGOVFORadvisor", "AU14JobGOVFORadvisorRMC", "AU14JobGOVFORadvisorUPP" };
-    private readonly Dictionary<string, bool> _instructorWhitelists = new();
-    private void SetInstructorWhitelists(bool active)
-    {
-        foreach (var id in InstructorJobs)
-        {
-            if (!ProtoMan.TryIndex<JobPrototype>(id, out var job) || job.IsSynthetic) continue;
-            _instructorWhitelists.TryAdd(job.ID, job.Whitelisted);
-            // The whitelist managers consume this public prototype field on both client and server.
-            job.Whitelisted = active ? false : _instructorWhitelists[job.ID];
-        }
-    }
+    { ProtoMan.PrototypesReloaded -= OnReload; base.Shutdown(); }
+    // Instructor jobs have whitelisted: false in their source prototype; this policy never
+    // mutates their job whitelist or reintroduces it when qualification enforcement is off.
     private string _signature = "";
     private readonly Dictionary<string, HashSet<JobRequirement>> _baseRequirements = new();
 
@@ -68,7 +57,6 @@ public sealed partial class QualificationRolePolicy : EntitySystem
     public string Apply(bool active, IEnumerable<string> jobs, bool client = false, string? baseline = null, Dictionary<string, HashSet<JobRequirement>>? requirements = null)
     {
         ClientPolicy = client;
-        SetInstructorWhitelists(active);
         var ids = jobs.Where(id => ProtoMan.TryIndex<JobPrototype>(id, out var job) && !job.IsSynthetic).OrderBy(j => j).ToArray();
         var current = _cfg.GetCVar(CCVars.GameRoleTimerOverride);
         if (baseline != null) _baseOverride = baseline;
