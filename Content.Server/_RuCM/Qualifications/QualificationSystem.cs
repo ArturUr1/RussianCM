@@ -32,6 +32,8 @@ namespace Content.Server._RuCM.Qualifications;
 
 public sealed partial class QualificationSystem : EntitySystem
 {
+    private static readonly string[] DrillInstructorJobIds =
+        { "AU14JobGOVFORadvisor", "AU14JobGOVFORadvisorRMC", "AU14JobGOVFORadvisorUPP" };
     [Dependency] private IConfigurationManager _cfg = default!;
     [Dependency] private IResourceManager _resources = default!;
     [Dependency] private IPlayerManager _players = default!;
@@ -245,10 +247,15 @@ public sealed partial class QualificationSystem : EntitySystem
     private void OnDisallowed(ref GetDisallowedJobsEvent ev)
     {
         SynchronizeRolePolicy();
-        var enforce = Mode == QualificationMode.Enforce;
+        if (Mode != QualificationMode.Enforce)
+        {
+            // Do not scan every job when the general gate is disabled; only Instructor remains gated.
+            foreach (var id in DrillInstructorJobIds)
+                if (!CanTakeJob(ev.Player.UserId, id)) ev.Jobs.Add(id);
+            return;
+        }
         foreach (var job in ProtoMan.EnumeratePrototypes<JobPrototype>())
-            if ((enforce || QualificationRules.IsDrillInstructor(job.ID)) && !CanTakeJob(ev.Player.UserId, job.ID))
-                ev.Jobs.Add(job.ID);
+            if (!CanTakeJob(ev.Player.UserId, job.ID)) ev.Jobs.Add(job.ID);
     }
     private void OnAllowed(ref IsRoleAllowedEvent ev)
     {
