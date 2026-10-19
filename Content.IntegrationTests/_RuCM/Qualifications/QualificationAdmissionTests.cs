@@ -96,7 +96,7 @@ public sealed class QualificationAdmissionTests : GameTest
     }
 
     [Test]
-    public async Task InstructorPolicyRemovesOnlyTheirWhitelistAndPreservesOtherNonTimeRequirements()
+    public async Task InstructorHasNoExtraWhitelistAndPreservesOtherNonTimeRequirements()
     {
         Dictionary<string, bool> whitelists = null;
         Dictionary<string, HashSet<JobRequirement>> requirements = null;
@@ -105,7 +105,7 @@ public sealed class QualificationAdmissionTests : GameTest
             var prototypes = Server.ResolveDependency<IPrototypeManager>(); var roles = Server.System<SharedRoleSystem>();
             whitelists = prototypes.EnumeratePrototypes<JobPrototype>().ToDictionary(j => j.ID, j => j.Whitelisted);
             requirements = InstructorJobs.ToDictionary(id => id, id => new HashSet<JobRequirement>(roles.GetRoleRequirements(prototypes.Index<JobPrototype>(id))));
-            foreach (var job in InstructorJobs) Assert.That(whitelists[job], Is.True);
+            foreach (var job in InstructorJobs) Assert.That(whitelists[job], Is.False);
         });
         await Configure(Seed());
         await Server.WaitAssertion(() =>
@@ -123,7 +123,12 @@ public sealed class QualificationAdmissionTests : GameTest
             }
             Server.ResolveDependency<IConfigurationManager>().SetCVar(QualificationCVars.Enabled, false);
             Server.System<QualificationSystem>().SynchronizeRolePolicy();
-            foreach (var id in InstructorJobs) Assert.That(prototypes.Index<JobPrototype>(id).Whitelisted, Is.EqualTo(whitelists[id]));
+            foreach (var id in InstructorJobs)
+            {
+                Assert.That(prototypes.Index<JobPrototype>(id).Whitelisted, Is.False);
+                Assert.That(Server.System<QualificationSystem>().CanTakeJob(ServerSession.UserId, id), Is.False,
+                    "Instructor accreditation is required even if general qualification enforcement is disabled");
+            }
         });
     }
 
