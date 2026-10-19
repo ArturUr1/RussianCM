@@ -8,7 +8,7 @@ namespace Content.Shared.Administration
     {
         // Can be false if they're de-adminned with the ability to re-admin.
         /// <summary>
-        ///     Whether the admin is currently active. This can be false if the admin has de-adminned mid-round.
+        ///     Whether the admin is currently active. This can be false if they have de-adminned mid-round.
         /// </summary>
         public bool Active;
 
