@@ -53,15 +53,18 @@ both databases, and transfer only the `rucm_training` schema into the existing g
 using PostgreSQL backup/restore tools before restarting. If that schema already exists in the
 destination, review the records and resolve conflicts before importing; never overwrite it blindly.
 
-Qualifications enforce role access only for GOVFOR in **Insurgency**. Lobby mode votes use
+General qualification gates enforce role access for GOVFOR in **Insurgency**. Lobby mode votes use
 `AuRoundSystem.SelectedPreset`; an active round uses `GameTicker.CurrentPreset` first. Other modes
-restore the original role requirements and configured `game.role_timer_override`.
+restore the original requirements for ordinary roles. The three GOVFOR Drill Instructor variants
+always require Sergeant plus active Instructor Accreditation, with no separate job whitelist.
 Defaults are enabled/enforce/fail-closed. Existing explicit settings continue to take precedence:
 `enabled=false` is Disabled, `enabled=true,enforce=false` is Warn. Disabled/Warn retain the original
-timers. Enforce uses `JobRequirementOverridePrototype` to replace only Overall/Role/Department timer
+timers for ordinary roles. Enforce uses `JobRequirementOverridePrototype` to replace only Overall/Role/Department timer
 requirements for enabled qualification roles. Age/traits, bans and allegiance remain intact. Whitelists
-remain intact except for the three GOVFOR Drill Instructor roles: Enforce replaces their old role
-whitelist with Sergeant plus active Instructor Accreditation on both client and server.
+remain intact except for the three GOVFOR Drill Instructor roles. Their qualification gate replaces
+time requirements in every mode on both client and server. Synthetic, OPFOR advisor and other
+specialist whitelists are unchanged. Admission is rechecked at selection, latejoin and pre-spawn;
+revocation blocks the next assignment without removing an existing character.
 Storage failures deny admission when no player cache exists, with a Critical/Fatal log; `fail_open=true`
 explicitly enables fail-open for ordinary qualification roles. Drill Instructor always requires positive
 Sergeant/accreditation evidence, including with fail-open enabled. Last-loaded records remain effective. Failed mutations do not publish cache

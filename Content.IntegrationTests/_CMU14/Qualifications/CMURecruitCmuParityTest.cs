@@ -13,6 +13,7 @@ using Content.Server.Maps;
 using Content.Server.Players.PlayTimeTracking;
 using Content.Server.Station.Systems;
 using Content.Shared._RMC14.Marines;
+using Content.Shared._RMC14.Marines.Skills;
 using Content.Shared._RMC14.Marines.Roles.Ranks;
 using Content.Shared._RMC14.Marines.Squads;
 using Content.Shared._RMC14.UniformAccessories;
@@ -97,6 +98,10 @@ public sealed class CMURecruitCmuParityTest : GameTest
             entities.EventBus.RaiseEvent(EventSource.Local, spawn);
             Assert.That(spawn.SpawnResult, Is.Not.Null, $"{mapId}: native generic arrival must be usable");
             var mob = spawn.SpawnResult!.Value;
+            var skills = entities.System<SkillsSystem>();
+            Assert.That(skills.GetSkill(mob, "RMCSkillFirearms"), Is.EqualTo(1));
+            Assert.That(skills.GetSkill(mob, "RMCSkillConstruction"), Is.EqualTo(1));
+            Assert.That(skills.GetSkill(mob, "RMCSkillMedical"), Is.Zero);
             Assert.That(entities.System<StationSystem>().GetOwningStation(mob), Is.EqualTo(station));
             Assert.That(entities.HasComponent<SquadMemberComponent>(mob), Is.False, "No temporary combat squad assignment");
             Assert.That(entities.System<RankSystem>().GetRank(mob)!.Paygrade, Is.EqualTo("E0"));
@@ -223,6 +228,10 @@ public sealed class CMURecruitCmuParityTest : GameTest
                     Assert.That(accessories.ContainedEntities, Is.Not.Empty, $"{platoon.ID}/{jobId}: insignia on native uniform");
                     if (isRecruit)
                     {
+                        var skills = entities.System<SkillsSystem>();
+                        Assert.That(skills.GetSkill(mob, "RMCSkillFirearms"), Is.EqualTo(1), platoon.ID);
+                        Assert.That(skills.GetSkill(mob, "RMCSkillConstruction"), Is.EqualTo(1), platoon.ID);
+                        Assert.That(skills.GetSkill(mob, "RMCSkillMedical"), Is.Zero, platoon.ID);
                         Assert.That(ranks.GetRank(mob)!.Paygrade, Is.EqualTo("E0"), platoon.ID);
                         Assert.That(accessories.ContainedEntities.Select(e => entities.GetComponent<MetaDataComponent>(e).EntityPrototype!.ID),
                             Does.Contain("CMUChevronRecruit"));
