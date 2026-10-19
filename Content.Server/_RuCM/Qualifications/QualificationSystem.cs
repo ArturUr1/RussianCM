@@ -221,10 +221,11 @@ public sealed partial class QualificationSystem : EntitySystem
         // Mode availability and ordinary job bans are enforced by the recruit system and ticker.
         if (job == GOVFORRecruitJob.Id) return true;
         SynchronizeRolePolicy();
-        if (Mode == QualificationMode.Disabled || !ProtoMan.TryIndex<JobPrototype>(job, out var prototype) || prototype.RoundSide != RoundJobSide.Govfor || prototype.IsSynthetic) return true;
-        // Instructor admission requires positive rank/accreditation evidence, even in fail-open mode.
-        if (Mode == QualificationMode.Enforce && QualificationRules.IsDrillInstructor(job))
+        // No job whitelist: Instructor admission requires rank and accreditation in every mode,
+        // including when the general qualification CVar is disabled or storage is unavailable.
+        if (QualificationRules.IsDrillInstructor(job))
             return _ready && Service.IsJobAllowed(player, job);
+        if (Mode == QualificationMode.Disabled || !ProtoMan.TryIndex<JobPrototype>(job, out var prototype) || prototype.RoundSide != RoundJobSide.Govfor || prototype.IsSynthetic) return true;
         if (!_ready) return _cfg.GetCVar(QualificationCVars.FailOpen);
         if (!Service.IsRoleEnabled(job)) return true;
         if (Service.Available) _warnedUnavailable = false;
@@ -236,31 +237,41 @@ public sealed partial class QualificationSystem : EntitySystem
         return Mode != QualificationMode.Enforce || Service.IsJobAllowed(player, job);
     }
     private void OnCandidates(ref StationJobsGetCandidatesEvent ev)
-    { SynchronizeRolePolicy(); var player = ev.Player; if (Mode == QualificationMode.Enforce) ev.Jobs.RemoveAll(j => !CanTakeJob(player.UserId, j.Id)); }
+    {
+        SynchronizeRolePolicy();
+        var enforce = Mode == QualificationMode.Enforce;
+        ev.Jobs.RemoveAll(j => (enforce || QualificationRules.IsDrillInstructor(j.Id)) && !CanTakeJob(ev.Player.UserId, j.Id));
+    }
     private void OnDisallowed(ref GetDisallowedJobsEvent ev)
     {
         SynchronizeRolePolicy();
-        if (Mode != QualificationMode.Enforce) return;
+        var enforce = Mode == QualificationMode.Enforce;
         foreach (var job in ProtoMan.EnumeratePrototypes<JobPrototype>())
-            if (!CanTakeJob(ev.Player.UserId, job.ID)) ev.Jobs.Add(job.ID);
+            if ((enforce || QualificationRules.IsDrillInstructor(job.ID)) && !CanTakeJob(ev.Player.UserId, job.ID))
+                ev.Jobs.Add(job.ID);
     }
     private void OnAllowed(ref IsRoleAllowedEvent ev)
     {
         SynchronizeRolePolicy();
-        if (ev.Jobs == null || Mode != QualificationMode.Enforce) return;
-        foreach (var job in ev.Jobs) if (!CanTakeJob(ev.Player.UserId, job.Id)) ev.Cancelled = true;
+        if (ev.Jobs == null) return;
+        var enforce = Mode == QualificationMode.Enforce;
+        foreach (var job in ev.Jobs)
+            if ((enforce || QualificationRules.IsDrillInstructor(job.Id)) && !CanTakeJob(ev.Player.UserId, job.Id))
+                ev.Cancelled = true;
     }
     private void OnBeforeSpawn(PlayerBeforeSpawnEvent ev)
     {
         if (ev.JobId == GOVFORRecruitJob.Id) return;
         SynchronizeRolePolicy();
-        if (Mode == QualificationMode.Disabled || ev.JobId == null || !ProtoMan.TryIndex<JobPrototype>(ev.JobId, out var job) || job.RoundSide != RoundJobSide.Govfor || job.IsSynthetic) return;
+        if (ev.JobId == null || !ProtoMan.TryIndex<JobPrototype>(ev.JobId, out var job) || job.RoundSide != RoundJobSide.Govfor || job.IsSynthetic) return;
+        var instructor = QualificationRules.IsDrillInstructor(ev.JobId);
+        if (Mode == QualificationMode.Disabled && !instructor) return;
         var eligibility = Service.CanTakeJob(ev.Player.UserId, ev.JobId);
-        if (eligibility.Allowed || !QualificationRules.IsDrillInstructor(ev.JobId) &&
-            !Service.Available && !Service.HasCachedPlayer(ev.Player.UserId) && _cfg.GetCVar(QualificationCVars.FailOpen)) return;
+        if (instructor ? CanTakeJob(ev.Player.UserId, ev.JobId) :
+            eligibility.Allowed || !Service.Available && !Service.HasCachedPlayer(ev.Player.UserId) && _cfg.GetCVar(QualificationCVars.FailOpen)) return;
         _chat.DispatchServerMessage(ev.Player, Loc.GetString("rucm-qualifications-job-denied", ("requirements", string.Join(", ", eligibility.Missing.Select(DisplayQualification)))));
         Log.Warning($"RuCM qualifications job violation: player={ev.Player.UserId}, job={ev.JobId}, mode={Mode}");
-        if (Mode == QualificationMode.Enforce) ev.JobId = null;
+        if (instructor || Mode == QualificationMode.Enforce) ev.JobId = null;
     }
     // CMU14 method: reading a display name does not require a full historical snapshot.
     private string DisplayQualification(string id)
