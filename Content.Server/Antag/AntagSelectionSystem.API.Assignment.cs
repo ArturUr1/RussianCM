@@ -4,6 +4,7 @@ using System.Linq;
 using Content.Server.Antag.Components;
 using Content.Server.GameTicking.Rules.Components;
 using Content.Shared.CMU14.Threats;
+using Content.Shared._RuCM.Qualifications;
 using Content.Shared.Antag;
 using Content.Shared.Database;
 using Content.Shared.Ghost.Components;
@@ -134,6 +135,10 @@ public sealed partial class AntagSelectionSystem
         // The jobless can always be antag!
         if (!_jobs.MindTryGetJob(mind, out var job))
             return true;
+
+        // Recruits are never eligible for mid-round antagonist selection, regardless of the antag's job blacklists.
+        if (job.ID == GOVFORRecruitJob.Id)
+            return false;
 
         // "Sorry buddy, but you can't be a traitor and the head of security" - Urist 1984
         // This checks nullability for our mind for free as well!
