@@ -76,7 +76,8 @@ namespace Content.Shared.Administration
         /// </summary>
         public bool CanAdminReloadPrototypes()
         {
-            return HasFlag(AdminFlags.Query) || HasFlag(AdminFlags.Host);
+            return HasFlag(AdminFlags.Query)
+                || HasFlag(AdminFlags.Host); // CMU14: allow QUERY prototype uploads while preserving HOST access
         }
     }
 }
