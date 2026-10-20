@@ -272,8 +272,9 @@ public sealed partial class QualificationSystem : EntitySystem
     {
         if (ev.JobId == GOVFORRecruitJob.Id) return;
         SynchronizeRolePolicy();
+        var instructor = ev.JobId != null && QualificationRules.IsDrillInstructor(ev.JobId);
         // CMU14: recheck immediately before spawning, including revoked accreditation and fail-open mode.
-        if (ev.JobId != null && QualificationRules.IsDrillInstructor(ev.JobId) && !CanTakeJob(ev.Player.UserId, ev.JobId))
+        if (instructor && !CanTakeJob(ev.Player.UserId, ev.JobId))
         {
             _chat.DispatchServerMessage(ev.Player, Loc.GetString("rucm-qualifications-instructor-access-required"));
             ev.JobId = null;
