@@ -268,6 +268,7 @@ public sealed partial class QualificationSystem : EntitySystem
                 ev.Cancelled = true;
         }
     }
+    // CMU14 method
     private void OnBeforeSpawn(PlayerBeforeSpawnEvent ev)
     {
         if (ev.JobId == GOVFORRecruitJob.Id) return;
@@ -281,11 +282,11 @@ public sealed partial class QualificationSystem : EntitySystem
         }
         if (Mode == QualificationMode.Disabled || ev.JobId == null || !ProtoMan.TryIndex<JobPrototype>(ev.JobId, out var job) || job.RoundSide != RoundJobSide.Govfor || job.IsSynthetic) return;
         var eligibility = Service.CanTakeJob(ev.Player.UserId, ev.JobId);
-        if (instructor ? CanTakeJob(ev.Player.UserId, ev.JobId) :
-            eligibility.Allowed || !Service.Available && !Service.HasCachedPlayer(ev.Player.UserId) && _cfg.GetCVar(QualificationCVars.FailOpen)) return;
+        if (eligibility.Allowed || !QualificationRules.IsDrillInstructor(ev.JobId) &&
+            !Service.Available && !Service.HasCachedPlayer(ev.Player.UserId) && _cfg.GetCVar(QualificationCVars.FailOpen)) return;
         _chat.DispatchServerMessage(ev.Player, Loc.GetString("rucm-qualifications-job-denied", ("requirements", string.Join(", ", eligibility.Missing.Select(DisplayQualification)))));
         Log.Warning($"RuCM qualifications job violation: player={ev.Player.UserId}, job={ev.JobId}, mode={Mode}");
-        if (instructor || Mode == QualificationMode.Enforce) ev.JobId = null;
+        if (Mode == QualificationMode.Enforce) ev.JobId = null;
     }
     // CMU14 method: reading a display name does not require a full historical snapshot.
     private string DisplayQualification(string id)
