@@ -95,9 +95,20 @@ jobs:
           print("UNMERGED_FILES_END")
           PY
           if [ -s conflict-files.txt ]; then
-            echo "sync_result=conflicts" >> "$GITHUB_OUTPUT"
+            python3 .github/scripts/resolve_cmu_upstream_20261020.py
+            if [ -n "$(git ls-files -u)" ]; then
+              echo "Unresolved index entries remain" >&2
+              exit 1
+            fi
+            git add -u
+            git rm .github/workflows/cmu-upstream-20261020.yml .github/scripts/resolve_cmu_upstream_20261020.py
+            git diff --cached --check
+            git commit -m "Merge CMU upstream through $(git rev-parse --short=12 FETCH_HEAD) with RuCMU fixes [skip ci]"
+            git push origin HEAD:refs/heads/codex/cmu-upstream-20261020
+            echo "sync_result=merged_after_conflicts" >> "$GITHUB_OUTPUT"
           else
             echo "sync_result=merge_error" >> "$GITHUB_OUTPUT"
+            exit 1
           fi
 
       - name: Upload exact conflict report and merge diagnostics
