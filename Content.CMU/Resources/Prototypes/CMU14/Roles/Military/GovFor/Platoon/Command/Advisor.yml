@@ -11,7 +11,7 @@
   dummyStartingGear: AU14GearGOVFORadvisorDummy
   playTimeTracker: AU14JobGOVFORadvisor
   requireAdminNotify: true
-  whitelisted: true
+  whitelisted: false # Admission uses Sergeant + active Instructor Accreditation, not an independent job whitelist.
   canBeAntag: false
   accessGroups:
   - AU14GovforCommand

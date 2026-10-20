@@ -32,6 +32,8 @@ namespace Content.Server._RuCM.Qualifications;
 
 public sealed partial class QualificationSystem : EntitySystem
 {
+    private static readonly string[] DrillInstructorJobIds =
+        { "AU14JobGOVFORadvisor", "AU14JobGOVFORadvisorRMC", "AU14JobGOVFORadvisorUPP" };
     [Dependency] private IConfigurationManager _cfg = default!;
     [Dependency] private IResourceManager _resources = default!;
     [Dependency] private IPlayerManager _players = default!;
@@ -279,11 +281,11 @@ public sealed partial class QualificationSystem : EntitySystem
         }
         if (Mode == QualificationMode.Disabled || ev.JobId == null || !ProtoMan.TryIndex<JobPrototype>(ev.JobId, out var job) || job.RoundSide != RoundJobSide.Govfor || job.IsSynthetic) return;
         var eligibility = Service.CanTakeJob(ev.Player.UserId, ev.JobId);
-        if (eligibility.Allowed || !QualificationRules.IsDrillInstructor(ev.JobId) &&
-            !Service.Available && !Service.HasCachedPlayer(ev.Player.UserId) && _cfg.GetCVar(QualificationCVars.FailOpen)) return;
+        if (instructor ? CanTakeJob(ev.Player.UserId, ev.JobId) :
+            eligibility.Allowed || !Service.Available && !Service.HasCachedPlayer(ev.Player.UserId) && _cfg.GetCVar(QualificationCVars.FailOpen)) return;
         _chat.DispatchServerMessage(ev.Player, Loc.GetString("rucm-qualifications-job-denied", ("requirements", string.Join(", ", eligibility.Missing.Select(DisplayQualification)))));
         Log.Warning($"RuCM qualifications job violation: player={ev.Player.UserId}, job={ev.JobId}, mode={Mode}");
-        if (Mode == QualificationMode.Enforce) ev.JobId = null;
+        if (instructor || Mode == QualificationMode.Enforce) ev.JobId = null;
     }
     // CMU14 method: reading a display name does not require a full historical snapshot.
     private string DisplayQualification(string id)

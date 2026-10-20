@@ -58,7 +58,8 @@ public sealed class QualificationInsurgencyTests : GameTest
                 round.SetPreset(prototypes.Index<GamePresetPrototype>(preset)); system.SynchronizeRolePolicy();
                 if (preset == "Insurgency") continue;
                 Assert.That(system.Mode, Is.EqualTo(QualificationMode.Disabled));
-                Assert.That(system.CanTakeJob(ServerSession.UserId, jobId), Is.True);
+                Assert.That(system.CanTakeJob(ServerSession.UserId, jobId), Is.False,
+                    "Instructor certification remains mandatory outside Insurgency");
                 Assert.That(roles.GetRoleRequirements(job), Is.EquivalentTo(original));
                 var instructorRequirements = roles.GetRoleRequirements(prototypes.Index<JobPrototype>("AU14JobGOVFORadvisor"));
                 Assert.That(instructorRequirements.OfType<QualificationAccessRequirement>().Count(), Is.EqualTo(1));

@@ -4,6 +4,7 @@ using System.Linq;
 using Content.Server.Antag.Components;
 using Content.Server.GameTicking.Rules.Components;
 using Content.Shared.CMU14.Threats;
+using Content.Shared._RuCM.Qualifications;
 using Content.Shared.Antag;
 using Content.Shared.Database;
 using Content.Shared.Ghost.Components;
@@ -139,8 +140,8 @@ public sealed partial class AntagSelectionSystem
         if (!_jobs.MindTryGetJob(mind, out var job))
             return true;
 
-        // CMU14: this job cannot be converted by any automatic antag definition.
-        if (job.ID == Content.Shared._RuCM.Qualifications.GOVFORRecruitJob.Id)
+        // Recruits are never eligible for mid-round antagonist selection, regardless of the antag's job blacklists.
+        if (job.ID == GOVFORRecruitJob.Id)
             return false;
 
         // "Sorry buddy, but you can't be a traitor and the head of security" - Urist 1984
