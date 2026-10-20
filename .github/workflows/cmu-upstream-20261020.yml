@@ -96,11 +96,11 @@ jobs:
           PY
           if [ -s conflict-files.txt ]; then
             python3 .github/scripts/resolve_cmu_upstream_20261020.py
+            git add -u
             if [ -n "$(git ls-files -u)" ]; then
               echo "Unresolved index entries remain" >&2
               exit 1
             fi
-            git add -u
             git rm .github/workflows/cmu-upstream-20261020.yml .github/scripts/resolve_cmu_upstream_20261020.py
             git diff --cached --check
             git commit -m "Merge CMU upstream through $(git rev-parse --short=12 FETCH_HEAD) with RuCMU fixes [skip ci]"

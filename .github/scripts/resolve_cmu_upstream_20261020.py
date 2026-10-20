@@ -63,7 +63,7 @@ def changelog_last(ours, theirs, whole):
     for entry in entries:
         if not entry.strip():
             continue
-        entry, count = re.subn(r"(?m)^  id: \d+\s*$", f"  id: {next_id}", entry, count=1)
+        entry, count = re.subn(r"(?m)^  id: \d+[ \t]*$", f"  id: {next_id}", entry, count=1)
         if count != 1:
             raise ValueError(f"Upstream changelog entry missing an ID: {entry[:100]}")
         output.append(entry)
