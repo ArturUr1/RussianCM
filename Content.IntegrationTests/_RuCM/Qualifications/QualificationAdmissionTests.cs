@@ -7,6 +7,7 @@ using Content.Server.CMU14.Round;
 using Content.Server.GameTicking.Events;
 using Content.Server.GameTicking.Presets;
 using Content.Server.Players.JobWhitelist;
+using Content.Server.Station.Events;
 using Content.Shared._RuCM.Qualifications;
 using Content.Shared.CCVar;
 using Content.Shared.CMU14.Round.Roles;
@@ -50,8 +51,12 @@ public sealed class QualificationAdmissionTests : GameTest
         });
     }
 
-    [Test]
-    public async Task InstructorAdmissionAndRevocationAreEnforcedAtTheActualSpawnBoundary()
+    [TestCase(true, true, "Insurgency")]
+    [TestCase(true, false, "Insurgency")]
+    [TestCase(false, false, "Insurgency")]
+    [TestCase(true, true, "ForceOnForce")]
+    [TestCase(true, true, "DistressSignal")]
+    public async Task InstructorAdmissionAndRevocationAreEnforcedAtTheActualSpawnBoundary(bool enabled, bool enforce, string preset)
     {
         var seed = Seed();
         var now = DateTimeOffset.UtcNow;
@@ -59,6 +64,14 @@ public sealed class QualificationAdmissionTests : GameTest
         seed.Players[ServerSession.UserId] = new() { Player = ServerSession.UserId,
             Grants = new() { ["sergeant"] = new("sergeant", QualificationStatus.Active, 1, Array.Empty<string>(), context, "test") } };
         await Configure(seed);
+        await Server.WaitPost(() =>
+        {
+            var cfg = Server.ResolveDependency<IConfigurationManager>();
+            cfg.SetCVar(QualificationCVars.Enabled, enabled);
+            cfg.SetCVar(QualificationCVars.Enforce, enforce);
+            Server.System<AuRoundSystem>().SetPreset(Server.ProtoMan.Index<GamePresetPrototype>(preset));
+            Server.System<QualificationSystem>().SynchronizeRolePolicy();
+        });
         await Server.WaitAssertion(() =>
         {
             Server.ResolveDependency<IConfigurationManager>().SetCVar(QualificationCVars.FailOpen, true);
@@ -79,11 +92,39 @@ public sealed class QualificationAdmissionTests : GameTest
                 });
             });
             await mutation;
+            await Server.WaitPost(() => Server.System<QualificationSystem>().Update(1));
+            await RunUntilSynced();
+            await Client.WaitAssertion(() =>
+            {
+                var policy = Client.System<QualificationRolePolicy>();
+                foreach (var id in InstructorJobs)
+                {
+                    Assert.That(policy.Eligibility[id], Is.EqualTo(active), "Lobby/latejoin eligibility follows accreditation changes");
+                    Assert.That(Client.ProtoMan.Index<JobPrototype>(id).Whitelisted, Is.False);
+                    var requirement = new QualificationAccessRequirement { Job = id };
+                    Assert.That(requirement.Check(Client.EntMan, Client.ProtoMan, HumanoidCharacterProfile.DefaultWithSpecies(),
+                        new Dictionary<string, TimeSpan>(), out _), Is.EqualTo(active));
+                }
+            });
             await Server.WaitAssertion(() =>
             {
                 foreach (var id in InstructorJobs)
                 {
                     Assert.That(Server.System<QualificationSystem>().CanTakeJob(ServerSession.UserId, id), Is.EqualTo(active));
+                    Assert.That(Server.ResolveDependency<JobWhitelistManager>().IsAllowed(ServerSession, id), Is.True,
+                        "An instructor never needs a second job whitelist");
+                    if (!active)
+                    {
+                        var candidates = new StationJobsGetCandidatesEvent(ServerSession.UserId, new() { id });
+                        Server.EntMan.EventBus.RaiseEvent(EventSource.Local, ref candidates);
+                        Assert.That(candidates.Jobs, Is.Empty);
+                        var disallowed = new GetDisallowedJobsEvent(ServerSession, new());
+                        Server.EntMan.EventBus.RaiseEvent(EventSource.Local, ref disallowed);
+                        Assert.That(disallowed.Jobs, Does.Contain(new ProtoId<JobPrototype>(id)));
+                        var allowed = new IsRoleAllowedEvent(ServerSession, new() { id }, null);
+                        Server.EntMan.EventBus.RaiseEvent(EventSource.Local, ref allowed);
+                        Assert.That(allowed.Cancelled, Is.True);
+                    }
                     foreach (var late in new[] { false, true })
                     {
                         var spawn = new PlayerBeforeSpawnEvent(ServerSession, HumanoidCharacterProfile.DefaultWithSpecies(), id, late, EntityUid.Invalid);
@@ -117,7 +158,7 @@ public sealed class QualificationAdmissionTests : GameTest
             {
                 Assert.That(Server.ResolveDependency<JobWhitelistManager>().IsAllowed(ServerSession, id), Is.True);
                 var actual = roles.GetRoleRequirements(prototypes.Index<JobPrototype>(id));
-                foreach (var requirement in requirements[id].Where(r => r is not OverallPlaytimeRequirement and not RoleTimeRequirement and not DepartmentTimeRequirement))
+                foreach (var requirement in requirements[id].Where(r => r is not OverallPlaytimeRequirement and not RoleTimeRequirement and not DepartmentTimeRequirement and not QualificationAccessRequirement))
                     Assert.That(actual, Does.Contain(requirement), id);
                 Assert.That(actual.OfType<QualificationAccessRequirement>().Count(), Is.EqualTo(1));
             }

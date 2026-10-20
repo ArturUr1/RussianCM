@@ -223,9 +223,8 @@ public sealed partial class QualificationSystem : EntitySystem
         // Mode availability and ordinary job bans are enforced by the recruit system and ticker.
         if (job == GOVFORRecruitJob.Id) return true;
         SynchronizeRolePolicy();
-        // No job whitelist: Instructor admission requires rank and accreditation in every mode,
-        // including when the general qualification CVar is disabled or storage is unavailable.
-        if (QualificationRules.IsDrillInstructor(job))
+        // CMU14: qualifications replace the separate instructor whitelist in every mode.
+        if (QualificationRules.IsDrillInstructor(job) && ProtoMan.TryIndex<JobPrototype>(job, out var instructor) && !instructor.IsSynthetic)
             return _ready && Service.IsJobAllowed(player, job);
         if (Mode == QualificationMode.Disabled || !ProtoMan.TryIndex<JobPrototype>(job, out var prototype) || prototype.RoundSide != RoundJobSide.Govfor || prototype.IsSynthetic) return true;
         if (!_ready) return _cfg.GetCVar(QualificationCVars.FailOpen);
@@ -238,41 +237,49 @@ public sealed partial class QualificationSystem : EntitySystem
         }
         return Mode != QualificationMode.Enforce || Service.IsJobAllowed(player, job);
     }
+    // CMU14: instructor admission also applies in Warn/Disabled; other roles retain their mode policy.
     private void OnCandidates(ref StationJobsGetCandidatesEvent ev)
     {
         SynchronizeRolePolicy();
+        var player = ev.Player;
         var enforce = Mode == QualificationMode.Enforce;
-        ev.Jobs.RemoveAll(j => (enforce || QualificationRules.IsDrillInstructor(j.Id)) && !CanTakeJob(ev.Player.UserId, j.Id));
+        ev.Jobs.RemoveAll(j => (enforce || QualificationRules.IsDrillInstructor(j.Id)) && !CanTakeJob(player.UserId, j.Id));
     }
+    // CMU14 method
     private void OnDisallowed(ref GetDisallowedJobsEvent ev)
     {
         SynchronizeRolePolicy();
-        if (Mode != QualificationMode.Enforce)
-        {
-            // Do not scan every job when the general gate is disabled; only Instructor remains gated.
-            foreach (var id in DrillInstructorJobIds)
-                if (!CanTakeJob(ev.Player.UserId, id)) ev.Jobs.Add(id);
-            return;
-        }
+        var enforce = Mode == QualificationMode.Enforce;
         foreach (var job in ProtoMan.EnumeratePrototypes<JobPrototype>())
-            if (!CanTakeJob(ev.Player.UserId, job.ID)) ev.Jobs.Add(job.ID);
+        {
+            if ((enforce || QualificationRules.IsDrillInstructor(job.ID)) && !CanTakeJob(ev.Player.UserId, job.ID))
+                ev.Jobs.Add(job.ID);
+        }
     }
+    // CMU14 method
     private void OnAllowed(ref IsRoleAllowedEvent ev)
     {
         SynchronizeRolePolicy();
         if (ev.Jobs == null) return;
         var enforce = Mode == QualificationMode.Enforce;
         foreach (var job in ev.Jobs)
+        {
             if ((enforce || QualificationRules.IsDrillInstructor(job.Id)) && !CanTakeJob(ev.Player.UserId, job.Id))
                 ev.Cancelled = true;
+        }
     }
     private void OnBeforeSpawn(PlayerBeforeSpawnEvent ev)
     {
         if (ev.JobId == GOVFORRecruitJob.Id) return;
         SynchronizeRolePolicy();
-        if (ev.JobId == null || !ProtoMan.TryIndex<JobPrototype>(ev.JobId, out var job) || job.RoundSide != RoundJobSide.Govfor || job.IsSynthetic) return;
-        var instructor = QualificationRules.IsDrillInstructor(ev.JobId);
-        if (Mode == QualificationMode.Disabled && !instructor) return;
+        // CMU14: recheck immediately before spawning, including revoked accreditation and fail-open mode.
+        if (ev.JobId != null && QualificationRules.IsDrillInstructor(ev.JobId) && !CanTakeJob(ev.Player.UserId, ev.JobId))
+        {
+            _chat.DispatchServerMessage(ev.Player, Loc.GetString("rucm-qualifications-instructor-access-required"));
+            ev.JobId = null;
+            return;
+        }
+        if (Mode == QualificationMode.Disabled || ev.JobId == null || !ProtoMan.TryIndex<JobPrototype>(ev.JobId, out var job) || job.RoundSide != RoundJobSide.Govfor || job.IsSynthetic) return;
         var eligibility = Service.CanTakeJob(ev.Player.UserId, ev.JobId);
         if (instructor ? CanTakeJob(ev.Player.UserId, ev.JobId) :
             eligibility.Allowed || !Service.Available && !Service.HasCachedPlayer(ev.Player.UserId) && _cfg.GetCVar(QualificationCVars.FailOpen)) return;

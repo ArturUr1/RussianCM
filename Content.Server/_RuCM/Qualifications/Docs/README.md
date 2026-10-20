@@ -53,9 +53,10 @@ both databases, and transfer only the `rucm_training` schema into the existing g
 using PostgreSQL backup/restore tools before restarting. If that schema already exists in the
 destination, review the records and resolve conflicts before importing; never overwrite it blindly.
 
-Qualifications enforce role access only for GOVFOR in **Insurgency**. Lobby mode votes use
+General qualification gates enforce role access for GOVFOR in **Insurgency**. Lobby mode votes use
 `AuRoundSystem.SelectedPreset`; an active round uses `GameTicker.CurrentPreset` first. Other modes
-restore the original role requirements and configured `game.role_timer_override`.
+restore the original requirements for ordinary roles. The three GOVFOR Drill Instructor variants
+always require Sergeant plus active Instructor Accreditation, with no separate job whitelist.
 Defaults are enabled/enforce/fail-closed. Existing explicit settings continue to take precedence:
 `enabled=false` is Disabled, `enabled=true,enforce=false` is Warn. Disabled/Warn retain the original
 timers. Enforce uses `JobRequirementOverridePrototype` to replace only Overall/Role/Department timer

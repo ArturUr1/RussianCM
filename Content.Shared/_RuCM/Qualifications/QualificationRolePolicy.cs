@@ -12,7 +12,7 @@ using Robust.Shared.Utility;
 
 namespace Content.Shared._RuCM.Qualifications;
 
-// Public role_timer_override extension: preserve non-time requirements and bans; instructor roles are gated by server accreditation, not a job whitelist.
+// CMU14: public role_timer_override extension; instructor admission remains mandatory in every mode.
 public sealed partial class QualificationRolePolicy : EntitySystem
 {
     public const string OverrideId = "RuCMInsurgencyQualifications";
@@ -35,8 +35,6 @@ public sealed partial class QualificationRolePolicy : EntitySystem
     }
     public override void Shutdown()
     { ProtoMan.PrototypesReloaded -= OnReload; base.Shutdown(); }
-    // Instructor jobs have whitelisted: false in their source prototype; this policy never
-    // mutates their job whitelist or reintroduces it when qualification enforcement is off.
     private string _signature = "";
     private readonly Dictionary<string, HashSet<JobRequirement>> _baseRequirements = new();
 
@@ -57,14 +55,17 @@ public sealed partial class QualificationRolePolicy : EntitySystem
     public string Apply(bool active, IEnumerable<string> jobs, bool client = false, string? baseline = null, Dictionary<string, HashSet<JobRequirement>>? requirements = null)
     {
         ClientPolicy = client;
-        var ids = jobs.Where(id => ProtoMan.TryIndex<JobPrototype>(id, out var job) && !job.IsSynthetic).OrderBy(j => j).ToArray();
+        // CMU14: disabling general qualification gates must not open instructor jobs without accreditation.
+        var ids = jobs.Where(id => (active || QualificationRules.IsDrillInstructor(id)) &&
+            ProtoMan.TryIndex<JobPrototype>(id, out var job) && !job.IsSynthetic).OrderBy(j => j).ToArray();
+        var enabled = active || ids.Length > 0;
         var current = _cfg.GetCVar(CCVars.GameRoleTimerOverride);
         if (baseline != null) _baseOverride = baseline;
         else if (current != OverrideId) _baseOverride = current;
         var signature = active + ":" + _baseOverride + ":" + string.Join(",", ids);
-        if (_signature == signature && (!active || client || current == OverrideId)) return _baseOverride;
+        if (_signature == signature && (!enabled || client || current == OverrideId)) return _baseOverride;
         _signature = signature;
-        if (active)
+        if (enabled)
         {
             var owned = ProtoMan.Index<JobRequirementOverridePrototype>(OverrideId);
             JobRequirementOverridePrototype? original = null;
@@ -94,7 +95,7 @@ public sealed partial class QualificationRolePolicy : EntitySystem
             if (!client) _cfg.SetCVar(CCVars.GameRoleTimerOverride, OverrideId);
         }
         else if (!client && current == OverrideId) _cfg.SetCVar(CCVars.GameRoleTimerOverride, _baseOverride);
-        _active = active;
+        _active = enabled;
         return _baseOverride;
     }
 }
@@ -109,7 +110,8 @@ public sealed partial class QualificationAccessRequirement : JobRequirement
     {
         var policy = entManager.System<QualificationRolePolicy>();
         // Server identity checks remain in QualificationSystem's public job events.
-        if (!policy.ClientPolicy || policy.Eligibility.GetValueOrDefault(Job, true)) { reason = null; return true; }
+        // CMU14: instructor buttons stay locked until the server has supplied positive eligibility.
+        if (!policy.ClientPolicy || policy.Eligibility.GetValueOrDefault(Job, !QualificationRules.IsDrillInstructor(Job))) { reason = null; return true; }
         reason = new FormattedMessage();
         reason.AddText(Loc.GetString("rucm-qualifications-instructor-access-required"));
         return false;
