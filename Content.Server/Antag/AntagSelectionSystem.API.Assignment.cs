@@ -94,6 +94,10 @@ public sealed partial class AntagSelectionSystem
         if (IsDisconnected(player))
             return false;
 
+        // CMU14: recruit exclusion is independent of preferences, entity replacement and observing.
+        if (CMUIsRecruitMind(player.GetMind()))
+            return false;
+
         if (IsAntagBanned(player, def))
             return false;
 
@@ -134,6 +138,10 @@ public sealed partial class AntagSelectionSystem
         // The jobless can always be antag!
         if (!_jobs.MindTryGetJob(mind, out var job))
             return true;
+
+        // CMU14: this job cannot be converted by any automatic antag definition.
+        if (job.ID == Content.Shared._RuCM.Qualifications.GOVFORRecruitJob.Id)
+            return false;
 
         // "Sorry buddy, but you can't be a traitor and the head of security" - Urist 1984
         // This checks nullability for our mind for free as well!
@@ -184,6 +192,10 @@ public sealed partial class AntagSelectionSystem
     /// <returns>True if there is nothing stopping this entity from being this antag. Or if there is no entity.</returns>
     public bool IsEntityValid([NotNullWhen(true)] EntityUid? uid, AntagSpecifierPrototype def)
     {
+        // CMU14: entity-based conversion must respect the current recruit profession as well.
+        if (uid is { } entity && _mind.TryGetMind(entity, out var mind, out _) && CMUIsRecruitMind(mind))
+            return false;
+
         // If the player has not spawned in as any entity (e.g., in the lobby), they can be given an antag role/entity.
         if (!_whitelist.CheckBoth(uid, def.Blacklist, def.Whitelist))
             return false;
