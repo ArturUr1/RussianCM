@@ -28,7 +28,7 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git remote add cmu-upstream https://github.com/AU-14/ColonialMarinesUniverse.git
-          git fetch --no-tags --filter=blob:none cmu-upstream master
+          git fetch --no-tags cmu-upstream master
           echo "# CMU upstream synchronization — 2026-10-20" > conflict-report.md
           echo "" >> conflict-report.md
           echo "Base: RuCMU $(git rev-parse HEAD)" >> conflict-report.md
