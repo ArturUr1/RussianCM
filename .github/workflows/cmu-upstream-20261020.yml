@@ -42,7 +42,7 @@ jobs:
           if [ "$code" -eq 0 ]; then
             echo "No conflicts — upstream merged." >> conflict-report.md
             git rm .github/workflows/cmu-upstream-20261020.yml
-            git commit -m "Merge CMU upstream through $(git rev-parse --short=12 FETCH_HEAD) [skip ci]"
+            git commit -m "Merge CMU upstream through $(git rev-parse --short=12 FETCH_HEAD)"
             git push origin HEAD:refs/heads/codex/cmu-upstream-20261020
             echo "sync_result=merged" >> "$GITHUB_OUTPUT"
             exit 0
@@ -103,7 +103,7 @@ jobs:
             fi
             git rm .github/workflows/cmu-upstream-20261020.yml .github/scripts/resolve_cmu_upstream_20261020.py
             git diff --cached --check
-            git commit -m "Merge CMU upstream through $(git rev-parse --short=12 FETCH_HEAD) with RuCMU fixes [skip ci]"
+            git commit -m "Merge CMU upstream through $(git rev-parse --short=12 FETCH_HEAD) with RuCMU fixes"
             git push origin HEAD:refs/heads/codex/cmu-upstream-20261020
             echo "sync_result=merged_after_conflicts" >> "$GITHUB_OUTPUT"
           else
