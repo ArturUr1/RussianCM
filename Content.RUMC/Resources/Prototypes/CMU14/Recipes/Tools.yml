@@ -14,16 +14,16 @@
         amount: 5
         doAfter: 5
   - node: target
-    entity: AU14CustomEntityAU14ToolShovelRuMC
+    entity: AU14ToolShovel
 
-- type: entity
-  id: AU14CustomEntityAU14ToolShovelRuMC
-  parent: AU14ToolShovel
-  suffix: AU14 Custom Construction
-  components:
-  - type: Construction
-    graph: AU14CustomGraphAU14ToolShovelRuMC
-    node: target
+# - type: entity
+#   id: AU14CustomEntityAU14ToolShovelRuMC
+#   parent: AU14ToolShovel
+#   suffix: AU14 Custom Construction
+#   components:
+#   - type: Construction
+#     graph: AU14CustomGraphAU14ToolShovelRuMC
+#     node: target
 
 - type: construction
   id: AU14CustomAU14ToolShovelRuMC

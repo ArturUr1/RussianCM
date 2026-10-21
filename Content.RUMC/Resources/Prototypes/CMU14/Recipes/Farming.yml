@@ -53,7 +53,7 @@
     edges:
     - to: target
       steps:
-      - entityId: AU14CustomEntityAU14ToolShovelRuMC
+      - entityId: AU14ToolShovel
         consume: false
         doAfter: 5
     - to: start
