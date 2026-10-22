@@ -1,5 +1,6 @@
 using Content.Server.Actions;
 using Content.Server.Chat.Systems;
+using Content.Server._RMC14.Marines.Roles.Ranks;
 using Content.Shared.ActionBlocker;
 using Content.Shared.Buckle;
 using Content.Shared.Buckle.Components;
