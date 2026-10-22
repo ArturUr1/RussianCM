@@ -11,6 +11,7 @@ namespace Content.IntegrationTests.CMU14.Round;
 public sealed class AttentionRoleTest : GameTest
 {
     private static readonly Robust.Shared.Prototypes.ProtoId<JobPrototype> AU14JobGOVFORPlatCoPrototype = "AU14JobGOVFORPlatCo";
+    private static readonly Robust.Shared.Prototypes.ProtoId<JobPrototype> AU14JobGOVFORSquadRiflemanPrototype = "AU14JobGOVFORSquadRifleman";
 
     public override PoolSettings PoolSettings => new() { Connected = false };
 
@@ -91,11 +92,17 @@ public sealed class AttentionRoleTest : GameTest
             Assert.That(SEntMan.GetComponent<AU14CallToAttentionAbilityComponent>(leader).ActionEntity, Is.Not.Null);
             SEntMan.AddComponents(commander, SProtoMan.Index<JobPrototype>(AU14JobGOVFORPlatCoPrototype).RoundComponents);
             SEntMan.EnsureComponent<OriginalRoleComponent>(commander).Job = AU14JobGOVFORPlatCoPrototype;
-            SEntMan.EnsureComponent<OriginalRoleComponent>(marine).Job = "AU14JobGOVFORSquadRifleman";
+            var marineJob = SProtoMan.Index<JobPrototype>(AU14JobGOVFORSquadRiflemanPrototype);
+            SEntMan.AddComponents(marine, marineJob.RoundComponents);
+            SEntMan.EnsureComponent<OriginalRoleComponent>(marine).Job = marineJob.ID;
             SEntMan.GetComponent<AU14CallToAttentionAbilityComponent>(leader).ResponseStagger = TimeSpan.Zero;
             var action = new AU14CallToAttentionActionEvent();
             SEntMan.EventBus.RaiseLocalEvent(leader, action);
             Assert.That(action.Handled, Is.True);
+            var ui = SEntMan.System<SharedUserInterfaceSystem>();
+            Assert.That(ui.IsUiOpen(leader, AU14MilitaryOrderUiKey.Key, leader), Is.True);
+            ui.RaiseUiMessage(leader, AU14MilitaryOrderUiKey.Key,
+                new AU14MilitaryOrderSelectedBuiMsg(AU14MilitaryOrder.Attention) { Actor = leader });
         });
         await Pair.RunSeconds(1);
         await Server.WaitAssertion(() =>
@@ -130,7 +137,7 @@ public sealed class AttentionRoleTest : GameTest
         await Server.WaitAssertion(() =>
             Assert.That(SEntMan.System<ActionBlockerSystem>().CanMove(marine), Is.False));
 
-        await Pair.RunSeconds(1.5);
+        await Pair.RunSeconds(1.5f);
         await Server.WaitAssertion(() =>
         {
             Assert.That(SEntMan.System<ActionBlockerSystem>().CanMove(marine), Is.True);

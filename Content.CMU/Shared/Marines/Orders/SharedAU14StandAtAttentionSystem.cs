@@ -1,10 +1,13 @@
 using Content.Shared.ActionBlocker;
+using Content.Shared.Movement.Events;
+using Robust.Shared.Timing;
 
 namespace Content.Shared.CMU14.Marines.Orders;
 
 public sealed class SharedAU14StandAtAttentionSystem : EntitySystem
 {
     [Dependency] private ActionBlockerSystem _actionBlocker = default!;
+    [Dependency] private IGameTiming _gameTiming = default!;
 
     public override void Initialize()
     {
@@ -16,7 +19,7 @@ public sealed class SharedAU14StandAtAttentionSystem : EntitySystem
 
     private void OnUpdateCanMove(Entity<AU14StandAtAttentionComponent> ent, ref UpdateCanMoveEvent args)
     {
-        if (ent.Comp.ExpiresAt > Timing.CurTime)
+        if (ent.Comp.ExpiresAt > _gameTiming.CurTime)
             args.Cancel();
     }
 
