@@ -1,8 +1,11 @@
 using Content.IntegrationTests.Fixtures;
 using Content.Shared.ActionBlocker;
+using Content.Shared._RMC14.Marines;
+using Content.Shared._RMC14.Marines.Roles.Ranks;
 using Content.Shared._RMC14.Roles;
 using Content.Shared.CMU14.Marines.Orders;
 using Content.Shared.CMU14.Round.Roles;
+using Content.Shared.Movement.Components;
 using Content.Shared.Roles;
 
 namespace Content.IntegrationTests.CMU14.Round;
@@ -10,9 +13,6 @@ namespace Content.IntegrationTests.CMU14.Round;
 [TestFixture]
 public sealed class AttentionRoleTest : GameTest
 {
-    private static readonly Robust.Shared.Prototypes.ProtoId<JobPrototype> AU14JobGOVFORPlatCoPrototype = "AU14JobGOVFORPlatCo";
-    private static readonly Robust.Shared.Prototypes.ProtoId<JobPrototype> AU14JobGOVFORSquadRiflemanPrototype = "AU14JobGOVFORSquadRifleman";
-
     public override PoolSettings PoolSettings => new() { Connected = false };
 
     [Test]
@@ -75,10 +75,10 @@ public sealed class AttentionRoleTest : GameTest
         });
     }
 
-    [TestCase("AU14JobGOVFORPlatOp")]
-    [TestCase("AU14JobGOVFORMilitaryPoliceMan")]
-    [TestCase("AU14JobOPFORMilitaryPoliceMan")]
-    public async Task AuthorizedCallsFocusOnTheSeniorOfficer(string jobId)
+    [TestCase("AU14JobGOVFORPlatOp", "RMCRankCaptain")]
+    [TestCase("AU14JobGOVFORSquadSergeant", "RMCRankSergeant")]
+    [TestCase("AU14JobOPFORSquadSergeant", "RMCRankSergeant")]
+    public async Task AuthorizedCallsFocusOnTheSeniorOfficer(string jobId, string rankId)
     {
         var map = await Pair.CreateTestMap();
         EntityUid leader = default, commander = default, marine = default;
@@ -87,14 +87,23 @@ public sealed class AttentionRoleTest : GameTest
             leader = SEntMan.SpawnEntity("CMMobHuman", map.GridCoords);
             commander = SEntMan.SpawnEntity("CMMobHuman", map.GridCoords.Offset(new Vector2(1, 2)));
             marine = SEntMan.SpawnEntity("CMMobHuman", map.GridCoords.Offset(new Vector2(1, 0)));
-            SEntMan.AddComponents(leader, SProtoMan.Index<JobPrototype>(jobId).RoundComponents);
+            var callerJob = SProtoMan.Index<JobPrototype>(jobId);
+            var force = callerJob.RoundSide == RoundJobSide.Opfor ? "OPFOR" : "GOVFOR";
+            var commanderJob = SProtoMan.Index<JobPrototype>($"AU14Job{force}PlatCo");
+            var marineJob = SProtoMan.Index<JobPrototype>($"AU14Job{force}SquadRifleman");
+            SEntMan.AddComponents(leader, callerJob.RoundComponents);
             SEntMan.EnsureComponent<OriginalRoleComponent>(leader).Job = jobId;
             Assert.That(SEntMan.GetComponent<AU14CallToAttentionAbilityComponent>(leader).ActionEntity, Is.Not.Null);
-            SEntMan.AddComponents(commander, SProtoMan.Index<JobPrototype>(AU14JobGOVFORPlatCoPrototype).RoundComponents);
-            SEntMan.EnsureComponent<OriginalRoleComponent>(commander).Job = AU14JobGOVFORPlatCoPrototype;
-            var marineJob = SProtoMan.Index<JobPrototype>(AU14JobGOVFORSquadRiflemanPrototype);
+            SEntMan.AddComponents(commander, commanderJob.RoundComponents);
+            SEntMan.EnsureComponent<OriginalRoleComponent>(commander).Job = commanderJob.ID;
             SEntMan.AddComponents(marine, marineJob.RoundComponents);
             SEntMan.EnsureComponent<OriginalRoleComponent>(marine).Job = marineJob.ID;
+            foreach (var uid in new[] { leader, commander, marine })
+                SEntMan.EnsureComponent<MarineComponent>(uid);
+            var ranks = SEntMan.System<SharedRankSystem>();
+            ranks.SetRank(leader, rankId);
+            ranks.SetRank(commander, "RMCRankMajor");
+            ranks.SetRank(marine, "RMCRankPrivate");
             SEntMan.GetComponent<AU14CallToAttentionAbilityComponent>(leader).ResponseStagger = TimeSpan.Zero;
             var action = new AU14CallToAttentionActionEvent();
             SEntMan.EventBus.RaiseLocalEvent(leader, action);
@@ -125,10 +134,19 @@ public sealed class AttentionRoleTest : GameTest
         await Server.WaitAssertion(() =>
         {
             marine = SEntMan.SpawnEntity("CMMobHuman", map.GridCoords);
+        });
+        // Uncontrolled humans lose their input mover after MapInit; this test needs one to check movement.
+        await Pair.RunTicksSync(1);
+        await Server.WaitAssertion(() =>
+        {
+            SEntMan.EnsureComponent<InputMoverComponent>(marine);
+            var actionBlocker = SEntMan.System<ActionBlockerSystem>();
+            actionBlocker.UpdateCanMove(marine);
+            Assert.That(actionBlocker.CanMove(marine), Is.True);
+
             var attention = SEntMan.EnsureComponent<AU14StandAtAttentionComponent>(marine);
             attention.ExpiresAt = SGameTiming.CurTime + TimeSpan.FromSeconds(12);
 
-            var actionBlocker = SEntMan.System<ActionBlockerSystem>();
             actionBlocker.UpdateCanMove(marine);
             Assert.That(actionBlocker.CanMove(marine), Is.False);
         });
@@ -140,6 +158,7 @@ public sealed class AttentionRoleTest : GameTest
         await Pair.RunSeconds(1.5f);
         await Server.WaitAssertion(() =>
         {
+            Assert.That(SEntMan.HasComponent<AU14StandAtAttentionComponent>(marine), Is.False);
             Assert.That(SEntMan.System<ActionBlockerSystem>().CanMove(marine), Is.True);
             SEntMan.DeleteEntity(marine);
         });

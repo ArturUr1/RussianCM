@@ -1,3 +1,4 @@
+# Keep a distinct path so the CMU liaison loadouts do not shadow this file.
 - type: loadout
   id: RMCHeadBeretWeYaRuMC
   effects:
