@@ -13567,6 +13567,44 @@ Entries:
   - S
 - author: rokudara-sen
   changes:
+  - message: Ambassadors can no longer speak Yautja, Arcturian or tactical sign language
+    type: Fix
+  - message: Ambassadors no longer receive the CO's command tablet announcements
+    type: Fix
+  - message: The Liquidator commander can fire their incinerator, and the UPP MOPP
+      suit has bio protection
+    type: Fix
+  - message: Lighters and zippos show their flame when lit
+    type: Fix
+  - message: All Weyland-Yutani roles count as Weyland-Yutani, not just scientists
+    type: Fix
+  - message: The APOLLO maintenance terminal is credited to Seegson
+    type: Fix
+  - message: The CLF commando call-in spawns the commandos, and they get CLF comms
+    type: Fix
+  - message: The vehicle supply window warns that pulled vehicles are not refunded
+    type: Tweak
+  - message: Rifles no longer bounce off predators most of the time, and xeno slashes
+      on armoured predators do CM13 damage
+    type: Fix
+  - message: Only the predator hears their own mask zoom
+    type: Fix
+  - message: The flamer drone can't fire from deep water
+    type: Fix
+  - message: Vehicles no longer take damage running over crates and barricades
+    type: Fix
+  - message: Rockets and IEDs properly damage vehicles
+    type: Fix
+  - message: 3D mode defaults to a 12 tile view distance and streams less around the
+      player
+    type: Tweak
+  - message: The 3D mouse capture hotkey works while the intro window is open
+    type: Fix
+  id: 857
+  time: '2026-10-13T09:04:48.0000000+00:00'
+  url: https://github.com/AU-14/ColonialMarinesUniverse/pull/2168
+- author: rokudara-sen
+  changes:
   - message: You now shoot where you look across z-levels. Point at something through
       a hole and you'll shoot down at it.
     type: Tweak
@@ -13990,6 +14028,13 @@ Entries:
   id: 810
   time: '2026-10-15T08:07:11.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/2182
+- author: Dongo4
+  changes:
+  - message: LV-1413 Solaris Ridge to the map pool for distress signal
+    type: Add
+  id: 858
+  time: '2026-10-15T13:09:40.0000000+00:00'
+  url: https://github.com/AU-14/ColonialMarinesUniverse/pull/2181
 - author: Ignies
   changes:
   - message: 'Added custom crayon symbols: draw your own in the crayon window and
@@ -14147,151 +14192,6 @@ Entries:
   id: 851
   time: '2026-10-18T02:22:26.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/2210
-- author: flex5hybrid
-  time: '2026-10-18T14:14:55Z'
-  changes:
-  - type: Add
-    message: Перенесены новые возможности и исправления CMU по состоянию на 18 октября.
-  - type: Fix
-    message: Сохранён русский перевод руководств снабжения и HAZOPS при обновлении
-      CMU.
-  id: 855
-  url: https://github.com/flex5hybrid/RussianCM/pull/531
-  labels:
-  - 'Changes: UI'
-  - 'Changes: Sprites'
-  - 'Changes: Map'
-  - 'Changes: Translations'
-  - XL
-- author: '- add: Добавлены крафты, молоток, грабли и грядки, дрова, растительное
-    волокно с деревьев и кустов.'
-  time: '2026-10-18T14:20:15Z'
-  changes:
-  - type: Add
-    message: Добавлена готовка (кастрюля, сковорода, печи) и дровяные печи с духовкой.
-  - type: Add
-    message: 'Добавлена электрическая стадия: станки, детали, прямые кабели и шахты,
-      трансформаторы, генераторы, нефть, бетон, подземные колонны.'
-  - type: Add
-    message: Добавлены паровая стадия, ковка, плавка и измельчение, новые руды и слои
-      добычи.
-  - type: Tweak
-    message: Вниз копают лопатой (земля и глина), киркой (глина → камень) и отбойным
-      буром (камень → чёрный камень).
-  - type: Tweak
-    message: При обвале выпадает ресурс слоя, упавшее приземляется на твёрдый тайл.
-  - type: Remove
-    message: Убраны обломки при обвале и затемнение упавших предметов.
-  id: 854
-  url: https://github.com/flex5hybrid/RussianCM/pull/522
-  labels:
-  - 'Changes: UI'
-  - 'Changes: Sprites'
-  - 'Changes: Map'
-  - 'Changes: Audio'
-  - 'Changes: Translations'
-  - XL
-- author: '- add: Добавлен раздел "Алкоголь RuMC" в меню крафтов, в котором содержатся
-    различные бутылки алкогольных напитков и сам их крафт из соответсвующих культур
-    растений'
-  time: '2026-10-18T14:20:40Z'
-  changes:
-  - type: Add
-    message: Добавлен раздел "Наркотики RuMC" в меню крафтов, в котором содержатся
-      различные табачные изделия и изделия из травы
-  - type: Add
-    message: Добавлен раздел "Инженерия RuMC", в который была добавлена станция технического
-      обслуживания синтетиков
-  - type: Add
-    message: Добавлен раздел "Развлечения RuMC". На данный момент там есть шахматы,
-      шашки и трость. В будущем планируется вернуть музыкальные инструменты
-  - type: Add
-    message: Добавлен раздел "Кухня RuMC", в котором находятся столовые принадлежности,
-      формочки для выпекания и кухонная утварь
-  - type: Add
-    message: Добавлен раздел "Материалы RuMC". В данный момент туда попал крафт ткани,
-      мешков с песком
-  - type: Add
-    message: Добавлен раздел "Инструменты RuMC". В данный момент там находится крафт
-      модифицированной сварки, ключа К92, лопаты
-  - type: Add
-    message: Добавлен раздел "Фермерство RuMC". Туда добавлены крафты грядок, инструментов
-      для садоводства, сумки для растений
-  id: 853
-  url: https://github.com/flex5hybrid/RussianCM/pull/520
-  labels:
-  - 'Changes: No C#'
-  - 'Changes: Translations'
-  - L
-- author: '- fix: Исключения при предпрослушивании и доставке TTS больше не выходят
-    из асинхронных обработчиков речи без перехвата.'
-  time: '2026-10-18T14:25:10Z'
-  changes:
-  - type: Fix
-    message: Исправлена ошибка вкладки голосов TTS при отключении от сервера.
-  id: 852
-  url: https://github.com/flex5hybrid/RussianCM/pull/511
-  labels:
-  - 'Changes: UI'
-  - M
-- author: '- fix: Дополнен русский перевод новых интерфейсов, предметов, материалов,
-    станков, оружейных и броневых вариантов, снабжения и модулей техники.'
-  time: '2026-10-18T19:26:17Z'
-  changes:
-  - type: Admin
-    message: Переведены состояния и действия обращений AHelp, игровые режимы администрации
-      и подтипы ролей.
-  id: 856
-  url: https://github.com/flex5hybrid/RussianCM/pull/533
-  labels:
-  - 'Changes: No C#'
-  - 'Changes: Translations'
-  - L
-- author: rokudara-sen
-  changes:
-  - message: Ambassadors can no longer speak Yautja, Arcturian or tactical sign language
-    type: Fix
-  - message: Ambassadors no longer receive the CO's command tablet announcements
-    type: Fix
-  - message: The Liquidator commander can fire their incinerator, and the UPP MOPP
-      suit has bio protection
-    type: Fix
-  - message: Lighters and zippos show their flame when lit
-    type: Fix
-  - message: All Weyland-Yutani roles count as Weyland-Yutani, not just scientists
-    type: Fix
-  - message: The APOLLO maintenance terminal is credited to Seegson
-    type: Fix
-  - message: The CLF commando call-in spawns the commandos, and they get CLF comms
-    type: Fix
-  - message: The vehicle supply window warns that pulled vehicles are not refunded
-    type: Tweak
-  - message: Rifles no longer bounce off predators most of the time, and xeno slashes
-      on armoured predators do CM13 damage
-    type: Fix
-  - message: Only the predator hears their own mask zoom
-    type: Fix
-  - message: The flamer drone can't fire from deep water
-    type: Fix
-  - message: Vehicles no longer take damage running over crates and barricades
-    type: Fix
-  - message: Rockets and IEDs properly damage vehicles
-    type: Fix
-  - message: 3D mode defaults to a 12 tile view distance and streams less around the
-      player
-    type: Tweak
-  - message: The 3D mouse capture hotkey works while the intro window is open
-    type: Fix
-  id: 857
-  time: '2026-10-13T09:04:48.0000000+00:00'
-  url: https://github.com/AU-14/ColonialMarinesUniverse/pull/2168
-- author: Dongo4
-  changes:
-  - message: LV-1413 Solaris Ridge to the map pool for distress signal
-    type: Add
-  id: 858
-  time: '2026-10-15T13:09:40.0000000+00:00'
-  url: https://github.com/AU-14/ColonialMarinesUniverse/pull/2181
 - author: KeiKiyomi
   changes:
   - message: Xenos can devolve for a full point refund within 15 seconds of evolving
@@ -14470,6 +14370,93 @@ Entries:
   id: 865
   time: '2026-10-18T13:54:52.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/2218
+- author: flex5hybrid
+  time: '2026-10-18T14:14:55Z'
+  changes:
+  - type: Add
+    message: Перенесены новые возможности и исправления CMU по состоянию на 18 октября.
+  - type: Fix
+    message: Сохранён русский перевод руководств снабжения и HAZOPS при обновлении
+      CMU.
+  id: 855
+  url: https://github.com/flex5hybrid/RussianCM/pull/531
+  labels:
+  - 'Changes: UI'
+  - 'Changes: Sprites'
+  - 'Changes: Map'
+  - 'Changes: Translations'
+  - XL
+- author: '- add: Добавлены крафты, молоток, грабли и грядки, дрова, растительное
+    волокно с деревьев и кустов.'
+  time: '2026-10-18T14:20:15Z'
+  changes:
+  - type: Add
+    message: Добавлена готовка (кастрюля, сковорода, печи) и дровяные печи с духовкой.
+  - type: Add
+    message: 'Добавлена электрическая стадия: станки, детали, прямые кабели и шахты,
+      трансформаторы, генераторы, нефть, бетон, подземные колонны.'
+  - type: Add
+    message: Добавлены паровая стадия, ковка, плавка и измельчение, новые руды и слои
+      добычи.
+  - type: Tweak
+    message: Вниз копают лопатой (земля и глина), киркой (глина → камень) и отбойным
+      буром (камень → чёрный камень).
+  - type: Tweak
+    message: При обвале выпадает ресурс слоя, упавшее приземляется на твёрдый тайл.
+  - type: Remove
+    message: Убраны обломки при обвале и затемнение упавших предметов.
+  id: 854
+  url: https://github.com/flex5hybrid/RussianCM/pull/522
+  labels:
+  - 'Changes: UI'
+  - 'Changes: Sprites'
+  - 'Changes: Map'
+  - 'Changes: Audio'
+  - 'Changes: Translations'
+  - XL
+- author: '- add: Добавлен раздел "Алкоголь RuMC" в меню крафтов, в котором содержатся
+    различные бутылки алкогольных напитков и сам их крафт из соответсвующих культур
+    растений'
+  time: '2026-10-18T14:20:40Z'
+  changes:
+  - type: Add
+    message: Добавлен раздел "Наркотики RuMC" в меню крафтов, в котором содержатся
+      различные табачные изделия и изделия из травы
+  - type: Add
+    message: Добавлен раздел "Инженерия RuMC", в который была добавлена станция технического
+      обслуживания синтетиков
+  - type: Add
+    message: Добавлен раздел "Развлечения RuMC". На данный момент там есть шахматы,
+      шашки и трость. В будущем планируется вернуть музыкальные инструменты
+  - type: Add
+    message: Добавлен раздел "Кухня RuMC", в котором находятся столовые принадлежности,
+      формочки для выпекания и кухонная утварь
+  - type: Add
+    message: Добавлен раздел "Материалы RuMC". В данный момент туда попал крафт ткани,
+      мешков с песком
+  - type: Add
+    message: Добавлен раздел "Инструменты RuMC". В данный момент там находится крафт
+      модифицированной сварки, ключа К92, лопаты
+  - type: Add
+    message: Добавлен раздел "Фермерство RuMC". Туда добавлены крафты грядок, инструментов
+      для садоводства, сумки для растений
+  id: 853
+  url: https://github.com/flex5hybrid/RussianCM/pull/520
+  labels:
+  - 'Changes: No C#'
+  - 'Changes: Translations'
+  - L
+- author: '- fix: Исключения при предпрослушивании и доставке TTS больше не выходят
+    из асинхронных обработчиков речи без перехвата.'
+  time: '2026-10-18T14:25:10Z'
+  changes:
+  - type: Fix
+    message: Исправлена ошибка вкладки голосов TTS при отключении от сервера.
+  id: 852
+  url: https://github.com/flex5hybrid/RussianCM/pull/511
+  labels:
+  - 'Changes: UI'
+  - M
 - author: sunzu432
   changes:
   - message: 'Hope''s Retreat: Preliminary work for expanded Octanis Complex (2F)
@@ -14501,6 +14488,19 @@ Entries:
   id: 866
   time: '2026-10-18T15:42:17.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/2213
+- author: '- fix: Дополнен русский перевод новых интерфейсов, предметов, материалов,
+    станков, оружейных и броневых вариантов, снабжения и модулей техники.'
+  time: '2026-10-18T19:26:17Z'
+  changes:
+  - type: Admin
+    message: Переведены состояния и действия обращений AHelp, игровые режимы администрации
+      и подтипы ролей.
+  id: 856
+  url: https://github.com/flex5hybrid/RussianCM/pull/533
+  labels:
+  - 'Changes: No C#'
+  - 'Changes: Translations'
+  - L
 - author: troytroy400
   changes:
   - message: Ghosts look like the character they died as, same as in CM13. The ghost
@@ -14718,6 +14718,22 @@ Entries:
   id: 876
   time: '2026-10-19T21:12:53.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/2233
+- author: '- fix: Рекруты GOVFOR больше не назначаются антагонистами при старте и
+    во время раунда.'
+  time: '2026-10-20T04:23:59Z'
+  changes:
+  - type: Tweak
+    message: Рекруты начинают службу с первым уровнем владения оружием и строительства.
+  - type: Remove
+    message: Убран отдельный whitelist сержантов-инструкторов GOVFOR; сохранён обязательный
+      допуск по квалификациям.
+  - type: Tweak
+    message: Использование рекрутов за пределами базы GOVFOR запрещено правилами без
+      чрезвычайных исключений. Обновлены КМБ и методические материалы.
+  id: 895
+  url: https://github.com/flex5hybrid/RussianCM/pull/538
+  labels:
+  - M
 - author: Mary-Marilyn
   changes:
   - message: Added surgical vests to the civilian medical vendors.
@@ -15239,5 +15255,52 @@ Entries:
   id: 894
   time: '2026-10-22T14:13:05.0000000+00:00'
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/2234
+- author: '- add: Перенесены обновления CMU по 22 октября 2026 года.'
+  time: '2026-10-22T18:40:02Z'
+  changes:
+  - type: Fix
+    message: Сохранены настройки RuCMU и обновлены русские руководства для новых механик.
+  id: 898
+  url: https://github.com/flex5hybrid/RussianCM/pull/548
+  labels:
+  - 'Changes: UI'
+  - 'Changes: Sprites'
+  - 'Changes: Map'
+  - 'Changes: Audio'
+  - 'Changes: Translations'
+  - 'Changes: Shaders'
+  - XL
+- author: '- add: Добавлено единое меню военных приказов, салют и стойка смирно.'
+  time: '2026-10-22T18:40:19Z'
+  changes:
+  - type: Tweak
+    message: Приказы доступны офицерам и нижестоящим командирам в пределах их сил.
+  id: 897
+  url: https://github.com/flex5hybrid/RussianCM/pull/547
+  labels:
+  - 'Changes: Translations'
+  - M
+- author: RomiGur
+  time: '2026-10-22T18:57:12Z'
+  changes:
+  - type: Fix
+    message: Ловушка с дробовиком сапера теперь выпускает картечь, а не просто хлопушка.
+  - type: Code
+    message: Исправлены ошибки при сборке билда.
+  id: 896
+  url: https://github.com/flex5hybrid/RussianCM/pull/543
+  labels:
+  - S
+- author: '- fix: Восстановлены описания вариантов предметов и дверей, исправлены
+    ошибки загрузки растений, плавильни и формы Seegson.'
+  time: '2026-10-22T19:56:07Z'
+  changes:
+  - type: Fix
+    message: Восстановлен пресет корпоративного берета с прежним требованием по времени.
+  id: 899
+  url: https://github.com/flex5hybrid/RussianCM/pull/552
+  labels:
+  - 'Changes: Translations'
+  - M
 Name: CMU
 Order: -1
