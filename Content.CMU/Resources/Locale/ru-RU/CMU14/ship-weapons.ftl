@@ -123,60 +123,80 @@ ent-CMUShipWeaponGunFlipped = орбитальная батарея
 ## Спавнеры корабельных ударов
 ent-CMUShipWeaponStrikeSpawnerGatlingBarrage = корабельный удар заградительным огнём «Гатлинг»
     .suffix = CMU, ЗАПУСКАЕТ КОРАБЕЛЬНЫЙ УДАР!!!
+    .desc = { "" }
 
 ent-CMUShipWeaponStrikeSpawnerGatlingBarrageInstant = корабельный удар заградительным огнём «Гатлинг»
     .suffix = CMU, МГНОВЕННЫЙ КОРАБЕЛЬНЫЙ УДАР!!!
+    .desc = { "" }
 
 ent-CMUShipWeaponStrikeSpawnerWalkingBarrage = корабельный удар шагающим заградительным огнём
     .suffix = CMU, ЗАПУСКАЕТ КОРАБЕЛЬНЫЙ УДАР!!!
+    .desc = { "" }
 
 ent-CMUShipWeaponStrikeSpawnerWalkingBarrageInstant = корабельный удар шагающим заградительным огнём
     .suffix = CMU, МГНОВЕННЫЙ КОРАБЕЛЬНЫЙ УДАР!!!
+    .desc = { "" }
 
 ent-CMUShipWeaponStrikeSpawner120mmHEBarrage = корабельный удар 120-мм ОФ заградительным огнём
     .suffix = CMU, ЗАПУСКАЕТ КОРАБЕЛЬНЫЙ УДАР!!!
+    .desc = { "" }
 
 ent-CMUShipWeaponStrikeSpawner120mmHEBarrageInstant = корабельный удар 120-мм ОФ заградительным огнём
     .suffix = CMU, МГНОВЕННЫЙ КОРАБЕЛЬНЫЙ УДАР!!!
+    .desc = { "" }
 
 ent-CMUShipWeaponStrikeSpawner380mmHEBarrage = корабельный удар 380-мм ОФ заградительным огнём
     .suffix = CMU, ЗАПУСКАЕТ КОРАБЕЛЬНЫЙ УДАР!!!
+    .desc = { "" }
 
 ent-CMUShipWeaponStrikeSpawner380mmHEBarrageInstant = корабельный удар 380-мм ОФ заградительным огнём
     .suffix = CMU, МГНОВЕННЫЙ КОРАБЕЛЬНЫЙ УДАР!!!
+    .desc = { "" }
 
 ent-CMUShipWeaponStrikeSpawnerGasStrike = корабельный газовый удар
     .suffix = CMU, ЗАПУСКАЕТ КОРАБЕЛЬНЫЙ УДАР!!!
+    .desc = { "" }
 
 ent-CMUShipWeaponStrikeSpawnerGasStrikeInstant = корабельный газовый удар
     .suffix = CMU, МГНОВЕННЫЙ КОРАБЕЛЬНЫЙ УДАР!!!
+    .desc = { "" }
 
 ent-CMUShipWeaponStrikeSpawnerEMSStrike = корабельный ЭМИ-удар
     .suffix = CMU, ЗАПУСКАЕТ КОРАБЕЛЬНЫЙ УДАР!!!
+    .desc = { "" }
 
 ent-CMUShipWeaponStrikeSpawnerEMSStrikeInstant = корабельный ЭМИ-удар
     .suffix = CMU, МГНОВЕННЫЙ КОРАБЕЛЬНЫЙ УДАР!!!
+    .desc = { "" }
 
 ent-CMUShipWeaponStrikeSpawnerSmokeStrike = корабельный дымовой удар
     .suffix = CMU, ЗАПУСКАЕТ КОРАБЕЛЬНЫЙ УДАР!!!
+    .desc = { "" }
 
 ent-CMUShipWeaponStrikeSpawnerSmokeStrikeInstant = корабельный дымовой удар
     .suffix = CMU, МГНОВЕННЫЙ КОРАБЕЛЬНЫЙ УДАР!!!
+    .desc = { "" }
 
 ent-CMUShipWeaponStrikeSpawnerAirburstStrike = корабельный удар с воздушным подрывом
     .suffix = CMU, ЗАПУСКАЕТ КОРАБЕЛЬНЫЙ УДАР!!!
+    .desc = { "" }
 
 ent-CMUShipWeaponStrikeSpawnerAirburstStrikeInstant = корабельный удар с воздушным подрывом
     .suffix = CMU, МГНОВЕННЫЙ КОРАБЕЛЬНЫЙ УДАР!!!
+    .desc = { "" }
 
 ent-CMUShipWeaponStrikeSpawnerPrecisionStrike = корабельный точный удар
     .suffix = CMU, ЗАПУСКАЕТ КОРАБЕЛЬНЫЙ УДАР!!!
+    .desc = { "" }
 
 ent-CMUShipWeaponStrikeSpawnerPrecisionStrikeInstant = корабельный точный удар
     .suffix = CMU, МГНОВЕННЫЙ КОРАБЕЛЬНЫЙ УДАР!!!
+    .desc = { "" }
 
 ent-CMUShipWeaponStrikeSpawnerRailcannonStrike = корабельный удар рельсовой пушки
     .suffix = CMU, ЗАПУСКАЕТ КОРАБЕЛЬНЫЙ УДАР!!!
+    .desc = { "" }
 
 ent-CMUShipWeaponStrikeSpawnerRailcannonStrikeInstant = корабельный удар рельсовой пушки
     .suffix = CMU, МГНОВЕННЫЙ КОРАБЕЛЬНЫЙ УДАР!!!
+    .desc = { "" }

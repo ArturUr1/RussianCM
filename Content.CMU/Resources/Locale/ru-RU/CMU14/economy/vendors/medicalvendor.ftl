@@ -12,9 +12,11 @@ ent-AU14VendorBloodField = полевой дозатор крови ВеЮ
 
 ent-AU14VendorBloodFieldPowered = полевой дозатор крови ВеЮ
     .suffix = С питанием
+    .desc = { ent-AU14VendorBloodField.desc }
 
 ent-AU14GeneralMedicalVendorLight = полевой торгомат медицинских припасов ВеЮ
     .desc = Медицинский фармацевтический дозатор с базовыми медицинскими припасами.
 
 ent-AU14GeneralMedicalVendorLightAlwaysPowered = полевой торгомат медицинских припасов ВеЮ
     .suffix = С питанием
+    .desc = { ent-AU14GeneralMedicalVendorLight.desc }
