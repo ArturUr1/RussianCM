@@ -23,14 +23,30 @@
 
 ## Архитектура
 
-* `Content.Shared/_RuCM/Kaban`: CVars, запросы и приватные состояния EUI.
-* `Content.Server/_RuCM/Kaban`: экономические правила, интеграция БД,
+* `Content.RUMC/Shared/Kaban`: CVars, запросы и приватные состояния EUI.
+* `Content.RUMC/Server/Kaban`: экономические правила, интеграция БД,
   подготовленные приоритеты, TTS и Discord.
-* `Content.Client/_RuCM/Kaban`: окно и кнопки в лобби и Escape.
-* `Content.Server.Database/_RuCM/Kaban`: EF-модель.
-* `Content.Server.Database/_RuCM/Migrations`: миграции обоих провайдеров;
+* `Content.RUMC/Client/Kaban`: окно и кнопки в лобби и Escape.
+* `Content.RUMC/Database/Kaban`: EF-модель.
+* `Content.RUMC/Database/Migrations`: миграции обоих провайдеров;
   общие снимки EF обновляются генератором.
-* `Content.IntegrationTests/_RuCM/Kaban`: проверки реальных провайдеров.
+* `Content.RUMC/Tests/Kaban`: проверки реальных провайдеров.
+* `Content.RUMC/Resources/Locale`: русский и английский FTL.
+* `Content.RUMC/Docs/Kaban`: документация, проверки и пример конфигурации.
+
+Все новые файлы системы находятся в `Content.RUMC`. Существующие проекты подключают
+её подкаталоги; `Content.Server.Database` отдельно подключает `Content.RUMC/Database`.
+Пространства имён `_RuCM` сохранены, как и сборки EUI/EF и идентификаторы миграций.
+В общих каталогах остаются точки интеграции, общие снимки EF и правка существующей
+проверки миграции профилей. Ресурсы используют существующее подключение
+`Content.RUMC/Resources`, сохраняя прежние виртуальные пути `/Locale/...`.
+
+Следующие миграции этой системы нужно создавать в том же каталоге:
+
+```powershell
+dotnet ef migrations add <Name> --project Content.Server.Database --context SqliteServerDbContext -o ../Content.RUMC/Database/Migrations/Sqlite --namespace Content.Server.Database._RuCM.Migrations.Sqlite
+dotnet ef migrations add <Name> --project Content.Server.Database --context PostgresServerDbContext -o ../Content.RUMC/Database/Migrations/Postgres --namespace Content.Server.Database._RuCM.Migrations.Postgres
+```
 
 Сервер берёт автора из аутентифицированной EUI-сессии. Клиент передаёт только
 запрос, UUID операции и явное подтверждение покупки с показанной ценой. Повтор
