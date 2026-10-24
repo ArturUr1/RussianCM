@@ -12,7 +12,7 @@ namespace Content.Server._RuCM.Kaban;
 
 // CMU14: policy is built from the authenticated session and server configuration, never from the request.
 public sealed record KabanPolicy(Guid Actor, bool Manager, bool Senior, bool Shop, bool Priorities,
-    bool Tts, bool Discord, int Fund, int Limit, int ExceptionalLimit, string Server,
+    bool Tts, bool Discord, string Server,
     string Round, bool Lobby, string[] CommandJobs, string[] AvailableJobs,
     bool VoiceAvailable = true, bool VoiceVerified = true);
 
@@ -20,14 +20,11 @@ public sealed class KabanDenied(string key) : Exception(key);
 
 /// <summary>
 /// All writers acquire the same database row before reading. This serializes economic decisions
-/// across processes, including monthly funds and rolling limits. The lock and all changes commit together.
+/// across processes, including direct balance changes and rolling limits. The lock and all changes commit together.
 /// Calls run through ServerDbManager's worker pool; no database work is done in a job lottery.
 /// </summary>
 public static class KabanEconomy
 {
-    public static readonly string[] Categories =
-        ["development", "administration", "testing", "localization", "training", "content", "events", "merit"];
-
     public static bool IsPriority(string id)
         => id is "priority3" or "priority5" or "pack3" or "pack5" or "flex3" or "flex5";
 
@@ -59,7 +56,7 @@ public static class KabanEconomy
     public static async Task<string> Execute(ServerDbContext db, KabanPolicy policy, KabanRequest request, DateTime utcNow)
     {
         Require(request.Operation != Guid.Empty && policy.Actor != Guid.Empty);
-        Require(request.Text.Length <= 2000 && request.Product.Length <= 32 && request.Category.Length <= 32
+        Require(request.Text.Length <= 2000 && request.Product.Length <= 32 && request.Category.Length <= 32 && (request.TargetName?.Length ?? 0) <= 64
             && request.Jobs.Length <= 3 && request.Jobs.All(j => j.Length <= 128));
         var fingerprint = Convert.ToHexString(SHA256.HashData(Encoding.UTF8.GetBytes(JsonSerializer.Serialize(request))));
         await using var tx = await db.Database.BeginTransactionAsync();
@@ -81,32 +78,10 @@ public static class KabanEconomy
                 await Purchase(db, policy, request, now);
                 break;
             case KabanAction.Nominate:
-                Require(request.Target != Guid.Empty && request.Target != policy.Actor, "cmu-kaban-self-award");
-                Require(request.Amount > 0 && request.Amount <= policy.ExceptionalLimit
-                    && Categories.Contains(request.Category) && request.Text.Trim().Length >= 20);
-                Require(await db.Player.AnyAsync(p => p.UserId == request.Target), "cmu-kaban-unknown-account");
-                Require(await db.Set<KabanAward>().CountAsync(a => a.Initiator == policy.Actor && a.Status == "pending") < 5,
-                    "cmu-kaban-pending-limit");
-                db.Add(new KabanAward
-                {
-                    Id = request.Operation, Recipient = request.Target, Initiator = policy.Actor,
-                    Amount = request.Amount, Category = request.Category, Reason = request.Text.Trim(),
-                    Exceptional = request.Exceptional, At = now,
-                });
-                target = request.Target;
-                break;
             case KabanAction.Approve:
-                target = await Approve(db, policy, request.Item, utcNow);
-                break;
             case KabanAction.Reject:
-            {
-                Require(policy.Manager, "cmu-kaban-forbidden");
-                var award = await db.Set<KabanAward>().SingleAsync(a => a.Id == request.Item);
-                Require(award.Status == "pending");
-                award.Status = "rejected";
-                target = award.Recipient;
-                break;
-            }
+                // Preserve wire values, but retire the former nomination/approval workflow.
+                throw new KabanDenied("cmu-kaban-forbidden");
             case KabanAction.Arm:
                 await Arm(db, policy, request, now);
                 break;
@@ -199,12 +174,17 @@ public static class KabanEconomy
                 break;
             }
             case KabanAction.CorrectBalance:
-                Require(policy.Senior && request.Confirmed && request.Target != Guid.Empty
-                    && request.Target != policy.Actor && request.Amount < 0 && request.Text.Trim().Length >= 20,
-                    "cmu-kaban-forbidden");
-                // Positive corrections must pass the normal award approvals and monthly budget.
-                target = request.Target;
-                await ChangeBalance(db, target, policy.Actor, request.Amount, request.Operation, now, request.Text);
+                Require(policy.Manager, "cmu-kaban-forbidden");
+                Require(request.Confirmed, "cmu-kaban-confirm-required");
+                Require(request.Target == Guid.Empty && !string.IsNullOrWhiteSpace(request.TargetName) && request.Amount != 0);
+                var name = request.TargetName!.Trim().ToUpperInvariant();
+                var matches = await db.Player.Where(p => p.LastSeenUserName.ToUpper() == name)
+                    .Select(p => p.UserId).Take(2).ToArrayAsync();
+                Require(matches.Length > 0, "cmu-kaban-unknown-account");
+                Require(matches.Length == 1, "cmu-kaban-ambiguous-account");
+                target = matches[0];
+                await ChangeBalance(db, target, policy.Actor, request.Amount, request.Operation, now,
+                    "manager-adjustment:" + request.Text.Trim(), earned: request.Amount > 0);
                 break;
             default:
                 throw new KabanDenied("cmu-kaban-invalid");
@@ -241,34 +221,6 @@ public static class KabanEconomy
             Id = operation, UserId = user, Actor = actor, Delta = delta,
             Balance = wallet.Balance, At = now, Reason = reason,
         });
-    }
-
-    private static async Task<Guid> Approve(ServerDbContext db, KabanPolicy policy, Guid id, DateTime utcNow)
-    {
-        Require(policy.Manager, "cmu-kaban-forbidden");
-        var award = await db.Set<KabanAward>().SingleOrDefaultAsync(a => a.Id == id);
-        Require(award != null && award.Status == "pending");
-        Require(award!.Recipient != policy.Actor, "cmu-kaban-self-award");
-        var approvals = await db.Set<KabanApproval>().Where(a => a.AwardId == id).ToListAsync();
-        Require(approvals.All(a => a.Approver != policy.Actor), "cmu-kaban-already-approved");
-        var approval = new KabanApproval { AwardId = id, Approver = policy.Actor, Senior = policy.Senior, At = utcNow.Ticks };
-        db.Add(approval);
-        approvals.Add(approval);
-        // Aggregate all paid awards this month: splitting submissions never reduces approval requirements.
-        var month = new DateTime(utcNow.Year, utcNow.Month, 1, 0, 0, 0, DateTimeKind.Utc).Ticks;
-        var paid = db.Set<KabanAward>().Where(a => a.Status == "paid" && a.PaidAt >= month);
-        var recipientTotal = await paid.Where(a => a.Recipient == award.Recipient).SumAsync(a => (long) a.Amount) + award.Amount;
-        Require(recipientTotal <= (award.Exceptional ? policy.ExceptionalLimit : policy.Limit), "cmu-kaban-recipient-limit");
-        var special = recipientTotal > 300 || award.Amount > 300 || award.Exceptional;
-        if (special && !approvals.Any(a => a.Senior) || recipientTotal > 100 && approvals.Count < 2)
-            return award.Recipient;
-        var fund = await paid.SumAsync(a => (long) a.Amount);
-        Require(fund + award.Amount <= policy.Fund, "cmu-kaban-fund-limit");
-        award.Status = "paid";
-        award.PaidAt = utcNow.Ticks;
-        await ChangeBalance(db, award.Recipient, policy.Actor, award.Amount, award.Id, utcNow.Ticks,
-            $"award:{award.Category}:{award.Reason}", true);
-        return award.Recipient;
     }
 
     private static async Task Purchase(ServerDbContext db, KabanPolicy policy, KabanRequest request, long now)

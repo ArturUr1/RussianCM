@@ -27,7 +27,7 @@ public sealed class KabanEconomyTests(bool postgres)
     private static readonly DateTime Now = new(2026, 10, 24, 12, 0, 0, DateTimeKind.Utc);
 
     private KabanPolicy Policy(Guid? actor = null, bool manager = false, bool senior = false)
-        => new(actor ?? _user, manager || senior, senior, true, true, true, true, 4000, 400, 600,
+        => new(actor ?? _user, manager || senior, senior, true, true, true, true,
             "kaban-test", "round-one", true, ["command"], ["command", "rifleman", "medic"]);
 
     private ServerDbContext Open()
@@ -61,7 +61,7 @@ public sealed class KabanEconomyTests(bool postgres)
             db.Player.Add(new Player
             {
                 UserId = user, FirstSeenTime = Now, LastSeenTime = Now,
-                LastSeenAddress = IPAddress.Loopback, LastSeenUserName = user.ToString(),
+                LastSeenAddress = IPAddress.Loopback, LastSeenUserName = UserName(user),
             });
         db.Add(new KabanWallet { UserId = _user, Balance = 1000, Earned = 1000 });
         await db.SaveChangesAsync();
@@ -91,22 +91,222 @@ public sealed class KabanEconomyTests(bool postgres)
     private static KabanRequest Buy(string product = "priority3", int amount = 60)
         => new() { Action = KabanAction.Purchase, Product = product, Amount = amount, Confirmed = true };
 
+    private KabanRequest Adjust(int amount, Guid? target = null)
+        => new() { Action = KabanAction.CorrectBalance, TargetName = UserName(target ?? _user), Amount = amount, Confirmed = true };
+
+    private string UserName(Guid user)
+        => user == _user ? "KabanUser" : user == _manager ? "KabanManager" : user == _senior ? "KabanSenior" : user.ToString();
+
+    [Test]
+    public async Task AccountNameIsCaseInsensitiveAndRetryDoesNotRedirectAfterRename()
+    {
+        var request = Adjust(300);
+        request.TargetName = "  kabanUSER  ";
+        await Execute(request, Policy(_manager, true));
+        await using var db = Open();
+        await db.Player.Where(player => player.UserId == _user).ExecuteUpdateAsync(setters =>
+            setters.SetProperty(player => player.LastSeenUserName, "RenamedKabanUser"));
+        await Execute(request, Policy(_manager, true));
+        Assert.That((await db.Set<KabanWallet>().SingleAsync()).Balance, Is.EqualTo(1300));
+        Assert.That(await db.Set<KabanLedger>().CountAsync(), Is.EqualTo(1));
+    }
+
+    [Test]
+    public async Task AmbiguousAccountNamesAndConflictingUuidCannotChangeBalances()
+    {
+        var forged = Adjust(300);
+        forged.Target = _manager;
+        Assert.ThrowsAsync<KabanDenied>(() => Execute(forged, Policy(_manager, true)));
+        await using var db = Open();
+        db.Player.Add(new Player
+        {
+            UserId = Guid.NewGuid(), LastSeenUserName = "kabanuser", FirstSeenTime = Now,
+            LastSeenTime = Now, LastSeenAddress = IPAddress.Loopback,
+        });
+        await db.SaveChangesAsync();
+        Assert.ThrowsAsync<KabanDenied>(() => Execute(Adjust(300), Policy(_manager, true)));
+        Assert.That(await db.Set<KabanLedger>().CountAsync(), Is.Zero);
+        Assert.That((await db.Set<KabanWallet>().SingleAsync()).Balance, Is.EqualTo(1000));
+    }
+
+    [Test]
+    public async Task SimultaneousRoundForcingByTwoAccountsNeverChargesEither()
+    {
+        await Execute(Adjust(1000, _manager), Policy(_manager, true));
+        async Task<bool> Attempt(Guid actor)
+        {
+            try { await Execute(Buy("full", 800), Policy(actor)); return true; }
+            catch (KabanDenied) { return false; }
+        }
+        Assert.That(await Task.WhenAll(Task.Run(() => Attempt(_user)), Task.Run(() => Attempt(_manager))), Is.All.False);
+        await using var db = Open();
+        Assert.That(await db.Set<KabanWallet>().Select(wallet => wallet.Balance).ToArrayAsync(), Is.All.EqualTo(1000));
+        Assert.That(await db.Set<KabanPurchase>().CountAsync(), Is.Zero);
+        Assert.That(await db.Set<KabanRoundRequest>().CountAsync(), Is.Zero);
+        Assert.That(await db.Set<KabanLedger>().CountAsync(), Is.EqualTo(1));
+    }
+
+    [Test]
+    public async Task TwoAccountsCanReserveSameJobAndSettleIndependently()
+    {
+        await Execute(Adjust(1000, _manager), Policy(_manager, true));
+        await Task.WhenAll(Task.Run(() => Execute(Buy())), Task.Run(() => Execute(Buy(), Policy(_manager))));
+        await using var db = Open();
+        var tokens = await db.Set<KabanToken>().ToArrayAsync();
+        var requests = tokens.Select(token => (token.UserId, Request: new KabanRequest
+            { Action = KabanAction.Arm, Item = token.Id, Jobs = ["rifleman"] })).ToArray();
+        await Task.WhenAll(requests.Select(pair => Task.Run(() => Execute(pair.Request, Policy(pair.UserId)))));
+        Assert.That(await db.Set<KabanToken>().CountAsync(token => token.Status == "reserved"), Is.EqualTo(2));
+        await Task.WhenAll(requests.Select(pair => Task.Run(() => Settle(pair.Request.Operation, true, "rifleman"))));
+        Assert.That(await db.Set<KabanToken>().CountAsync(token => token.Status == "spent"), Is.EqualTo(2));
+        Assert.That(await db.Set<KabanWallet>().Select(wallet => wallet.Balance).ToArrayAsync(), Is.All.EqualTo(940));
+    }
+
+    [Test]
+    public async Task SameAccountCannotReserveTwoTokensConcurrentlyOrDuplicateRoles()
+    {
+        await Execute(Buy("pack3", 165));
+        await using var db = Open();
+        var tokens = await db.Set<KabanToken>().ToArrayAsync();
+        async Task<bool> Attempt(Guid token)
+        {
+            try { await Execute(new KabanRequest { Action = KabanAction.Arm, Item = token, Jobs = ["rifleman"] }); return true; }
+            catch (KabanDenied) { return false; }
+        }
+        var outcomes = await Task.WhenAll(tokens.Select(token => Task.Run(() => Attempt(token.Id))));
+        Assert.That(outcomes.Count(success => success), Is.EqualTo(1));
+        Assert.That(await db.Set<KabanToken>().CountAsync(token => token.Status == "reserved"), Is.EqualTo(1));
+        await Execute(Buy("flex3", 100));
+        var flexible = await db.Set<KabanToken>().SingleAsync(token => token.Flexible);
+        var duplicate = Assert.ThrowsAsync<KabanDenied>(() => Execute(new KabanRequest
+            { Action = KabanAction.Arm, Item = flexible.Id, Jobs = ["rifleman", "rifleman"] }));
+        Assert.That(duplicate!.Message, Is.EqualTo("cmu-kaban-invalid"));
+    }
+
+    [Test]
+    public async Task DifferentManagersCanCreditAndDeductSameAccountWithoutLostUpdates()
+    {
+        await Task.WhenAll(Task.Run(() => Execute(Adjust(200), Policy(_manager, true))),
+            Task.Run(() => Execute(Adjust(-300), Policy(_senior, true, true))));
+        await using var db = Open();
+        var wallet = await db.Set<KabanWallet>().SingleAsync();
+        Assert.That(wallet.Balance, Is.EqualTo(900));
+        Assert.That(wallet.Earned, Is.EqualTo(1200));
+        Assert.That(await db.Set<KabanLedger>().CountAsync(), Is.EqualTo(2));
+    }
+
+    [Test]
+    public async Task ManagerCanImmediatelyCreditAndDeductWithoutAwardLimits()
+    {
+        await Execute(Adjust(100000), Policy(_manager, true));
+        await Execute(Adjust(-300), Policy(_manager, true));
+        await using var db = Open();
+        var wallet = await db.Set<KabanWallet>().SingleAsync();
+        Assert.That(wallet.Balance, Is.EqualTo(100700));
+        Assert.That(wallet.Earned, Is.EqualTo(101000));
+        Assert.That(await db.Set<KabanAward>().CountAsync(), Is.Zero);
+        Assert.That(await db.Set<KabanApproval>().CountAsync(), Is.Zero);
+        var entries = await db.Set<KabanLedger>().ToListAsync();
+        Assert.That(entries.Count, Is.EqualTo(2));
+        Assert.That(entries.All(e => e.Actor == _manager && e.UserId == _user), Is.True);
+        Assert.That(await db.Set<KabanAudit>().CountAsync(), Is.EqualTo(2));
+    }
+
+    [Test]
+    public async Task ManagerCanChangeOwnBalanceAndCreateWallet()
+    {
+        await Execute(Adjust(800, _manager), Policy(_manager, true));
+        await Execute(Adjust(-800, _manager), Policy(_manager, true));
+        await using var db = Open();
+        var wallet = await db.Set<KabanWallet>().SingleAsync(w => w.UserId == _manager);
+        Assert.That(wallet.Balance, Is.Zero);
+        Assert.That(wallet.Earned, Is.EqualTo(800));
+    }
+
+    [TestCase(500)]
+    [TestCase(-500)]
+    public async Task OrdinaryPlayersCannotChangeAnyBalance(int amount)
+    {
+        Assert.ThrowsAsync<KabanDenied>(() => Execute(Adjust(amount)));
+        Assert.ThrowsAsync<KabanDenied>(() => Execute(Adjust(amount, _manager)));
+        await using var db = Open();
+        Assert.That((await db.Set<KabanWallet>().SingleAsync()).Balance, Is.EqualTo(1000));
+        Assert.That(await db.Set<KabanOperation>().CountAsync(), Is.Zero);
+        Assert.That(await db.Set<KabanAudit>().CountAsync(), Is.Zero);
+    }
+
+    [Test]
+    public async Task InvalidAdjustmentsDoNotCreateWalletOrTransaction()
+    {
+        var policy = Policy(_manager, true);
+        var unconfirmed = Adjust(500);
+        unconfirmed.Confirmed = false;
+        Assert.ThrowsAsync<KabanDenied>(() => Execute(unconfirmed, policy));
+        Assert.ThrowsAsync<KabanDenied>(() => Execute(Adjust(0), policy));
+        var empty = Adjust(500);
+        empty.TargetName = "";
+        Assert.ThrowsAsync<KabanDenied>(() => Execute(empty, policy));
+        Assert.ThrowsAsync<KabanDenied>(() => Execute(Adjust(500, Guid.NewGuid()), policy));
+        Assert.ThrowsAsync<KabanDenied>(() => Execute(Adjust(int.MinValue), policy));
+        Assert.ThrowsAsync<KabanDenied>(() => Execute(Adjust(-1, _manager), policy));
+        await using var db = Open();
+        Assert.That(await db.Set<KabanWallet>().CountAsync(), Is.EqualTo(1));
+        Assert.That(await db.Set<KabanLedger>().CountAsync(), Is.Zero);
+        Assert.That(await db.Set<KabanOperation>().CountAsync(), Is.Zero);
+    }
+
+    [Test]
+    public async Task ConcurrentManagerDeductionsCannotOverdraw()
+    {
+        async Task<bool> Attempt()
+        {
+            try { await Execute(Adjust(-700), Policy(_manager, true)); return true; }
+            catch (KabanDenied) { return false; }
+        }
+        var results = await Task.WhenAll(Enumerable.Range(0, 4).Select(_ => Task.Run(Attempt)));
+        Assert.That(results.Count(success => success), Is.EqualTo(1));
+        await using var db = Open();
+        var wallet = await db.Set<KabanWallet>().SingleAsync();
+        Assert.That(wallet.Balance, Is.EqualTo(300));
+        Assert.That(wallet.Earned, Is.EqualTo(1000));
+        Assert.That(await db.Set<KabanLedger>().CountAsync(), Is.EqualTo(1));
+    }
+
+    [Test]
+    public async Task RetriedManagerCreditIsAppliedOnceAndCannotBeRebound()
+    {
+        var request = Adjust(700);
+        await Task.WhenAll(Enumerable.Range(0, 4).Select(_ => Task.Run(() => Execute(request, Policy(_manager, true)))));
+        request.Amount = 800;
+        Assert.ThrowsAsync<KabanDenied>(() => Execute(request, Policy(_manager, true)));
+        request.Amount = 700;
+        Assert.ThrowsAsync<KabanDenied>(() => Execute(request, Policy(_senior, true, true)));
+        await using var db = Open();
+        var wallet = await db.Set<KabanWallet>().SingleAsync();
+        Assert.That(wallet.Balance, Is.EqualTo(1700));
+        Assert.That(wallet.Earned, Is.EqualTo(1700));
+        Assert.That(await db.Set<KabanLedger>().CountAsync(), Is.EqualTo(1));
+        Assert.That(await db.Set<KabanAudit>().CountAsync(), Is.EqualTo(1));
+    }
+
+    [Test]
+    public async Task RetiredAwardWorkflowCannotCreateOrApproveAwards()
+    {
+        foreach (var action in new[] { KabanAction.Nominate, KabanAction.Approve, KabanAction.Reject })
+            Assert.ThrowsAsync<KabanDenied>(() => Execute(new KabanRequest
+            {
+                Action = action, Target = _user, Amount = 100, Category = "development", Text = "Legacy award request",
+            }, Policy(_manager, true)));
+        await using var db = Open();
+        Assert.That(await db.Set<KabanAward>().CountAsync(), Is.Zero);
+        Assert.That(await db.Set<KabanLedger>().CountAsync(), Is.Zero);
+    }
+
     private async Task Settle(Guid id, bool used, string job, bool command = false, string server = "kaban-test")
     {
         await using var db = Open();
         await KabanEconomy.Settle(db, server, id, used, job, command, Now.Ticks);
     }
-
-    private async Task<Guid> Nominate(int amount, bool exceptional = false)
-    {
-        var request = new KabanRequest { Action = KabanAction.Nominate, Target = _user,
-            Amount = amount, Category = "development", Text = "Implemented and reviewed a substantial contribution.", Exceptional = exceptional };
-        await Execute(request, Policy(_manager, true));
-        return request.Operation;
-    }
-
-    private Task Approve(Guid award, Guid actor, bool senior = false)
-        => Execute(new KabanRequest { Action = KabanAction.Approve, Item = award }, Policy(actor, true, senior));
 
     [Test]
     public async Task CurrentModelMatchesBothProviderSnapshotsAndMigratedDatabase()
@@ -202,61 +402,6 @@ public sealed class KabanEconomyTests(bool postgres)
         unconfirmed.Confirmed = false;
         Assert.ThrowsAsync<KabanDenied>(() => Execute(unconfirmed));
         Assert.ThrowsAsync<KabanDenied>(() => Execute(Buy(amount: 1)));
-        await using var db = Open();
-        Assert.That(await db.Set<KabanLedger>().CountAsync(), Is.Zero);
-    }
-
-    [Test]
-    public async Task AwardsRequireDistinctApproversAndCannotRewardAnApproverHimself()
-    {
-        var id = await Nominate(150);
-        Assert.ThrowsAsync<KabanDenied>(() => Approve(id, _user));
-        await Approve(id, _manager);
-        Assert.ThrowsAsync<KabanDenied>(() => Approve(id, _manager));
-        await using (var check = Open())
-            Assert.That((await check.Set<KabanWallet>().SingleAsync()).Balance, Is.EqualTo(1000));
-        await Approve(id, _senior, true);
-        await using var db = Open();
-        Assert.That((await db.Set<KabanWallet>().SingleAsync()).Balance, Is.EqualTo(1150));
-        Assert.That(await db.Set<KabanApproval>().CountAsync(), Is.EqualTo(2));
-    }
-
-    [Test]
-    public async Task SplittingAwardsDoesNotAvoidSecondApproval()
-    {
-        await Approve(await Nominate(70), _manager);
-        var second = await Nominate(70);
-        await Approve(second, _manager);
-        await using (var check = Open())
-            Assert.That((await check.Set<KabanWallet>().SingleAsync()).Balance, Is.EqualTo(1070));
-        await Approve(second, _senior, true);
-        await using var db = Open();
-        Assert.That((await db.Set<KabanWallet>().SingleAsync()).Balance, Is.EqualTo(1140));
-    }
-
-    [Test]
-    public async Task SeniorDecisionRecipientLimitAndMonthlyFundAreEnforced()
-    {
-        var award = await Nominate(400);
-        await Approve(award, _manager);
-        await Approve(award, _senior, true);
-        var over = await Nominate(1);
-        Assert.ThrowsAsync<KabanDenied>(() => Approve(over, _manager));
-        var exceptional = await Nominate(200, true);
-        await Approve(exceptional, _senior, true);
-        await Approve(exceptional, _manager);
-        var exceed = await Nominate(1, true);
-        Assert.ThrowsAsync<KabanDenied>(() => Approve(exceed, _senior, true));
-        await using var db = Open();
-        Assert.That((await db.Set<KabanWallet>().SingleAsync()).Balance, Is.EqualTo(1600));
-    }
-
-    [Test]
-    public async Task MonthlyFundCannotBeExceededAndUnauthorizedCreditsAreRejected()
-    {
-        var id = await Nominate(100);
-        Assert.ThrowsAsync<KabanDenied>(() => Execute(new KabanRequest { Action = KabanAction.Approve, Item = id }, Policy()));
-        Assert.ThrowsAsync<KabanDenied>(() => Execute(new KabanRequest { Action = KabanAction.Approve, Item = id }, Policy(_manager, true) with { Fund = 99 }));
         await using var db = Open();
         Assert.That(await db.Set<KabanLedger>().CountAsync(), Is.Zero);
     }
@@ -440,8 +585,8 @@ public sealed class KabanEconomyTests(bool postgres)
         await using var db = Open();
         Assert.CatchAsync<Exception>(async () => await db.Database.ExecuteSqlRawAsync("UPDATE rucm_kaban_ledger SET delta=0"));
         Assert.CatchAsync<Exception>(async () => await db.Database.ExecuteSqlRawAsync("DELETE FROM rucm_kaban_audit"));
-        await Execute(new KabanRequest { Action = KabanAction.CorrectBalance, Target = _user, Amount = -10,
-            Text = "Correction of a verified erroneous historic reward.", Confirmed = true }, Policy(_senior, true, true));
+        await Execute(new KabanRequest { Action = KabanAction.CorrectBalance, Amount = -10,
+            TargetName = UserName(_user), Text = "Correction of a verified erroneous historic reward.", Confirmed = true }, Policy(_senior, true, true));
         Assert.That(await db.Set<KabanLedger>().CountAsync(), Is.EqualTo(2));
         Assert.That((await db.Set<KabanWallet>().SingleAsync()).Earned, Is.EqualTo(1000));
         if (!postgres)

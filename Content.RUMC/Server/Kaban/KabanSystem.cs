@@ -136,12 +136,11 @@ public sealed partial class KabanSystem : EntitySystem
 
     private KabanPolicy Policy(Guid actor)
     {
-        var jobs = ProtoMan.EnumeratePrototypes<JobPrototype>().ToArray();
+        var jobs = KabanJobCatalog.Jobs(ProtoMan, _ticker.CurrentPreset?.ID ?? _ticker.Preset?.ID);
         return new(actor, IsManager(actor), IsSenior(actor), _cfg.GetCVar(KabanCVars.Shop),
             _cfg.GetCVar(KabanCVars.Priorities) && !string.Equals(_ticker.CurrentPreset?.ID ?? _ticker.Preset?.ID, "ForceOnForce", StringComparison.OrdinalIgnoreCase),
             _cfg.GetCVar(KabanCVars.Tts), _cfg.GetCVar(KabanCVars.Discord),
-            Math.Max(0, _cfg.GetCVar(KabanCVars.MonthlyFund)), Math.Max(0, _cfg.GetCVar(KabanCVars.RecipientLimit)),
-            Math.Max(0, _cfg.GetCVar(KabanCVars.ExceptionalLimit)), _cfg.GetCVar(KabanCVars.ServerId), _lobby.ToString(),
+            _cfg.GetCVar(KabanCVars.ServerId), _lobby.ToString(),
             !_lottery && _ticker.CanUpdateMap(), jobs.Where(IsCommand).Select(j => j.ID).ToArray(), jobs.Select(j => j.ID).ToArray());
     }
 
@@ -225,8 +224,11 @@ public sealed partial class KabanSystem : EntitySystem
                 _voices.Clear();
                 foreach (var voice in voices)
                     _voices[voice.Speaker] = voice;
-                foreach (var job in ProtoMan.EnumeratePrototypes<JobPrototype>().Where(j => j.SetPreference))
-                    view.Jobs[job.ID] = job.LocalizedName;
+                var currentPolicy = Policy(policy.Actor);
+                view.PrioritiesEnabled = currentPolicy.Priorities;
+                view.Lobby = currentPolicy.Lobby;
+                foreach (var job in KabanJobCatalog.Jobs(ProtoMan, _ticker.CurrentPreset?.ID ?? _ticker.Preset?.ID))
+                    view.Jobs[job.ID] = KabanJobCatalog.DisplayName(job);
                 foreach (var session in _players.Sessions)
                     view.Accounts[session.UserId] = session.Name;
                 view.Result = result;

@@ -14,9 +14,6 @@ public sealed class KabanCVars
     public static readonly CVarDef<bool> Forcing = CVarDef.Create("rucm.kaban.forcing", false, CVar.SERVERONLY);
     public static readonly CVarDef<bool> Tts = CVarDef.Create("rucm.kaban.tts", false, CVar.SERVERONLY);
     public static readonly CVarDef<bool> Discord = CVarDef.Create("rucm.kaban.discord", false, CVar.SERVERONLY);
-    public static readonly CVarDef<int> MonthlyFund = CVarDef.Create("rucm.kaban.monthly_fund", 4000, CVar.SERVERONLY);
-    public static readonly CVarDef<int> RecipientLimit = CVarDef.Create("rucm.kaban.recipient_limit", 400, CVar.SERVERONLY);
-    public static readonly CVarDef<int> ExceptionalLimit = CVarDef.Create("rucm.kaban.exceptional_limit", 600, CVar.SERVERONLY);
     public static readonly CVarDef<string> Managers = CVarDef.Create("rucm.kaban.managers", "", CVar.SERVERONLY);
     public static readonly CVarDef<string> SeniorManagers = CVarDef.Create("rucm.kaban.senior_managers", "", CVar.SERVERONLY);
     public static readonly CVarDef<string> ServerId = CVarDef.Create("rucm.kaban.server_id", "RussianCM", CVar.SERVERONLY);
@@ -37,6 +34,8 @@ public sealed class KabanRequest : EuiMessageBase
     public Guid Operation { get; set; } = Guid.NewGuid();
     public KabanAction Action { get; set; }
     public Guid Target { get; set; }
+    [System.Text.Json.Serialization.JsonIgnore(Condition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull)]
+    public string? TargetName { get; set; }
     public Guid Item { get; set; }
     public string Product { get; set; } = "";
     public string Text { get; set; } = "";
@@ -72,6 +71,8 @@ public sealed class KabanState : EuiStateBase
     public Guid Viewer;
     public bool Manager;
     public bool Senior;
+    public bool PrioritiesEnabled;
+    public bool Lobby;
     public string Result = "";
     public Guid Response;
     public List<KabanProductView> Products = [];

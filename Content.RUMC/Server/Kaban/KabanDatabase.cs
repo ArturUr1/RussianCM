@@ -88,7 +88,11 @@ public abstract partial class ServerDbBase
     {
         await using var guard = await GetDb();
         var db = guard.DbContext;
-        var view = new KabanState { Viewer = policy.Actor, Manager = policy.Manager, Senior = policy.Senior };
+        var view = new KabanState
+        {
+            Viewer = policy.Actor, Manager = policy.Manager, Senior = policy.Senior,
+            PrioritiesEnabled = policy.Priorities, Lobby = policy.Lobby,
+        };
         var wallet = await db.Set<KabanWallet>().AsNoTracking().SingleOrDefaultAsync(w => w.UserId == policy.Actor);
         view.Balance = wallet?.Balance ?? 0;
         view.Earned = wallet?.Earned ?? 0;
@@ -117,14 +121,6 @@ public abstract partial class ServerDbBase
         foreach (var entry in await db.Set<KabanLedger>().AsNoTracking().Where(l => l.UserId == policy.Actor)
                      .OrderByDescending(l => l.At).Take(100).ToListAsync())
             view.History.Add(new(entry.Id, entry.At, entry.Reason, entry.Delta));
-        var awards = await db.Set<KabanAward>().AsNoTracking()
-            .Where(a => policy.Manager || a.Recipient == policy.Actor || a.Initiator == policy.Actor)
-            .OrderBy(a => policy.Manager && a.Status == "pending" ? 0 : 1).ThenByDescending(a => a.At).Take(100).ToListAsync();
-        var ids = awards.Select(a => a.Id).ToArray();
-        var approvals = await db.Set<KabanApproval>().AsNoTracking().Where(a => ids.Contains(a.AwardId)).ToListAsync();
-        foreach (var award in awards)
-            view.Awards.Add(new(award.Id, award.Recipient, award.Initiator, award.Amount, award.Category,
-                award.Reason, award.Status, approvals.Where(a => a.AwardId == award.Id).Select(a => a.Approver).ToArray(), award.At));
         if (policy.Manager)
         {
             foreach (var audit in await db.Set<KabanAudit>().AsNoTracking().OrderByDescending(a => a.At).Take(100).ToListAsync())
@@ -132,8 +128,7 @@ public abstract partial class ServerDbBase
             foreach (var account in await db.Set<KabanWallet>().AsNoTracking().OrderBy(w => w.UserId).Take(100).ToListAsync())
                 view.Wallets.Add(new(account.UserId, account.Balance, account.Earned));
         }
-        var accountIds = view.Awards.SelectMany(a => a.Approvals.Append(a.Recipient).Append(a.Initiator))
-            .Concat(view.Wallets.Select(w => w.UserId)).Append(policy.Actor).Distinct().ToArray();
+        var accountIds = view.Wallets.Select(w => w.UserId).Append(policy.Actor).Distinct().ToArray();
         foreach (var account in await db.Player.AsNoTracking().Where(p => accountIds.Contains(p.UserId)).ToListAsync())
             view.Accounts[account.UserId] = account.LastSeenUserName;
         return view;
