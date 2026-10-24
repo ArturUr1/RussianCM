@@ -29,6 +29,7 @@
       - id: RMCShoesLaceupBrown
       - id: RMCShoesLaceup
       - id: RMCShoesLeather
+      - id: CMUBoxStompers
     - name: Work Wear
       choices: { CMUcivilianworkwear: 1 }
       entries:
@@ -50,6 +51,10 @@
       - id: CMJumpsuitLiaison
       - id: CMJumpsuitLiaisonBlazer
       - id: CMJumpsuitLiaisonCharcoal
+      - id: RMCJumpsuitLiaisonBlackSuitskirt
+      - id: RMCJumpsuitLiaisonCharcoalSuitskirt
+      - id: RMCJumpsuitLiaisonFieldSuitskirt
+      - id: RMCJumpsuitLiaisonSkirt
     - name: Ties
       choices: { CMUcivilianclothestie: 1 }
       entries:
@@ -279,6 +284,7 @@
       - id: RMCShoesLaceupBrown
       - id: RMCShoesLaceup
       - id: RMCShoesLeather
+      - id: CMUBoxStompers
     - name: Work Wear
       choices: { CMUcivilianmedicalworkwear: 1 }
       entries:
@@ -418,6 +424,8 @@
       - id: RMCFireAxe
       - id: CMFireExtinguisher
       - id: CMFireExtinguisherPortable
+      - id: CMUFieldGasTankOxygenFilled
+      - id: CMUMaskSCBA
       - id: RMCRadioHandheldColonyOff
 
 - type: entity

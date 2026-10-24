@@ -286,7 +286,17 @@ public sealed partial class IngestionSystem : EntitySystem
         if (!CanConsume(args.User, entity, args.Ingested, out var solution, out var time))
             return;
 
-        if (!_doAfter.TryStartDoAfter(GetEdibleDoAfterArgs(args.User, entity, food, time ?? TimeSpan.Zero)))
+        // CMU14: eating and drinking take twice as long. Pills, swallowed or force-fed, keep their usual time.
+        var delay = time ?? TimeSpan.Zero;
+        if (!HasComp<PillComponent>(food))
+            delay *= CMUIngestionDelayMultiplier;
+
+        // cmu edit start: eating your own food with a fork or spoon in hand is instant
+        if (!forceFed && TryGetUtensils(args.User, food, out var cmuUtensils) && cmuUtensils.Count > 0)
+            delay = TimeSpan.Zero;
+        // cmu edit end
+
+        if (!_doAfter.TryStartDoAfter(GetEdibleDoAfterArgs(args.User, entity, food, delay)))
             return;
 
         args.Handled = true;
@@ -449,6 +459,9 @@ public sealed partial class IngestionSystem : EntitySystem
         // Don't try to repeat if its being deleted
         args.Repeat = false;
     }
+
+    // CMU14: multiplier on eating/drinking do-afters, self-fed or force-fed. Pills are exempt.
+    public const double CMUIngestionDelayMultiplier = 2;
 
     /// <summary>
     /// Gets the DoAfterArgs for the specific event

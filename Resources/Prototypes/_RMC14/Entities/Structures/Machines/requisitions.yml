@@ -184,7 +184,7 @@
           !type:PhysShapeAabb
           bounds: "-2.3,-2.3,2.3,2.3"
         layer:
-        - MidImpassable
+        - WallLayer
         mask:
         - ItemMask
         density: 1000
@@ -312,7 +312,7 @@
     faction: opfor
 
 - type: entity
-  parent: [ CMASRSConsole ]
+  parent: [ CMASRSConsole, CMUASRSColonyJeepKits ] # CMU14: colony jeep kits
   id: CMASRSConsoleColony
   name: ASRS console (Colony)
   components:

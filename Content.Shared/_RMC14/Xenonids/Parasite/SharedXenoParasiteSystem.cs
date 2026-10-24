@@ -161,6 +161,10 @@ public abstract partial class SharedXenoParasiteSystem : EntitySystem
         SubscribeLocalEvent<VictimBurstComponent, ExaminedEvent>(OnVictimBurstExamine);
 
         SubscribeLocalEvent<BursterComponent, MoveInputEvent>(OnTryMove);
+
+        // cmu edit start
+        CMUInitialize();
+        // cmu edit end
         IntializeAI();
 
     }
@@ -724,7 +728,9 @@ public abstract partial class SharedXenoParasiteSystem : EntitySystem
         }
 
         parasite.Comp.InfectedVictim = victim;
-        parasite.Comp.FallOffAt = _timing.CurTime + parasite.Comp.FallOffDelay;
+        // cmu edit start: holds on for two to five minutes
+        CMUSetHugTime(parasite);
+        // cmu edit end
         Dirty(parasite);
 
         RemCompDeferred<RMCGibOnDeathComponent>(parasite); // No gibbing on someone's face
@@ -807,6 +813,7 @@ public abstract partial class SharedXenoParasiteSystem : EntitySystem
         var paraQuery = EntityQueryEnumerator<XenoParasiteComponent>();
         while (paraQuery.MoveNext(out var uid, out var para))
         {
+            CMUUpdateNestedHugTime((uid, para)); // CMU14: nesting also shortens an attachment already in progress.
             if (para.FallOffAt < time && !para.FellOff && para.InfectedVictim != null)
             {
                 var infectedVictim = para.InfectedVictim.Value;
@@ -820,6 +827,7 @@ public abstract partial class SharedXenoParasiteSystem : EntitySystem
                 _inventory.TryUnequip(infectedVictim, "mask", true, true, true);
 
                 var victimComp = EnsureComp<VictimInfectedComponent>(infectedVictim);
+                RefreshIncubationMultipliers((infectedVictim, victimComp)); // CMU14: apply the nest bonus to newly completed infections.
                 victimComp.InfectorUser = para.InfectorUser;
                 victimComp.InfectorParasite = GetNetEntity(uid); // CMU14: a late dialog reply must survive parasite cleanup.
                 victimComp.InfectorWantsLarva = para.InfectorWantsLarva;
@@ -886,6 +894,11 @@ public abstract partial class SharedXenoParasiteSystem : EntitySystem
                 // Refresh multipliers since some become more/less effective
                 RefreshIncubationMultipliers(uid);
             }
+
+            // cmu edit start: no shakes, seizures, messages or sounds until 30 seconds before the burst
+            if (time < infected.BurstAt - TimeSpan.FromSeconds(30))
+                continue;
+            // cmu edit end
 
             // Warn on the last to final stage of a burst
             if (!infected.DidBurstWarning && stage == infected.BurstWarningStart)

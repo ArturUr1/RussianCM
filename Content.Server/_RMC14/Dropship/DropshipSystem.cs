@@ -554,7 +554,19 @@ public sealed partial class DropshipSystem : SharedDropshipSystem
             return false;
         }
 
-        if (!hijack && !CanLandAt(computer, destination))
+        // cmu edit start: summoned third parties are held to their faction's ship pad
+        var summonedRule = hijack || Transform(computer.Owner).GridUid is not { } summonedGrid
+            ? null
+            : SummonedThirdPartyDestinationRule(summonedGrid, destination);
+        if (summonedRule == false)
+        {
+            if (user is { } summonedPilot)
+                _popup.PopupEntity(Loc.GetString("cmu-summoned-third-party-wrong-destination"), computer, summonedPilot);
+            return false;
+        }
+        // cmu edit end
+
+        if (!hijack && summonedRule != true && !CanLandAt(computer, destination)) // cmu edit
         {
             if (user is { } pilot)
                 _popup.PopupEntity(Loc.GetString("cmu-fof-dropship-wrong-faction"), computer, pilot);
@@ -857,6 +869,10 @@ public sealed partial class DropshipSystem : SharedDropshipSystem
                 var gqMap = Transform(destination).MapUid; // CMU14: hijack victim's ship, the dropship is mid-transit
                 Timer.Spawn(TimeSpan.FromSeconds(10), () =>
                 {
+                    // CMU14: timers outlive the round, a restart inside these 10s leaves a deleted ship and map here
+                    if (TerminatingOrDeleted(dropshipId.Value) || gqMap is { } gq && TerminatingOrDeleted(gq))
+                        return;
+
                     _alertLevelSystem.Set(RMCAlertLevels.Red, dropshipId.Value, false, false, gqMap); // CMU14
                     _marineAnnounce.AnnounceARESStaging(dropshipId.Value, generalQuartersText, dropship.GeneralQuartersSound, null, gqFaction);
                 });
@@ -914,8 +930,14 @@ public sealed partial class DropshipSystem : SharedDropshipSystem
 
             while (query.MoveNext(out var uid, out var comp))
             {
+                // cmu edit start: summoned third parties are held to their faction's ship pad
+                var summonedRule = SummonedThirdPartyDestinationRule(grid, uid);
+                if (summonedRule == false)
+                    continue;
+                // cmu edit end
+
                 // CMU14: Force on Force roles, hijacking, announcements and identification.
-                if (!CanLandAt(computer, uid))
+                if (summonedRule != true && !CanLandAt(computer, uid)) // cmu edit
                     continue;
 
                 if (HasComp<Content.Shared.CMU14.Dropship.TacticalLand.EphemeralDropshipDestinationComponent>(uid))
@@ -969,6 +991,10 @@ public sealed partial class DropshipSystem : SharedDropshipSystem
             }
 
             var canTacticalLand = computer.Comp.CanTacticalLand || IsStrictThirdPartyFaction(whitelistedFaction);
+            // cmu edit start: a summoned shuttle held to its faction's ship can't pick its own landing site
+            if (GetSummonedThirdPartyShipFaction(grid) != null)
+                canTacticalLand = false;
+            // cmu edit end
 
             var canWithdrawReturn = false;
             if (whitelistedFaction != null && _withdrawConsole.IsWithdrawReturnUnlocked(whitelistedFaction))

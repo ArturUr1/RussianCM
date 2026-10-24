@@ -1,7 +1,11 @@
 using System.Numerics;
 using Content.Server.NPC.Components;
+using Content.Shared._RMC14.Vehicle;
 using Content.Shared.CombatMode;
+using Content.Shared.Mobs.Components;
 using Content.Shared.NPC;
+using Content.Shared.NPC.Components;
+using Content.Shared.Vehicle.Components;
 using Content.Shared.Weapons.Ranged.Components;
 using Content.Shared.Weapons.Ranged.Events;
 using Content.Shared.Weapons.Ranged.Systems;
@@ -53,6 +57,8 @@ public sealed partial class CMUExpeditionAgentSystem
             return;
         args.Shots = Math.Min(args.Shots, Math.Max(0,
             VolleySize(agent) - (agent.MovingFire && CanFireWhileMoving(user, agent) ? agent.MovingShotsFired : agent.ShotsFired)));
+        if (agent.FiringAtSuppression)
+            args.Shots = Math.Min(args.Shots, Math.Max(0, agent.ReturnFireRounds));
     }
 
     private void OnGunShot(Entity<CMUExpeditionWeaponComponent> ent, ref GunShotEvent args)
@@ -60,7 +66,12 @@ public sealed partial class CMUExpeditionAgentSystem
         if (HasComp<ActorComponent>(args.User) || !TryComp<CMUExpeditionAgentComponent>(args.User, out var agent))
             return;
         agent.LastShotAt = _timing.CurTime;
-        agent.LastFireControlShotTarget = agent.FiringAtFlash ? null : agent.Target;
+        agent.LastFireControlShotTarget = agent.FiringAtFlash || agent.FiringAtSuppression ? null : agent.Target;
+        if (agent.FiringAtSuppression)
+        {
+            agent.ReturnFireRounds = Math.Max(0, agent.ReturnFireRounds - args.Ammo.Count);
+            agent.SuppressiveShots += args.Ammo.Count;
+        }
         if (agent.FiringAtFlash)
             agent.FlashShots += args.Ammo.Count;
         agent.LastFiredWeapon = ent.Owner;
@@ -122,7 +133,9 @@ public sealed partial class CMUExpeditionAgentSystem
             agent.State == CMUExpeditionAgentState.Recover && agent.CoverAnchor == null;
         var canResume = resuming &&
             (now >= agent.FireAt || UrgentFire(agent, now)) &&
-            (agent.Target is { } target && CombatTargetAlive(target) && Visible(uid, target, agent.FireRange) || TryFlashAim(uid, agent, out _));
+            (agent.Target is { } target && CombatTargetAlive(target) && Visible(uid, target, agent.FireRange) ||
+                TryFlashAim(uid, agent, out _) ||
+                _guns.TryGetGun(uid, out var responding) && TryReturnFireAim(uid, agent, responding, out _));
         if (canResume && UrgentFire(agent, now) && agent.FireAt > now + TimeSpan.FromSeconds(0.1))
             agent.FireAt = now + TimeSpan.FromSeconds(0.1);
         if (agent.State == CMUExpeditionAgentState.HoldAngle && now >= agent.FireAt && canResume)
@@ -172,7 +185,7 @@ public sealed partial class CMUExpeditionAgentSystem
         {
             agent.LastFireCheck = "no-visible-aim-point";
             agent.LostAimSince ??= now;
-            // Hold the stance through a brief loss behind a tree; never fire without sight.
+            // Hold the stance briefly when neither sight nor fresh incoming-fire evidence authorizes a shot.
             if (now - agent.LostAimSince < TimeSpan.FromSeconds(0.35))
                 return;
             if (agent.PeekPosition is { } unusable)
@@ -234,8 +247,8 @@ public sealed partial class CMUExpeditionAgentSystem
         if (agent.FlareItem == null && (agent.TrafficNudgeDestination == null || now >= agent.TrafficNudgeUntil) &&
             StartAimedWeapon(uid, agent, gun))
             return;
-        agent.LastFireCheck = _guns.AttemptShoot(uid, gun, point, agent.FiringAtFlash ? null : agent.Target)
-            ? "trigger-accepted" : "native-trigger-rejected";
+        agent.LastFireCheck = _guns.AttemptShoot(uid, gun, point, agent.FiringAtFlash || agent.FiringAtSuppression ? null : agent.Target)
+            ? agent.FiringAtSuppression ? "suppression-trigger-accepted" : "trigger-accepted" : "native-trigger-rejected";
     }
 
     private void EndBurst(EntityUid uid, CMUExpeditionAgentComponent agent, TimeSpan now, bool allowPress = true)
@@ -293,6 +306,7 @@ public sealed partial class CMUExpeditionAgentSystem
     {
         point = default;
         agent.FiringAtFlash = false;
+        agent.FiringAtSuppression = false;
         if (agent.Target is not { } target || !CombatTargetAlive(target) ||
             !AcceptOrderedContact(uid, agent, target) || !Visible(uid, target, agent.FireRange) ||
             !TryComp(target, out TransformComponent? transform))
@@ -301,6 +315,12 @@ public sealed partial class CMUExpeditionAgentSystem
             if (TryComp<CMUExpeditionWeaponRoleComponent>(gun.Owner, out var role) && role.Rocket ||
                 !TryFlashAim(uid, agent, out point))
             {
+                if (TryReturnFireAim(uid, agent, gun, out point))
+                {
+                    agent.FiringAtSuppression = true;
+                    agent.VisionDecision = "returning-fire-at-observed-lane";
+                    return true;
+                }
                 agent.VisionDecision = "no-visible-target-or-flash";
                 return false;
             }
@@ -338,6 +358,13 @@ public sealed partial class CMUExpeditionAgentSystem
         var scatter = Math.Clamp(gun.Comp.CurrentAngle.Theta + gun.Comp.AngleIncreaseModified.Theta -
             gun.Comp.AngleDecayModified.Theta * elapsed, gun.Comp.MinAngleModified.Theta, gun.Comp.MaxAngleModified.Theta);
         var spread = (float) Math.Tan(Math.Min(scatter, Math.PI / 2) / 2);
+        if (agent.FiringAtSuppression)
+        {
+            // Uncertain fire needs a wider cone, checked to the weapon's full range:
+            // a short observed lane is not where the bullets stop travelling.
+            spread += 0.12f;
+            distance = Math.Max(distance, WeaponFireRange(uid, agent));
+        }
         reason = "obstructed-firing-cone";
         if (!FiringLaneClear(uid, start, point))
             return false;
@@ -345,9 +372,54 @@ public sealed partial class CMUExpeditionAgentSystem
         var direction = Vector2.Normalize(to.Position - from.Position);
         if (nearby == null)
         {
-            nearby = new HashSet<EntityUid>();
-            _lookup.GetEntitiesInRange(uid, agent.FireRange + 3, nearby);
+            nearby = _nearbyPool.Get();
+            try
+            {
+                CollectShotNeighbors(uid, agent, nearby);
+                return FriendlyShotConeClear(uid, agent, gun, from, distance, spread, direction, nearby, out reason);
+            }
+            finally
+            {
+                _nearbyPool.Return(nearby);
+            }
         }
+        return FriendlyShotConeClear(uid, agent, gun, from, distance, spread, direction, nearby, out reason);
+    }
+
+    private readonly HashSet<Entity<MobStateComponent>> _shotMobs = new();
+    private readonly HashSet<Entity<NpcFactionMemberComponent>> _shotFactionMembers = new();
+    private readonly HashSet<Entity<VehicleEnterComponent>> _shotVehicles = new();
+    private readonly HashSet<Entity<GridVehicleMoverComponent>> _shotGridVehicles = new();
+
+    // only mobs, faction members (sentries etc) and vehicles can ever count as friendly in the cone.
+    // the untyped lookup also grabbed every wall, item and pipe within fire range, per agent per shot check
+    private void CollectShotNeighbors(EntityUid uid, CMUExpeditionAgentComponent agent, HashSet<EntityUid> nearby)
+    {
+        var map = _transform.GetMapCoordinates(uid);
+        if (map.MapId == MapId.Nullspace)
+            return;
+        var range = agent.FireRange + 3;
+        CollectShotNeighbors(map, range, _shotMobs, nearby);
+        CollectShotNeighbors(map, range, _shotFactionMembers, nearby);
+        CollectShotNeighbors(map, range, _shotVehicles, nearby);
+        CollectShotNeighbors(map, range, _shotGridVehicles, nearby);
+        nearby.Remove(uid);
+    }
+
+    private void CollectShotNeighbors<T>(MapCoordinates map, float range, HashSet<Entity<T>> found, HashSet<EntityUid> nearby)
+        where T : IComponent
+    {
+        // typed lookups append, they don't clear
+        found.Clear();
+        _lookup.GetEntitiesInRange(map, range, found);
+        foreach (var ent in found)
+            nearby.Add(ent);
+        found.Clear();
+    }
+
+    private bool FriendlyShotConeClear(EntityUid uid, CMUExpeditionAgentComponent agent, Entity<GunComponent> gun,
+        MapCoordinates from, float distance, float spread, Vector2 direction, HashSet<EntityUid> nearby, out string reason)
+    {
         foreach (var entity in nearby)
         {
             if (entity == uid || !IsFriendly(uid, entity) ||
