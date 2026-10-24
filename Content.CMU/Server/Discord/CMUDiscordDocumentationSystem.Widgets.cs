@@ -2,6 +2,7 @@ using System.Linq;
 using System.Text;
 using System.Xml.Linq;
 using Content.Server.Chemistry.EntitySystems;
+using Content.Shared._RMC14.Chemistry.Reagent;
 using Content.Shared._RMC14.Prototypes;
 using Content.Shared.Chemistry.Reaction;
 using Content.Shared.Chemistry.Reagent;
@@ -14,6 +15,8 @@ namespace Content.Server.CMU14.Discord;
 
 public sealed partial class CMUDiscordDocumentationSystem
 {
+    [Dependency] private readonly RMCReagentSystem _reagents = default!;
+
     private string RenderWidget(XElement element)
     {
         string Required(string name) => (string?) element.Attribute(name)
@@ -38,7 +41,7 @@ public sealed partial class CMUDiscordDocumentationSystem
                        string.Join(", ", items);
             }
             case "GuideReagentEmbed":
-                return RenderReagent(_prototypes.Index<ReagentPrototype>(Required("Reagent")));
+                return RenderReagent(_reagents.Index(Required("Reagent")));
             case "GuideReagentGroupEmbed":
             {
                 var group = Required("Group");
@@ -71,7 +74,7 @@ public sealed partial class CMUDiscordDocumentationSystem
                Text("recipe", ("ingredients", string.Join(", ", ingredients)), ("time", recipe.CookTime));
     }
 
-    private string ReagentName(ProtoId<ReagentPrototype> id) => _prototypes.Index(id).LocalizedName;
+    private string ReagentName(ProtoId<ReagentPrototype> id) => _reagents.Index(id).LocalizedName;
 
     private string RenderReagent(ReagentPrototype reagent)
     {
