@@ -1,3 +1,4 @@
+# Локализация интерфейса
 cmu-ship-weapons-title = Вооружение корабельных орудий
 cmu-ship-weapons-instructions = Выберите от 1 до {$max} орудий. Все выбранные орудия используют общий запас огневых задач: {$uses}. Каждый выстрел выжигает батарею, из которой он произведён, пока её не отремонтируют.
 cmu-ship-weapons-unarmed = Орудия не подготовлены. Подтверждение для этой операции необратимо.
@@ -20,10 +21,10 @@ cmu-ship-weapons-select = Орбитальное орудие
 cmu-ship-weapons-armed-hint = Использует одну из общих огневых задач этого корабля.
 cmu-ship-weapons-remaining = {$weapon} (осталось общих задач: {$uses}/{$max})
 cmu-ship-weapons-bearing = Направление шагающего заградительного огня
-cmu-ship-weapons-bearing-north = север
-cmu-ship-weapons-bearing-east = восток
-cmu-ship-weapons-bearing-south = юг
-cmu-ship-weapons-bearing-west = запад
+cmu-ship-weapons-bearing-north = северу
+cmu-ship-weapons-bearing-east = востоку
+cmu-ship-weapons-bearing-south = югу
+cmu-ship-weapons-bearing-west = западу
 cmu-ship-weapons-gatling = Заградительный огонь «Гатлинг»
 cmu-ship-weapons-walking = Шагающий заградительный огонь
 cmu-ship-weapons-120mm = 120-мм ОФ заградительный огонь
@@ -86,3 +87,96 @@ cmu-ship-weapons-repair-calibrate-hint = откалибруйте ретранс
 cmu-ship-weapons-repair-calibrate-done = Вы калибруете ретранслятор наведения.
 cmu-ship-weapons-repair-secure-hint = закрутите кожух
 cmu-ship-weapons-repair-secure-done = Вы закручиваете кожух.
+
+# Локализация связанных энтити
+
+## Терминалы активации
+ent-CMUShipWeaponsTerminal = терминал активации корабельного вооружения
+    .desc = Выбор орбитального вспомогательного вооружения для этого корабля. На терминале отображается ограничение выбора и общие огневые задачи. Подтверждённые варианты выбора не могут быть изменены во время операции.
+
+ent-CMUShipWeaponsTerminalGovfor = { ent-CMUShipWeaponsTerminal }
+    .desc = { ent-CMUShipWeaponsTerminal.desc }
+    .suffix = ГОВФОР
+
+ent-CMUShipWeaponsTerminalOpfor = { ent-CMUShipWeaponsTerminal }
+    .desc = { ent-CMUShipWeaponsTerminal.desc }
+    .suffix = ОПФОР
+
+## Снаряды и эффекты
+ent-CMUShipWeaponSmoke = орбитальный дым
+ent-CMUShipWeaponGas = орбитальный токсичный газ
+ent-CMUShipWeaponEmsCloud = электромагнитные помехи
+ent-CMUShipWeaponEmsStun = ЭМИ-паралич
+
+## Орбитальные батареи
+ent-CMUShipWeaponGunBase = орбитальная батарея
+    .desc = Корабельная орбитальная батарея поддержки. Каждая огневая задача выжигает её, и её нужно пошагово отремонтировать, прежде чем она снова сможет стрелять. Осмотрите её, чтобы увидеть следующий шаг.
+
+ent-CMUShipWeaponGun = орбитальная батарея
+    .desc = Корабельная орбитальная батарея поддержки. Каждая огневая задача выжигает её, и её нужно пошагово отремонтировать, прежде чем она снова сможет стрелять. Осмотрите её, чтобы увидеть следующий шаг.
+    .suffix = CMU
+
+ent-CMUShipWeaponGunFlipped = орбитальная батарея
+    .desc = Корабельная орбитальная батарея поддержки. Каждая огневая задача выжигает её, и её нужно пошагово отремонтировать, прежде чем она снова сможет стрелять. Осмотрите её, чтобы увидеть следующий шаг.
+    .suffix = CMU, перевёрнутая
+
+## Спавнеры корабельных ударов
+ent-CMUShipWeaponStrikeSpawnerGatlingBarrage = корабельный удар заградительным огнём «Гатлинг»
+    .suffix = CMU, ЗАПУСКАЕТ КОРАБЕЛЬНЫЙ УДАР!!!
+
+ent-CMUShipWeaponStrikeSpawnerGatlingBarrageInstant = корабельный удар заградительным огнём «Гатлинг»
+    .suffix = CMU, МГНОВЕННЫЙ КОРАБЕЛЬНЫЙ УДАР!!!
+
+ent-CMUShipWeaponStrikeSpawnerWalkingBarrage = корабельный удар шагающим заградительным огнём
+    .suffix = CMU, ЗАПУСКАЕТ КОРАБЕЛЬНЫЙ УДАР!!!
+
+ent-CMUShipWeaponStrikeSpawnerWalkingBarrageInstant = корабельный удар шагающим заградительным огнём
+    .suffix = CMU, МГНОВЕННЫЙ КОРАБЕЛЬНЫЙ УДАР!!!
+
+ent-CMUShipWeaponStrikeSpawner120mmHEBarrage = корабельный удар 120-мм ОФ заградительным огнём
+    .suffix = CMU, ЗАПУСКАЕТ КОРАБЕЛЬНЫЙ УДАР!!!
+
+ent-CMUShipWeaponStrikeSpawner120mmHEBarrageInstant = корабельный удар 120-мм ОФ заградительным огнём
+    .suffix = CMU, МГНОВЕННЫЙ КОРАБЕЛЬНЫЙ УДАР!!!
+
+ent-CMUShipWeaponStrikeSpawner380mmHEBarrage = корабельный удар 380-мм ОФ заградительным огнём
+    .suffix = CMU, ЗАПУСКАЕТ КОРАБЕЛЬНЫЙ УДАР!!!
+
+ent-CMUShipWeaponStrikeSpawner380mmHEBarrageInstant = корабельный удар 380-мм ОФ заградительным огнём
+    .suffix = CMU, МГНОВЕННЫЙ КОРАБЕЛЬНЫЙ УДАР!!!
+
+ent-CMUShipWeaponStrikeSpawnerGasStrike = корабельный газовый удар
+    .suffix = CMU, ЗАПУСКАЕТ КОРАБЕЛЬНЫЙ УДАР!!!
+
+ent-CMUShipWeaponStrikeSpawnerGasStrikeInstant = корабельный газовый удар
+    .suffix = CMU, МГНОВЕННЫЙ КОРАБЕЛЬНЫЙ УДАР!!!
+
+ent-CMUShipWeaponStrikeSpawnerEMSStrike = корабельный ЭМИ-удар
+    .suffix = CMU, ЗАПУСКАЕТ КОРАБЕЛЬНЫЙ УДАР!!!
+
+ent-CMUShipWeaponStrikeSpawnerEMSStrikeInstant = корабельный ЭМИ-удар
+    .suffix = CMU, МГНОВЕННЫЙ КОРАБЕЛЬНЫЙ УДАР!!!
+
+ent-CMUShipWeaponStrikeSpawnerSmokeStrike = корабельный дымовой удар
+    .suffix = CMU, ЗАПУСКАЕТ КОРАБЕЛЬНЫЙ УДАР!!!
+
+ent-CMUShipWeaponStrikeSpawnerSmokeStrikeInstant = корабельный дымовой удар
+    .suffix = CMU, МГНОВЕННЫЙ КОРАБЕЛЬНЫЙ УДАР!!!
+
+ent-CMUShipWeaponStrikeSpawnerAirburstStrike = корабельный удар с воздушным подрывом
+    .suffix = CMU, ЗАПУСКАЕТ КОРАБЕЛЬНЫЙ УДАР!!!
+
+ent-CMUShipWeaponStrikeSpawnerAirburstStrikeInstant = корабельный удар с воздушным подрывом
+    .suffix = CMU, МГНОВЕННЫЙ КОРАБЕЛЬНЫЙ УДАР!!!
+
+ent-CMUShipWeaponStrikeSpawnerPrecisionStrike = корабельный точный удар
+    .suffix = CMU, ЗАПУСКАЕТ КОРАБЕЛЬНЫЙ УДАР!!!
+
+ent-CMUShipWeaponStrikeSpawnerPrecisionStrikeInstant = корабельный точный удар
+    .suffix = CMU, МГНОВЕННЫЙ КОРАБЕЛЬНЫЙ УДАР!!!
+
+ent-CMUShipWeaponStrikeSpawnerRailcannonStrike = корабельный удар рельсовой пушки
+    .suffix = CMU, ЗАПУСКАЕТ КОРАБЕЛЬНЫЙ УДАР!!!
+
+ent-CMUShipWeaponStrikeSpawnerRailcannonStrikeInstant = корабельный удар рельсовой пушки
+    .suffix = CMU, МГНОВЕННЫЙ КОРАБЕЛЬНЫЙ УДАР!!!
