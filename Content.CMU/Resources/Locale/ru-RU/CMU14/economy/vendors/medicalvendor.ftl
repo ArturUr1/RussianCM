@@ -1,5 +1,5 @@
-ent-AU14GeneralMedicalVendor = вендор медицинских припасов Ве-Ю
-    .desc = Автоматизированный вендор снабжения, подключённый к складу медицинских припасов.
+ent-AU14GeneralMedicalVendor = торгомат медицинских припасов Ве-Ю
+    .desc = Автоматизированный торгомат снабжения, подключённый к складу медицинских припасов.
     .suffix = AU14 МЕД
 
 ent-AU14VendorBlood = дозатор крови ВеЮ
@@ -13,8 +13,8 @@ ent-AU14VendorBloodField = полевой дозатор крови ВеЮ
 ent-AU14VendorBloodFieldPowered = полевой дозатор крови ВеЮ
     .suffix = С питанием
 
-ent-AU14GeneralMedicalVendorLight = полевой вендор медицинских припасов ВеЮ
+ent-AU14GeneralMedicalVendorLight = полевой торгомат медицинских припасов ВеЮ
     .desc = Медицинский фармацевтический дозатор с базовыми медицинскими припасами.
 
-ent-AU14GeneralMedicalVendorLightAlwaysPowered = полевой вендор медицинских припасов ВеЮ
+ent-AU14GeneralMedicalVendorLightAlwaysPowered = полевой торгомат медицинских припасов ВеЮ
     .suffix = С питанием
