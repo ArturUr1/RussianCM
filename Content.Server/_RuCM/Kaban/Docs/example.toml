@@ -1,0 +1,16 @@
+# CMU14: start disabled; configure and validate on a disposable database first.
+[rucm.kaban]
+enabled = false
+shop = false
+priorities = false
+forcing = false # Reserved: forcing remains unavailable even if set to true.
+tts = false
+discord = false
+monthly_fund = 4000
+recipient_limit = 400
+exceptional_limit = 600
+managers = "" # Comma-separated authenticated game account UUIDs.
+senior_managers = ""
+server_id = "rucmu-main" # Unique and stable for every server sharing this database.
+discord_guild = ""
+discord_boundary_role = ""
