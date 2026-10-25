@@ -44,7 +44,7 @@ stamp-component-stamped-name-au14-heng = Главный инженер
 stamp-component-stamped-name-au14-hos = Руководитель сервисного отдела
 stamp-component-stamped-name-au14-hphy = Главный врач
 
-stamp-component-stamped-name-au14-cmbm = Маршал КБМ
+stamp-component-stamped-name-au14-cmbm = Маршал БКМ
 stamp-component-stamped-name-au14-kw = Смотритель Kelland
 stamp-component-stamped-name-au14-joe = Рабочий Джо
 stamp-component-stamped-name-au14-uarec = Вербовщик ОА
