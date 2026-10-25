@@ -2,6 +2,9 @@ using System;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Security.Cryptography;
+using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 using Content.Server._RuCM.Kaban;
 using Content.Server.Database;
@@ -90,6 +93,28 @@ public sealed class KabanEconomyTests(bool postgres)
 
     private static KabanRequest Buy(string product = "priority3", int amount = 60)
         => new() { Action = KabanAction.Purchase, Product = product, Amount = amount, Confirmed = true };
+
+    [TestCase(false)]
+    [TestCase(true)]
+    public async Task ServerJsonPreservesExistingFingerprintsAndRetries(bool withAccountName)
+    {
+        var request = withAccountName ? Adjust(300) : Buy();
+        var policy = withAccountName ? Policy(_manager, true) : Policy();
+        // Freeze the persisted format from before JSON configuration moved out of the shared contract.
+        var expectedJson = withAccountName ? JsonSerializer.Serialize(request) : JsonSerializer.Serialize(new
+        {
+            request.Operation, request.Action, request.Target, request.Item, request.Product,
+            request.Text, request.Category, request.Jobs, request.Amount, request.Confirmed, request.Exceptional,
+        });
+        await Execute(request, policy);
+        await using var db = Open();
+        var operation = await db.Set<KabanOperation>().SingleAsync();
+        Assert.That(operation.Fingerprint,
+            Is.EqualTo(Convert.ToHexString(SHA256.HashData(Encoding.UTF8.GetBytes(expectedJson)))));
+        Assert.That((await db.Set<KabanAudit>().SingleAsync()).Detail, Is.EqualTo(expectedJson));
+        await Execute(request, policy);
+        Assert.That(await db.Set<KabanLedger>().CountAsync(), Is.EqualTo(1));
+    }
 
     private KabanRequest Adjust(int amount, Guid? target = null)
         => new() { Action = KabanAction.CorrectBalance, TargetName = UserName(target ?? _user), Amount = amount, Confirmed = true };

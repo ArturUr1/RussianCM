@@ -13,6 +13,7 @@ using Robust.Shared.Console;
 using Robust.Shared.ContentPack;
 using Robust.Shared.IoC;
 using Robust.Shared.Localization;
+using Robust.Shared.Log;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Timing;
 using Robust.Shared.Utility;
@@ -127,7 +128,7 @@ public sealed class KabanPreviewCommand : LocalizedCommands
         view.Products = view.Products.OrderBy(product => product.Price).ToList();
         KabanWindow.QualifyJobNames(view);
         foreach (var duplicate in view.Jobs.GroupBy(job => job.Value, StringComparer.OrdinalIgnoreCase).Where(group => group.Count() > 1))
-            System.Console.WriteLine("Kaban catalogue duplicate display: " + duplicate.Key + " / " + string.Join(", ", duplicate.Select(job => job.Key)));
+            Logger.WarningS("kaban.preview", "Kaban catalogue duplicate display: " + duplicate.Key + " / " + string.Join(", ", duplicate.Select(job => job.Key)));
         return view;
     }
 

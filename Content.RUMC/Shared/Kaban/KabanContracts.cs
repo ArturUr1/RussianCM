@@ -34,7 +34,6 @@ public sealed class KabanRequest : EuiMessageBase
     public Guid Operation { get; set; } = Guid.NewGuid();
     public KabanAction Action { get; set; }
     public Guid Target { get; set; }
-    [System.Text.Json.Serialization.JsonIgnore(Condition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull)]
     public string? TargetName { get; set; }
     public Guid Item { get; set; }
     public string Product { get; set; } = "";

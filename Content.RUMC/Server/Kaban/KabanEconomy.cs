@@ -1,5 +1,6 @@
 using System.Linq;
 using System.Text.Json;
+using System.Text.Json.Serialization.Metadata;
 using System.Security.Cryptography;
 using System.Text;
 using System.Diagnostics.CodeAnalysis;
@@ -25,6 +26,25 @@ public sealed class KabanDenied(string key) : Exception(key);
 /// </summary>
 public static class KabanEconomy
 {
+    // JSON is server-only. Keep the original request fingerprints when TargetName is absent,
+    // without putting JSON attributes/types into the sandboxed network contract.
+    private static readonly JsonSerializerOptions RequestJsonOptions = new()
+    {
+        TypeInfoResolver = new DefaultJsonTypeInfoResolver
+        {
+            Modifiers =
+            {
+                info =>
+                {
+                    if (info.Type == typeof(KabanRequest))
+                        foreach (var property in info.Properties)
+                            if (property.Name == nameof(KabanRequest.TargetName))
+                                property.ShouldSerialize = (_, value) => value != null;
+                },
+            },
+        },
+    };
+
     public static bool IsPriority(string id)
         => id is "priority3" or "priority5" or "pack3" or "pack5" or "flex3" or "flex5";
 
@@ -58,7 +78,8 @@ public static class KabanEconomy
         Require(request.Operation != Guid.Empty && policy.Actor != Guid.Empty);
         Require(request.Text.Length <= 2000 && request.Product.Length <= 32 && request.Category.Length <= 32 && (request.TargetName?.Length ?? 0) <= 64
             && request.Jobs.Length <= 3 && request.Jobs.All(j => j.Length <= 128));
-        var fingerprint = Convert.ToHexString(SHA256.HashData(Encoding.UTF8.GetBytes(JsonSerializer.Serialize(request))));
+        var requestJson = JsonSerializer.Serialize(request, RequestJsonOptions);
+        var fingerprint = Convert.ToHexString(SHA256.HashData(Encoding.UTF8.GetBytes(requestJson)));
         await using var tx = await db.Database.BeginTransactionAsync();
         Require(await db.Database.ExecuteSqlRawAsync("UPDATE rucm_kaban_lock SET revision = revision + 1 WHERE kaban_lock_id = 1") == 1,
             "cmu-kaban-storage-unavailable");
@@ -196,7 +217,7 @@ public static class KabanEconomy
         db.Add(new KabanAudit
         {
             Id = Guid.NewGuid(), Operation = request.Operation, Actor = policy.Actor, Target = target,
-            Action = request.Action.ToString(), Detail = JsonSerializer.Serialize(request), At = now,
+            Action = request.Action.ToString(), Detail = requestJson, At = now,
         });
         await db.SaveChangesAsync();
         await tx.CommitAsync();
