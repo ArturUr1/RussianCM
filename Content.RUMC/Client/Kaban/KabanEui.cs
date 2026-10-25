@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using Content.Client.Eui;
+using Content.Client._RMC14.LinkAccount;
 using Content.Client.Lobby.UI;
 using Content.Client.Options.UI;
 using Content.Client.Stylesheets;
@@ -36,38 +37,14 @@ public sealed class KabanEui : BaseEui
 
 public sealed partial class KabanEntrySystem : EntitySystem
 {
-    [Dependency] private readonly IUserInterfaceManager _ui = default!;
-    public override void Initialize()
+    public Button AttachPersonalization(Control parent)
     {
-        base.Initialize();
-        _ui.OnScreenChanged += ScreenChanged;
-        _ui.WindowRoot.OnChildAdded += WindowAdded;
-        if (_ui.ActiveScreen is LobbyGui lobby)
-            Attach(lobby.ObserveButton.Parent!);
-    }
-    public override void Shutdown()
-    {
-        _ui.OnScreenChanged -= ScreenChanged;
-        _ui.WindowRoot.OnChildAdded -= WindowAdded;
-        base.Shutdown();
-    }
-    private void ScreenChanged((UIScreen? Old, UIScreen? New) screens)
-    {
-        if (screens.New is LobbyGui lobby)
-            Attach(lobby.ObserveButton.Parent!);
-    }
-    private void WindowAdded(Control control)
-    {
-        if (control is EscapeMenu escape)
-            Attach(escape.RulesButton.Parent!);
-    }
-    private void Attach(Control parent)
-    {
-        if (parent.Children.Any(c => c.Name == "RuCMKabanEntry"))
-            return;
+        if (parent.Children.OfType<Button>().FirstOrDefault(c => c.Name == "RuCMKabanEntry") is { } existing)
+            return existing;
         var button = new Button { Name = "RuCMKabanEntry", Text = Loc.GetString("cmu-kaban-title"), HorizontalExpand = true, MinHeight = 34 };
         button.AddStyleClass(StyleNano.StyleClassCrtButton);
         button.OnPressed += _ => RaiseNetworkEvent(new KabanOpenEvent());
         parent.AddChild(button);
+        return button;
     }
 }
