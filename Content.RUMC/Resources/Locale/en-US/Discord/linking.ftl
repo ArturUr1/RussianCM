@@ -1,0 +1,12 @@
+rucm-discord-link-message = Link your RuCMU game account to Discord. Copy the code from the game lobby and enter it using the button below. Share the code only with this form.
+rucm-discord-link-button = Link game account
+rucm-discord-link-title = Link game account
+rucm-discord-link-code = Code from the game lobby
+rucm-discord-link-wrong-channel = Use the account-link button in the server's configured channel.
+rucm-discord-link-invalid-code = Code not found or already used. Get a new code from the game lobby.
+rucm-discord-link-expired = This code has expired. Get a new code from the game lobby.
+rucm-discord-link-conflict = The game or Discord account is already linked to a different account. The existing link was preserved. Contact an administrator to change it.
+rucm-discord-link-success = Your game account is now linked to Discord. You can return to the game.
+rucm-discord-link-already-linked = This game account is already linked to your Discord. You are ready to go.
+rucm-discord-link-busy = Too many requests. Wait a few seconds and try again.
+rucm-discord-link-unavailable = Account linking could not complete right now. Please try again later.

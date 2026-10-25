@@ -1,4 +1,8 @@
 # CMU14: start disabled; configure and validate on a disposable database first.
+[rmc]
+discord_token = "" # Existing game bot token, stored locally. No separate account-link bot.
+discord_account_linking_channel = "" # Text channel ID; publishes/reuses the link button automatically.
+
 [rucm.kaban]
 enabled = false
 shop = false

@@ -19,7 +19,7 @@ namespace Content.IntegrationTests._RuCM.Kaban;
 
 // CMU14: the same transaction scenarios run on both real providers, in disposable databases only.
 [TestFixture(false), TestFixture(true), NonParallelizable]
-public sealed class KabanEconomyTests(bool postgres)
+public sealed partial class KabanEconomyTests(bool postgres)
 {
     private string _connection = "";
     private string _database = "";
