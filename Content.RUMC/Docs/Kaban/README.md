@@ -246,6 +246,22 @@ dotnet bin/Content.Client/Content.Client.dll --self-contained --cvar display.wid
 
 ## Discord и руководство администратора
 
+### Ошибка десериализации при открытии меню
+
+Клиент и сервер должны быть собраны из одной версии общего кода. После изменения
+`KabanState` или `KabanRequest` пересоберите оба проекта и полностью перезапустите
+оба процесса. Старый клиент может подключиться, но не прочитать новое состояние EUI.
+Для одной локальной сборки одинаковой конфигурации можно сверить общую библиотеку:
+
+```powershell
+Get-FileHash bin/Content.Client/Content.Shared.dll
+Get-FileHash bin/Content.Server/Content.Shared.dll
+```
+
+Локальный `kabanpreview` открывает состояние напрямую и не проверяет сетевую
+передачу. Отдельные `KabanSerializationTests` проверяют round trip полных сообщений
+через NetSerializer, включая вложенные записи и nullable-поля.
+
 ### Привязка игрового аккаунта
 
 В лобби игрок открывает «Привязать Discord-аккаунт» и копирует код.
