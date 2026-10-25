@@ -48,10 +48,12 @@ public sealed partial class RMCDiscordManager
             role = placeholders.SingleOrDefault()
                 ?? await guild.CreateRoleAsync(marker, GuildPermissions.None, isHoisted: false, isMentionable: false, options: options);
         }
-        if (role.IsManaged || role.Id == guildId || role.Position >= boundary.Position || role.Permissions.RawValue != 0)
+        if (role.IsManaged || role.Id == guildId || role.Permissions.RawValue != 0)
             throw new InvalidOperationException("Personal role exceeds the permitted hierarchy or has permissions.");
         if (!await db.KabanRecordDiscord(request.UserId, request.Delivery, lease, role.Id.ToString(), false, DateTime.UtcNow.Ticks))
             return;
+        role = await Content.Server._RuCM.Kaban.KabanDiscordRolePosition.PlaceBelowBoundary(
+            async () => (IGuild) await _client.Rest.GetGuildAsync(guildId, options), role.Id, boundaryId, options);
         await role.ModifyAsync(p =>
         {
             p.Name = request.Name;
