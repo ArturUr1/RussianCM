@@ -183,3 +183,6 @@ cmu-motion-sick-worse-4 = Вас выворачивает наизнанку, и
 
 cmu-trait-auto-ignore-name = Автоигнорирование несовместимых черт
 cmu-trait-auto-ignore-desc = Если вы присоединяетесь к роли, не допускающей часть ваших черт, эти черты отключаются на раунд вместо того, чтобы запретить вам выбрать роль.
+cmu-trait-category-addictions = Зависимости
+
+cmu-trait-category-phobias = Страхи и фобии
