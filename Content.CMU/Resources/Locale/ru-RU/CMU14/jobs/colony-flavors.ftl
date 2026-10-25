@@ -33,13 +33,13 @@ cmu-colony-description-prison-guard = Сотрудник исправитель�
 cmu-colony-prefix-prison-guard = PSG
 
 cmu-colony-name-riot-control-officer = Офицер по подавлению беспорядков
-cmu-colony-description-riot-control-officer = Сотрудник КБМ по подавлению беспорядков, экипированный для удержания рубежа, которого у колонии больше нет. Толпа разбежалась несколько часов назад; её место заняло нечто другое.
+cmu-colony-description-riot-control-officer = Сотрудник БКМ по подавлению беспорядков, экипированный для удержания рубежа, которого у колонии больше нет. Толпа разбежалась несколько часов назад; её место заняло нечто другое.
 cmu-colony-prefix-riot-control-officer = RCO
 cmu-colony-name-riot-control-team-leader = Командир группы по подавлению беспорядков
-cmu-colony-description-riot-control-team-leader = Офицер, возглавляющий группу КБМ по подавлению беспорядков. Ваши приказы перестали иметь смысл ещё два радиоканала назад, поэтому теперь вы принимаете решения самостоятельно.
+cmu-colony-description-riot-control-team-leader = Офицер, возглавляющий группу БКМ по подавлению беспорядков. Ваши приказы перестали иметь смысл ещё два радиоканала назад, поэтому теперь вы принимаете решения самостоятельно.
 cmu-colony-prefix-riot-control-team-leader = RCL
 
-cmu-cmb-name-bureau-observer = Наблюдатель КБМ
+cmu-cmb-name-bureau-observer = Наблюдатель БКМ
 cmu-cmb-description-bureau-observer = Полевой наблюдатель Колониального бюро маршалов, направленный наблюдать, вести записи и оказывать помощь, но никогда не принимать чью-либо сторону.
 cmu-cmb-prefix-bureau-observer = OBS
 cmu-cmb-supervisors-bureau = Колониальное бюро маршалов
