@@ -24,6 +24,7 @@ public sealed partial class AdminConsoleSystem : EntitySystem
     [Dependency] private IPrototypeManager _proto = default!;
     [Dependency] private PopupSystem _popup = default!;
     [Dependency] private Robust.Shared.Timing.IGameTiming _timing = default!;
+    [Dependency] private Content.Server.CMU14.WorldMarket.WorldMarketSystem _worldMarket = default!; // RUMC: the holidays from taxes that the ambassadors order
 
     public override void Initialize()
     {
@@ -60,20 +61,20 @@ public sealed partial class AdminConsoleSystem : EntitySystem
     public float GetSalesTax()
     {
         var query = EntityQueryEnumerator<AdminConsoleComponent>();
-        return query.MoveNext(out _, out var comp) ? comp.SalesTaxPercent / 100f : 0f;
+        return query.MoveNext(out _, out var comp) ? Math.Max(0f, comp.SalesTaxPercent - _worldMarket.TaxBreakPoints(Content.Shared.CMU14.WorldMarket.WorldTaxKind.Sales)) / 100f : 0f; // RUMC: minus the holiday
     }
 
     // RUMC: the trade tax as a share (0 to 0.5), for the platforms that take it from a sale
     public float GetTradeTax()
     {
         var query = EntityQueryEnumerator<AdminConsoleComponent>();
-        return query.MoveNext(out _, out var comp) ? comp.TradeTaxPercent / 100f : 0f;
+        return query.MoveNext(out _, out var comp) ? Math.Max(0f, comp.TradeTaxPercent - _worldMarket.TaxBreakPoints(Content.Shared.CMU14.WorldMarket.WorldTaxKind.Trade)) / 100f : 0f; // RUMC: minus the holiday
     }
 
     public float GetIncomeTax()
     {
         var query = EntityQueryEnumerator<AdminConsoleComponent>();
-        return query.MoveNext(out _, out var comp) ? comp.IncomeTaxPercent / 100f : 0f;
+        return query.MoveNext(out _, out var comp) ? Math.Max(0f, comp.IncomeTaxPercent - _worldMarket.TaxBreakPoints(Content.Shared.CMU14.WorldMarket.WorldTaxKind.Income)) / 100f : 0f; // RUMC: minus the holiday
     }
 
     /// <summary>
