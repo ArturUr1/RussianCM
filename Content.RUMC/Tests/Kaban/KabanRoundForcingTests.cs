@@ -38,10 +38,17 @@ public sealed class KabanRoundForcingTests : GameTest
     {
         _ttsOverrideIndex = PoolManager.Instance.DefaultCvars.Count;
         PoolManager.Instance.DefaultCvars.Add((CCCVars.TTSEnabled.Name, "false"));
+        PoolManager.Instance.DefaultCvars.Add((CCVars.VoteStartDelay.Name, "0"));
+        PoolManager.Instance.DefaultCvars.Add((RMCCVars.RMCLobbyMinimumPlayers.Name, "0"));
     }
 
     [OneTimeTearDown]
-    public static void RestoreLobby() => PoolManager.Instance.DefaultCvars.RemoveAt(_ttsOverrideIndex);
+    public static void RestoreLobby()
+    {
+        PoolManager.Instance.DefaultCvars.RemoveAt(_ttsOverrideIndex + 2);
+        PoolManager.Instance.DefaultCvars.RemoveAt(_ttsOverrideIndex + 1);
+        PoolManager.Instance.DefaultCvars.RemoveAt(_ttsOverrideIndex);
+    }
 
     private async Task Until(Func<bool> predicate)
     {

@@ -19,6 +19,7 @@ namespace Content.Server.CMU14.Round;
 public sealed partial class AuRoundSystem
 {
     private KabanForceChoice? _kabanChoice;
+    private GamePresetPrototype? _kabanPreviousPreset;
     private KabanForceOption[] _kabanOptions = [];
     private KabanForceOption[] _kabanCatalogCache = [];
     private int _kabanCatalogPlayers = -1;
@@ -40,11 +41,12 @@ public sealed partial class AuRoundSystem
     internal KabanForceOption[] BuildKabanCatalog(int count)
     {
         var resources = IoCManager.Resolve<IResourceManager>();
-        bool MapExists(string id) => _prototypeManager.TryIndex<GameMapPrototype>(id, out var map)
-            && map.MinPlayers <= count && map.MaxPlayers >= count
+        // Ships are auxiliary maps loaded directly by GameTicker; their bounds do not describe the whole server population.
+        bool MapExists(string id, bool population) => _prototypeManager.TryIndex<GameMapPrototype>(id, out var map)
+            && (!population || map.MinPlayers <= count && map.MaxPlayers >= count)
             && resources.ContentFileExists(map.MapPath)
             && map.MapsAbove.Concat(map.MapsBelow).All(path => resources.ContentFileExists(path));
-        bool PlatoonReady(PlatoonPrototype platoon, bool ship) => (!ship || platoon.PossibleShips.Count > 0 && platoon.PossibleShips.All(MapExists))
+        bool PlatoonReady(PlatoonPrototype platoon, bool ship) => (!ship || platoon.PossibleShips.Count > 0 && platoon.PossibleShips.All(id => MapExists(id, false)))
             && (platoon.TechTree == "" || _prototypeManager.HasIndex<EntityPrototype>(platoon.TechTree));
         Dictionary<string, string> Platoons(IEnumerable<ProtoId<PlatoonPrototype>> ids, bool ship)
             => ids.Distinct().Where(id => _prototypeManager.TryIndex(id, out PlatoonPrototype? platoon)
@@ -60,7 +62,7 @@ public sealed partial class AuRoundSystem
                 if (!_prototypeManager.TryIndex<EntityPrototype>(id, out var entity)
                     || !entity.TryComp(out RMCPlanetMapPrototypeComponent? planet, IoCManager.Resolve<IComponentFactory>())
                     || !planet.InRotation || planet.MinPlayers > count || planet.MaxPlayers > 0 && count > planet.MaxPlayers
-                    || !MapExists(planet.MapId))
+                    || !MapExists(planet.MapId, true))
                     continue;
                 if (preset.MapPool is { } poolId && (!_prototypeManager.TryIndex<GameMapPoolPrototype>(poolId, out var pool)
                     || !pool.Maps.Contains(planet.MapId)))
@@ -103,6 +105,7 @@ public sealed partial class AuRoundSystem
             }
             _voteSequenceRunning = false;
             _kabanChoice = choice;
+            _kabanPreviousPreset = choice == null ? null : _gameTicker.Preset;
             _kabanOptions = choice == null ? [] : KabanCatalog(fresh: true).Where(choice.Matches).ToArray();
             if (choice != null && _kabanOptions.Length == 0)
             {
@@ -218,6 +221,8 @@ public sealed partial class AuRoundSystem
 
     private void ResetKabanSelection(bool resetPreset)
     {
+        var previous = _kabanPreviousPreset;
+        _kabanPreviousPreset = null;
         _state.Reset();
         SelectedPlanetMap = null;
         var platoons = EntityManager.System<PlatoonSpawnRuleSystem>();
@@ -225,7 +230,7 @@ public sealed partial class AuRoundSystem
         platoons.SelectedOpforPlatoon = null;
         ApplyKabanTechTrees();
         if (resetPreset)
-            _gameTicker.SetGamePreset(_cfg.GetCVar(CCVars.GameLobbyDefaultPreset));
+            _gameTicker.SetGamePreset(previous ?? _gameTicker.FindGamePreset(_cfg.GetCVar(CCVars.GameLobbyDefaultPreset)));
     }
 
     public bool KabanSelectionMatches(KabanForceChoice choice)
