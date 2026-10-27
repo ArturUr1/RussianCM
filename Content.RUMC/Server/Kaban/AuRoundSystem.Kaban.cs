@@ -4,6 +4,7 @@ using Content.Server.GameTicking;
 using Content.Server.GameTicking.Presets;
 using Content.Server.Maps;
 using Content.Shared._RMC14.Intel;
+using Content.Shared._RMC14.Item;
 using Content.Shared._RMC14.Rules;
 using Content.Shared._RMC14.TacticalMap;
 using Content.Shared._RuCM.Kaban;
@@ -20,6 +21,7 @@ public sealed partial class AuRoundSystem
 {
     private KabanForceChoice? _kabanChoice;
     private GamePresetPrototype? _kabanPreviousPreset;
+    private CamouflageType? _kabanPreviousCamo;
     private KabanForceOption[] _kabanOptions = [];
     private KabanForceOption[] _kabanCatalogCache = [];
     private int _kabanCatalogPlayers = -1;
@@ -106,6 +108,7 @@ public sealed partial class AuRoundSystem
             _voteSequenceRunning = false;
             _kabanChoice = choice;
             _kabanPreviousPreset = choice == null ? null : _gameTicker.Preset;
+            _kabanPreviousCamo = choice == null ? null : _camo.CurrentMapCamouflage;
             _kabanOptions = choice == null ? [] : KabanCatalog(fresh: true).Where(choice.Matches).ToArray();
             if (choice != null && _kabanOptions.Length == 0)
             {
@@ -223,6 +226,9 @@ public sealed partial class AuRoundSystem
     {
         var previous = _kabanPreviousPreset;
         _kabanPreviousPreset = null;
+        if (_kabanPreviousCamo is { } camouflage)
+            _camo.CurrentMapCamouflage = camouflage;
+        _kabanPreviousCamo = null;
         _state.Reset();
         SelectedPlanetMap = null;
         var platoons = EntityManager.System<PlatoonSpawnRuleSystem>();

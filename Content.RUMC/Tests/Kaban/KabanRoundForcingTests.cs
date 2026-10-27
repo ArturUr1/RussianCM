@@ -14,6 +14,7 @@ using Content.Server.GameTicking.Presets;
 using Content.Server.Voting.Managers;
 using Content.Shared._RuCM.Kaban;
 using Content.Shared._RMC14.CCVar;
+using Content.Shared._RMC14.Item;
 using Content.Shared.CCVar;
 using Content.Shared.Corvax.CCCVars;
 using Robust.Server.Player;
@@ -266,12 +267,16 @@ public sealed class KabanRoundForcingTests : GameTest
     public async Task CancellingFullPlanClearsEverySelectionBeforeManualOverrides()
     {
         var (policy, db, choice, purchase) = await SetupPurchase();
+        var previousCamouflage = CamouflageType.Jungle;
+        await Server.WaitPost(() => previousCamouflage = Server.System<ItemCamouflageSystem>().CurrentMapCamouflage);
         await Server.WaitPost(() => Server.System<AuRoundSystem>().StartVoteSequence());
         await Until(() => Server.System<AuRoundSystem>().KabanSelectionMatches(choice));
         await Server.WaitAssertion(() =>
         {
             var round = Server.System<AuRoundSystem>();
+            Assert.That(Server.System<ItemCamouflageSystem>().CurrentMapCamouflage, Is.EqualTo(CamouflageType.Desert));
             round.KabanAdminMapOverride();
+            Assert.That(Server.System<ItemCamouflageSystem>().CurrentMapCamouflage, Is.EqualTo(previousCamouflage));
             Assert.That(round.GetSelectedPlanet(), Is.Null);
             Assert.That(round.GetSelectedGovforShip(), Is.Null);
             Assert.That(round.GetSelectedOpforShip(), Is.Null);
@@ -305,7 +310,18 @@ public sealed class KabanRoundForcingTests : GameTest
             await Pair.RunTicksSync(60);
             await Server.WaitPost(() =>
             {
-                observedUnpaidVote |= Server.ResolveDependency<IVoteManager>().ActiveVotes.Any();
+                var votes = Server.ResolveDependency<IVoteManager>();
+                var active = votes.ActiveVotes.Where(v => !v.Finished).ToArray();
+                observedUnpaidVote |= active.Length > 0;
+                foreach (var vote in active)
+                {
+                    vote.CastVote(ServerSession!, 0);
+                    // Votes use RealTime, not simulated ticks. Finish through the actual manager after casting a ballot.
+                    var registration = vote.GetType().GetField("_reg", BindingFlags.Instance | BindingFlags.NonPublic)!.GetValue(vote);
+                    typeof(VoteManager).GetMethod("EndVote", BindingFlags.Instance | BindingFlags.NonPublic)!
+                        .Invoke(votes, new[] { registration });
+                }
+                votes.Update();
                 selected = Server.System<AuRoundSystem>().KabanSelectionMatches(complete);
             });
             await Task.Delay(10);
@@ -339,19 +355,40 @@ public sealed class KabanRoundForcingTests : GameTest
           mapName: Kaban test planet
           minPlayers: 0
           mapPath: /Maps/Test/empty.yml
-          stations: {}
+          stations:
+            Empty:
+              stationProto: StandardNanotrasenStation
+              components:
+              - type: StationJobs
+                availableJobs:
+                  Passenger: [-1, -1]
+                  CMRifleman: [-1, -1]
         - type: gameMap
           id: KabanTestGovShip
           mapName: Kaban test GOVFOR ship
           minPlayers: 0
           mapPath: /Maps/Test/empty.yml
-          stations: {}
+          stations:
+            Empty:
+              stationProto: StandardNanotrasenStation
+              components:
+              - type: StationJobs
+                availableJobs:
+                  Passenger: [-1, -1]
+                  CMRifleman: [-1, -1]
         - type: gameMap
           id: KabanTestOpShip
           mapName: Kaban test OPFOR ship
           minPlayers: 0
           mapPath: /Maps/Test/empty.yml
-          stations: {}
+          stations:
+            Empty:
+              stationProto: StandardNanotrasenStation
+              components:
+              - type: StationJobs
+                availableJobs:
+                  Passenger: [-1, -1]
+                  CMRifleman: [-1, -1]
         - type: platoon
           id: KabanTestGov
           name: cmu-kaban-force-field-govfor
@@ -366,6 +403,7 @@ public sealed class KabanRoundForcingTests : GameTest
           - type: RMCPlanetMapPrototype
             mapId: KabanTestMap
             votename: Kaban test planet
+            camouflage: Desert
             govforinship: true
             opforinship: true
             platoonsGovfor: [KabanTestGov]
