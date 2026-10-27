@@ -198,12 +198,7 @@ public sealed partial class AuRoundSystem
         EntityManager.System<KabanSystem>().CancelForcing("full-plan-rejected");
         _kabanChoice = null;
         _kabanOptions = [];
-        _state.Reset();
-        var platoons = EntityManager.System<PlatoonSpawnRuleSystem>();
-        platoons.SelectedGovforPlatoon = null;
-        platoons.SelectedOpforPlatoon = null;
-        ApplyKabanTechTrees();
-        _gameTicker.SetGamePreset(_cfg.GetCVar(CCVars.GameLobbyDefaultPreset));
+        ResetKabanSelection(true);
         return false;
     }
 
@@ -213,6 +208,18 @@ public sealed partial class AuRoundSystem
         var intel = EntityManager.System<IntelSystem>();
         intel.SetTeamTechTreeOverride(Team.GovFor, platoons.SelectedGovforPlatoon?.TechTree);
         intel.SetTeamTechTreeOverride(Team.OpFor, platoons.SelectedOpforPlatoon?.TechTree);
+    }
+
+    private void ResetKabanSelection(bool resetPreset)
+    {
+        _state.Reset();
+        SelectedPlanetMap = null;
+        var platoons = EntityManager.System<PlatoonSpawnRuleSystem>();
+        platoons.SelectedGovforPlatoon = null;
+        platoons.SelectedOpforPlatoon = null;
+        ApplyKabanTechTrees();
+        if (resetPreset)
+            _gameTicker.SetGamePreset(_cfg.GetCVar(CCVars.GameLobbyDefaultPreset));
     }
 
     public bool KabanSelectionMatches(KabanForceChoice choice)
@@ -236,12 +243,6 @@ public sealed partial class AuRoundSystem
         }
         // Return to ordinary preset/map selection before any map/rule is loaded.
         StopVoteSequence();
-        _state.Reset();
-        var platoons = EntityManager.System<PlatoonSpawnRuleSystem>();
-        platoons.SelectedGovforPlatoon = null;
-        platoons.SelectedOpforPlatoon = null;
-        ApplyKabanTechTrees();
-        _gameTicker.SetGamePreset(_cfg.GetCVar(CCVars.GameLobbyDefaultPreset));
     }
 
     public void KabanAdminMapOverride()

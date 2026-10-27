@@ -142,7 +142,7 @@ namespace Content.Server.CMU14.Round
         public void SetPreset(GamePresetPrototype? preset)
         {
             if (_kabanChoice != null && _selectedPreset != null && _selectedPreset.ID != preset?.ID)
-                StopVoteSequence(); // CMU14: fallback/direct preset changes supersede a paid selection.
+                StopVoteSequence(false); // CMU14: retain the new ticker preset while discarding the old paid plan.
             _selectedPreset = preset;
         }
         public void SetSelectedThreat(ThreatPrototype? threat)
@@ -1181,12 +1181,15 @@ namespace Content.Server.CMU14.Round
         /// <summary>
         /// Stops the vote sequence and cancels its active votes.
         /// </summary>
-        public void StopVoteSequence()
+        public void StopVoteSequence(bool resetPaidPreset = true)
         {
+            var paid = _kabanChoice != null;
             _voteSequence.Restart();
             _kabanChoice = null;
             _kabanOptions = [];
             EntityManager.System<Content.Server._RuCM.Kaban.KabanSystem>().CancelForcing("selection-overridden"); // CMU14
+            if (paid && _gameTicker.RunLevel == GameRunLevel.PreRoundLobby)
+                ResetKabanSelection(resetPaidPreset);
         }
 
         public RMCPlanetMapPrototypeComponent? GetSelectedPlanet()

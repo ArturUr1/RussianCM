@@ -258,6 +258,36 @@ public sealed class KabanRoundForcingTests : GameTest
         Assert.That(final.Balance, Is.EqualTo(2000));
     }
 
+    [Test]
+    public async Task CancellingFullPlanClearsEverySelectionBeforeManualOverrides()
+    {
+        var (policy, db, choice, purchase) = await SetupPurchase();
+        await Server.WaitPost(() => Server.System<AuRoundSystem>().StartVoteSequence());
+        await Until(() => Server.System<AuRoundSystem>().KabanSelectionMatches(choice));
+        await Server.WaitAssertion(() =>
+        {
+            var round = Server.System<AuRoundSystem>();
+            round.KabanAdminMapOverride();
+            Assert.That(round.GetSelectedPlanet(), Is.Null);
+            Assert.That(round.GetSelectedGovforShip(), Is.Null);
+            Assert.That(round.GetSelectedOpforShip(), Is.Null);
+            Assert.That(Server.System<PlatoonSpawnRuleSystem>().SelectedGovforPlatoon, Is.Null);
+            Assert.That(Server.System<PlatoonSpawnRuleSystem>().SelectedOpforPlatoon, Is.Null);
+            Assert.That(Server.System<GameTicker>().Preset?.ID, Is.Not.EqualTo(choice.Mode));
+            // The administrative value is applied after cancellation and must survive it.
+            round.SetGovforShip("manual-test-ship");
+            Assert.That(round.GetSelectedGovforShip(), Is.EqualTo("manual-test-ship"));
+        });
+        KabanState final = await db.KabanView(policy);
+        for (var i = 0; i < 200 && final.Items.Single(v => v.Id == purchase.Operation).Status != "refunded"; i++)
+        {
+            await Pair.RunTicksSync(1);
+            final = await db.KabanView(policy);
+        }
+        Assert.That(final.Items.Single(v => v.Id == purchase.Operation).Status, Is.EqualTo("refunded"));
+        Assert.That(final.Balance, Is.EqualTo(2000));
+    }
+
     [TestCase("mode"), TestCase("map"), TestCase("govfor"), TestCase("opfor")]
     public async Task SingleParameterKeepsUnpaidVotesAndStartsTheChosenRound(string product)
     {
