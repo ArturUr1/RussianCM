@@ -136,18 +136,7 @@ public sealed partial class KabanWindow
                 Priorities();
                 break;
             case "forcing":
-                Text(Card(_page), L("force-blocked"));
-                var requests = _view.Items.Where(i => i.Kind == "force").ToArray();
-                if (requests.Length == 0)
-                    Text(_page, L("account-empty-requests"));
-                foreach (var item in requests)
-                {
-                    var card = Card(_page, L("kind-force"));
-                    Text(card, item.Description);
-                    Text(card, L("status-" + item.Status));
-                    Button(card, L("cancel"), () => Submit(new KabanRequest
-                        { Action = KabanAction.CancelRequest, Item = item.Id }), item.Status != "queued");
-                }
+                RenderForcing();
                 break;
             case "history":
                 Text(_page, L("recent-history"));

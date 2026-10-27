@@ -142,12 +142,15 @@ public sealed partial class KabanWindow
         _purchaseText = "";
         _purchaseCategory = "";
         _purchaseConfirmed = false;
+        _forceDraft = new();
         Render();
         _scroll.SetScrollValue(default);
     }
 
     private bool ValidPurchaseFields(string id)
     {
+        if (Category(id) == "round")
+            return _forceDraft.ValidFor(id) && _view.ForceOptions.Any(_forceDraft.Matches);
         if (id == "voice")
             return CustomTTSVoice.IsValidSpeakerName(_purchaseCategory) && _purchaseText.Trim().Length >= 20;
         if (id is "discord" or "rename")
@@ -183,6 +186,9 @@ public sealed partial class KabanWindow
             Text(Card(_page, L("store-unavailable"), accent: Warning), Loc.GetString(product.Blocker), Warning);
         if (_view.Balance < product.Price)
             Text(Card(_page), Loc.GetString("cmu-kaban-store-shortfall", ("amount", product.Price - _view.Balance)), Warning);
+
+        if (Category(product.Id) == "round")
+            RenderForceFields(product.Id);
 
         var total = Card(_page, L("store-order"));
         var cost = Row();

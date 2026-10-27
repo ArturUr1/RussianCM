@@ -139,7 +139,12 @@ namespace Content.Server.CMU14.Round
             _selectedGovforShip = shipId;
             _gameTicker.UpdateInfoText();
         }
-        public void SetPreset(GamePresetPrototype? preset) => _selectedPreset = preset;
+        public void SetPreset(GamePresetPrototype? preset)
+        {
+            if (_kabanChoice != null && _selectedPreset != null && _selectedPreset.ID != preset?.ID)
+                StopVoteSequence(); // CMU14: fallback/direct preset changes supersede a paid selection.
+            _selectedPreset = preset;
+        }
         public void SetSelectedThreat(ThreatPrototype? threat)
         {
             _state.SelectedThreat = threat;
@@ -257,7 +262,10 @@ namespace Content.Server.CMU14.Round
             _selectedThirdParties.Clear();
             _spawnedThirdParties.Clear();
             var sequenceId = _voteSequenceId;
-            var presetVote = StartPresetVote(sequenceId, presetId =>
+            // CMU14: a complete paid plan is resolved before any of its four selections is changed.
+            if (CommitKabanFullOrFallback())
+                return;
+            void SelectPreset(string? presetId)
             {
                 if (!IsCurrentVoteSequence(sequenceId))
                     return;
@@ -269,6 +277,8 @@ namespace Content.Server.CMU14.Round
                     return;
                 }
 
+                if (_kabanChoice?.Mode == preset.ID)
+                    _gameTicker.SetGamePreset(preset); // CMU14: paid mode bypasses the vote's normal ticker callback.
                 _selectedPreset = preset;
 
                 // Preset-level planetPool replaces the list outright; pool ids inside supportedPlanets expand in place, in order
@@ -309,10 +319,20 @@ namespace Content.Server.CMU14.Round
                     // If MaxPlayers is set (>0) and current players exceed it, exclude.
                     (p.Planet.MaxPlayers > 0 && playerCount > p.Planet.MaxPlayers)
                 );
+                FilterKabanPlanets(preset.ID, planetProtos); // CMU14
 
                 if (planetProtos.Count == 0)
                 {
                     _voteSequenceRunning = false;
+                    return;
+                }
+
+                if (_kabanChoice is { Planet.Length: > 0 }) // CMU14: the paid planet has already been chosen.
+                {
+                    _state.SetPlanet(planetProtos[0].Id, planetProtos[0].Planet);
+                    SetCamoType();
+                    _gameTicker.UpdateInfoText();
+                    StartPlatoonVotes(sequenceId);
                     return;
                 }
 
@@ -365,9 +385,10 @@ namespace Content.Server.CMU14.Round
                         SetCamoType();
                         StartPlatoonVotes(sequenceId);
                     });
-            });
-
-            if (presetVote == null)
+            }
+            if (_kabanChoice is { Mode.Length: > 0 } forced)
+                SelectPreset(forced.Mode);
+            else if (StartPresetVote(sequenceId, SelectPreset) == null)
                 _voteSequenceRunning = false;
         }
 
@@ -972,11 +993,13 @@ namespace Content.Server.CMU14.Round
 
 
 
-            if (presetProto.RequiresGovforVote && govforPlatoons.Count > 0)
+            if (presetProto.RequiresGovforVote && govforPlatoons.Count > 0 && !ApplyKabanPlatoon(true, StartShipVote))
             {
                 var optionsplatoons = new List<(string text, object data)>();
                 foreach (var platoonId in govforPlatoons)
                 {
+                    if (!KabanPlatoonAllowed(platoonId, true)) // CMU14
+                        continue;
                     var platoon = _prototypeManager.Index<PlatoonPrototype>(platoonId);
                     optionsplatoons.Add((Loc.GetString(platoon.Name), platoon));
                 }
@@ -1032,11 +1055,13 @@ namespace Content.Server.CMU14.Round
                 };
             }
 
-            if (presetProto.RequiresOpforVote && opforPlatoons.Count > 0)
+            if (presetProto.RequiresOpforVote && opforPlatoons.Count > 0 && !ApplyKabanPlatoon(false, StartShipVote))
             {
                 var optionsplatoons = new List<(string text, object data)>();
                 foreach (var platoonId in opforPlatoons)
                 {
+                    if (!KabanPlatoonAllowed(platoonId, false)) // CMU14
+                        continue;
                     var platoon = _prototypeManager.Index<PlatoonPrototype>(platoonId);
                     optionsplatoons.Add((Loc.GetString(platoon.Name), platoon));
                 }
@@ -1150,18 +1175,19 @@ namespace Content.Server.CMU14.Round
 
         public void StartVoteSequence(Action? onFinished = null)
         {
-            _voteSequence.Restart();
-            _state.Reset();
-            SelectedPlanetMap = null;
-
-            StartFullVoteSequence();
-            onFinished?.Invoke();
+            StartKabanVoteSequence(onFinished); // CMU14
         }
 
         /// <summary>
         /// Stops the vote sequence and cancels its active votes.
         /// </summary>
-        public void StopVoteSequence() => _voteSequence.Restart();
+        public void StopVoteSequence()
+        {
+            _voteSequence.Restart();
+            _kabanChoice = null;
+            _kabanOptions = [];
+            EntityManager.System<Content.Server._RuCM.Kaban.KabanSystem>().CancelForcing("selection-overridden"); // CMU14
+        }
 
         public RMCPlanetMapPrototypeComponent? GetSelectedPlanet()
         {

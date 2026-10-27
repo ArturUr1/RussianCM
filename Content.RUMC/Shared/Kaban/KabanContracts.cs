@@ -50,7 +50,7 @@ public sealed record KabanProductView(string Id, int Price, bool Available, stri
 
 [Serializable, NetSerializable]
 public sealed record KabanItemView(Guid Id, string Kind, string Description, long Expires, string Status,
-    int Multiplier = 0, bool Flexible = false, string[]? Jobs = null, string Detail = "");
+    int Multiplier = 0, bool Flexible = false, string[]? Jobs = null, string Detail = "", int Position = 0, string OwnerName = "");
 
 [Serializable, NetSerializable]
 public sealed record KabanHistoryView(Guid Id, long At, string Description, long Amount);
@@ -82,6 +82,8 @@ public sealed class KabanState : EuiStateBase
     public Dictionary<string, string> Jobs = new();
     public Dictionary<Guid, string> Accounts = new();
     public List<KabanWalletView> Wallets = [];
+    public List<KabanForceOption> ForceOptions = [];
+    public bool ForcingEnabled;
 }
 
 [Serializable, NetSerializable]

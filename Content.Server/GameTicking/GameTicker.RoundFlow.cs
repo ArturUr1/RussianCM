@@ -111,6 +111,8 @@ namespace Content.Server.GameTicking
             if (_map.MapExists(DefaultMap))
                 return;
 
+            _auRoundSystem.ValidateKabanBeforeLoad(); // CMU14: revalidate paid choices before loading any resources.
+
             AddGamePresetRules();
 
             var maps = new List<GameMapPrototype>();

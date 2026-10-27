@@ -15,7 +15,8 @@ namespace Content.Server._RuCM.Kaban;
 public sealed record KabanPolicy(Guid Actor, bool Manager, bool Senior, bool Shop, bool Priorities,
     bool Tts, bool Discord, string Server,
     string Round, bool Lobby, string[] CommandJobs, string[] AvailableJobs,
-    bool VoiceAvailable = true, bool VoiceVerified = true);
+    bool VoiceAvailable = true, bool VoiceVerified = true, bool Forcing = false,
+    KabanForceOption[]? ForceOptions = null);
 
 public sealed class KabanDenied(string key) : Exception(key);
 
@@ -24,7 +25,7 @@ public sealed class KabanDenied(string key) : Exception(key);
 /// across processes, including direct balance changes and rolling limits. The lock and all changes commit together.
 /// Calls run through ServerDbManager's worker pool; no database work is done in a job lottery.
 /// </summary>
-public static class KabanEconomy
+public static partial class KabanEconomy
 {
     // JSON is server-only. Keep the original request fingerprints when TargetName is absent,
     // without putting JSON attributes/types into the sandboxed network contract.
@@ -53,11 +54,10 @@ public static class KabanEconomy
 
     public static string Blocker(string id, KabanPolicy policy)
     {
-        // The vote sequence has no atomic prepare/commit/rollback API. Selling an unappliable request is forbidden.
-        if (IsForcing(id))
-            return "cmu-kaban-force-blocked";
         if (!policy.Shop)
             return "cmu-kaban-shop-disabled";
+        if (IsForcing(id) && !policy.Forcing)
+            return "cmu-kaban-forcing-disabled";
         if (IsPriority(id) && !policy.Priorities)
             return "cmu-kaban-priorities-disabled";
         if (id == "voice" && !policy.Tts)
@@ -275,6 +275,8 @@ public static class KabanEconomy
             Require(policy.VoiceAvailable, "cmu-kaban-voice-exists");
             await PrepareVoice(db, policy.Actor, purchase.Id, request.Category, request.Text);
         }
+        else if (IsForcing(product.Id))
+            await PurchaseForcing(db, policy, request, product.Price, now);
         else if (product.Id is "discord" or "rename")
         {
             Require(ValidRoleName(request.Text) && request.Category.Length == 6

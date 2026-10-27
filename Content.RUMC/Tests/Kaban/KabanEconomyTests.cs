@@ -155,7 +155,7 @@ public sealed partial class KabanEconomyTests(bool postgres)
     }
 
     [Test]
-    public async Task SimultaneousRoundForcingByTwoAccountsNeverChargesEither()
+    public async Task DisabledForcingRejectsConcurrentPurchases()
     {
         await Execute(Adjust(1000, _manager), Policy(_manager, true));
         async Task<bool> Attempt(Guid actor)
@@ -432,7 +432,7 @@ public sealed partial class KabanEconomyTests(bool postgres)
     }
 
     [Test]
-    public async Task DisabledModulesAndUnsupportedRoundForcingNeverCharge()
+    public async Task DisabledModulesRejectPurchasesWithoutCharges()
     {
         Assert.ThrowsAsync<KabanDenied>(() => Execute(Buy(), Policy() with { Shop = false }));
         Assert.ThrowsAsync<KabanDenied>(() => Execute(Buy(), Policy() with { Priorities = false }));

@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Numerics;
@@ -41,7 +42,7 @@ public sealed class KabanPreviewCommand : LocalizedCommands
         var minimum = args.Contains("minimum");
         var pages = args.Where(argument => argument != "minimum").ToArray();
         if (args.Length > 2 || pages.Length > 1 || pages.Length == 1 && pages[0] is not
-            ("capture" or "catalog" or "checkout" or "unavailable" or "pending" or "inventory" or "wallet" or "admin" or "priorities" or "priority-armed" or "off"))
+            ("capture" or "catalog" or "checkout" or "force-checkout" or "forcing" or "unavailable" or "pending" or "inventory" or "wallet" or "admin" or "priorities" or "priority-armed" or "off"))
         {
             shell.WriteError(Help);
             return;
@@ -98,6 +99,9 @@ public sealed class KabanPreviewCommand : LocalizedCommands
             Manager = true,
             PrioritiesEnabled = true,
             Lobby = true,
+            ForcingEnabled = true,
+            ForceOptions = new List<KabanForceOption> { new("ForceOnForce", Loc.GetString("cmu-gamemode-forceonforce-name"), "PreviewPlanet", "LV-624",
+                new() { ["PreviewGovfor"] = "GOVFOR" }, new() { ["PreviewOpfor"] = "OPFOR" }) },
             Balance = 875,
             Earned = 1435,
             Accounts = new() { [contributor] = "PreviewContributor", [manager] = "PreviewManager" },
@@ -111,8 +115,7 @@ public sealed class KabanPreviewCommand : LocalizedCommands
             ("opfor", 200), ("full", 800), ("voice", 600), ("discord", 300), ("rename", 50),
         })
         {
-            var round = id is "mode" or "map" or "govfor" or "opfor" or "full";
-            view.Products.Add(new(id, price, !round, round ? "cmu-kaban-force-blocked" : ""));
+            view.Products.Add(new(id, price, true, ""));
         }
 
         view.Items.Add(new(Guid.NewGuid(), "token", "flex3", now.AddDays(21).Ticks, "available", 3, true));
@@ -120,6 +123,8 @@ public sealed class KabanPreviewCommand : LocalizedCommands
             Jobs: view.Jobs.Keys.Take(1).ToArray()));
         view.Items.Add(new(contributor, "voice", Loc.GetString("cmu-kaban-product-voice"), 0, "active"));
         view.Items.Add(new(contributor, "discord", Loc.GetString("cmu-kaban-product-discord"), 0, "pending"));
+        view.Items.Add(new(Guid.NewGuid(), "force", "full", 0, "queued",
+            Detail: new KabanForceChoice("ForceOnForce", "PreviewPlanet", "PreviewGovfor", "PreviewOpfor").Encode(), Position: 2, OwnerName: "PreviewContributor"));
         view.History.Add(new(Guid.NewGuid(), now.AddHours(-1).Ticks, "purchase:flex3", -100));
         view.History.Add(new(Guid.NewGuid(), now.AddDays(-1).Ticks, "purchase:priority5", -150));
         view.History.Add(new(Guid.NewGuid(), now.AddDays(-2).Ticks,
@@ -159,6 +164,7 @@ public sealed class KabanPreviewCommand : LocalizedCommands
                 ("unavailable", minimum), ("pending", minimum),
                 ("admin", minimum),
                 ("priorities", minimum), ("priority-armed", minimum),
+                ("forcing", minimum), ("force-checkout", minimum),
             }).ToArray();
         }
 
@@ -235,7 +241,7 @@ public sealed partial class KabanWindow
     {
         _pending = null;
         _checkout = null;
-        _section = page is "catalog" or "checkout" or "pending" or "unavailable" ? "shop"
+        _section = page is "catalog" or "checkout" or "force-checkout" or "pending" or "unavailable" ? "shop"
             : page == "priority-armed" ? "priorities" : page;
         _category = "all";
         if (page == "priorities") _view.Items.RemoveAll(item => item.Kind == "token" && item.Status == "reserved");
@@ -245,6 +251,8 @@ public sealed partial class KabanWindow
         Render();
         if (page == "checkout")
             ConfirmPurchase(_view.Products.First(product => product.Id == "voice"));
+        else if (page == "force-checkout")
+            ConfirmPurchase(_view.Products.First(product => product.Id == "full"));
         else if (page == "pending")
             Submit(new KabanRequest { Action = KabanAction.Purchase, Product = "priority3", Amount = 60, Confirmed = true });
     }

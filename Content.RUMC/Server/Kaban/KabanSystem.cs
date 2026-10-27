@@ -65,8 +65,10 @@ public sealed partial class KabanSystem : EntitySystem
         _log = Logger.GetSawmill("rucm.kaban");
         SubscribeNetworkEvent<KabanOpenEvent>((_, args) => Open(args.SenderSession));
         SubscribeLocalEvent<GameRunLevelChangedEvent>(OnRunLevel);
+        SubscribeLocalEvent<PostGameMapLoad>(ev => _forceLoadedMaps.Add(ev.GameMap.ID));
         SubscribeLocalEvent<RoundRestartCleanupEvent>(_ =>
         {
+            CancelForcing("round-restart");
             ReturnReservations(false);
             _lobby = Guid.NewGuid();
             _lottery = false;
@@ -81,6 +83,7 @@ public sealed partial class KabanSystem : EntitySystem
             try { callback(); }
             catch (Exception e) { _log.Error($"Kaban completion failed; game continues: {e}"); }
         }
+        UpdateForcing();
         if (!_ready && !_loading && DateTime.UtcNow >= _retry)
         {
             _loading = true;
@@ -114,6 +117,7 @@ public sealed partial class KabanSystem : EntitySystem
     {
         try
         {
+            await _db.KabanRecoverForce(_cfg.GetCVar(KabanCVars.ServerId), DateTime.UtcNow.Ticks);
             var reservations = await _db.KabanReservations(_cfg.GetCVar(KabanCVars.ServerId));
             foreach (var token in reservations)
                 await _db.KabanSettle(token.Server, token.Reservation, false, "recovery", false, DateTime.UtcNow.Ticks);
@@ -141,7 +145,8 @@ public sealed partial class KabanSystem : EntitySystem
             _cfg.GetCVar(KabanCVars.Priorities) && !string.Equals(_ticker.CurrentPreset?.ID ?? _ticker.Preset?.ID, "ForceOnForce", StringComparison.OrdinalIgnoreCase),
             _cfg.GetCVar(KabanCVars.Tts), _cfg.GetCVar(KabanCVars.Discord),
             _cfg.GetCVar(KabanCVars.ServerId), _lobby.ToString(),
-            !_lottery && _ticker.CanUpdateMap(), jobs.Where(IsCommand).Select(j => j.ID).ToArray(), jobs.Select(j => j.ID).ToArray());
+            !_lottery && _ticker.CanUpdateMap(), jobs.Where(IsCommand).Select(j => j.ID).ToArray(), jobs.Select(j => j.ID).ToArray(),
+            Forcing: ForcingEnabled, ForceOptions: ForcingEnabled ? EntityManager.System<Content.Server.CMU14.Round.AuRoundSystem>().KabanCatalog() : []);
     }
 
     public static bool IsCommand(JobPrototype job)
@@ -227,6 +232,8 @@ public sealed partial class KabanSystem : EntitySystem
                 var currentPolicy = Policy(policy.Actor);
                 view.PrioritiesEnabled = currentPolicy.Priorities;
                 view.Lobby = currentPolicy.Lobby;
+                view.ForcingEnabled = currentPolicy.Forcing;
+                view.ForceOptions = currentPolicy.ForceOptions?.ToList() ?? [];
                 foreach (var job in KabanJobCatalog.Jobs(ProtoMan, _ticker.CurrentPreset?.ID ?? _ticker.Preset?.ID))
                     view.Jobs[job.ID] = KabanJobCatalog.DisplayName(job);
                 foreach (var session in _players.Sessions)
@@ -323,6 +330,7 @@ public sealed partial class KabanSystem : EntitySystem
 
     private void OnRunLevel(GameRunLevelChangedEvent ev)
     {
+        ForcingRunLevel(ev);
         if (ev.New == GameRunLevel.InRound)
             ReturnReservations(true);
     }

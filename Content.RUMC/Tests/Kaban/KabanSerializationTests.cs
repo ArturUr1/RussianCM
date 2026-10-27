@@ -35,13 +35,15 @@ public sealed class KabanSerializationTests
             Manager = true, Senior = true, PrioritiesEnabled = true, Lobby = true, Result = "cmu-kaban-ok",
             Products = [new("priority3", 60, true, ""), new("full", 800, false, "cmu-kaban-force-blocked")],
             Items = [new(operation, "token", "", DateTime.UtcNow.Ticks, "reserved", 3, true,
-                withJobs ? ["role-a", "role-b"] : null, "detail")],
+                withJobs ? ["role-a", "role-b"] : null, "detail", 3, "TestContributor")],
             History = [new(operation, DateTime.UtcNow.Ticks, "manager-adjustment:Тест", -100)],
             Awards = [new(operation, viewer, viewer, 100, "testing", "historical", "paid", [viewer], DateTime.UtcNow.Ticks)],
             Audit = [new(operation, DateTime.UtcNow.Ticks, "audit", 0)],
             Jobs = new() { ["role-a"] = "Медбрат · Колония", ["role-b"] = "Медбрат · GOVFOR" },
             Accounts = new() { [viewer] = "TestContributor" },
             Wallets = [new(viewer, 3000000000L, 4000000000L)],
+            ForcingEnabled = true,
+            ForceOptions = [new("mode", "Режим", "planet", "Планета", new() { ["gov"] = "GOVFOR" }, new() { ["op"] = "OPFOR" })],
         };
         // This is the polymorphic base type read by MsgEuiState.
         var decoded = (KabanState) Roundtrip<EuiStateBase>(view);
@@ -53,12 +55,18 @@ public sealed class KabanSerializationTests
         Assert.That(decoded.Products, Is.EqualTo(view.Products));
         Assert.That(decoded.Items.Single().Jobs, Is.EqualTo(view.Items.Single().Jobs));
         Assert.That(decoded.Items.Single().Detail, Is.EqualTo("detail"));
+        Assert.That(decoded.Items.Single().Position, Is.EqualTo(3));
+        Assert.That(decoded.Items.Single().OwnerName, Is.EqualTo("TestContributor"));
         Assert.That(decoded.History, Is.EqualTo(view.History));
         Assert.That(decoded.Awards.Single().Approvals, Is.EqualTo(new[] { viewer }));
         Assert.That(decoded.Audit, Is.EqualTo(view.Audit));
         Assert.That(decoded.Jobs, Is.EquivalentTo(view.Jobs));
         Assert.That(decoded.Accounts, Is.EquivalentTo(view.Accounts));
         Assert.That(decoded.Wallets, Is.EqualTo(view.Wallets));
+        Assert.That(decoded.ForcingEnabled, Is.True);
+        Assert.That(decoded.ForceOptions.Single().ModeName, Is.EqualTo("Режим"));
+        Assert.That(decoded.ForceOptions.Single().Govfor, Is.EquivalentTo(view.ForceOptions.Single().Govfor));
+        Assert.That(decoded.ForceOptions.Single().Opfor, Is.EquivalentTo(view.ForceOptions.Single().Opfor));
     }
 
     [TestCase(null)]

@@ -92,6 +92,7 @@ public abstract partial class ServerDbBase
         {
             Viewer = policy.Actor, Manager = policy.Manager, Senior = policy.Senior,
             PrioritiesEnabled = policy.Priorities, Lobby = policy.Lobby,
+            ForcingEnabled = policy.Forcing, ForceOptions = policy.ForceOptions?.ToList() ?? [],
         };
         var wallet = await db.Set<KabanWallet>().AsNoTracking().SingleOrDefaultAsync(w => w.UserId == policy.Actor);
         view.Balance = wallet?.Balance ?? 0;
@@ -115,9 +116,19 @@ public abstract partial class ServerDbBase
                      .Where(v => policy.Manager || v.UserId == policy.Actor)
                      .OrderBy(v => v.Status != "pending").ThenBy(v => v.UserId).Take(100).ToListAsync())
             view.Items.Add(new(role.UserId, "discord", $"{role.Name} #{role.Color}", 0, role.Status));
-        foreach (var queue in await db.Set<KabanRoundRequest>().AsNoTracking()
-                     .Where(q => q.UserId == policy.Actor || policy.Manager).OrderBy(q => q.At).Take(100).ToListAsync())
-            view.Items.Add(new(queue.Id, "force", queue.Parameters, 0, queue.Status));
+        var pending = (await db.Set<KabanRoundRequest>().AsNoTracking()
+            .Where(q => q.Status == "queued" || q.Status == "applying").OrderBy(q => q.At).ThenBy(q => q.Id).ToListAsync())
+            .Where(q => KabanEconomy.ForcePayload(q)?.Server == policy.Server).ToList();
+        var requests = await db.Set<KabanRoundRequest>().AsNoTracking()
+                     .Where(q => q.UserId == policy.Actor || policy.Manager)
+                     .OrderBy(q => q.Status != "queued" && q.Status != "applying").ThenByDescending(q => q.At).Take(100).ToListAsync();
+        var owners = requests.Select(q => q.UserId).Distinct().ToArray();
+        var names = await db.Player.AsNoTracking().Where(p => owners.Contains(p.UserId))
+            .ToDictionaryAsync(p => p.UserId, p => p.LastSeenUserName);
+        foreach (var queue in requests)
+            view.Items.Add(new(queue.Id, "force", queue.ProductId, 0, queue.Status,
+                Detail: KabanEconomy.ForcePayload(queue)?.Choice.Encode() ?? "",
+                Position: pending.FindIndex(q => q.Id == queue.Id) + 1, OwnerName: names.GetValueOrDefault(queue.UserId, "")));
         foreach (var entry in await db.Set<KabanLedger>().AsNoTracking().Where(l => l.UserId == policy.Actor)
                      .OrderByDescending(l => l.At).Take(100).ToListAsync())
             view.History.Add(new(entry.Id, entry.At, entry.Reason, entry.Delta));
