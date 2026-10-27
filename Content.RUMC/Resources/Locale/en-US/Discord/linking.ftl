@@ -17,3 +17,5 @@ rucm-discord-link-connect-first = Connect to a game server first.
 cmd-discordlink-desc = Open game account linking to Discord.
 cmd-discordlink-help = Usage: discordlink
 rucm-discord-link-settings-title = Discord account linking
+rucm-discord-link-required = This server requires a linked Discord account to play. Link your account in this window or under Settings → General → Link Discord account. Access will unlock automatically after linking.
+rucm-discord-link-checking = Checking your Discord link. Please wait for your account data to load.

@@ -2,6 +2,7 @@
 [rmc]
 discord_token = "" # Existing game bot token, stored locally. No separate account-link bot.
 discord_account_linking_channel = "" # Text channel ID; publishes/reuses the link button automatically.
+discord_account_linking_required = false # Enable only in the live server's local configuration.
 
 [rucm.kaban]
 enabled = false

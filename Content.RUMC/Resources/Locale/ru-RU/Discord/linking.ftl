@@ -17,3 +17,5 @@ rucm-discord-link-connect-first = Сначала подключитесь к и�
 cmd-discordlink-desc = Открыть привязку игрового аккаунта к Discord.
 cmd-discordlink-help = Использование: discordlink
 rucm-discord-link-settings-title = Привязка аккаунта Discord
+rucm-discord-link-required = На этом сервере для игры обязательна привязка Discord. Привяжите аккаунт в этом окне или через «Настройки → Основное → Привязать Discord-аккаунт». После привязки доступ откроется автоматически.
+rucm-discord-link-checking = Проверяем привязку Discord. Дождитесь загрузки данных аккаунта.
