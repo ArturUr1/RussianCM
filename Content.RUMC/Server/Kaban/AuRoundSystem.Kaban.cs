@@ -26,7 +26,7 @@ public sealed partial class AuRoundSystem
     private KabanForceOption[] _kabanCatalogCache = [];
     private int _kabanCatalogPlayers = -1;
     private DateTime _kabanCatalogUntil;
-    private bool KabanSelectionOpen => _gameTicker.RunLevel == GameRunLevel.PreRoundLobby
+    internal bool KabanSelectionOpen => _gameTicker.RunLevel == GameRunLevel.PreRoundLobby
         && !EntityManager.System<SharedMapSystem>().MapExists(_gameTicker.DefaultMap);
 
     public KabanForceOption[] KabanCatalog(bool fresh = false)
@@ -246,6 +246,14 @@ public sealed partial class AuRoundSystem
             && (choice.Planet == "" || choice.Planet == _selectedPlanetId)
             && (choice.Govfor == "" || choice.Govfor == platoons.SelectedGovforPlatoon?.ID)
             && (choice.Opfor == "" || choice.Opfor == platoons.SelectedOpforPlatoon?.ID);
+    }
+
+    internal void CompleteKabanSelection()
+    {
+        _kabanChoice = null;
+        _kabanOptions = [];
+        _kabanPreviousPreset = null;
+        _kabanPreviousCamo = null;
     }
 
     public void ValidateKabanBeforeLoad()

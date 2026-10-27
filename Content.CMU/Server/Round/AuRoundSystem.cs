@@ -1188,7 +1188,7 @@ namespace Content.Server.CMU14.Round
             _kabanChoice = null;
             _kabanOptions = [];
             EntityManager.System<Content.Server._RuCM.Kaban.KabanSystem>().CancelForcing("selection-overridden"); // CMU14
-            if (paid && _gameTicker.RunLevel == GameRunLevel.PreRoundLobby)
+            if (paid && KabanSelectionOpen)
                 ResetKabanSelection(resetPaidPreset);
         }
 

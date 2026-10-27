@@ -90,8 +90,10 @@ public sealed partial class KabanSystem
             CancelForcing("claim-timeout");
             next(null);
         }
-        if (_forceActive != null && (!ForcingEnabled || EntityManager.System<CMUPresetVoteSystem>().LockedPreset != null))
-            EntityManager.System<AuRoundSystem>().StopVoteSequence();
+        var round = EntityManager.System<AuRoundSystem>();
+        if (_forceActive != null && round.KabanSelectionOpen
+            && (!ForcingEnabled || EntityManager.System<CMUPresetVoteSystem>().LockedPreset != null))
+            round.StopVoteSequence();
         if (!_forceSaving && _forceSettlements.TryPeek(out var item) && DateTime.UtcNow >= _forceRetry)
         {
             _forceSaving = true;
@@ -125,5 +127,6 @@ public sealed partial class KabanSystem
             && (round.ResolveGovforShip(_ticker.CurrentPreset) is not { Length: > 0 } gov || _forceLoadedMaps.Contains(gov))
             && (round.ResolveOpforShip(_ticker.CurrentPreset) is not { Length: > 0 } op || _forceLoadedMaps.Contains(op));
         FinishForcing(success, success ? $"round:{_ticker.RoundId}" : "round-start-mismatch");
+        round.CompleteKabanSelection();
     }
 }

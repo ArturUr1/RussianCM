@@ -176,6 +176,15 @@ public sealed class KabanRoundForcingTests : GameTest
             Assert.That(Server.System<GameTicker>().RunLevel, Is.EqualTo(GameRunLevel.PreRoundLobby));
         });
         TestContext.Progress.WriteLine("Forcing: starting GameTicker and loading planet plus both ships");
+        await Server.WaitPost(() =>
+        {
+            // Exercise the preload commit boundary: disabling future forcing must not mutate already loaded maps/rules.
+            typeof(GameTicker).GetMethod("LoadMaps", BindingFlags.Instance | BindingFlags.NonPublic)!
+                .Invoke(Server.System<GameTicker>(), null);
+            Server.CfgMan.SetCVar(KabanCVars.Forcing, false);
+        });
+        await Pair.RunTicksSync(2);
+        await Server.WaitAssertion(() => Assert.That(Server.System<AuRoundSystem>().KabanSelectionMatches(choice), Is.True));
         await Server.WaitPost(() => Server.System<GameTicker>().StartRound(true));
         await Until(() => Server.System<GameTicker>().RunLevel == GameRunLevel.InRound);
         await Server.WaitAssertion(() =>
@@ -183,6 +192,9 @@ public sealed class KabanRoundForcingTests : GameTest
             Assert.That(Server.System<GameTicker>().CurrentPreset!.ID, Is.EqualTo(choice.Mode));
             Assert.That(Server.System<AuRoundSystem>().KabanSelectionMatches(choice), Is.True);
             Assert.That(_loaded, Does.Contain("KabanTestMap").And.Contain("KabanTestGovShip").And.Contain("KabanTestOpShip"));
+            var nextVote = new Dictionary<string, string> { [choice.Mode] = "paid", ["DistressSignal"] = "ordinary" };
+            Server.System<AuRoundSystem>().FilterKabanPresets(nextVote);
+            Assert.That(nextVote, Has.Count.EqualTo(2), "A fulfilled request must not constrain votes for the following round.");
         });
         KabanState final = applying;
         for (var i = 0; i < 200 && final.Items.Single(v => v.Id == purchase.Operation).Status != "completed"; i++)
