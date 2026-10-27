@@ -31,6 +31,14 @@ public sealed partial class AuRoundSystem
         var count = _playerManager.PlayerCount;
         if (!fresh && count == _kabanCatalogPlayers && DateTime.UtcNow < _kabanCatalogUntil)
             return _kabanCatalogCache;
+        _kabanCatalogCache = BuildKabanCatalog(count);
+        _kabanCatalogPlayers = count;
+        _kabanCatalogUntil = DateTime.UtcNow.AddSeconds(2);
+        return _kabanCatalogCache;
+    }
+
+    internal KabanForceOption[] BuildKabanCatalog(int count)
+    {
         var resources = IoCManager.Resolve<IResourceManager>();
         bool MapExists(string id) => _prototypeManager.TryIndex<GameMapPrototype>(id, out var map)
             && map.MinPlayers <= count && map.MaxPlayers >= count
@@ -72,9 +80,7 @@ public sealed partial class AuRoundSystem
                     preset.RequiresGovforVote ? govfor : new(), preset.RequiresOpforVote ? opfor : new()));
             }
         }
-        _kabanCatalogPlayers = count;
-        _kabanCatalogUntil = DateTime.UtcNow.AddSeconds(2);
-        return _kabanCatalogCache = result.ToArray();
+        return result.ToArray();
     }
 
     private void StartKabanVoteSequence(Action? onFinished)

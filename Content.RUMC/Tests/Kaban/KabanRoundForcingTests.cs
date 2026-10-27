@@ -75,6 +75,8 @@ public sealed class KabanRoundForcingTests : GameTest
             Server.CfgMan.SetCVar(KabanCVars.Forcing, true);
             Server.CfgMan.SetCVar(RMCCVars.RMCLobbyMinimumPlayers, 0);
             Server.CfgMan.SetCVar(CCVars.VoteStartDelay, 0);
+            Server.System<GameTicker>().RestartLobbyCountdown();
+            Server.System<GameTicker>().PauseStart();
             _loaded = (HashSet<string>) typeof(KabanSystem).GetField("_forceLoadedMaps", BindingFlags.Instance | BindingFlags.NonPublic)!
                 .GetValue(Server.System<KabanSystem>())!;
         });
@@ -85,6 +87,8 @@ public sealed class KabanRoundForcingTests : GameTest
         {
             var resources = Server.ResolveDependency<Robust.Shared.ContentPack.IResourceManager>();
             Assert.That(resources.ContentFileExists(new Robust.Shared.Utility.ResPath("/Maps/Test/empty.yml")), Is.True);
+            Assert.That(Server.System<GameTicker>().CanUpdateMap(), Is.True,
+                "The fixture must reopen the selection window after removing the minimum-player gate.");
             catalog = Server.System<AuRoundSystem>().KabanCatalog(fresh: true);
         });
         var choice = product switch
@@ -114,23 +118,11 @@ public sealed class KabanRoundForcingTests : GameTest
         await Server.WaitAssertion(() =>
         {
             var round = Server.System<AuRoundSystem>();
-            var playersField = typeof(AuRoundSystem).GetField("_playerManager", BindingFlags.Instance | BindingFlags.NonPublic)!;
-            var original = (IPlayerManager) playersField.GetValue(round)!;
-            var simulated = DispatchProxy.Create<IPlayerManager, PopulationProxy>();
-            ((PopulationProxy) simulated).Target = original;
-            try
-            {
-                playersField.SetValue(round, simulated);
-                var production = round.KabanCatalog(fresh: true).Where(o => o.Mode == "ForceOnForce");
-                Assert.That(production.Any(o => o.Govfor.Keys.Any(g => o.Opfor.Keys.Any(p => p != g))), Is.True,
-                    "At a simulated population of 100, current production prototypes/resources must offer a complete FoF plan.");
-            }
-            finally
-            {
-                playersField.SetValue(round, original);
-                Assert.That(round.KabanCatalog(fresh: true).Any(o => o.Mode == "ForceOnForce"), Is.False,
-                    "The real one-player population must still enforce FoF's minimum.");
-            }
+            var production = round.BuildKabanCatalog(100).Where(o => o.Mode == "ForceOnForce");
+            Assert.That(production.Any(o => o.Govfor.Keys.Any(g => o.Opfor.Keys.Any(p => p != g))), Is.True,
+                "At a simulated population of 100, current production prototypes/resources must offer a complete FoF plan.");
+            Assert.That(round.KabanCatalog(fresh: true).Any(o => o.Mode == "ForceOnForce"), Is.False,
+                "The real one-player population must still enforce FoF's minimum.");
         });
         await Client.WaitAssertion(() =>
         {
@@ -391,10 +383,4 @@ public sealed class KabanRoundForcingTests : GameTest
         typeof(BaseButton).GetMethod("KeyBindUp", BindingFlags.Instance | BindingFlags.NonPublic)!.Invoke(button, new object[] { up });
     }
 
-    public class PopulationProxy : DispatchProxy
-    {
-        public IPlayerManager Target = default!;
-        protected override object? Invoke(MethodInfo? method, object?[]? args)
-            => method!.Name == "get_PlayerCount" ? 100 : method.Invoke(Target, args);
-    }
 }
