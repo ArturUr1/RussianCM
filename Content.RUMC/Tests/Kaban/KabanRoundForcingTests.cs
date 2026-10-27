@@ -81,7 +81,12 @@ public sealed class KabanRoundForcingTests : GameTest
         await Until(() => (bool) typeof(KabanSystem).GetField("_ready", BindingFlags.Instance | BindingFlags.NonPublic)!
             .GetValue(Server.System<KabanSystem>())!);
         KabanForceOption[] catalog = [];
-        await Server.WaitPost(() => catalog = Server.System<AuRoundSystem>().KabanCatalog());
+        await Server.WaitAssertion(() =>
+        {
+            var resources = Server.ResolveDependency<Robust.Shared.ContentPack.IResourceManager>();
+            Assert.That(resources.ContentFileExists(new Robust.Shared.Utility.ResPath("/Maps/Test/empty.yml")), Is.True);
+            catalog = Server.System<AuRoundSystem>().KabanCatalog(fresh: true);
+        });
         var choice = product switch
         {
             "mode" => new KabanForceChoice(Mode: "KabanTestMode"),
@@ -351,14 +356,13 @@ public sealed class KabanRoundForcingTests : GameTest
         - type: platoon
           id: KabanTestGov
           name: cmu-kaban-force-field-govfor
-          possibleShips: [KabanTestGovShip]
+          possibleships: [KabanTestGovShip]
         - type: platoon
           id: KabanTestOp
           name: cmu-kaban-force-field-opfor
-          possibleShips: [KabanTestOpShip]
+          possibleships: [KabanTestOpShip]
         - type: entity
           id: KabanTestPlanet
-          abstract: true
           components:
           - type: RMCPlanetMapPrototype
             mapId: KabanTestMap
