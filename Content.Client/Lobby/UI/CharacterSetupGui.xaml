@@ -42,7 +42,12 @@
             </PanelContainer>
             <BoxContainer Orientation="Horizontal" VerticalExpand="True" SeparationOverride="0">
                 <ScrollContainer MinWidth="325" MaxWidth="325" Margin="5 5 0 0">
-                    <BoxContainer Name="Characters" Orientation="Vertical" />
+                    <!-- CMU14: account actions stay with personalization, outside the character reload list. -->
+                    <BoxContainer Orientation="Vertical" SeparationOverride="6">
+                        <BoxContainer Name="AccountActions" Access="Public" Orientation="Vertical" SeparationOverride="4" />
+                        <PanelContainer StyleClasses="LowDivider" />
+                        <BoxContainer Name="Characters" Orientation="Vertical" />
+                    </BoxContainer>
                 </ScrollContainer>
                 <PanelContainer Name="BodyDividerPanel" MinSize="2 0">
                     <PanelContainer.PanelOverride>

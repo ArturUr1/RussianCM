@@ -82,6 +82,7 @@ namespace Content.Server.Database
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            KabanModel.Configure(modelBuilder); // CMU14: RuCM reward economy.
             modelBuilder.Entity<Preference>()
                 .HasIndex(p => p.UserId)
                 .IsUnique();
