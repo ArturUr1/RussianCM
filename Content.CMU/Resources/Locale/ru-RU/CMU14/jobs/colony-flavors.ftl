@@ -40,7 +40,7 @@ cmu-colony-description-riot-control-team-leader = Офицер, возглавл
 cmu-colony-prefix-riot-control-team-leader = RCL
 
 cmu-cmb-name-bureau-observer = Наблюдатель БКМ
-cmu-cmb-description-bureau-observer = Полевой наблюдатель Колониального бюро маршалов, направленный наблюдать, вести записи и оказывать помощь, но никогда не принимать чью-либо сторону.
+cmu-cmb-description-bureau-observer = Полевой наблюдатель Бюро колониальных маршалов, направленный наблюдать, вести записи и оказывать помощь, но никогда не принимать чью-либо сторону.
 cmu-cmb-prefix-bureau-observer = OBS
-cmu-cmb-supervisors-bureau = Колониальное бюро маршалов
+cmu-cmb-supervisors-bureau = Бюро колониальных маршалов
 cmu-cmb-rules-bureau-observer = Вы наблюдатель Бюро. Вы нейтральны ко всем фракциям. Наблюдайте, ведите записи и оказывайте медицинскую помощь там, где она необходима, но не принимайте ничью сторону в боевых действиях.
