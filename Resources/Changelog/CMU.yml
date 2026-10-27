@@ -15707,7 +15707,7 @@ Entries:
       nails.
     type: Fix
   id: 913
-  time: '2026-10-24T12:39:34.0000000+00:00'
+  time: '2026-10-24T12:39:34.0000000+00:00'    
   url: https://github.com/AU-14/ColonialMarinesUniverse/pull/2277
 - author: '- admin: Добавлена автоматическая публикация правил RuCMU и руководств
     CMU в Discord с оглавлением и обновлением существующих сообщений.'
