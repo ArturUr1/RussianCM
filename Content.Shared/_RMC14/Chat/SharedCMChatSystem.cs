@@ -10,6 +10,8 @@ using Robust.Shared.Console;
 using Robust.Shared.Network;
 using Robust.Shared.Player;
 using Robust.Shared.Prototypes;
+using Content.Shared.Radio.Components;
+using Content.Shared.Radio;
 
 namespace Content.Shared._RMC14.Chat;
 
