@@ -1,12 +1,12 @@
 using Content.Server.CMU14.Chat; // CMU14
-using Content.Server.CMU14.Round.ColonyShift;
+using Content.Server.CMU14.Round.ColonyShift; // RuMC edit ColonyShift
 using Content.Server.Chat.Systems;
-using Content.Shared.Access.Systems;
-using Content.Shared.Popups;
+using Content.Shared.Access.Systems; // RuMC edit ColonyShift
+using Content.Shared.Popups; // RuMC edit ColonyShift
 using Content.Server.Radio.EntitySystems;
 using Content.Shared.CMU14;
 using Content.Shared.Audio;
-using Robust.Server.GameObjects;
+using Robust.Server.GameObjects; // RuMC edit ColonyShift
 using Robust.Shared.Audio;
 
 namespace Content.Server.CMU14.Comms;
@@ -17,10 +17,10 @@ public sealed partial class ColonyCommsConsoleSystem : EntitySystem
     [Dependency] private SharedAmbientSoundSystem _ambientSound = default!;
     [Dependency] private IEntityManager _entityManager = default!;
     [Dependency] private ChatSystem _chatSystem = default!;
-    [Dependency] private AccessReaderSystem _accessReader = default!;
-    [Dependency] private ColonyRotationRuleSystem _rotation = default!;
-    [Dependency] private SharedPopupSystem _popup = default!;
-    [Dependency] private UserInterfaceSystem _ui = default!;
+    [Dependency] private AccessReaderSystem _accessReader = default!; // RuMC edit ColonyShift
+    [Dependency] private ColonyRotationRuleSystem _rotation = default!; // RuMC edit ColonyShift
+    [Dependency] private SharedPopupSystem _popup = default!; // RuMC edit ColonyShift
+    [Dependency] private UserInterfaceSystem _ui = default!; // RuMC edit ColonyShift
 
     public override void Initialize()
     {
@@ -29,8 +29,8 @@ public sealed partial class ColonyCommsConsoleSystem : EntitySystem
         SubscribeLocalEvent<ColonyCommsConsoleComponent, ColonyCommsConsoleMessage>(OnMessageSent);
         SubscribeLocalEvent<ColonyCommsConsoleComponent, ColonyCommsConsoleSendMessageBuiMsg>(OnSendMessageBuiMsg);
         SubscribeLocalEvent<ColonyCommsConsoleComponent, ColonyCommsConsoleSirenBuiMsg>(OnSirenBuiMsg);
-        SubscribeLocalEvent<ColonyCommsConsoleComponent, ColonyCommsConsoleTransportCallBuiMsg>(OnTransportCall);
-        SubscribeLocalEvent<ColonyCommsConsoleComponent, ColonyCommsConsoleTransportRecallBuiMsg>(OnTransportRecall);
+        SubscribeLocalEvent<ColonyCommsConsoleComponent, ColonyCommsConsoleTransportCallBuiMsg>(OnTransportCall); // RuMC edit ColonyShift
+        SubscribeLocalEvent<ColonyCommsConsoleComponent, ColonyCommsConsoleTransportRecallBuiMsg>(OnTransportRecall); // RuMC edit ColonyShift
     }
 
     private void OnUiOpened(EntityUid uid, ColonyCommsConsoleComponent component, BoundUIOpenedEvent args)
@@ -38,7 +38,7 @@ public sealed partial class ColonyCommsConsoleSystem : EntitySystem
         UpdateTransportUi(uid);
     }
 
-    // greenshift only, the rule pushes this whenever the transport changes phase
+    // greenshift only, the rule pushes this whenever the transport changes phase. RuMC edit Start
     public void RefreshTransportUi()
     {
         var query = EntityQueryEnumerator<ColonyCommsConsoleComponent>();
@@ -68,6 +68,7 @@ public sealed partial class ColonyCommsConsoleSystem : EntitySystem
 
         UpdateTransportUi(uid);
     }
+    // greenshift only, the rule pushes this whenever the transport changes phase. RuMC edit End
 
     private void OnTransportRecall(EntityUid uid, ColonyCommsConsoleComponent component, ColonyCommsConsoleTransportRecallBuiMsg args)
     {

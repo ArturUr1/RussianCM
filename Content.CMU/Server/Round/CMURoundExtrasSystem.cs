@@ -39,7 +39,7 @@ public sealed partial class CMURoundExtrasSystem : EntitySystem
     private static readonly HashSet<string> XenoCleanupPresets = new(StringComparer.OrdinalIgnoreCase)
     {
         "ColonyFall",
-        "ColonyShift",
+        "ColonyShift", // RuMC edit ColonyShift
         "Insurgency",
     };
 

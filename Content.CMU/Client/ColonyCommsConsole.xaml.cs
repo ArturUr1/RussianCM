@@ -9,17 +9,19 @@ namespace Content.Client.CMU14;
 [GenerateTypedNameReferences]
 public sealed partial class ColonyCommsConsole : DefaultWindow
 {
+    // RuMC edit Start ColonyShift
     [Dependency] private IGameTiming _timing = default!;
 
     private ColonyRotationTransportStatus _transport;
     private TimeSpan? _transportAt;
-
+    // RuMC edit End ColonyShift
     public ColonyCommsConsole()
     {
         RobustXamlLoader.Load(this);
         IoCManager.InjectDependencies(this);
     }
 
+    // RuMC edit Start ColonyShift
     public void UpdateTransport(ColonyCommsConsoleBuiState state)
     {
         _transport = state.Transport;
@@ -55,5 +57,6 @@ public sealed partial class ColonyCommsConsole : DefaultWindow
             ColonyRotationTransportStatus.Departing => Loc.GetString("colony-rotation-console-departing"),
             _ => string.Empty,
         };
+        // RuMC edit End ColonyShift
     }
 }

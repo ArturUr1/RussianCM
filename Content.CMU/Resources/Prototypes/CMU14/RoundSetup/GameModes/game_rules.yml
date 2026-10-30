@@ -145,6 +145,7 @@
   - type: GameRule
   - type: ColonyAntagsRule
 
+# RuMC edit Start
 - type: entity
   id: ColonyRotation
   parent: BaseGameRule
@@ -153,6 +154,7 @@
   components:
   - type: GameRule
   - type: ColonyRotationRule
+#RuMC edit End
 
 - type: entity
   id: AuVoteRule
