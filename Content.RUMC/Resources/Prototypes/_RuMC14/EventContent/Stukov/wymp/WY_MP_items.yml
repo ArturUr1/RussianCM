@@ -43,7 +43,7 @@
 - type: entity
   parent: RMCWeaponRifleM54CSemiStripped
   id: RMCWeaponRifleM54CWhiteNoLockMP
-  description: A M41A Mk2 with a Weyland-Yutani logo imprinted on the reciever. Used primarily by Weyland-Yutani's corporate security forces, and comes equipped with a drab corproate white paint job.
+  description: A M41A Mk2 with a Weyland-Yutani logo imprinted on the receiver. Used primarily by Weyland-Yutani's corporate security forces, and comes equipped with a drab corporate white paint job.
   suffix: Corporate, No UGL, No ID lock
   components:
   - type: Sprite

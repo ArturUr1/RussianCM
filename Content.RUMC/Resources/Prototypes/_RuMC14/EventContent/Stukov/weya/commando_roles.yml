@@ -319,10 +319,10 @@
 
 - type: job
   parent: CMJobBase
-  id: CMWeYaCommandoDogCather
+  id: CMWeYaCommandoDogCatcher
   roundSide: ThirdParty
   roundForce: WY
-  roundRole: CMWeYaCommandoDogCather
+  roundRole: CMWeYaCommandoDogCatcher
   roundComponents:
   - type: AssignSquad
     whitelist:
@@ -358,7 +358,7 @@
 
   name: Dog Catcher
   description: rmc-ghost-role-information-pmc-description
-  playTimeTracker: CMWeYaCommandoDogCather
+  playTimeTracker: CMWeYaCommandoDogCatcher
   ranks:
     RMCRankWeYaEliteResponder: []
   spawnMenuRoleName: WY Commando Dog Catcher
@@ -374,7 +374,7 @@
 
 - type: entity
   parent: AU14BaseMobSpeciesOrganicWeYu
-  id: CMWeYaCommandoDogCather
+  id: CMWeYaCommandoDogCatcher
   name: WY Commando Dog Catcher
   components:
   - type: GhostTakeoverAvailable
@@ -386,12 +386,12 @@
     allowMovement: true
     name: WY Commando Dog Catcher
     description: Do not allow damage to the Weyland-Yutani Corporation. Deny Weyland-Yutani involvement and do not trust GOVFOR forces. Open fire only if fired upon or on orders.
-    job: CMWeYaCommandoDogCather
+    job: CMWeYaCommandoDogCatcher
     raffle:
       settings: short
 
 - type: playTimeTracker
-  id: CMWeYaCommandoDogCather
+  id: CMWeYaCommandoDogCatcher
 
 - type: jobIcon
   parent: CMJobIconBase
@@ -411,7 +411,7 @@
     shoes: RMCBootsPMCCommandoFilled
     mask: RMCMaskCoifPMC
     ears: RMCHeadsetDistressWeYaCommandoLeader
-    back: RMCSatchelCommadoWeYaLeader
+    back: RMCSatchelCommandoWeYaLeader
     belt: RMCMatebaBeltLuxurious
     pocket1: RMCPouchToolsSocMarineRaiderFill
     pocket2: RMCPouchMedicalSocDutchUnmarked

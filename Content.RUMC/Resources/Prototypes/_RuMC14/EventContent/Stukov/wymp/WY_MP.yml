@@ -81,12 +81,12 @@
       sprite: /Textures/_RMC14/Interface/map_blips.rsi
       state: synth
 
-  name: WY Medical Investigator
+  name: WY Medical MP
   description: au14-pmcparty-description
   playTimeTracker: AU14JobWYPMCPartyMedicMP
   ranks:
     AU14RankWeYuEnforcerSenior: []
-  spawnMenuRoleName: WY PMC Medical Investigator
+  spawnMenuRoleName: WY PMC Medical MP
   startingGear: AU14GearWYPMCPartyMedicMP
   greeting: au14-pmcparty-greeting
   icon: "MyIconMI"
@@ -100,7 +100,7 @@
 - type: entity
   parent: AU14BaseMobSpeciesOrganicWeYu
   id: AU14JobWYPMCPartyMedicMP
-  name: WY PMC Medical Investigator
+  name: WY PMC Medical MP
   components:
   - type: GhostTakeoverAvailable
   - type: GhostRoleApplySpecial
@@ -109,7 +109,7 @@
     makeSentient: true
     allowSpeech: true
     allowMovement: true
-    name: WY PMC Medical Investigator
+    name: WY Medic MP
     description: au14-pmcparty-description
     reregister: false
     job: AU14JobWYPMCPartyMedicMP
@@ -199,12 +199,12 @@
       state: synth
   - type: MarineOrders
 
-  name: WY Lead Investigator
+  name: WY Lead MP
   description: au14-pmcparty-description
   playTimeTracker: AU14JobWYPMCPartyLeaderMP
   ranks:
     AU14RankWeYuEnforcerLead: []
-  spawnMenuRoleName: WY PMC Lead Investigator
+  spawnMenuRoleName: WY PMC Lead MP
   startingGear: AU14GearWYPMCPartyLeaderMP
   greeting: au14-pmcparty-greeting
   icon: "MyIconInv"
@@ -218,7 +218,7 @@
 - type: entity
   parent: AU14BaseMobSpeciesOrganicWeYu
   id: AU14JobWYPMCPartyLeaderMP
-  name: WY PMC Lead Investigator
+  name: WY PMC Lead MP
   components:
   - type: GhostTakeoverAvailable
   - type: GhostRoleApplySpecial
@@ -227,7 +227,7 @@
     makeSentient: true
     allowSpeech: true
     allowMovement: true
-    name: PMC Lead Investigator
+    name: PMC Lead MP
     description: au14-pmcparty-description
     reregister: false
     job: AU14JobWYPMCPartyLeaderMP

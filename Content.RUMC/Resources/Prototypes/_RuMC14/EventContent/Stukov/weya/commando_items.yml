@@ -569,7 +569,7 @@
 
 - type: entity
   parent: RMCSatchelLightpack
-  id: RMCSatchelCommadoWeYaLeader
+  id: RMCSatchelCommandoWeYaLeader
   name: We-Yu commando backpack
   description: Ergonomic, protected high-capacity backpack designed for Weyland-Yutani commandos.
   components:
